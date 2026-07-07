@@ -36,6 +36,15 @@ uv add --dev pytest
 
 > Not yet published to PyPI — install from source for now.
 
+To use qrt from another uv project (with the optional PyTorch extra):
+
+```toml
+dependencies = ["qrt[torch]"]
+
+[tool.uv.sources]
+qrt = { git = "https://github.com/quantbert/qrt" }
+```
+
 ## Quickstart (target API sketch)
 
 ```python
