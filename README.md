@@ -99,6 +99,7 @@ Libraries we take inspiration from (and in some cases wrap):
 | [pytorch-forecasting](https://github.com/sktime/pytorch-forecasting) | PyTorch time-series model wrappers |
 | [sktime](https://github.com/sktime/sktime) | unified time-series API design |
 | [alphatools](https://github.com/marketneutral/alphatools) | alpha research & factor tooling on a securities master |
+| [PyStats](https://github.com/marcizhu/PyStats) | statistical distribution functions (pdf/cdf/quantile/sampling) |
 
 
 ## License
