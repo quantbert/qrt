@@ -19,10 +19,6 @@ import numpy as np                          # Numerical operations
 import numpy.typing as npt
 from datetime import datetime, timedelta    # Date and time handling
 
-# Visualization
-#import altair                               # Interactive plotting library
-import matplotlib.pyplot as plt
-
 import random
 import re
 import itertools

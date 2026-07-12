@@ -1,7 +1,7 @@
 import math
 
 import pandas as pd
-import matplotlib.pyplot as plt
+from plotly.graph_objects import Figure as PlotlyFigure
 import pytest
 
 import qrt as q
@@ -41,26 +41,24 @@ def test_log_preserves_pandas_series():
 
 def test_plot_col_expands_wildcard_columns():
     df = pd.DataFrame({"a_log_ret": [0.01, -0.02], "b_log_ret": [0.02, 0.01], "close": [100, 101]})
-    ax = q.plot.col(df, "*_log_ret")
-    assert [line.get_label() for line in ax.lines] == ["a_log_ret", "b_log_ret"]
-    plt.close(ax.figure)
+    figure = q.plot.col(df, "*_log_ret")
+    assert isinstance(figure, PlotlyFigure)
+    assert [trace.name for trace in figure.data] == ["a_log_ret", "b_log_ret"]
 
 
-def test_plot_creates_equity_and_drawdown_charts():
+def test_plot_creates_interactive_performance_report():
     returns = pd.Series([0.01, -0.02, 0.03], index=pd.date_range("2025-01-01", periods=3), name="strategy")
-    figure, (equity_ax, drawdown_ax) = q.plot.plot(returns)
-    assert len(equity_ax.lines) == 2  # equity curve plus starting-value reference
-    assert drawdown_ax.get_ylabel() == "Drawdown"
-    assert figure._suptitle.get_text() == "strategy"
-    plt.close(figure)
+    figure = q.plot.plot(returns)
+    assert isinstance(figure, PlotlyFigure)
+    assert [trace.name for trace in figure.data] == ["strategy", "Drawdown"]
+    assert figure.layout.title.text == "strategy"
 
 
 def test_plot_accepts_log_returns():
     simple_returns = pd.Series([0.01, -0.02, 0.03], name="strategy")
     log_returns = (1.0 + simple_returns).apply(math.log)
-    figure, (equity_ax, _) = q.plot.plot(log_returns, return_type="log")
-    assert equity_ax.lines[0].get_ydata()[-1] == pytest.approx((1.0 + simple_returns).prod())
-    plt.close(figure)
+    figure = q.plot.plot(log_returns, return_type="log")
+    assert figure.data[0].y[-1] == pytest.approx((1.0 + simple_returns).prod())
 
 
 def test_performance_calculates_standard_metrics_and_infers_frequency():
@@ -93,9 +91,30 @@ def test_monthly_returns_and_heatmap():
     assert table.loc[2025, 1] == pytest.approx((1.01 * 1.02) - 1.0)
     assert table.loc[2025, 2] == pytest.approx(-0.01)
 
-    ax = q.plot.monthly_heatmap(returns)
-    assert ax.get_title() == "Monthly returns"
-    plt.close(ax.figure)
+    figure = q.plot.monthly_heatmap(returns)
+    assert isinstance(figure, PlotlyFigure)
+    assert figure.layout.title.text == "Monthly returns"
+
+
+def test_plotly_figures_are_available_at_root_and_interactive_namespace():
+    index = pd.date_range("2025-01-01", periods=3)
+    benchmark = pd.Series([0.01, -0.01, 0.02], index=index, name="SPY")
+    returns = pd.Series([0.02, -0.02, 0.03], index=index, name="strategy")
+
+    line_figure = q.plot.col(pd.concat([returns, benchmark], axis=1))
+    equity_figure = q.plot.equity(returns)
+    drawdown_figure = q.plot.drawdown(returns)
+    report_figure = q.plot.plot(returns, benchmark=benchmark)
+    heatmap_figure = q.plot.monthly_heatmap(returns)
+
+    assert isinstance(line_figure, PlotlyFigure)
+    assert len(line_figure.data) == 2
+    assert isinstance(equity_figure, PlotlyFigure)
+    assert isinstance(drawdown_figure, PlotlyFigure)
+    assert isinstance(report_figure, PlotlyFigure)
+    assert len(report_figure.data) == 3
+    assert isinstance(heatmap_figure, PlotlyFigure)
+    assert heatmap_figure.data[0].type == "heatmap"
 
 
 def _ohlc(n: int = 60) -> pd.DataFrame:

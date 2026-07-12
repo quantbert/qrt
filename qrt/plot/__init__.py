@@ -1,9 +1,11 @@
-"""Opinionated Matplotlib plots for quantitative research.
+"""Opinionated static and interactive plots for quantitative research.
 
 The first helpers focus on return streams: quick column charts, equity curves,
-drawdowns, and a compact performance tearsheet.
+drawdowns, and compact performance tearsheets. Use :mod:`qrt.plot.interactive`
+for Plotly figures with hover, zoom, and range selection.
 """
 
+from qrt.plot import interactive
 from qrt.plot.core import (
 	benchmark_stats,
 	col,
@@ -27,6 +29,7 @@ __all__ = [
 	"drawdown",
 	"equity",
 	"infer_periods_per_year",
+	"interactive",
 	"monthly_heatmap",
 	"monthly_returns",
 	"performance",

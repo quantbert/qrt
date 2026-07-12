@@ -9,9 +9,11 @@ authors = [{ name = "Iman Karimi" }]
 dependencies = [
     "duckdb>=1.5.4",
     "ipykernel>=7.3.0",
-    "matplotlib>=3.11.0",
+    "kaleido>=1.0",
+    "nbformat>=5.10",
     "pandas>=3.0",
     "pandas-ta-classic>=0.6.52",
+    "plotly>=6.0",
     "pyarrow>=17.0",
     "requests>=2.32",
     "ta-lib>=0.7.0",

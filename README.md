@@ -30,7 +30,7 @@ q.plot.tearsheet(result.returns, benchmark="SPY")
 
 - **Model wrappers** — thin, opinionated wrappers around PyTorch models for training, checkpointing and inference on financial time series (`q.models`)
 - **Data splitting** — leakage-aware splits: walk-forward, purged K-fold and combinatorial purged CV with embargo (à la López de Prado) (`q.splits`)
-- **Plotting & tearsheets** — premade quant-finance plot configs and performance reports for return streams: Sharpe/Sortino/Calmar, drawdowns, rolling stats, monthly heatmaps, benchmark comparison (`q.plot`)
+- **Plotting & tearsheets** — interactive Plotly reports for return streams: Sharpe/Sortino/Calmar, drawdowns, rolling stats, monthly heatmaps, benchmark comparison (`q.plot`)
 - **Portfolio analysis** — attribution, exposure, turnover and risk decomposition (`q.portfolio`)
 - **Backtesting** — event-driven backtesting of model signals, connected to the master securities database (DuckDB) (`q.bt`)
 - **Feature engineering** — feature submodules under one namespace: hand-rolled primitives (`q.feat.qta.sma()`, `q.feat.qta.lags()`), all TA-Lib indicators (`q.feat.talib.RSI(ohlc)`) and all pandas-ta-classic indicators (`q.feat.pandas_ta.bbands(ohlc)`) with a pandas-friendly interface (`q.feat`)
@@ -47,7 +47,7 @@ Notable libraries qrt is built on and/or wraps:
 | [PyTorch](https://github.com/pytorch/pytorch) | model training and inference (`q.models`) | [docs](https://docs.pytorch.org/docs/stable/) |
 | [DuckDB](https://github.com/duckdb/duckdb) | In process database (`q.data`, `q.bt`) | [docs](https://duckdb.org/docs/) |
 | [yfinance](https://github.com/ranaroussi/yfinance) | Yahoo Finance market data (`q.vendors`) | [docs](https://ranaroussi.github.io/yfinance/) |
-| [matplotlib](https://github.com/matplotlib/matplotlib) | plotting in tearsheets and reports | [docs](https://matplotlib.org/stable/) |
+| [Plotly](https://github.com/plotly/plotly.py) | interactive charts, tearsheets, and image export | [docs](https://plotly.com/python/) |
 
 
 ## Project layout
