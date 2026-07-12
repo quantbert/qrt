@@ -56,7 +56,7 @@ X["rsi_14"] = q.feat.talib.RSI(ohlc)
 | `q.splits` | leakage-aware CV splits (walk-forward, purged K-fold, embargo) |
 | `q.models` | PyTorch model wrappers |
 | `q.bt` | event-driven backtesting |
-| `q.tearsheet` | performance reports |
+| `q.plot` | plotting + performance reports (tearsheets) |
 | `q.portfolio` | portfolio analysis |
 
 ## Development

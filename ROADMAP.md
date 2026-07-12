@@ -22,7 +22,13 @@ Opinionated plotting helpers with sensible defaults for quant research.
   - [ ] Key metrics overlaid/inset (Sharpe, CAGR, max DD, ...)
 - [ ] Interactive plots (plain plotly backend)
 - [ ] Animated plots — play button / slider to watch values evolve over time
-- [ ] Shared style/config presets (theme, figsize, grids) reused by `q.tearsheet`
+- [ ] Shared style/config presets (theme, figsize, grids)
+- [ ] Tearsheets (performance reports, baked into `q.plot`):
+  - [ ] MVP report from a returns series
+  - [ ] Sharpe/Sortino/Calmar, drawdowns, rolling stats
+  - [ ] Monthly returns heatmap
+  - [ ] Benchmark comparison (e.g. vs SPY)
+  - [ ] HTML export
 
 ## `q.feat` — feature engineering
 
@@ -38,20 +44,12 @@ Opinionated plotting helpers with sensible defaults for quant research.
 - [ ] Combinatorial purged CV
 - [ ] Split visualization (plot which samples are train/test/embargo)
 
-## `q.tearsheet` — performance reports
-
-- [ ] MVP report from a returns series
-- [ ] Sharpe/Sortino/Calmar, drawdowns, rolling stats
-- [ ] Monthly returns heatmap
-- [ ] Benchmark comparison (e.g. vs SPY)
-- [ ] HTML export
-
 ## `q.bt` — backtesting
 
 - [ ] DuckDB securities-master connector
 - [ ] Event-driven backtester for model signals
 - [ ] Transaction costs / slippage models
-- [ ] Trade log output compatible with `q.tearsheet` and `q.plot`
+- [ ] Trade log output compatible with `q.plot` (tearsheets)
 
 ## `q.portfolio` — portfolio analysis
 
