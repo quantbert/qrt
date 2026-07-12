@@ -2,7 +2,7 @@
 
 Structured as a namespace of feature submodules:
 
-    q.feat.core       -- hand-rolled features (also re-exported here: SMA, lags)
+    q.feat.qta        -- our own hand-rolled features
     q.feat.talib      -- every TA-Lib indicator, pandas-friendly
     q.feat.pandas_ta  -- every pandas-ta-classic indicator
 
@@ -12,14 +12,10 @@ in the imports and ``__all__`` below. It becomes available as
 ``q.feat.<name>.*``.
 """
 
-from qrt.feat import core, pandas_ta, talib
-from qrt.feat.core import SMA, lags
+from qrt.feat import pandas_ta, qta, talib
 
 __all__ = [
-    "core",
     "pandas_ta",
+    "qta",
     "talib",
-    # re-exported core features
-    "SMA",
-    "lags",
 ]

@@ -13,7 +13,7 @@ import qrt as q
 - **Tearsheets** — performance reports for return streams: Sharpe/Sortino/Calmar, drawdowns, rolling stats, monthly heatmaps, benchmark comparison (`q.tearsheet`)
 - **Portfolio analysis** — attribution, exposure, turnover and risk decomposition (`q.portfolio`)
 - **Backtesting** — event-driven backtesting of model signals, connected to the master securities database (DuckDB) (`q.bt`)
-- **Feature engineering** — feature submodules under one namespace: hand-rolled primitives (`q.feat.SMA()`, `q.feat.lags()`), all TA-Lib indicators (`q.feat.talib.RSI(ohlc)`) and all pandas-ta-classic indicators (`q.feat.pandas_ta.bbands(ohlc)`) with a pandas-friendly interface (`q.feat`)
+- **Feature engineering** — feature submodules under one namespace: hand-rolled primitives (`q.feat.qta.sma()`, `q.feat.qta.lags()`), all TA-Lib indicators (`q.feat.talib.RSI(ohlc)`) and all pandas-ta-classic indicators (`q.feat.pandas_ta.bbands(ohlc)`) with a pandas-friendly interface (`q.feat`)
 
 ## Libraries used
 
@@ -70,7 +70,7 @@ import qrt as q
 splits = q.splits.walk_forward(X, n_splits=5, embargo="5D")
 
 # features
-X["sma_20"] = q.feat.SMA(prices, 20)
+X["sma_20"] = q.feat.qta.sma(prices, 20)
 
 # backtest + tearsheet
 result = q.bt.run(signal, prices)

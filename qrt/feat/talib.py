@@ -44,7 +44,7 @@ def _make_indicator(name: str):
 
     indicator.__name__ = name
     indicator.__qualname__ = name
-    indicator.__doc__ = _abstract.Function(name).__doc__
+    indicator.__doc__ = getattr(_talib, name).__doc__
     return indicator
 
 

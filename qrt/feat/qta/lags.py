@@ -1,13 +1,8 @@
-"""Hand-rolled feature primitives (moving averages, lags, ...)."""
+"""Lagged copies of a Series or DataFrame."""
 
 from collections.abc import Iterable
 
 import pandas as pd
-
-
-def SMA(series: pd.Series, window: int) -> pd.Series:
-    """Simple moving average."""
-    return series.rolling(window).mean()
 
 
 def lags(
@@ -24,8 +19,8 @@ def lags(
         DataFrame with one column per (column, lag), named ``{name}_lag{k}``.
 
     Example:
-        >>> q.feat.lags(prices["close"], 3)          # close_lag1..close_lag3
-        >>> q.feat.lags(df, [1, 5, 21])              # daily, weekly, monthly lags
+        >>> q.feat.qta.lags(prices["close"], 3)      # close_lag1..close_lag3
+        >>> q.feat.qta.lags(df, [1, 5, 21])          # daily, weekly, monthly lags
     """
     periods = range(1, lags + 1) if isinstance(lags, int) else list(lags)
     frame = data.to_frame() if isinstance(data, pd.Series) else data
