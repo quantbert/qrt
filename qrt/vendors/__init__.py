@@ -27,7 +27,7 @@ def get_vendor(name: str, **kwargs) -> DataVendor:
 
     Args:
         name: Registered vendor name (e.g. ``"binance"``, ``"yfinance"``).
-        **kwargs: Passed to the vendor constructor (e.g. ``cache_dir``).
+        **kwargs (Any): Passed to the vendor constructor (e.g. ``cache_dir``).
 
     Raises:
         KeyError: If no vendor is registered under ``name``.

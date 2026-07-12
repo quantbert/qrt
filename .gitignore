@@ -221,3 +221,4 @@ __marimo__/
 
 # Vendor download scratch dir (binance zips/csvs)
 /data/
+site/

@@ -1,0 +1,7 @@
+/* Expand the main content area to the full browser width so the sidebars
+   sit against the edges of the window instead of leaving large side gaps.
+   Material caps `.md-grid` at 61rem by default. */
+.md-grid {
+  max-width: none;
+}
+
