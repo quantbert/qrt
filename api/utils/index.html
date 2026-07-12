@@ -381,6 +381,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../plot/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    q.plot
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../vendors/" class="md-nav__link">
         
   
@@ -508,6 +536,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#qrt.utils.log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        log
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#qrt.utils.set_seed" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -565,6 +604,17 @@
     <span class="md-ellipsis">
       
         utils
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#qrt.utils.log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        log
       
     </span>
   </a>
@@ -633,6 +683,46 @@
 
 
 
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="qrt.utils.log" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">log</span><span class="p">(</span><span class="n">values</span><span class="p">)</span></code>
+
+<a href="#qrt.utils.log" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Return the element-wise natural logarithm of scalar or array-like values.</p>
+<p>This delegates to :func:<code>numpy.log</code>, preserving pandas Series and
+DataFrame labels. For simple returns <code>r</code>, use <code>log(1 + r)</code> to obtain
+log returns.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>qrt/utils.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-12">12</a></span>
+<span class="normal"><a href="#__codelineno-0-13">13</a></span>
+<span class="normal"><a href="#__codelineno-0-14">14</a></span>
+<span class="normal"><a href="#__codelineno-0-15">15</a></span>
+<span class="normal"><a href="#__codelineno-0-16">16</a></span>
+<span class="normal"><a href="#__codelineno-0-17">17</a></span>
+<span class="normal"><a href="#__codelineno-0-18">18</a></span>
+<span class="normal"><a href="#__codelineno-0-19">19</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="k">def</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="w">  </span><span class="sd">&quot;&quot;&quot;Return the element-wise natural logarithm of scalar or array-like values.</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14"></a>
+<a id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="sd">  This delegates to :func:`numpy.log`, preserving pandas Series and</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="sd">  DataFrame labels. For simple returns ``r``, use ``log(1 + r)`` to obtain</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="sd">  log returns.</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="sd">  &quot;&quot;&quot;</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19"></a>  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
 
 <div class="doc doc-object doc-function">
 
@@ -716,19 +806,7 @@ errors (see Caveats). Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>qrt/utils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-10">10</a></span>
-<span class="normal"><a href="#__codelineno-0-11">11</a></span>
-<span class="normal"><a href="#__codelineno-0-12">12</a></span>
-<span class="normal"><a href="#__codelineno-0-13">13</a></span>
-<span class="normal"><a href="#__codelineno-0-14">14</a></span>
-<span class="normal"><a href="#__codelineno-0-15">15</a></span>
-<span class="normal"><a href="#__codelineno-0-16">16</a></span>
-<span class="normal"><a href="#__codelineno-0-17">17</a></span>
-<span class="normal"><a href="#__codelineno-0-18">18</a></span>
-<span class="normal"><a href="#__codelineno-0-19">19</a></span>
-<span class="normal"><a href="#__codelineno-0-20">20</a></span>
-<span class="normal"><a href="#__codelineno-0-21">21</a></span>
-<span class="normal"><a href="#__codelineno-0-22">22</a></span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-22">22</a></span>
 <span class="normal"><a href="#__codelineno-0-23">23</a></span>
 <span class="normal"><a href="#__codelineno-0-24">24</a></span>
 <span class="normal"><a href="#__codelineno-0-25">25</a></span>
@@ -747,38 +825,50 @@ errors (see Caveats). Defaults to False.</p>
 <span class="normal"><a href="#__codelineno-0-38">38</a></span>
 <span class="normal"><a href="#__codelineno-0-39">39</a></span>
 <span class="normal"><a href="#__codelineno-0-40">40</a></span>
-<span class="normal"><a href="#__codelineno-0-41">41</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="k">def</span><span class="w"> </span><span class="nf">set_seed</span><span class="p">(</span><span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">42</span><span class="p">,</span> <span class="n">strict_determinism</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Set random seed for reproducibility across various libraries. If none is given, default is 42.</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12"></a>
-<a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="sd">    Args:</span>
-<a id="__codelineno-0-14" name="__codelineno-0-14"></a><span class="sd">        seed: Random seed to use.</span>
-<a id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="sd">        strict_determinism: If True, also forces deterministic cuDNN</span>
-<a id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="sd">            kernels, disables cuDNN auto-tuning, and enables</span>
-<a id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="sd">            `torch.use_deterministic_algorithms(True)` for stronger</span>
-<a id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="sd">            reproducibility guarantees, at the cost of speed and possible</span>
-<a id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="sd">            errors (see Caveats). Defaults to False.</span>
-<a id="__codelineno-0-20" name="__codelineno-0-20"></a>
-<a id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="sd">    Caveats:</span>
-<a id="__codelineno-0-22" name="__codelineno-0-22"></a><span class="sd">        - Enabling `torch.use_deterministic_algorithms(True)` can raise a</span>
-<a id="__codelineno-0-23" name="__codelineno-0-23"></a><span class="sd">          `RuntimeError` if an op has no deterministic implementation. The</span>
-<a id="__codelineno-0-24" name="__codelineno-0-24"></a><span class="sd">          `CUBLAS_WORKSPACE_CONFIG` environment variable is set to</span>
-<a id="__codelineno-0-25" name="__codelineno-0-25"></a><span class="sd">          `:4096:8` automatically (unless already set) as required by CUDA.</span>
-<a id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="sd">        - `torch.backends.cudnn.deterministic = True` and</span>
-<a id="__codelineno-0-27" name="__codelineno-0-27"></a><span class="sd">          `torch.backends.cudnn.benchmark = False` can noticeably slow down</span>
-<a id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="sd">          training since cuDNN can no longer auto-tune kernels.</span>
-<a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="sd">        - Determinism is not guaranteed across different PyTorch versions,</span>
-<a id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="sd">          hardware, or number of threads/devices.</span>
-<a id="__codelineno-0-31" name="__codelineno-0-31"></a><span class="sd">    &quot;&quot;&quot;</span>
-<a id="__codelineno-0-32" name="__codelineno-0-32"></a>    <span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
-<a id="__codelineno-0-33" name="__codelineno-0-33"></a>    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
-<a id="__codelineno-0-34" name="__codelineno-0-34"></a>    <span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
-<a id="__codelineno-0-35" name="__codelineno-0-35"></a>    <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">manual_seed_all</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
-<a id="__codelineno-0-36" name="__codelineno-0-36"></a>
-<a id="__codelineno-0-37" name="__codelineno-0-37"></a>    <span class="k">if</span> <span class="n">strict_determinism</span><span class="p">:</span>
-<a id="__codelineno-0-38" name="__codelineno-0-38"></a>        <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;CUBLAS_WORKSPACE_CONFIG&quot;</span><span class="p">,</span> <span class="s2">&quot;:4096:8&quot;</span><span class="p">)</span>
-<a id="__codelineno-0-39" name="__codelineno-0-39"></a>        <span class="n">torch</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">cudnn</span><span class="o">.</span><span class="n">deterministic</span> <span class="o">=</span> <span class="kc">True</span>
-<a id="__codelineno-0-40" name="__codelineno-0-40"></a>        <span class="n">torch</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">cudnn</span><span class="o">.</span><span class="n">benchmark</span> <span class="o">=</span> <span class="kc">False</span>
-<a id="__codelineno-0-41" name="__codelineno-0-41"></a>        <span class="n">torch</span><span class="o">.</span><span class="n">use_deterministic_algorithms</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal"><a href="#__codelineno-0-41">41</a></span>
+<span class="normal"><a href="#__codelineno-0-42">42</a></span>
+<span class="normal"><a href="#__codelineno-0-43">43</a></span>
+<span class="normal"><a href="#__codelineno-0-44">44</a></span>
+<span class="normal"><a href="#__codelineno-0-45">45</a></span>
+<span class="normal"><a href="#__codelineno-0-46">46</a></span>
+<span class="normal"><a href="#__codelineno-0-47">47</a></span>
+<span class="normal"><a href="#__codelineno-0-48">48</a></span>
+<span class="normal"><a href="#__codelineno-0-49">49</a></span>
+<span class="normal"><a href="#__codelineno-0-50">50</a></span>
+<span class="normal"><a href="#__codelineno-0-51">51</a></span>
+<span class="normal"><a href="#__codelineno-0-52">52</a></span>
+<span class="normal"><a href="#__codelineno-0-53">53</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-22" name="__codelineno-0-22"></a><span class="k">def</span><span class="w"> </span><span class="nf">set_seed</span><span class="p">(</span><span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">42</span><span class="p">,</span> <span class="n">strict_determinism</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-23" name="__codelineno-0-23"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Set random seed for reproducibility across various libraries. If none is given, default is 42.</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24"></a>
+<a id="__codelineno-0-25" name="__codelineno-0-25"></a><span class="sd">    Args:</span>
+<a id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="sd">        seed: Random seed to use.</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27"></a><span class="sd">        strict_determinism: If True, also forces deterministic cuDNN</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="sd">            kernels, disables cuDNN auto-tuning, and enables</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="sd">            `torch.use_deterministic_algorithms(True)` for stronger</span>
+<a id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="sd">            reproducibility guarantees, at the cost of speed and possible</span>
+<a id="__codelineno-0-31" name="__codelineno-0-31"></a><span class="sd">            errors (see Caveats). Defaults to False.</span>
+<a id="__codelineno-0-32" name="__codelineno-0-32"></a>
+<a id="__codelineno-0-33" name="__codelineno-0-33"></a><span class="sd">    Caveats:</span>
+<a id="__codelineno-0-34" name="__codelineno-0-34"></a><span class="sd">        - Enabling `torch.use_deterministic_algorithms(True)` can raise a</span>
+<a id="__codelineno-0-35" name="__codelineno-0-35"></a><span class="sd">          `RuntimeError` if an op has no deterministic implementation. The</span>
+<a id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="sd">          `CUBLAS_WORKSPACE_CONFIG` environment variable is set to</span>
+<a id="__codelineno-0-37" name="__codelineno-0-37"></a><span class="sd">          `:4096:8` automatically (unless already set) as required by CUDA.</span>
+<a id="__codelineno-0-38" name="__codelineno-0-38"></a><span class="sd">        - `torch.backends.cudnn.deterministic = True` and</span>
+<a id="__codelineno-0-39" name="__codelineno-0-39"></a><span class="sd">          `torch.backends.cudnn.benchmark = False` can noticeably slow down</span>
+<a id="__codelineno-0-40" name="__codelineno-0-40"></a><span class="sd">          training since cuDNN can no longer auto-tune kernels.</span>
+<a id="__codelineno-0-41" name="__codelineno-0-41"></a><span class="sd">        - Determinism is not guaranteed across different PyTorch versions,</span>
+<a id="__codelineno-0-42" name="__codelineno-0-42"></a><span class="sd">          hardware, or number of threads/devices.</span>
+<a id="__codelineno-0-43" name="__codelineno-0-43"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-44" name="__codelineno-0-44"></a>    <span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+<a id="__codelineno-0-45" name="__codelineno-0-45"></a>    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+<a id="__codelineno-0-46" name="__codelineno-0-46"></a>    <span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+<a id="__codelineno-0-47" name="__codelineno-0-47"></a>    <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">manual_seed_all</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+<a id="__codelineno-0-48" name="__codelineno-0-48"></a>
+<a id="__codelineno-0-49" name="__codelineno-0-49"></a>    <span class="k">if</span> <span class="n">strict_determinism</span><span class="p">:</span>
+<a id="__codelineno-0-50" name="__codelineno-0-50"></a>        <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;CUBLAS_WORKSPACE_CONFIG&quot;</span><span class="p">,</span> <span class="s2">&quot;:4096:8&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-51" name="__codelineno-0-51"></a>        <span class="n">torch</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">cudnn</span><span class="o">.</span><span class="n">deterministic</span> <span class="o">=</span> <span class="kc">True</span>
+<a id="__codelineno-0-52" name="__codelineno-0-52"></a>        <span class="n">torch</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">cudnn</span><span class="o">.</span><span class="n">benchmark</span> <span class="o">=</span> <span class="kc">False</span>
+<a id="__codelineno-0-53" name="__codelineno-0-53"></a>        <span class="n">torch</span><span class="o">.</span><span class="n">use_deterministic_algorithms</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
