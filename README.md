@@ -13,7 +13,23 @@ import qrt as q
 - **Tearsheets** — performance reports for return streams: Sharpe/Sortino/Calmar, drawdowns, rolling stats, monthly heatmaps, benchmark comparison (`q.tearsheet`)
 - **Portfolio analysis** — attribution, exposure, turnover and risk decomposition (`q.portfolio`)
 - **Backtesting** — event-driven backtesting of model signals, connected to the master securities database (DuckDB) (`q.bt`)
-- **Feature engineering** — unified interface wrapping tsfresh and other time-series feature libraries, plus classic indicators, e.g. `q.feat.SMA()`, `q.feat.tsfresh.*` (`q.feat`)
+- **Feature engineering** — feature submodules under one namespace: hand-rolled primitives (`q.feat.SMA()`, `q.feat.lags()`), all TA-Lib indicators (`q.feat.talib.RSI(ohlc)`) and all pandas-ta-classic indicators (`q.feat.pandas_ta.bbands(ohlc)`) with a pandas-friendly interface (`q.feat`)
+
+## Libraries used
+
+Core libraries qrt is built on and/or wraps:
+
+| Library | Used for | Docs |
+|---|---|---|
+| [pandas](https://github.com/pandas-dev/pandas) | DataFrames/Series as the common data format throughout | [docs](https://pandas.pydata.org/docs/) |
+| [TA-Lib](https://github.com/ta-lib/ta-lib-python) | technical indicators, wrapped in `q.feat.talib` | [docs](https://ta-lib.github.io/ta-lib-python/) |
+| [pandas-ta-classic](https://github.com/xgboosted/pandas-ta-classic) | technical indicators & candlestick patterns, wrapped in `q.feat.pandas_ta` | [docs](https://xgboosted.github.io/pandas-ta-classic/) |
+| [PyTorch](https://github.com/pytorch/pytorch) | model training and inference (`q.models`) | [docs](https://docs.pytorch.org/docs/stable/) |
+| [DuckDB](https://github.com/duckdb/duckdb) | master securities database (`q.data`, `q.bt`) | [docs](https://duckdb.org/docs/) |
+| [yfinance](https://github.com/ranaroussi/yfinance) | Yahoo Finance market data (`q.vendors`) | [docs](https://ranaroussi.github.io/yfinance/) |
+| [pyarrow](https://github.com/apache/arrow) | parquet caching of vendor data | [docs](https://arrow.apache.org/docs/python/) |
+| [matplotlib](https://github.com/matplotlib/matplotlib) | plotting in tearsheets and reports | [docs](https://matplotlib.org/stable/) |
+| [tqdm](https://github.com/tqdm/tqdm) | progress bars for bulk data fetching | [docs](https://tqdm.github.io/) |
 
 ## Installation
 

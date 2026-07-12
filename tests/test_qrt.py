@@ -28,6 +28,61 @@ def test_lags_dataframe_explicit_periods():
     assert out["b_lag2"].iloc[-1] == 10.0
 
 
+def _ohlc(n: int = 60) -> pd.DataFrame:
+    idx = pd.date_range("2025-01-01", periods=n, freq="D")
+    close = pd.Series(range(1, n + 1), index=idx, dtype=float)
+    return pd.DataFrame(
+        {"open": close, "high": close + 1, "low": close - 1, "close": close, "volume": 100.0}
+    )
+
+
+def test_talib_single_output():
+    ohlc = _ohlc()
+    out = q.feat.talib.RSI(ohlc, timeperiod=14)
+    assert out.name == "rsi"
+    assert out.index.equals(ohlc.index)
+    assert out.iloc[-1] == 100.0  # strictly rising close
+
+    # a plain Series is treated as close
+    from_series = q.feat.talib.RSI(ohlc["close"], timeperiod=14)
+    assert from_series.equals(out)
+
+
+def test_talib_multi_output():
+    out = q.feat.talib.MACD(_ohlc())
+    assert list(out.columns) == ["macd", "macdsignal", "macdhist"]
+
+
+def test_talib_unknown_indicator():
+    import pytest
+
+    with pytest.raises(AttributeError):
+        q.feat.talib.NOT_AN_INDICATOR
+
+
+def test_pandas_ta_single_output():
+    ohlc = _ohlc()
+    out = q.feat.pandas_ta.rsi(ohlc, length=14)
+    assert out.name == "RSI_14"
+    assert out.index.equals(ohlc.index)
+
+    # a plain Series is treated as close
+    from_series = q.feat.pandas_ta.rsi(ohlc["close"], length=14)
+    assert from_series.equals(out)
+
+
+def test_pandas_ta_multi_output():
+    out = q.feat.pandas_ta.macd(_ohlc())
+    assert list(out.columns) == ["MACD_12_26_9", "MACDh_12_26_9", "MACDs_12_26_9"]
+
+
+def test_pandas_ta_unknown_indicator():
+    import pytest
+
+    with pytest.raises(AttributeError):
+        q.feat.pandas_ta.not_an_indicator
+
+
 def test_load_ohlc_timeseries_range(tmp_path):
     from datetime import datetime
 

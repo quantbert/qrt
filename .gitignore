@@ -218,3 +218,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Vendor download scratch dir (binance zips/csvs)
+/data/
