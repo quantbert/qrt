@@ -19,6 +19,7 @@ docs: ## Serve the docs locally with live reload
 
 docs-deploy: ## Build and deploy the docs to GitHub Pages
 	uv run --group docs mkdocs gh-deploy --strict
+	rm -rf site
 
 clean: ## Remove caches and build artifacts
 	rm -rf .pytest_cache dist build site
