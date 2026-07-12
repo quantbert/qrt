@@ -1,10 +1,11 @@
 [project]
-name = "qrt"
-version = "0.0.1"
+name = "pyqrt"
+version = "0.0.3"
 description = "Quant Research Tools"
 readme = "README.md"
 requires-python = ">=3.13"
 license = { file = "LICENSE" }
+authors = [{ name = "Iman Karimi" }]
 dependencies = [
     "duckdb>=1.5.4",
     "ipykernel>=7.3.0",
@@ -19,6 +20,9 @@ dependencies = [
     "yfinance>=1.5.1",
 ]
 
+[project.urls]
+documentation = "https://quantbert.github.io/qrt/"
+repository = "https://github.com/quantbert/qrt"
 
 [dependency-groups]
 dev = [

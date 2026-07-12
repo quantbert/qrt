@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := help
 
-.PHONY: help install test stubs docs docs-deploy clean
+.PHONY: help install test stubs docs docs-deploy clean publish
 
 help: ## Show available targets
 	@grep -E '^[a-z-]+:.*##' $(MAKEFILE_LIST) | awk -F ':.*## ' '{printf "  %-12s %s\n", $$1, $$2}'
@@ -20,6 +20,12 @@ docs: ## Serve the docs locally with live reload
 docs-deploy: ## Build and deploy the docs to GitHub Pages
 	uv run --group docs mkdocs gh-deploy --strict
 	rm -rf site
+
+publish: test ## Runs test first. Then bump patch version, build and publish to PyPI
+	uv version --bump patch
+	rm -rf dist
+	uv build
+	uv publish
 
 clean: ## Remove caches and build artifacts
 	rm -rf .pytest_cache dist build site

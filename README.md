@@ -2,10 +2,13 @@
 
 QRT is an umbrella library of quantitative research tools
 
+## Warning ⚠️
+
+Library is still under early development. Come back later. 
 
 ## Install:
 ```bash
-uv add qrt
+uv add pyqrt
 ```
 
 ## Use:
@@ -63,8 +66,3 @@ qrt/
 ├── examples/        # notebooks
 └── pyproject.toml
 ```
-
-## License
-
-See [LICENSE](LICENSE).
-
