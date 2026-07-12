@@ -1,5 +1,8 @@
+import math
+
 import pandas as pd
 import matplotlib.pyplot as plt
+import pytest
 
 import qrt as q
 
@@ -29,6 +32,13 @@ def test_lags_dataframe_explicit_periods():
     assert out["b_lag2"].iloc[-1] == 10.0
 
 
+def test_log_preserves_pandas_series():
+    values = pd.Series([1.0, math.e], index=pd.date_range("2025-01-01", periods=2))
+    out = q.utils.log(values)
+    assert out.index.equals(values.index)
+    assert out.iloc[1] == pytest.approx(1.0)
+
+
 def test_plot_col_expands_wildcard_columns():
     df = pd.DataFrame({"a_log_ret": [0.01, -0.02], "b_log_ret": [0.02, 0.01], "close": [100, 101]})
     ax = q.plot.col(df, "*_log_ret")
@@ -36,13 +46,56 @@ def test_plot_col_expands_wildcard_columns():
     plt.close(ax.figure)
 
 
-def test_qplot_creates_equity_and_drawdown_charts():
+def test_plot_creates_equity_and_drawdown_charts():
     returns = pd.Series([0.01, -0.02, 0.03], index=pd.date_range("2025-01-01", periods=3), name="strategy")
-    figure, (equity_ax, drawdown_ax) = q.plot.qplot(returns)
+    figure, (equity_ax, drawdown_ax) = q.plot.plot(returns)
     assert len(equity_ax.lines) == 2  # equity curve plus starting-value reference
     assert drawdown_ax.get_ylabel() == "Drawdown"
     assert figure._suptitle.get_text() == "strategy"
     plt.close(figure)
+
+
+def test_plot_accepts_log_returns():
+    simple_returns = pd.Series([0.01, -0.02, 0.03], name="strategy")
+    log_returns = (1.0 + simple_returns).apply(math.log)
+    figure, (equity_ax, _) = q.plot.plot(log_returns, return_type="log")
+    assert equity_ax.lines[0].get_ydata()[-1] == pytest.approx((1.0 + simple_returns).prod())
+    plt.close(figure)
+
+
+def test_performance_calculates_standard_metrics_and_infers_frequency():
+    returns = pd.Series([0.01, -0.02, 0.03], index=pd.date_range("2025-01-01", periods=3), name="strategy")
+    stats = q.plot.performance(returns)
+    assert stats["Total Return"] == pytest.approx((1.0 + returns).prod() - 1.0)
+    assert stats["Periods"] == 3
+    assert q.plot.infer_periods_per_year(returns.index) == 252
+    assert {"Sharpe", "Sortino", "Calmar", "Max Drawdown"}.issubset(stats.index)
+
+
+def test_rolling_diagnostics_and_benchmark_stats():
+    benchmark = pd.Series([0.01, -0.01, 0.02, 0.01, -0.01], index=pd.date_range("2025-01-01", periods=5), name="SPY")
+    returns = (benchmark * 2).rename("strategy")
+    assert q.plot.rolling_volatility(returns, window=3).iloc[-1] > 0
+    assert q.plot.rolling_sharpe(returns, window=3).iloc[-1] != 0
+    assert q.plot.rolling_beta(returns, benchmark, window=3).iloc[-1] == pytest.approx(2.0)
+    assert q.plot.rolling_alpha(returns, benchmark, window=3).iloc[-1] == pytest.approx(0.0)
+
+    stats = q.plot.benchmark_stats(returns, benchmark)
+    assert stats["Beta"] == pytest.approx(2.0)
+    assert stats["Periods"] == len(returns)
+
+
+def test_monthly_returns_and_heatmap():
+    returns = pd.Series(
+        [0.01, 0.02, -0.01], index=pd.to_datetime(["2025-01-02", "2025-01-31", "2025-02-03"]), name="strategy"
+    )
+    table = q.plot.monthly_returns(returns)
+    assert table.loc[2025, 1] == pytest.approx((1.01 * 1.02) - 1.0)
+    assert table.loc[2025, 2] == pytest.approx(-0.01)
+
+    ax = q.plot.monthly_heatmap(returns)
+    assert ax.get_title() == "Monthly returns"
+    plt.close(ax.figure)
 
 
 def _ohlc(n: int = 60) -> pd.DataFrame:

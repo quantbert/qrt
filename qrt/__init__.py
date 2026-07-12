@@ -5,7 +5,7 @@ Usage:
 """
 
 from qrt import bt, data, dataload, feat, models, plot, portfolio, splits, utils, vendors
-from qrt.utils import set_seed
+from qrt.utils import log, set_seed
 
 from typing import Dict, List, Tuple, Union                     # Type hints for function signatures
 
@@ -44,5 +44,6 @@ __all__ = [
     "splits",
     "utils",
     "vendors",
+    "log",
     "set_seed",
 ]

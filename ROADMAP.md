@@ -15,7 +15,7 @@ Opinionated plotting helpers with sensible defaults for quant research.
 
 - [ ] `q.plot.col(df, "cum_trade_log_return")` — quick single-column plot with clean defaults
 - [ ] Multi-column rendering **with wildcards**: `q.plot.col(df, "*_log_ret")` plots all columns matching the pattern (e.g. multiple return fields at once)
-- [ ] `q.plot.qplot(...)` — enriched plot variant with stats and graphical extras:
+- [ ] `q.plot.plot(...)` — enriched plot variant with stats and graphical extras:
   - [ ] Underwater (drawdown) plot
   - [ ] Longest drawdown highlighted, with dates on drawdown periods
   - [ ] Annotations of notable historical events (Covid, wars, etc.)

@@ -24,6 +24,7 @@ nav:
   - Feature Engineering: feat.md
   - API Reference:
       - q.feat: api/feat.md
+      - q.plot: api/plot.md
       - q.vendors: api/vendors.md
       - q.dataload: api/dataload.md
       - q.utils: api/utils.md

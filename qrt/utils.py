@@ -6,6 +6,18 @@ import random
 import numpy as np
 import torch
 
+__all__ = ["log", "set_seed"]
+
+
+def log(values):
+  """Return the element-wise natural logarithm of scalar or array-like values.
+
+  This delegates to :func:`numpy.log`, preserving pandas Series and
+  DataFrame labels. For simple returns ``r``, use ``log(1 + r)`` to obtain
+  log returns.
+  """
+  return np.log(values)
+
 
 def set_seed(seed: int = 42, strict_determinism: bool = False) -> None:
     """Set random seed for reproducibility across various libraries. If none is given, default is 42.
