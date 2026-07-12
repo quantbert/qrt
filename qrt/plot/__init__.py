@@ -1,9 +1,9 @@
-"""Plotting with premade configs for quant finance (q.plot).
+"""Opinionated Matplotlib plots for quantitative research.
 
-Planned (see ROADMAP.md):
-    - col(df, "*_log_ret"): plot columns, with wildcard matching
-    - qplot(...): enriched plot with drawdowns, event annotations and metrics
-    - interactive (plotly) and animated variants
+The first helpers focus on return streams: quick column charts, equity curves,
+drawdowns, and a compact performance tearsheet.
 """
 
-__all__: list[str] = []
+from qrt.plot.core import col, drawdown, equity, qplot, tearsheet
+
+__all__ = ["col", "drawdown", "equity", "qplot", "tearsheet"]

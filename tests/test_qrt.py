@@ -1,4 +1,5 @@
 import pandas as pd
+import matplotlib.pyplot as plt
 
 import qrt as q
 
@@ -26,6 +27,22 @@ def test_lags_dataframe_explicit_periods():
     out = q.feat.qta.lags(df, [1, 2])
     assert list(out.columns) == ["a_lag1", "a_lag2", "b_lag1", "b_lag2"]
     assert out["b_lag2"].iloc[-1] == 10.0
+
+
+def test_plot_col_expands_wildcard_columns():
+    df = pd.DataFrame({"a_log_ret": [0.01, -0.02], "b_log_ret": [0.02, 0.01], "close": [100, 101]})
+    ax = q.plot.col(df, "*_log_ret")
+    assert [line.get_label() for line in ax.lines] == ["a_log_ret", "b_log_ret"]
+    plt.close(ax.figure)
+
+
+def test_qplot_creates_equity_and_drawdown_charts():
+    returns = pd.Series([0.01, -0.02, 0.03], index=pd.date_range("2025-01-01", periods=3), name="strategy")
+    figure, (equity_ax, drawdown_ax) = q.plot.qplot(returns)
+    assert len(equity_ax.lines) == 2  # equity curve plus starting-value reference
+    assert drawdown_ax.get_ylabel() == "Drawdown"
+    assert figure._suptitle.get_text() == "strategy"
+    plt.close(figure)
 
 
 def _ohlc(n: int = 60) -> pd.DataFrame:
