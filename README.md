@@ -1,68 +1,14 @@
 # Quant Research Tools (qrt)
 
-QRT is an umbrella library of quantitative research tools we use internally — one consistent API over the fragmented quant Python ecosystem.
+QRT is an umbrella library of quantitative research tools
 
-```python
-import qrt as q
-```
 
-## Features (planned / in progress)
-
-- **Model wrappers** — thin, opinionated wrappers around PyTorch models for training, checkpointing and inference on financial time series (`q.models`)
-- **Data splitting** — leakage-aware splits: walk-forward, purged K-fold and combinatorial purged CV with embargo (à la López de Prado) (`q.splits`)
-- **Tearsheets** — performance reports for return streams: Sharpe/Sortino/Calmar, drawdowns, rolling stats, monthly heatmaps, benchmark comparison (`q.tearsheet`)
-- **Portfolio analysis** — attribution, exposure, turnover and risk decomposition (`q.portfolio`)
-- **Backtesting** — event-driven backtesting of model signals, connected to the master securities database (DuckDB) (`q.bt`)
-- **Feature engineering** — feature submodules under one namespace: hand-rolled primitives (`q.feat.qta.sma()`, `q.feat.qta.lags()`), all TA-Lib indicators (`q.feat.talib.RSI(ohlc)`) and all pandas-ta-classic indicators (`q.feat.pandas_ta.bbands(ohlc)`) with a pandas-friendly interface (`q.feat`)
-
-## Libraries used
-
-Core libraries qrt is built on and/or wraps:
-
-| Library | Used for | Docs |
-|---|---|---|
-| [pandas](https://github.com/pandas-dev/pandas) | DataFrames/Series as the common data format throughout | [docs](https://pandas.pydata.org/docs/) |
-| [TA-Lib](https://github.com/ta-lib/ta-lib-python) | technical indicators, wrapped in `q.feat.talib` | [docs](https://ta-lib.github.io/ta-lib-python/) |
-| [pandas-ta-classic](https://github.com/xgboosted/pandas-ta-classic) | technical indicators & candlestick patterns, wrapped in `q.feat.pandas_ta` | [docs](https://xgboosted.github.io/pandas-ta-classic/) |
-| [PyTorch](https://github.com/pytorch/pytorch) | model training and inference (`q.models`) | [docs](https://docs.pytorch.org/docs/stable/) |
-| [DuckDB](https://github.com/duckdb/duckdb) | master securities database (`q.data`, `q.bt`) | [docs](https://duckdb.org/docs/) |
-| [yfinance](https://github.com/ranaroussi/yfinance) | Yahoo Finance market data (`q.vendors`) | [docs](https://ranaroussi.github.io/yfinance/) |
-| [pyarrow](https://github.com/apache/arrow) | parquet caching of vendor data | [docs](https://arrow.apache.org/docs/python/) |
-| [matplotlib](https://github.com/matplotlib/matplotlib) | plotting in tearsheets and reports | [docs](https://matplotlib.org/stable/) |
-| [tqdm](https://github.com/tqdm/tqdm) | progress bars for bulk data fetching | [docs](https://tqdm.github.io/) |
-
-## Installation
-
-We use [uv](https://github.com/astral-sh/uv) for environment and dependency management.
-
+## Install:
 ```bash
-# create the environment and install qrt with dev extras
-uv sync --extra dev
-
-# run anything inside the environment
-uv run python -c "import qrt as q"
+uv add qrt
 ```
 
-To add a dependency:
-
-```bash
-uv add tsfresh
-uv add --dev pytest
-```
-
-> Not yet published to PyPI — install from source for now.
-
-To use qrt from another uv project (with the optional PyTorch extra):
-
-```toml
-dependencies = ["qrt[torch]"]
-
-[tool.uv.sources]
-qrt = { git = "https://github.com/quantbert/qrt" }
-```
-
-## Quickstart (target API sketch)
-
+## Use:
 ```python
 import qrt as q
 
@@ -77,7 +23,31 @@ result = q.bt.run(signal, prices)
 q.tearsheet.report(result.returns, benchmark="SPY")
 ```
 
-## Project layout (proposed)
+## Features (planned / in progress)
+
+- **Model wrappers** — thin, opinionated wrappers around PyTorch models for training, checkpointing and inference on financial time series (`q.models`)
+- **Data splitting** — leakage-aware splits: walk-forward, purged K-fold and combinatorial purged CV with embargo (à la López de Prado) (`q.splits`)
+- **Tearsheets** — performance reports for return streams: Sharpe/Sortino/Calmar, drawdowns, rolling stats, monthly heatmaps, benchmark comparison (`q.tearsheet`)
+- **Portfolio analysis** — attribution, exposure, turnover and risk decomposition (`q.portfolio`)
+- **Backtesting** — event-driven backtesting of model signals, connected to the master securities database (DuckDB) (`q.bt`)
+- **Feature engineering** — feature submodules under one namespace: hand-rolled primitives (`q.feat.qta.sma()`, `q.feat.qta.lags()`), all TA-Lib indicators (`q.feat.talib.RSI(ohlc)`) and all pandas-ta-classic indicators (`q.feat.pandas_ta.bbands(ohlc)`) with a pandas-friendly interface (`q.feat`)
+
+## Libraries used
+
+Notable libraries qrt is built on and/or wraps:
+
+| Library | Used for | Docs |
+|---|---|---|
+| [pandas](https://github.com/pandas-dev/pandas) | DataFrames/Series as the common data format throughout | [docs](https://pandas.pydata.org/docs/) |
+| [TA-Lib](https://github.com/ta-lib/ta-lib-python) | technical indicators, wrapped in `q.feat.talib` | [docs](https://ta-lib.github.io/ta-lib-python/) |
+| [pandas-ta-classic](https://github.com/xgboosted/pandas-ta-classic) | technical indicators & candlestick patterns, wrapped in `q.feat.pandas_ta` | [docs](https://xgboosted.github.io/pandas-ta-classic/) |
+| [PyTorch](https://github.com/pytorch/pytorch) | model training and inference (`q.models`) | [docs](https://docs.pytorch.org/docs/stable/) |
+| [DuckDB](https://github.com/duckdb/duckdb) | In process database (`q.data`, `q.bt`) | [docs](https://duckdb.org/docs/) |
+| [yfinance](https://github.com/ranaroussi/yfinance) | Yahoo Finance market data (`q.vendors`) | [docs](https://ranaroussi.github.io/yfinance/) |
+| [matplotlib](https://github.com/matplotlib/matplotlib) | plotting in tearsheets and reports | [docs](https://matplotlib.org/stable/) |
+
+
+## Project layout
 
 ```
 qrt/
@@ -93,39 +63,6 @@ qrt/
 ├── examples/        # notebooks
 └── pyproject.toml
 ```
-
-## Roadmap
-
-- [ ] Package scaffolding (`pyproject.toml`, CI, tests)
-- [ ] `q.feat` — indicator + tsfresh wrappers
-- [ ] `q.splits` — walk-forward and purged CV with embargo
-- [ ] `q.tearsheet` — MVP report from a returns series
-- [ ] `q.bt` — DuckDB securities-master connector + event-driven backtester
-- [ ] `q.portfolio` — attribution and risk decomposition
-- [ ] `q.models` — PyTorch training loop wrappers
-
-## Inspiration
-
-Libraries we take inspiration from (and in some cases wrap):
-
-| Library | What we borrow |
-|---|---|
-| [quantstats](https://github.com/ranaroussi/quantstats) | tearsheets, return-stream metrics |
-| [pyfolio-reloaded](https://github.com/stefan-jansen/pyfolio-reloaded) | portfolio/performance analysis |
-| [alphalens-reloaded](https://github.com/stefan-jansen/alphalens-reloaded) | alpha-factor evaluation |
-| [empyrical-reloaded](https://github.com/stefan-jansen/empyrical-reloaded) | risk/performance statistics |
-| [tsfresh](https://github.com/blue-yonder/tsfresh) | automated time-series feature extraction |
-| [skfolio](https://github.com/skfolio/skfolio) | sklearn-style portfolio optimization |
-| [mlfinlab](https://github.com/hudson-and-thames/mlfinlab) | purged CV, embargo, financial ML (López de Prado) |
-| [pandas-ta](https://github.com/twopirllc/pandas-ta) | technical indicators |
-| [pandas-ta-classic](https://github.com/xgboosted/pandas-ta-classic) | maintained fork of pandas-ta indicators |
-| [Riskfolio-Lib](https://github.com/dcajasn/Riskfolio-Lib) | portfolio optimization & risk measures |
-| [qlib](https://github.com/microsoft/qlib) | end-to-end quant ML platform design |
-| [pytorch-forecasting](https://github.com/sktime/pytorch-forecasting) | PyTorch time-series model wrappers |
-| [sktime](https://github.com/sktime/sktime) | unified time-series API design |
-| [alphatools](https://github.com/marketneutral/alphatools) | alpha research & factor tooling on a securities master |
-| [PyStats](https://github.com/marcizhu/PyStats) | statistical distribution functions (pdf/cdf/quantile/sampling) |
-
 
 ## License
 
