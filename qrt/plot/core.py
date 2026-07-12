@@ -331,3 +331,27 @@ def plot(
 def tearsheet(returns: pd.Series, **kwargs: object):
     """Alias for the interactive :func:`plot` performance report."""
     return plot(returns, **kwargs)  # type: ignore[arg-type]
+
+
+def show(
+    figure: object,
+    name: str | None = None,
+    *,
+    save_to: str | None = None,
+    formats: Iterable[str] = ("png",),
+    width: int = 1400,
+    height: int = 800,
+    scale: int = 2,
+) -> None:
+    """Display a Plotly figure, optionally saving it to `save_to` as PNG (default) and/or self-contained HTML."""
+    from qrt.plot.interactive import show as _show
+
+    _show(
+        figure,
+        name,
+        save_to=save_to,
+        formats=formats,
+        width=width,
+        height=height,
+        scale=scale,
+    )

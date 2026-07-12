@@ -20,6 +20,7 @@ from qrt.plot.core import (
 	rolling_beta,
 	rolling_sharpe,
 	rolling_volatility,
+	show,
 	tearsheet,
 )
 
@@ -38,5 +39,6 @@ __all__ = [
 	"rolling_beta",
 	"rolling_sharpe",
 	"rolling_volatility",
+	"show",
 	"tearsheet",
 ]

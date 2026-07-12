@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 import numpy as np
@@ -255,4 +256,30 @@ def monthly_heatmap(
     return figure
 
 
-__all__ = ["drawdown", "equity", "line", "monthly_heatmap", "performance"]
+def show(
+    figure: Figure,
+    name: str | None = None,
+    *,
+    save_to: str | Path | None = None,
+    formats: Iterable[str] = ("png",),
+    width: int = 1400,
+    height: int = 800,
+    scale: int = 2,
+) -> None:
+    """Display a figure, optionally saving it to `save_to` as PNG (default) and/or self-contained HTML."""
+    if save_to is not None:
+        if name is None:
+            raise ValueError("name is required when save_to is provided")
+        output_dir = Path(save_to)
+        output_dir.mkdir(parents=True, exist_ok=True)
+        for figure_format in formats:
+            if figure_format == "html":
+                figure.write_html(output_dir / f"{name}.html", include_plotlyjs=True)
+            elif figure_format == "png":
+                figure.write_image(output_dir / f"{name}.png", width=width, height=height, scale=scale)
+            else:
+                raise ValueError(f"Unsupported format: {figure_format!r}. Use 'html' and/or 'png'")
+    figure.show()
+
+
+__all__ = ["drawdown", "equity", "line", "monthly_heatmap", "performance", "show"]
