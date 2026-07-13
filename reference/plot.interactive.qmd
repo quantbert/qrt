@@ -1,0 +1,205 @@
+# plot.interactive { #qrt.plot.interactive }
+
+`plot.interactive`
+
+Interactive Plotly charts for quantitative research return streams.
+
+## Functions
+
+| Name | Description |
+| --- | --- |
+| [drawdown](#qrt.plot.interactive.drawdown) | Create an interactive underwater chart from periodic returns. |
+| [equity](#qrt.plot.interactive.equity) | Create an interactive compounded equity curve from periodic returns. |
+| [line](#qrt.plot.interactive.line) | Create an interactive line chart from selected Series or DataFrame columns. |
+| [monthly_heatmap](#qrt.plot.interactive.monthly_heatmap) | Create an interactive, annotated calendar-month return heatmap. |
+| [performance](#qrt.plot.interactive.performance) | Create an interactive equity, drawdown, and headline-statistics report. |
+| [show](#qrt.plot.interactive.show) | Display a figure, optionally saving it to `save_to` as PNG (default) and/or self-contained HTML. |
+
+### drawdown { #qrt.plot.interactive.drawdown }
+
+```python
+plot.interactive.drawdown(
+    returns,
+    *,
+    return_type='simple',
+    title='Drawdown',
+    height=320,
+)
+```
+
+Create an interactive underwater chart from periodic returns.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name        | Type       | Description                                                | Default      |
+|-------------|------------|------------------------------------------------------------|--------------|
+| returns     | pd.Series  | Periodic return series.                                    | _required_   |
+| return_type | ReturnType | Whether ``returns`` are ``"simple"`` or ``"log"`` returns. | `'simple'`   |
+| title       | str        | Figure title.                                              | `'Drawdown'` |
+| height      | int        | Figure height in pixels.                                   | `320`        |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description          |
+|--------|--------|----------------------|
+|        | Figure | A Plotly ``Figure``. |
+
+### equity { #qrt.plot.interactive.equity }
+
+```python
+plot.interactive.equity(
+    returns,
+    *,
+    return_type='simple',
+    title='Equity curve',
+    label=None,
+    height=450,
+)
+```
+
+Create an interactive compounded equity curve from periodic returns.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name        | Type        | Description                                                     | Default          |
+|-------------|-------------|-----------------------------------------------------------------|------------------|
+| returns     | pd.Series   | Periodic return series.                                         | _required_       |
+| return_type | ReturnType  | Whether ``returns`` are ``"simple"`` or ``"log"`` returns.      | `'simple'`       |
+| title       | str         | Figure title.                                                   | `'Equity curve'` |
+| label       | str \| None | Series name for the equity curve. Defaults to ``returns.name``. | `None`           |
+| height      | int         | Figure height in pixels.                                        | `450`            |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description          |
+|--------|--------|----------------------|
+|        | Figure | A Plotly ``Figure``. |
+
+### line { #qrt.plot.interactive.line }
+
+```python
+plot.interactive.line(
+    data,
+    columns=None,
+    *,
+    title=None,
+    yaxis_title=None,
+    height=450,
+)
+```
+
+Create an interactive line chart from selected Series or DataFrame columns.
+
+Column selection supports the same shell-style patterns as :func:`qrt.plot.col`.
+The returned Plotly figure supports hover, zoom, pan, and range selection.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name        | Type                           | Description                                                                                      | Default    |
+|-------------|--------------------------------|--------------------------------------------------------------------------------------------------|------------|
+| data        | pd.Series \| pd.DataFrame      | Series or DataFrame to plot.                                                                     | _required_ |
+| columns     | str \| Iterable\[str\] \| None | Column name(s) or shell-style pattern(s) (e.g. ``"*_ret"``) to select. Defaults to all columns.  | `None`     |
+| title       | str \| None                    | Figure title. Defaults to the column name (single column) or a generic title (multiple columns). | `None`     |
+| yaxis_title | str \| None                    | Y-axis label.                                                                                    | `None`     |
+| height      | int                            | Figure height in pixels.                                                                         | `450`      |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description          |
+|--------|--------|----------------------|
+|        | Figure | A Plotly ``Figure``. |
+
+### monthly_heatmap { #qrt.plot.interactive.monthly_heatmap }
+
+```python
+plot.interactive.monthly_heatmap(
+    returns,
+    *,
+    return_type='simple',
+    title='Monthly returns',
+    height=None,
+)
+```
+
+Create an interactive, annotated calendar-month return heatmap.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name        | Type        | Description                                                               | Default             |
+|-------------|-------------|---------------------------------------------------------------------------|---------------------|
+| returns     | pd.Series   | Periodic return series with a ``DatetimeIndex``.                          | _required_          |
+| return_type | ReturnType  | Whether ``returns`` are ``"simple"`` or ``"log"`` returns.                | `'simple'`          |
+| title       | str         | Figure title.                                                             | `'Monthly returns'` |
+| height      | int \| None | Figure height in pixels. Defaults to a size based on the number of years. | `None`              |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description          |
+|--------|--------|----------------------|
+|        | Figure | A Plotly ``Figure``. |
+
+### performance { #qrt.plot.interactive.performance }
+
+```python
+plot.interactive.performance(
+    returns,
+    *,
+    benchmark=None,
+    return_type='simple',
+    periods_per_year=None,
+    title=None,
+    height=700,
+)
+```
+
+Create an interactive equity, drawdown, and headline-statistics report.
+
+The figure has linked time axes, unified hover, zooming, and date-range
+buttons. If supplied, the benchmark is aligned to the strategy's shared
+observations before plotting.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name             | Type              | Description                                                                        | Default    |
+|------------------|-------------------|------------------------------------------------------------------------------------|------------|
+| returns          | pd.Series         | Strategy periodic return series.                                                   | _required_ |
+| benchmark        | pd.Series \| None | Optional benchmark periodic return series, aligned to ``returns`` on shared dates. | `None`     |
+| return_type      | ReturnType        | Whether ``returns``/``benchmark`` are ``"simple"`` or ``"log"`` returns.           | `'simple'` |
+| periods_per_year | int \| None       | Annualization frequency. Inferred from the index when not given.                   | `None`     |
+| title            | str \| None       | Figure title. Defaults to ``returns.name``.                                        | `None`     |
+| height           | int               | Figure height in pixels.                                                           | `700`      |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description          |
+|--------|--------|----------------------|
+|        | Figure | A Plotly ``Figure``. |
+
+### show { #qrt.plot.interactive.show }
+
+```python
+plot.interactive.show(
+    figure,
+    name=None,
+    *,
+    save_to=None,
+    formats=('png',),
+    width=1400,
+    height=800,
+    scale=2,
+)
+```
+
+Display a figure, optionally saving it to `save_to` as PNG (default) and/or self-contained HTML.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name    | Type                | Description                                                                   | Default    |
+|---------|---------------------|-------------------------------------------------------------------------------|------------|
+| figure  | Figure              | Plotly figure to display (and optionally save).                               | _required_ |
+| name    | str \| None         | File stem used when saving. Required if ``save_to`` is given.                 | `None`     |
+| save_to | str \| Path \| None | Directory to save the figure into. If ``None``, the figure is only displayed. | `None`     |
+| formats | Iterable\[str\]     | Output formats to save, any of ``"png"`` and/or ``"html"``.                   | `('png',)` |
+| width   | int                 | PNG width in pixels.                                                          | `1400`     |
+| height  | int                 | PNG height in pixels.                                                         | `800`      |
+| scale   | int                 | PNG scale factor (for higher-resolution exports).                             | `2`        |

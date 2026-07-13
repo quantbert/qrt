@@ -23,6 +23,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -273,7 +308,27 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#qrt.plot" id="toc-qrt.plot" class="nav-link active" data-scroll-target="#qrt.plot">plot</a></li>
+  <li><a href="#qrt.plot" id="toc-qrt.plot" class="nav-link active" data-scroll-target="#qrt.plot">plot</a>
+  <ul class="collapse">
+  <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions">Functions</a>
+  <ul class="collapse">
+  <li><a href="#qrt.plot.benchmark_stats" id="toc-qrt.plot.benchmark_stats" class="nav-link" data-scroll-target="#qrt.plot.benchmark_stats">benchmark_stats</a></li>
+  <li><a href="#qrt.plot.col" id="toc-qrt.plot.col" class="nav-link" data-scroll-target="#qrt.plot.col">col</a></li>
+  <li><a href="#qrt.plot.drawdown" id="toc-qrt.plot.drawdown" class="nav-link" data-scroll-target="#qrt.plot.drawdown">drawdown</a></li>
+  <li><a href="#qrt.plot.equity" id="toc-qrt.plot.equity" class="nav-link" data-scroll-target="#qrt.plot.equity">equity</a></li>
+  <li><a href="#qrt.plot.infer_periods_per_year" id="toc-qrt.plot.infer_periods_per_year" class="nav-link" data-scroll-target="#qrt.plot.infer_periods_per_year">infer_periods_per_year</a></li>
+  <li><a href="#qrt.plot.monthly_heatmap" id="toc-qrt.plot.monthly_heatmap" class="nav-link" data-scroll-target="#qrt.plot.monthly_heatmap">monthly_heatmap</a></li>
+  <li><a href="#qrt.plot.monthly_returns" id="toc-qrt.plot.monthly_returns" class="nav-link" data-scroll-target="#qrt.plot.monthly_returns">monthly_returns</a></li>
+  <li><a href="#qrt.plot.performance" id="toc-qrt.plot.performance" class="nav-link" data-scroll-target="#qrt.plot.performance">performance</a></li>
+  <li><a href="#qrt.plot.plot" id="toc-qrt.plot.plot" class="nav-link" data-scroll-target="#qrt.plot.plot">plot</a></li>
+  <li><a href="#qrt.plot.rolling_alpha" id="toc-qrt.plot.rolling_alpha" class="nav-link" data-scroll-target="#qrt.plot.rolling_alpha">rolling_alpha</a></li>
+  <li><a href="#qrt.plot.rolling_beta" id="toc-qrt.plot.rolling_beta" class="nav-link" data-scroll-target="#qrt.plot.rolling_beta">rolling_beta</a></li>
+  <li><a href="#qrt.plot.rolling_sharpe" id="toc-qrt.plot.rolling_sharpe" class="nav-link" data-scroll-target="#qrt.plot.rolling_sharpe">rolling_sharpe</a></li>
+  <li><a href="#qrt.plot.rolling_volatility" id="toc-qrt.plot.rolling_volatility" class="nav-link" data-scroll-target="#qrt.plot.rolling_volatility">rolling_volatility</a></li>
+  <li><a href="#qrt.plot.show" id="toc-qrt.plot.show" class="nav-link" data-scroll-target="#qrt.plot.show">show</a></li>
+  <li><a href="#qrt.plot.tearsheet" id="toc-qrt.plot.tearsheet" class="nav-link" data-scroll-target="#qrt.plot.tearsheet">tearsheet</a></li>
+  </ul></li>
+  </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/plot.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/plot.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -288,8 +343,1169 @@ ul.task-list li input[type="checkbox"] {
 <p><code>plot</code></p>
 <p>Opinionated static and interactive plots for quantitative research.</p>
 <p>The first helpers focus on return streams: quick column charts, equity curves, drawdowns, and compact performance tearsheets. Use :mod:<code>qrt.plot.interactive</code> for Plotly figures with hover, zoom, and range selection.</p>
+<section id="functions" class="level2">
+<h2 class="anchored" data-anchor-id="functions">Functions</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#qrt.plot.benchmark_stats">benchmark_stats</a></td>
+<td>Calculate relative performance, risk, and attribution versus a benchmark.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.plot.col">col</a></td>
+<td>Create an interactive Plotly line chart from selected numeric columns.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.plot.drawdown">drawdown</a></td>
+<td>Create an interactive underwater chart from periodic returns.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.plot.equity">equity</a></td>
+<td>Create an interactive compounded equity curve from periodic returns.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.plot.infer_periods_per_year">infer_periods_per_year</a></td>
+<td>Infer a conventional annualization frequency from a datetime index.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.plot.monthly_heatmap">monthly_heatmap</a></td>
+<td>Create an interactive Plotly calendar-month return heatmap.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.plot.monthly_returns">monthly_returns</a></td>
+<td>Compound returns by calendar month into a year-by-month table.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.plot.performance">performance</a></td>
+<td>Calculate standard performance statistics for a periodic return stream.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.plot.plot">plot</a></td>
+<td>Create an interactive Plotly equity-and-drawdown performance report.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.plot.rolling_alpha">rolling_alpha</a></td>
+<td>Return annualized rolling Jensen alpha relative to a benchmark.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.plot.rolling_beta">rolling_beta</a></td>
+<td>Return rolling beta of strategy returns relative to a benchmark.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.plot.rolling_sharpe">rolling_sharpe</a></td>
+<td>Return annualized rolling Sharpe ratios using a zero risk-free rate.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.plot.rolling_volatility">rolling_volatility</a></td>
+<td>Return annualized rolling volatility for a periodic return stream.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.plot.show">show</a></td>
+<td>Display a Plotly figure, optionally saving it to <code>save_to</code> as PNG (default) and/or self-contained HTML.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.plot.tearsheet">tearsheet</a></td>
+<td>Alias for the interactive :func:<code>plot</code> performance report.</td>
+</tr>
+</tbody>
+</table>
+<section id="qrt.plot.benchmark_stats" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.plot.benchmark_stats">benchmark_stats</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>plot.benchmark_stats(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    benchmark,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Calculate relative performance, risk, and attribution versus a benchmark.</p>
+<section id="parameters" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 11%">
+<col style="width: 63%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>returns</td>
+<td>pd.Series</td>
+<td>Strategy periodic return series.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>benchmark</td>
+<td>pd.Series</td>
+<td>Benchmark periodic return series, aligned on shared dates.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="odd">
+<td>return_type</td>
+<td>ReturnType</td>
+<td>Whether <code>returns</code>/<code>benchmark</code> are <code>"simple"</code> or <code>"log"</code> returns.</td>
+<td><code>'simple'</code></td>
+</tr>
+<tr class="even">
+<td>periods_per_year</td>
+<td>int | None</td>
+<td>Annualization frequency. Inferred from the index when not given.</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns">Returns</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 4%">
+<col style="width: 5%">
+<col style="width: 89%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>pd.Series</td>
+<td>Series indexed by metric name: <code>Strategy Total Return, Benchmark Total Return, Active Return, Beta, Alpha, Correlation, Tracking Error, Information Ratio, Periods</code>.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="qrt.plot.col" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.plot.col">col</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>plot.col(data, columns<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, title<span class="op">=</span><span class="va">None</span>, ylabel<span class="op">=</span><span class="va">None</span>, height<span class="op">=</span><span class="dv">450</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create an interactive Plotly line chart from selected numeric columns.</p>
+<section id="parameters-1" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 5%">
+<col style="width: 21%">
+<col style="width: 64%">
+<col style="width: 7%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>data</td>
+<td>pd.Series | pd.DataFrame</td>
+<td>Series or DataFrame to plot.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>columns</td>
+<td>str | Iterable[str] | None</td>
+<td>Column name(s) or shell-style pattern(s) (e.g.&nbsp;<code>"*_ret"</code>) to select. Defaults to all columns.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>title</td>
+<td>str | None</td>
+<td>Figure title. Defaults to the column name (single column) or a generic title (multiple columns).</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>ylabel</td>
+<td>str | None</td>
+<td>Y-axis label.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>height</td>
+<td>int</td>
+<td>Figure height in pixels.</td>
+<td><code>450</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-1" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-1">Returns</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>Figure</td>
+<td>A Plotly <code>Figure</code>.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="qrt.plot.drawdown" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.plot.drawdown">drawdown</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>plot.drawdown(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>, title<span class="op">=</span><span class="st">'Drawdown'</span>, height<span class="op">=</span><span class="dv">320</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create an interactive underwater chart from periodic returns.</p>
+<section id="parameters-2" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-2">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 12%">
+<col style="width: 60%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>returns</td>
+<td>pd.Series</td>
+<td>Periodic return series.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>return_type</td>
+<td>ReturnType</td>
+<td>Whether <code>returns</code> are <code>"simple"</code> or <code>"log"</code> returns.</td>
+<td><code>'simple'</code></td>
+</tr>
+<tr class="odd">
+<td>title</td>
+<td>str</td>
+<td>Figure title.</td>
+<td><code>'Drawdown'</code></td>
+</tr>
+<tr class="even">
+<td>height</td>
+<td>int</td>
+<td>Figure height in pixels.</td>
+<td><code>320</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-2" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-2">Returns</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>Figure</td>
+<td>A Plotly <code>Figure</code>.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="qrt.plot.equity" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.plot.equity">equity</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>plot.equity(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'Equity curve'</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">450</span>,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create an interactive compounded equity curve from periodic returns.</p>
+<section id="parameters-3" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-3">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 59%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>returns</td>
+<td>pd.Series</td>
+<td>Periodic return series.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>return_type</td>
+<td>ReturnType</td>
+<td>Whether <code>returns</code> are <code>"simple"</code> or <code>"log"</code> returns.</td>
+<td><code>'simple'</code></td>
+</tr>
+<tr class="odd">
+<td>title</td>
+<td>str</td>
+<td>Figure title.</td>
+<td><code>'Equity curve'</code></td>
+</tr>
+<tr class="even">
+<td>label</td>
+<td>str | None</td>
+<td>Series name for the equity curve. Defaults to <code>returns.name</code>.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>height</td>
+<td>int</td>
+<td>Figure height in pixels.</td>
+<td><code>450</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-3" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-3">Returns</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>Figure</td>
+<td>A Plotly <code>Figure</code>.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="qrt.plot.infer_periods_per_year" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.plot.infer_periods_per_year">infer_periods_per_year</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>plot.infer_periods_per_year(index)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Infer a conventional annualization frequency from a datetime index.</p>
+<p>Daily and intraday data use 252 trading periods per year. Weekly, monthly, quarterly, and yearly data use 52, 12, 4, and 1 periods respectively. Non-datetime or single-observation indexes default to 252.</p>
+<section id="parameters-4" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-4">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 10%">
+<col style="width: 68%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>index</td>
+<td>pd.Index</td>
+<td>Datetime index whose median spacing is used to infer frequency.</td>
+<td><em>required</em></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-4" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-4">Returns</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>int</td>
+<td>Periods per year (e.g.&nbsp;252, 52, 12, 4, or 1).</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="qrt.plot.monthly_heatmap" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.plot.monthly_heatmap">monthly_heatmap</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>plot.monthly_heatmap(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'Monthly returns'</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create an interactive Plotly calendar-month return heatmap.</p>
+<section id="parameters-5" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-5">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 61%">
+<col style="width: 17%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>returns</td>
+<td>pd.Series</td>
+<td>Periodic return series with a <code>DatetimeIndex</code>.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>return_type</td>
+<td>ReturnType</td>
+<td>Whether <code>returns</code> are <code>"simple"</code> or <code>"log"</code> returns.</td>
+<td><code>'simple'</code></td>
+</tr>
+<tr class="odd">
+<td>title</td>
+<td>str</td>
+<td>Figure title.</td>
+<td><code>'Monthly returns'</code></td>
+</tr>
+<tr class="even">
+<td>height</td>
+<td>int | None</td>
+<td>Figure height in pixels. Defaults to a size based on the number of years.</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-5" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-5">Returns</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>Figure</td>
+<td>A Plotly <code>Figure</code>.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="qrt.plot.monthly_returns" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.plot.monthly_returns">monthly_returns</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>plot.monthly_returns(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Compound returns by calendar month into a year-by-month table.</p>
+<section id="parameters-6" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-6">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 12%">
+<col style="width: 61%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>returns</td>
+<td>pd.Series</td>
+<td>Periodic return series with a <code>DatetimeIndex</code>.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>return_type</td>
+<td>ReturnType</td>
+<td>Whether <code>returns</code> are <code>"simple"</code> or <code>"log"</code> returns.</td>
+<td><code>'simple'</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-6" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-6">Returns</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 15%">
+<col style="width: 76%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>pd.DataFrame</td>
+<td>DataFrame indexed by year with one column per calendar month (1-12).</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="qrt.plot.performance" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.plot.performance">performance</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>plot.performance(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>, periods_per_year<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Calculate standard performance statistics for a periodic return stream.</p>
+<p>Annualized metrics use <code>periods_per_year</code> when supplied; otherwise, a conventional frequency is inferred from a datetime index.</p>
+<section id="parameters-7" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-7">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 11%">
+<col style="width: 60%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>returns</td>
+<td>pd.Series</td>
+<td>Periodic return series (simple or log, per <code>return_type</code>).</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>return_type</td>
+<td>ReturnType</td>
+<td>Whether <code>returns</code> are <code>"simple"</code> or <code>"log"</code> returns.</td>
+<td><code>'simple'</code></td>
+</tr>
+<tr class="odd">
+<td>periods_per_year</td>
+<td>int | None</td>
+<td>Annualization frequency. Inferred from the index when not given.</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-7" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-7">Returns</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 5%">
+<col style="width: 7%">
+<col style="width: 86%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>pd.Series</td>
+<td>Series indexed by metric name: <code>Total Return, CAGR, Volatility, Sharpe, Sortino, Calmar, Max Drawdown, Win Rate, Periods</code>.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="qrt.plot.plot" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.plot.plot">plot</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>plot.plot(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    benchmark<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">700</span>,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create an interactive Plotly equity-and-drawdown performance report.</p>
+<section id="parameters-8" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-8">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 14%">
+<col style="width: 63%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>returns</td>
+<td>pd.Series</td>
+<td>Strategy periodic return series.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>benchmark</td>
+<td>pd.Series | None</td>
+<td>Optional benchmark periodic return series, aligned to <code>returns</code> on shared dates.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>return_type</td>
+<td>ReturnType</td>
+<td>Whether <code>returns</code>/<code>benchmark</code> are <code>"simple"</code> or <code>"log"</code> returns.</td>
+<td><code>'simple'</code></td>
+</tr>
+<tr class="even">
+<td>periods_per_year</td>
+<td>int | None</td>
+<td>Annualization frequency. Inferred from the index when not given.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>title</td>
+<td>str | None</td>
+<td>Figure title. Defaults to <code>returns.name</code>.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>height</td>
+<td>int</td>
+<td>Figure height in pixels.</td>
+<td><code>700</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-8" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-8">Returns</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>Figure</td>
+<td>A Plotly <code>Figure</code>.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="qrt.plot.rolling_alpha" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.plot.rolling_alpha">rolling_alpha</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>plot.rolling_alpha(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    benchmark,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    window<span class="op">=</span><span class="dv">63</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return annualized rolling Jensen alpha relative to a benchmark.</p>
+<section id="parameters-9" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-9">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 11%">
+<col style="width: 63%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>returns</td>
+<td>pd.Series</td>
+<td>Strategy periodic return series.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>benchmark</td>
+<td>pd.Series</td>
+<td>Benchmark periodic return series, aligned on shared dates.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="odd">
+<td>window</td>
+<td>int</td>
+<td>Rolling window size, in periods.</td>
+<td><code>63</code></td>
+</tr>
+<tr class="even">
+<td>return_type</td>
+<td>ReturnType</td>
+<td>Whether <code>returns</code>/<code>benchmark</code> are <code>"simple"</code> or <code>"log"</code> returns.</td>
+<td><code>'simple'</code></td>
+</tr>
+<tr class="odd">
+<td>periods_per_year</td>
+<td>int | None</td>
+<td>Annualization frequency. Inferred from the index when not given.</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-9" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-9">Returns</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>pd.Series</td>
+<td>Series of annualized rolling Jensen alpha.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="qrt.plot.rolling_beta" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.plot.rolling_beta">rolling_beta</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>plot.rolling_beta(returns, benchmark, window<span class="op">=</span><span class="dv">63</span>, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return rolling beta of strategy returns relative to a benchmark.</p>
+<section id="parameters-10" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-10">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 10%">
+<col style="width: 66%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>returns</td>
+<td>pd.Series</td>
+<td>Strategy periodic return series.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>benchmark</td>
+<td>pd.Series</td>
+<td>Benchmark periodic return series, aligned on shared dates.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="odd">
+<td>window</td>
+<td>int</td>
+<td>Rolling window size, in periods.</td>
+<td><code>63</code></td>
+</tr>
+<tr class="even">
+<td>return_type</td>
+<td>ReturnType</td>
+<td>Whether <code>returns</code>/<code>benchmark</code> are <code>"simple"</code> or <code>"log"</code> returns.</td>
+<td><code>'simple'</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-10" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-10">Returns</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>pd.Series</td>
+<td>Series of rolling beta values.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="qrt.plot.rolling_sharpe" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.plot.rolling_sharpe">rolling_sharpe</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>plot.rolling_sharpe(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    window<span class="op">=</span><span class="dv">63</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return annualized rolling Sharpe ratios using a zero risk-free rate.</p>
+<section id="parameters-11" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-11">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 11%">
+<col style="width: 60%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>returns</td>
+<td>pd.Series</td>
+<td>Periodic return series.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>window</td>
+<td>int</td>
+<td>Rolling window size, in periods.</td>
+<td><code>63</code></td>
+</tr>
+<tr class="odd">
+<td>return_type</td>
+<td>ReturnType</td>
+<td>Whether <code>returns</code> are <code>"simple"</code> or <code>"log"</code> returns.</td>
+<td><code>'simple'</code></td>
+</tr>
+<tr class="even">
+<td>periods_per_year</td>
+<td>int | None</td>
+<td>Annualization frequency. Inferred from the index when not given.</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-11" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-11">Returns</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>pd.Series</td>
+<td>Series of annualized rolling Sharpe ratios.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="qrt.plot.rolling_volatility" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.plot.rolling_volatility">rolling_volatility</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>plot.rolling_volatility(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    window<span class="op">=</span><span class="dv">63</span>,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return annualized rolling volatility for a periodic return stream.</p>
+<section id="parameters-12" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-12">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 11%">
+<col style="width: 60%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>returns</td>
+<td>pd.Series</td>
+<td>Periodic return series.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>window</td>
+<td>int</td>
+<td>Rolling window size, in periods.</td>
+<td><code>63</code></td>
+</tr>
+<tr class="odd">
+<td>return_type</td>
+<td>ReturnType</td>
+<td>Whether <code>returns</code> are <code>"simple"</code> or <code>"log"</code> returns.</td>
+<td><code>'simple'</code></td>
+</tr>
+<tr class="even">
+<td>periods_per_year</td>
+<td>int | None</td>
+<td>Annualization frequency. Inferred from the index when not given.</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-12" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-12">Returns</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>pd.Series</td>
+<td>Series of annualized rolling volatility.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="qrt.plot.show" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.plot.show">show</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>plot.show(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    figure,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    save_to<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    formats<span class="op">=</span>(<span class="st">'png'</span>,),</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    width<span class="op">=</span><span class="dv">1400</span>,</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">800</span>,</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Display a Plotly figure, optionally saving it to <code>save_to</code> as PNG (default) and/or self-contained HTML.</p>
+<section id="parameters-13" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-13">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 7%">
+<col style="width: 14%">
+<col style="width: 67%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>figure</td>
+<td>object</td>
+<td>Plotly figure to display (and optionally save).</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>name</td>
+<td>str | None</td>
+<td>File stem used when saving. Required if <code>save_to</code> is given.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>save_to</td>
+<td>str | None</td>
+<td>Directory to save the figure into. If <code>None</code>, the figure is only displayed.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>formats</td>
+<td>Iterable[str]</td>
+<td>Output formats to save, any of <code>"png"</code> and/or <code>"html"</code>.</td>
+<td><code>('png',)</code></td>
+</tr>
+<tr class="odd">
+<td>width</td>
+<td>int</td>
+<td>PNG width in pixels.</td>
+<td><code>1400</code></td>
+</tr>
+<tr class="even">
+<td>height</td>
+<td>int</td>
+<td>PNG height in pixels.</td>
+<td><code>800</code></td>
+</tr>
+<tr class="odd">
+<td>scale</td>
+<td>int</td>
+<td>PNG scale factor (for higher-resolution exports).</td>
+<td><code>2</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="qrt.plot.tearsheet" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.plot.tearsheet">tearsheet</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>plot.tearsheet(returns, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Alias for the interactive :func:<code>plot</code> performance report.</p>
+<section id="parameters-14" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-14">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 11%">
+<col style="width: 64%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>returns</td>
+<td>pd.Series</td>
+<td>Strategy periodic return series.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>**kwargs</td>
+<td>Any</td>
+<td>Forwarded to :func:<code>plot</code> (e.g.&nbsp;<code>benchmark</code>, <code>title</code>).</td>
+<td><code>{}</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-13" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-13">Returns</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>Figure</td>
+<td>A Plotly <code>Figure</code>.</td>
+</tr>
+</tbody>
+</table>
 
 
+</section>
+</section>
+</section>
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->

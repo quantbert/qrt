@@ -379,6 +379,70 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">320</span>,</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create an interactive underwater chart from periodic returns.</p>
+<section id="parameters" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 12%">
+<col style="width: 60%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>returns</td>
+<td>pd.Series</td>
+<td>Periodic return series.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>return_type</td>
+<td>ReturnType</td>
+<td>Whether <code>returns</code> are <code>"simple"</code> or <code>"log"</code> returns.</td>
+<td><code>'simple'</code></td>
+</tr>
+<tr class="odd">
+<td>title</td>
+<td>str</td>
+<td>Figure title.</td>
+<td><code>'Drawdown'</code></td>
+</tr>
+<tr class="even">
+<td>height</td>
+<td>int</td>
+<td>Figure height in pixels.</td>
+<td><code>320</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns">Returns</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>Figure</td>
+<td>A Plotly <code>Figure</code>.</td>
+</tr>
+</tbody>
+</table>
+</section>
 </section>
 <section id="qrt.plot.interactive.equity" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.plot.interactive.equity">equity</h3>
@@ -391,6 +455,76 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">450</span>,</span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create an interactive compounded equity curve from periodic returns.</p>
+<section id="parameters-1" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 59%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>returns</td>
+<td>pd.Series</td>
+<td>Periodic return series.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>return_type</td>
+<td>ReturnType</td>
+<td>Whether <code>returns</code> are <code>"simple"</code> or <code>"log"</code> returns.</td>
+<td><code>'simple'</code></td>
+</tr>
+<tr class="odd">
+<td>title</td>
+<td>str</td>
+<td>Figure title.</td>
+<td><code>'Equity curve'</code></td>
+</tr>
+<tr class="even">
+<td>label</td>
+<td>str | None</td>
+<td>Series name for the equity curve. Defaults to <code>returns.name</code>.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>height</td>
+<td>int</td>
+<td>Figure height in pixels.</td>
+<td><code>450</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-1" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-1">Returns</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>Figure</td>
+<td>A Plotly <code>Figure</code>.</td>
+</tr>
+</tbody>
+</table>
+</section>
 </section>
 <section id="qrt.plot.interactive.line" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.plot.interactive.line">line</h3>
@@ -404,6 +538,76 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create an interactive line chart from selected Series or DataFrame columns.</p>
 <p>Column selection supports the same shell-style patterns as :func:<code>qrt.plot.col</code>. The returned Plotly figure supports hover, zoom, pan, and range selection.</p>
+<section id="parameters-2" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-2">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 20%">
+<col style="width: 63%">
+<col style="width: 7%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>data</td>
+<td>pd.Series | pd.DataFrame</td>
+<td>Series or DataFrame to plot.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>columns</td>
+<td>str | Iterable[str] | None</td>
+<td>Column name(s) or shell-style pattern(s) (e.g.&nbsp;<code>"*_ret"</code>) to select. Defaults to all columns.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>title</td>
+<td>str | None</td>
+<td>Figure title. Defaults to the column name (single column) or a generic title (multiple columns).</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>yaxis_title</td>
+<td>str | None</td>
+<td>Y-axis label.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>height</td>
+<td>int</td>
+<td>Figure height in pixels.</td>
+<td><code>450</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-2" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-2">Returns</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>Figure</td>
+<td>A Plotly <code>Figure</code>.</td>
+</tr>
+</tbody>
+</table>
+</section>
 </section>
 <section id="qrt.plot.interactive.monthly_heatmap" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.plot.interactive.monthly_heatmap">monthly_heatmap</h3>
@@ -415,6 +619,70 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create an interactive, annotated calendar-month return heatmap.</p>
+<section id="parameters-3" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-3">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 61%">
+<col style="width: 17%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>returns</td>
+<td>pd.Series</td>
+<td>Periodic return series with a <code>DatetimeIndex</code>.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>return_type</td>
+<td>ReturnType</td>
+<td>Whether <code>returns</code> are <code>"simple"</code> or <code>"log"</code> returns.</td>
+<td><code>'simple'</code></td>
+</tr>
+<tr class="odd">
+<td>title</td>
+<td>str</td>
+<td>Figure title.</td>
+<td><code>'Monthly returns'</code></td>
+</tr>
+<tr class="even">
+<td>height</td>
+<td>int | None</td>
+<td>Figure height in pixels. Defaults to a size based on the number of years.</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-3" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-3">Returns</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>Figure</td>
+<td>A Plotly <code>Figure</code>.</td>
+</tr>
+</tbody>
+</table>
+</section>
 </section>
 <section id="qrt.plot.interactive.performance" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.plot.interactive.performance">performance</h3>
@@ -429,6 +697,82 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create an interactive equity, drawdown, and headline-statistics report.</p>
 <p>The figure has linked time axes, unified hover, zooming, and date-range buttons. If supplied, the benchmark is aligned to the strategy’s shared observations before plotting.</p>
+<section id="parameters-4" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-4">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 14%">
+<col style="width: 63%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>returns</td>
+<td>pd.Series</td>
+<td>Strategy periodic return series.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>benchmark</td>
+<td>pd.Series | None</td>
+<td>Optional benchmark periodic return series, aligned to <code>returns</code> on shared dates.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>return_type</td>
+<td>ReturnType</td>
+<td>Whether <code>returns</code>/<code>benchmark</code> are <code>"simple"</code> or <code>"log"</code> returns.</td>
+<td><code>'simple'</code></td>
+</tr>
+<tr class="even">
+<td>periods_per_year</td>
+<td>int | None</td>
+<td>Annualization frequency. Inferred from the index when not given.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>title</td>
+<td>str | None</td>
+<td>Figure title. Defaults to <code>returns.name</code>.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>height</td>
+<td>int</td>
+<td>Figure height in pixels.</td>
+<td><code>700</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-4" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-4">Returns</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>Figure</td>
+<td>A Plotly <code>Figure</code>.</td>
+</tr>
+</tbody>
+</table>
+</section>
 </section>
 <section id="qrt.plot.interactive.show" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.plot.interactive.show">show</h3>
@@ -443,8 +787,71 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="dv">2</span>,</span>
 <span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Display a figure, optionally saving it to <code>save_to</code> as PNG (default) and/or self-contained HTML.</p>
+<section id="parameters-5" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-5">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 7%">
+<col style="width: 17%">
+<col style="width: 65%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>figure</td>
+<td>Figure</td>
+<td>Plotly figure to display (and optionally save).</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>name</td>
+<td>str | None</td>
+<td>File stem used when saving. Required if <code>save_to</code> is given.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>save_to</td>
+<td>str | Path | None</td>
+<td>Directory to save the figure into. If <code>None</code>, the figure is only displayed.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>formats</td>
+<td>Iterable[str]</td>
+<td>Output formats to save, any of <code>"png"</code> and/or <code>"html"</code>.</td>
+<td><code>('png',)</code></td>
+</tr>
+<tr class="odd">
+<td>width</td>
+<td>int</td>
+<td>PNG width in pixels.</td>
+<td><code>1400</code></td>
+</tr>
+<tr class="even">
+<td>height</td>
+<td>int</td>
+<td>PNG height in pixels.</td>
+<td><code>800</code></td>
+</tr>
+<tr class="odd">
+<td>scale</td>
+<td>int</td>
+<td>PNG scale factor (for higher-resolution exports).</td>
+<td><code>2</code></td>
+</tr>
+</tbody>
+</table>
 
 
+</section>
 </section>
 </section>
 </section>

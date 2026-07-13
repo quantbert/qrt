@@ -23,6 +23,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -276,6 +311,11 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#qrt.feat.qta" id="toc-qrt.feat.qta" class="nav-link active" data-scroll-target="#qrt.feat.qta">feat.qta</a>
   <ul class="collapse">
   <li><a href="#to-add-a-feature" id="toc-to-add-a-feature" class="nav-link" data-scroll-target="#to-add-a-feature">To add a feature</a></li>
+  <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions">Functions</a>
+  <ul class="collapse">
+  <li><a href="#qrt.feat.qta.lags" id="toc-qrt.feat.qta.lags" class="nav-link" data-scroll-target="#qrt.feat.qta.lags">lags</a></li>
+  <li><a href="#qrt.feat.qta.sma" id="toc-qrt.feat.qta.sma" class="nav-link" data-scroll-target="#qrt.feat.qta.sma">sma</a></li>
+  </ul></li>
   </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/feat.qta.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/feat.qta.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
@@ -293,12 +333,160 @@ ul.task-list li input[type="checkbox"] {
 <section id="to-add-a-feature" class="level2 doc-section doc-section-to-add-a-feature">
 <h2 class="doc-section doc-section-to-add-a-feature anchored" data-anchor-id="to-add-a-feature">To add a feature</h2>
 <ol type="1">
-<li>Create <code>qrt/feat/qta/&lt;feature&gt;.py</code> (lowercase file name).</li>
+<li>Create <code>qrt/feat/qta/_&lt;feature&gt;.py</code> (leading underscore – it’s a private implementation module; the function itself stays public).</li>
 <li>Define one public function taking a Series/DataFrame and returning one, with the index preserved. Helpers should be prefixed with <code>_</code>.</li>
 <li>Re-export it below (one import line + one <code>__all__</code> entry), so it is visible to IDEs and available as <code>q.feat.qta.&lt;feature&gt;</code>.</li>
 </ol>
+</section>
+<section id="functions" class="level2">
+<h2 class="anchored" data-anchor-id="functions">Functions</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#qrt.feat.qta.lags">lags</a></td>
+<td>Create lagged copies of a Series or DataFrame.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.feat.qta.sma">sma</a></td>
+<td>Simple moving average.</td>
+</tr>
+</tbody>
+</table>
+<section id="qrt.feat.qta.lags" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.feat.qta.lags">lags</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>feat.qta.lags(data, lags)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create lagged copies of a Series or DataFrame.</p>
+<section id="parameters" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 7%">
+<col style="width: 24%">
+<col style="width: 57%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>data</td>
+<td>pd.Series | pd.DataFrame</td>
+<td>Input series or frame (rows ordered in time).</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>lags</td>
+<td>int | Iterable[int]</td>
+<td>Number of lags (1..n) or an explicit iterable of lag periods.</td>
+<td><em>required</em></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns">Returns</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 15%">
+<col style="width: 76%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>pd.DataFrame</td>
+<td>DataFrame with one column per (column, lag), named <code>{name}_lag{k}</code>.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="examples" class="level4 doc-section doc-section-examples">
+<h4 class="doc-section doc-section-examples anchored" data-anchor-id="examples">Examples</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> q.feat.qta.lags(prices[<span class="st">"close"</span>], <span class="dv">3</span>)      <span class="co"># close_lag1..close_lag3</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> q.feat.qta.lags(df, [<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">21</span>])          <span class="co"># daily, weekly, monthly lags</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+<section id="qrt.feat.qta.sma" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.feat.qta.sma">sma</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>feat.qta.sma(series, window)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Simple moving average.</p>
+<section id="parameters-1" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>series</td>
+<td>pd.Series</td>
+<td>Input series (e.g.&nbsp;close prices).</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>window</td>
+<td>int</td>
+<td>Rolling window size, in periods.</td>
+<td><em>required</em></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-1" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-1">Returns</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 13%">
+<col style="width: 77%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>pd.Series</td>
+<td>Series of the rolling mean, with the same index as <code>series</code>.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="examples-1" class="level4 doc-section doc-section-examples">
+<h4 class="doc-section doc-section-examples anchored" data-anchor-id="examples-1">Examples</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> q.feat.qta.sma(prices[<span class="st">"close"</span>], <span class="dv">20</span>)      <span class="co"># 20-period SMA</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
+</section>
+</section>
 </section>
 </section>
 
