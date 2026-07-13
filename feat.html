@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Getting Started – qrt</title>
+<title>Feature Engineering – qrt</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -128,11 +128,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="./index.html"> 
 <span class="menu-text">Getting Started</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./feat.html"> 
+    <a class="nav-link active" href="./feat.html" aria-current="page"> 
 <span class="menu-text">Feature Engineering</span></a>
   </li>  
   <li class="nav-item">
@@ -156,19 +156,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#installation" id="toc-installation" class="nav-link active" data-scroll-target="#installation">Installation</a></li>
-  <li><a href="#quickstart" id="toc-quickstart" class="nav-link" data-scroll-target="#quickstart">Quickstart</a></li>
-  <li><a href="#library-layout" id="toc-library-layout" class="nav-link" data-scroll-target="#library-layout">Library layout</a></li>
-  <li><a href="#development" id="toc-development" class="nav-link" data-scroll-target="#development">Development</a></li>
+  <li><a href="#qta-our-own-features" id="toc-qta-our-own-features" class="nav-link active" data-scroll-target="#qta-our-own-features">qta — our own features</a></li>
+  <li><a href="#ta-lib" id="toc-ta-lib" class="nav-link" data-scroll-target="#ta-lib">TA-Lib</a></li>
+  <li><a href="#pandas-ta-classic" id="toc-pandas-ta-classic" class="nav-link" data-scroll-target="#pandas-ta-classic">pandas-ta-classic</a></li>
+  <li><a href="#ide-support" id="toc-ide-support" class="nav-link" data-scroll-target="#ide-support">IDE support</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/index.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/feat.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/feat.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Getting Started</h1>
+<h1 class="title">Feature Engineering</h1>
 </div>
 
 
@@ -185,107 +185,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>QRT is an umbrella library of Quantitative Research Tools</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> qrt <span class="im">as</span> q</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<section id="installation" class="level2">
-<h2 class="anchored" data-anchor-id="installation">Installation</h2>
-<p>We use <a href="https://github.com/astral-sh/uv">uv</a> for environment and dependency management.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create the environment and install qrt</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> sync</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># run anything inside the environment</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-c</span> <span class="st">"import qrt as q"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Not yet published to PyPI — install from source for now.</p>
-</div>
-</div>
-<p>To use qrt from another uv project:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="dt">dependencies</span> <span class="op">=</span> <span class="op">[</span><span class="st">"qrt"</span><span class="op">]</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">[tool.uv.sources]</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="dt">qrt</span> <span class="op">=</span> <span class="op">{ </span><span class="dt">git</span><span class="op"> =</span> <span class="st">"https://github.com/quantbert/qrt"</span><span class="op"> }</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="quickstart" class="level2">
-<h2 class="anchored" data-anchor-id="quickstart">Quickstart</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> qrt <span class="im">as</span> q</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># fetch OHLCV data (cached as parquet)</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>vendor <span class="op">=</span> q.vendors.YFinance()</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>ohlc <span class="op">=</span> vendor.fetch_ohlc(<span class="st">"SPY"</span>, <span class="st">"2024-01-01"</span>, <span class="st">"2025-01-01"</span>, <span class="st">"1d"</span>)</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># features</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> q.feat.qta.lags(ohlc[<span class="st">"close"</span>], [<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">21</span>])</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>X[<span class="st">"sma_20"</span>] <span class="op">=</span> q.feat.qta.sma(ohlc[<span class="st">"close"</span>], <span class="dv">20</span>)</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>X[<span class="st">"rsi_14"</span>] <span class="op">=</span> q.feat.talib.RSI(ohlc)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="library-layout" class="level2">
-<h2 class="anchored" data-anchor-id="library-layout">Library layout</h2>
+<p><code>q.feat</code> collects feature engineering tools under one namespace, organized as submodules:</p>
 <table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
 <thead>
 <tr class="header">
-<th>Module</th>
-<th>Purpose</th>
+<th>Submodule</th>
+<th>What it is</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>q.feat</code></td>
-<td>feature engineering: own indicators + TA-Lib + pandas-ta-classic</td>
+<td><code>q.feat.qta</code></td>
+<td>our own hand-rolled features, one file per feature</td>
 </tr>
 <tr class="even">
-<td><code>q.vendors</code></td>
-<td>market data vendors (Yahoo Finance, Binance) with parquet caching</td>
+<td><code>q.feat.talib</code></td>
+<td>every <a href="https://ta-lib.github.io/ta-lib-python/">TA-Lib</a> indicator, pandas-friendly</td>
 </tr>
 <tr class="odd">
-<td><code>q.dataload</code></td>
-<td>loading and aggregating raw trade data into OHLC bars</td>
-</tr>
-<tr class="even">
-<td><code>q.data</code></td>
-<td>master securities database (DuckDB)</td>
-</tr>
-<tr class="odd">
-<td><code>q.splits</code></td>
-<td>leakage-aware CV splits (walk-forward, purged K-fold, embargo)</td>
-</tr>
-<tr class="even">
-<td><code>q.models</code></td>
-<td>PyTorch model wrappers</td>
-</tr>
-<tr class="odd">
-<td><code>q.bt</code></td>
-<td>event-driven backtesting</td>
-</tr>
-<tr class="even">
-<td><code>q.plot</code></td>
-<td>plotting + performance reports (tearsheets)</td>
-</tr>
-<tr class="odd">
-<td><code>q.portfolio</code></td>
-<td>portfolio analysis</td>
+<td><code>q.feat.pandas_ta</code></td>
+<td>every <a href="https://xgboosted.github.io/pandas-ta-classic/">pandas-ta-classic</a> indicator</td>
 </tr>
 </tbody>
 </table>
+<p>All indicator functions share the same convention: they accept an <strong>OHLCV DataFrame</strong> with lowercase columns (<code>open, high, low, close, volume</code>) — the frame layout returned by <code>q.vendors</code> — and preserve the datetime index on the output. Indicators that only need a price series also accept a plain <code>Series</code> (treated as <code>close</code>).</p>
+<section id="qta-our-own-features" class="level2">
+<h2 class="anchored" data-anchor-id="qta-our-own-features">qta — our own features</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>q.feat.qta.sma(ohlc[<span class="st">"close"</span>], <span class="dv">20</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>q.feat.qta.lags(ohlc[<span class="st">"close"</span>], [<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">21</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>To add a feature, create <code>qrt/feat/qta/&lt;feature&gt;.py</code> with one public function and re-export it in <code>qrt/feat/qta/__init__.py</code> (one import line + one <code>__all__</code> entry).</p>
 </section>
-<section id="development" class="level2">
-<h2 class="anchored" data-anchor-id="development">Development</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> install   <span class="co"># sync the environment</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> test      <span class="co"># run the test suite</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> stubs     <span class="co"># regenerate .pyi stubs for the dynamic feat wrappers</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> docs      <span class="co"># serve these docs locally</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="ta-lib" class="level2">
+<h2 class="anchored" data-anchor-id="ta-lib">TA-Lib</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>q.feat.talib.RSI(ohlc)                    <span class="co"># Series named 'rsi'</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>q.feat.talib.ATR(ohlc, timeperiod<span class="op">=</span><span class="dv">20</span>)     <span class="co"># uses high/low/close</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>q.feat.talib.MACD(ohlc)                   <span class="co"># DataFrame: macd, macdsignal, macdhist</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>q.feat.talib.SMA(prices, timeperiod<span class="op">=</span><span class="dv">20</span>)   <span class="co"># Series in, Series out</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Single-output indicators return a <code>Series</code> named after the indicator; multi-output indicators return a <code>DataFrame</code> with TA-Lib’s output names as columns.</p>
+</section>
+<section id="pandas-ta-classic" class="level2">
+<h2 class="anchored" data-anchor-id="pandas-ta-classic">pandas-ta-classic</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>q.feat.pandas_ta.rsi(ohlc)                  <span class="co"># Series 'RSI_14'</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>q.feat.pandas_ta.bbands(ohlc, length<span class="op">=</span><span class="dv">20</span>)    <span class="co"># DataFrame BBL/BBM/BBU...</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>q.feat.pandas_ta.cdl_pattern(ohlc, name<span class="op">=</span><span class="st">"doji"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Outputs keep pandas-ta’s parameterised names (e.g.&nbsp;<code>RSI_14</code>, <code>MACD_12_26_9</code>).</p>
+</section>
+<section id="ide-support" class="level2">
+<h2 class="anchored" data-anchor-id="ide-support">IDE support</h2>
+<p>The <code>talib</code> and <code>pandas_ta</code> wrappers create their functions dynamically at runtime. Autocomplete and hover docs are provided by generated type stubs — regenerate them after upgrading either library:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> stubs</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>
@@ -696,4 +644,4 @@ Note
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/index.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/feat.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/feat.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
