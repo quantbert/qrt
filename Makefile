@@ -14,11 +14,11 @@ test: ## Run the test suite
 stubs: ## Regenerate .pyi stubs for the dynamic feat wrappers
 	uv run python tools/gen_feat_stubs.py
 
-docs: ## Build the API reference and serve the docs locally with live reload
+docs: ## Build the API reference and serve the docs locally with live reload. Must run in active venv!
 	uv run --group docs quartodoc build --config docs/_quarto.yml
 	quarto preview docs
 
-docs-deploy: ## Build the API reference and publish the docs to GitHub Pages
+docs-deploy: ## Build the API reference and publish the docs to GitHub Pages. Must run in active venv!
 	uv run --group docs quartodoc build --config docs/_quarto.yml
 	quarto publish gh-pages docs --no-prompt
 

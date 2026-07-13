@@ -31,6 +31,8 @@ dev = [
     "pytest>=8.0",
 ]
 docs = [
+    "ipykernel>=7.3.0",
+    "nbclient>=0.11.0",
     "quartodoc>=0.11.1",
 ]
 

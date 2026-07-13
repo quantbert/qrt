@@ -23,6 +23,8 @@ website:
         href: index.qmd
       - text: "Feature Engineering"
         href: feat.qmd
+      - text: "Interactive Demo"
+        href: demo.qmd
       - text: "API Reference"
         href: reference/index.qmd
     tools:

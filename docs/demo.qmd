@@ -1,0 +1,84 @@
+---
+title: Interactive Demo
+jupyter: python3
+---
+
+This page's code cells are **executed live** by Quarto (via Jupyter) every time the
+docs are built, and the charts below are real interactive Plotly figures — not
+static images. Zoom, pan, and hover over them.
+
+## Synthetic data
+
+We simulate a daily OHLCV price series with a random walk so this page has no
+network dependency:
+
+```{python}
+import numpy as np
+import pandas as pd
+
+import qrt as q
+
+rng = np.random.default_rng(7)
+dates = pd.bdate_range("2022-01-03", "2025-12-31")
+
+daily_returns = rng.normal(loc=0.0004, scale=0.012, size=len(dates))
+close = 100 * (1 + pd.Series(daily_returns, index=dates)).cumprod()
+
+noise = rng.normal(scale=0.003, size=len(dates))
+ohlc = pd.DataFrame(
+    {
+        "open": close.shift(1).fillna(close.iloc[0]) * (1 + noise),
+        "high": close * (1 + np.abs(noise) + 0.001),
+        "low": close * (1 - np.abs(noise) - 0.001),
+        "close": close,
+        "volume": rng.integers(1_000_000, 5_000_000, size=len(dates)),
+    }
+)
+ohlc.tail()
+```
+
+## Feature engineering
+
+A couple of `q.feat.qta` indicators on the synthetic close price:
+
+```{python}
+sma_20 = q.feat.qta.sma(ohlc["close"], 20)
+sma_100 = q.feat.qta.sma(ohlc["close"], 100)
+
+features = pd.DataFrame({"close": ohlc["close"], "sma_20": sma_20, "sma_100": sma_100})
+features.tail()
+```
+
+## Interactive price chart
+
+`q.plot.interactive.line` builds a Plotly figure with hover, zoom, and range-selector
+buttons:
+
+```{python}
+fig = q.plot.interactive.line(
+    features,
+    title="Synthetic close price with SMA overlays",
+    yaxis_title="Price",
+)
+fig.show()
+```
+
+## Interactive performance report
+
+A simple SMA-crossover strategy (long when `sma_20 > sma_100`) plotted as a full
+equity / drawdown / stats tearsheet:
+
+```{python}
+position = (sma_20 > sma_100).astype(int).shift(1).fillna(0)
+strategy_returns = (ohlc["close"].pct_change() * position).rename("SMA crossover")
+
+fig = q.plot.interactive.performance(strategy_returns, benchmark=ohlc["close"].pct_change().rename("Buy & hold"))
+fig.show()
+```
+
+## Monthly returns heatmap
+
+```{python}
+fig = q.plot.interactive.monthly_heatmap(strategy_returns)
+fig.show()
+```
