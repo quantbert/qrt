@@ -4,36 +4,16 @@ title: Getting Started
 
 QRT is an umbrella library of Quantitative Research Tools 
 
-```python
-import qrt as q
-```
-
-## Installation
-
-We use [uv](https://github.com/astral-sh/uv) for environment and dependency management.
-
-```bash
-# create the environment and install qrt
-uv sync
-
-# run anything inside the environment
-uv run python -c "import qrt as q"
-```
 
 ::: {.callout-note}
-Not yet published to PyPI — install from source for now.
+STILL IN ALPHA! DONT USE!
 :::
 
-To use qrt from another uv project:
-
-```toml
-dependencies = ["qrt"]
-
-[tool.uv.sources]
-qrt = { git = "https://github.com/quantbert/qrt" }
-```
-
 ## Quickstart
+
+```bash
+uv add pyqrt
+```
 
 ```python
 import qrt as q

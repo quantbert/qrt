@@ -6,7 +6,7 @@ volume``) -- the frame layout returned by ``qrt.vendors``. Indicators
 that only need a price series also accept a plain Series (treated as
 ``close``). The datetime index is preserved on the output.
 
-Example:
+Examples:
     >>> q.feat.talib.RSI(ohlc)                    # Series named 'rsi'
     >>> q.feat.talib.ATR(ohlc, timeperiod=20)     # uses high/low/close
     >>> q.feat.talib.MACD(ohlc)                   # DataFrame: macd, macdsignal, macdhist

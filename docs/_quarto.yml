@@ -50,7 +50,8 @@ quartodoc:
       desc: "Feature engineering — own indicators, TA-Lib, pandas-ta-classic."
       contents:
         - feat
-        - feat.qta
+        - name: feat.qta
+          include_imports: true
         - name: feat.talib
           members: []
         - name: feat.pandas_ta
@@ -58,7 +59,8 @@ quartodoc:
     - title: q.plot
       desc: "Plotting + performance reports (tearsheets)."
       contents:
-        - plot
+        - name: plot
+          include_imports: true
         - plot.interactive
     - title: q.vendors
       desc: "Market data vendors with parquet caching."

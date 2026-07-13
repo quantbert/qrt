@@ -4,10 +4,13 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 from fnmatch import fnmatch
-from typing import Literal
+from typing import TYPE_CHECKING, Literal
 
 import numpy as np
 import pandas as pd
+
+if TYPE_CHECKING:
+    from plotly.graph_objects import Figure
 
 
 def _as_frame(data: pd.Series | pd.DataFrame, columns: str | Iterable[str] | None) -> pd.DataFrame:
@@ -64,6 +67,12 @@ def infer_periods_per_year(index: pd.Index) -> int:
     Daily and intraday data use 252 trading periods per year. Weekly, monthly,
     quarterly, and yearly data use 52, 12, 4, and 1 periods respectively.
     Non-datetime or single-observation indexes default to 252.
+
+    Args:
+        index: Datetime index whose median spacing is used to infer frequency.
+
+    Returns:
+        Periods per year (e.g. 252, 52, 12, 4, or 1).
     """
     if not isinstance(index, pd.DatetimeIndex) or len(index) < 2:
         return 252
@@ -111,6 +120,15 @@ def performance(
 
     Annualized metrics use ``periods_per_year`` when supplied; otherwise, a
     conventional frequency is inferred from a datetime index.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        periods_per_year: Annualization frequency. Inferred from the index
+            when not given.
+
+    Returns:
+        Series indexed by metric name: ``Total Return, CAGR, Volatility, Sharpe, Sortino, Calmar, Max Drawdown, Win Rate, Periods``.
     """
     series = _simple_returns(returns, return_type)
     periods = _periods_per_year(periods_per_year, series.index)
@@ -148,7 +166,18 @@ def rolling_volatility(
     return_type: ReturnType = "simple",
     periods_per_year: int | None = None,
 ) -> pd.Series:
-    """Return annualized rolling volatility for a periodic return stream."""
+    """Return annualized rolling volatility for a periodic return stream.
+
+    Args:
+        returns: Periodic return series.
+        window: Rolling window size, in periods.
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        periods_per_year: Annualization frequency. Inferred from the index
+            when not given.
+
+    Returns:
+        Series of annualized rolling volatility.
+    """
     series = _simple_returns(returns, return_type)
     if window < 2:
         raise ValueError("window must be at least 2")
@@ -163,7 +192,18 @@ def rolling_sharpe(
     return_type: ReturnType = "simple",
     periods_per_year: int | None = None,
 ) -> pd.Series:
-    """Return annualized rolling Sharpe ratios using a zero risk-free rate."""
+    """Return annualized rolling Sharpe ratios using a zero risk-free rate.
+
+    Args:
+        returns: Periodic return series.
+        window: Rolling window size, in periods.
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        periods_per_year: Annualization frequency. Inferred from the index
+            when not given.
+
+    Returns:
+        Series of annualized rolling Sharpe ratios.
+    """
     series = _simple_returns(returns, return_type)
     if window < 2:
         raise ValueError("window must be at least 2")
@@ -180,7 +220,18 @@ def rolling_beta(
     *,
     return_type: ReturnType = "simple",
 ) -> pd.Series:
-    """Return rolling beta of strategy returns relative to a benchmark."""
+    """Return rolling beta of strategy returns relative to a benchmark.
+
+    Args:
+        returns: Strategy periodic return series.
+        benchmark: Benchmark periodic return series, aligned on shared dates.
+        window: Rolling window size, in periods.
+        return_type: Whether ``returns``/``benchmark`` are ``"simple"`` or
+            ``"log"`` returns.
+
+    Returns:
+        Series of rolling beta values.
+    """
     strategy, reference = _aligned_returns(returns, benchmark, return_type)
     if window < 2:
         raise ValueError("window must be at least 2")
@@ -195,7 +246,20 @@ def rolling_alpha(
     return_type: ReturnType = "simple",
     periods_per_year: int | None = None,
 ) -> pd.Series:
-    """Return annualized rolling Jensen alpha relative to a benchmark."""
+    """Return annualized rolling Jensen alpha relative to a benchmark.
+
+    Args:
+        returns: Strategy periodic return series.
+        benchmark: Benchmark periodic return series, aligned on shared dates.
+        window: Rolling window size, in periods.
+        return_type: Whether ``returns``/``benchmark`` are ``"simple"`` or
+            ``"log"`` returns.
+        periods_per_year: Annualization frequency. Inferred from the index
+            when not given.
+
+    Returns:
+        Series of annualized rolling Jensen alpha.
+    """
     strategy, reference = _aligned_returns(returns, benchmark, return_type)
     if window < 2:
         raise ValueError("window must be at least 2")
@@ -207,7 +271,15 @@ def rolling_alpha(
 def monthly_returns(
     returns: pd.Series, *, return_type: ReturnType = "simple"
 ) -> pd.DataFrame:
-    """Compound returns by calendar month into a year-by-month table."""
+    """Compound returns by calendar month into a year-by-month table.
+
+    Args:
+        returns: Periodic return series with a ``DatetimeIndex``.
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+
+    Returns:
+        DataFrame indexed by year with one column per calendar month (1-12).
+    """
     series = _simple_returns(returns, return_type)
     if not isinstance(series.index, pd.DatetimeIndex):
         raise TypeError("returns must have a DatetimeIndex for monthly aggregation")
@@ -224,8 +296,19 @@ def monthly_heatmap(
     return_type: ReturnType = "simple",
     title: str = "Monthly returns",
     height: int | None = None,
-):
-    """Create an interactive Plotly calendar-month return heatmap."""
+) -> Figure:
+    """Create an interactive Plotly calendar-month return heatmap.
+
+    Args:
+        returns: Periodic return series with a ``DatetimeIndex``.
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        title: Figure title.
+        height: Figure height in pixels. Defaults to a size based on the
+            number of years.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
     from qrt.plot.interactive import monthly_heatmap as _monthly_heatmap
 
     return _monthly_heatmap(returns, return_type=return_type, title=title, height=height)
@@ -238,7 +321,19 @@ def benchmark_stats(
     return_type: ReturnType = "simple",
     periods_per_year: int | None = None,
 ) -> pd.Series:
-    """Calculate relative performance, risk, and attribution versus a benchmark."""
+    """Calculate relative performance, risk, and attribution versus a benchmark.
+
+    Args:
+        returns: Strategy periodic return series.
+        benchmark: Benchmark periodic return series, aligned on shared dates.
+        return_type: Whether ``returns``/``benchmark`` are ``"simple"`` or
+            ``"log"`` returns.
+        periods_per_year: Annualization frequency. Inferred from the index
+            when not given.
+
+    Returns:
+        Series indexed by metric name: ``Strategy Total Return, Benchmark Total Return, Active Return, Beta, Alpha, Correlation, Tracking Error, Information Ratio, Periods``.
+    """
     strategy, reference = _aligned_returns(returns, benchmark, return_type)
     periods = _periods_per_year(periods_per_year, strategy.index)
     active = strategy - reference
@@ -272,8 +367,21 @@ def col(
     title: str | None = None,
     ylabel: str | None = None,
     height: int = 450,
-):
-    """Create an interactive Plotly line chart from selected numeric columns."""
+) -> Figure:
+    """Create an interactive Plotly line chart from selected numeric columns.
+
+    Args:
+        data: Series or DataFrame to plot.
+        columns: Column name(s) or shell-style pattern(s) (e.g. ``"*_ret"``)
+            to select. Defaults to all columns.
+        title: Figure title. Defaults to the column name (single column) or
+            a generic title (multiple columns).
+        ylabel: Y-axis label.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
     from qrt.plot.interactive import line
 
     return line(data, columns, title=title, yaxis_title=ylabel, height=height)
@@ -286,8 +394,19 @@ def equity(
     title: str = "Equity curve",
     label: str | None = None,
     height: int = 450,
-):
-    """Create an interactive compounded equity curve from periodic returns."""
+) -> Figure:
+    """Create an interactive compounded equity curve from periodic returns.
+
+    Args:
+        returns: Periodic return series.
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        title: Figure title.
+        label: Series name for the equity curve. Defaults to ``returns.name``.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
     from qrt.plot.interactive import equity as _equity
 
     return _equity(returns, return_type=return_type, title=title, label=label, height=height)
@@ -299,8 +418,18 @@ def drawdown(
     return_type: ReturnType = "simple",
     title: str = "Drawdown",
     height: int = 320,
-):
-    """Create an interactive underwater chart from periodic returns."""
+) -> Figure:
+    """Create an interactive underwater chart from periodic returns.
+
+    Args:
+        returns: Periodic return series.
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        title: Figure title.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
     from qrt.plot.interactive import drawdown as _drawdown
 
     return _drawdown(returns, return_type=return_type, title=title, height=height)
@@ -314,8 +443,23 @@ def plot(
     periods_per_year: int | None = None,
     title: str | None = None,
     height: int = 700,
-):
-    """Create an interactive Plotly equity-and-drawdown performance report."""
+) -> Figure:
+    """Create an interactive Plotly equity-and-drawdown performance report.
+
+    Args:
+        returns: Strategy periodic return series.
+        benchmark: Optional benchmark periodic return series, aligned to
+            ``returns`` on shared dates.
+        return_type: Whether ``returns``/``benchmark`` are ``"simple"`` or
+            ``"log"`` returns.
+        periods_per_year: Annualization frequency. Inferred from the index
+            when not given.
+        title: Figure title. Defaults to ``returns.name``.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
     from qrt.plot.interactive import performance as _performance_plot
 
     return _performance_plot(
@@ -328,8 +472,16 @@ def plot(
     )
 
 
-def tearsheet(returns: pd.Series, **kwargs: object):
-    """Alias for the interactive :func:`plot` performance report."""
+def tearsheet(returns: pd.Series, **kwargs: object) -> Figure:
+    """Alias for the interactive :func:`plot` performance report.
+
+    Args:
+        returns: Strategy periodic return series.
+        **kwargs (Any): Forwarded to :func:`plot` (e.g. ``benchmark``, ``title``).
+
+    Returns:
+        A Plotly ``Figure``.
+    """
     return plot(returns, **kwargs)  # type: ignore[arg-type]
 
 
@@ -343,7 +495,18 @@ def show(
     height: int = 800,
     scale: int = 2,
 ) -> None:
-    """Display a Plotly figure, optionally saving it to `save_to` as PNG (default) and/or self-contained HTML."""
+    """Display a Plotly figure, optionally saving it to `save_to` as PNG (default) and/or self-contained HTML.
+
+    Args:
+        figure: Plotly figure to display (and optionally save).
+        name: File stem used when saving. Required if ``save_to`` is given.
+        save_to: Directory to save the figure into. If ``None``, the figure
+            is only displayed.
+        formats: Output formats to save, any of ``"png"`` and/or ``"html"``.
+        width: PNG width in pixels.
+        height: PNG height in pixels.
+        scale: PNG scale factor (for higher-resolution exports).
+    """
     from qrt.plot.interactive import show as _show
 
     _show(

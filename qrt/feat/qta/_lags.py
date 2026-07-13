@@ -18,7 +18,7 @@ def lags(
     Returns:
         DataFrame with one column per (column, lag), named ``{name}_lag{k}``.
 
-    Example:
+    Examples:
         >>> q.feat.qta.lags(prices["close"], 3)      # close_lag1..close_lag3
         >>> q.feat.qta.lags(df, [1, 5, 21])          # daily, weekly, monthly lags
     """

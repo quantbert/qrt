@@ -76,6 +76,18 @@ def line(
 
     Column selection supports the same shell-style patterns as :func:`qrt.plot.col`.
     The returned Plotly figure supports hover, zoom, pan, and range selection.
+
+    Args:
+        data: Series or DataFrame to plot.
+        columns: Column name(s) or shell-style pattern(s) (e.g. ``"*_ret"``)
+            to select. Defaults to all columns.
+        title: Figure title. Defaults to the column name (single column) or
+            a generic title (multiple columns).
+        yaxis_title: Y-axis label.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``.
     """
     frame = _as_frame(data, columns)
     figure = go.Figure()
@@ -102,7 +114,18 @@ def equity(
     label: str | None = None,
     height: int = 450,
 ) -> Figure:
-    """Create an interactive compounded equity curve from periodic returns."""
+    """Create an interactive compounded equity curve from periodic returns.
+
+    Args:
+        returns: Periodic return series.
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        title: Figure title.
+        label: Series name for the equity curve. Defaults to ``returns.name``.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
     series = _simple_returns(returns, return_type)
     curve = (1.0 + series).cumprod().rename(label or series.name or "Equity")
     figure = line(curve, title=title, yaxis_title="Growth of $1", height=height)
@@ -117,7 +140,17 @@ def drawdown(
     title: str = "Drawdown",
     height: int = 320,
 ) -> Figure:
-    """Create an interactive underwater chart from periodic returns."""
+    """Create an interactive underwater chart from periodic returns.
+
+    Args:
+        returns: Periodic return series.
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        title: Figure title.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
     series = _simple_returns(returns, return_type)
     underwater = (1.0 + series).cumprod().div((1.0 + series).cumprod().cummax()).sub(1.0)
     figure = go.Figure(
@@ -151,6 +184,20 @@ def performance(
     The figure has linked time axes, unified hover, zooming, and date-range
     buttons. If supplied, the benchmark is aligned to the strategy's shared
     observations before plotting.
+
+    Args:
+        returns: Strategy periodic return series.
+        benchmark: Optional benchmark periodic return series, aligned to
+            ``returns`` on shared dates.
+        return_type: Whether ``returns``/``benchmark`` are ``"simple"`` or
+            ``"log"`` returns.
+        periods_per_year: Annualization frequency. Inferred from the index
+            when not given.
+        title: Figure title. Defaults to ``returns.name``.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``.
     """
     reference: pd.Series | None = None
     if benchmark is not None:
@@ -227,7 +274,18 @@ def monthly_heatmap(
     title: str = "Monthly returns",
     height: int | None = None,
 ) -> Figure:
-    """Create an interactive, annotated calendar-month return heatmap."""
+    """Create an interactive, annotated calendar-month return heatmap.
+
+    Args:
+        returns: Periodic return series with a ``DatetimeIndex``.
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        title: Figure title.
+        height: Figure height in pixels. Defaults to a size based on the
+            number of years.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
     table = monthly_returns(returns, return_type=return_type)
     values = table.to_numpy(dtype=float)
     finite_values = values[np.isfinite(values)]
@@ -266,7 +324,18 @@ def show(
     height: int = 800,
     scale: int = 2,
 ) -> None:
-    """Display a figure, optionally saving it to `save_to` as PNG (default) and/or self-contained HTML."""
+    """Display a figure, optionally saving it to `save_to` as PNG (default) and/or self-contained HTML.
+
+    Args:
+        figure: Plotly figure to display (and optionally save).
+        name: File stem used when saving. Required if ``save_to`` is given.
+        save_to: Directory to save the figure into. If ``None``, the figure
+            is only displayed.
+        formats: Output formats to save, any of ``"png"`` and/or ``"html"``.
+        width: PNG width in pixels.
+        height: PNG height in pixels.
+        scale: PNG scale factor (for higher-resolution exports).
+    """
     if save_to is not None:
         if name is None:
             raise ValueError("name is required when save_to is provided")

@@ -7,7 +7,7 @@ Indicators that only need a price series also accept a plain Series
 (treated as ``close``). The datetime index is preserved and outputs keep
 pandas-ta's parameterised names (e.g. ``RSI_14``, ``MACD_12_26_9``).
 
-Example:
+Examples:
     >>> q.feat.pandas_ta.rsi(ohlc)                  # Series 'RSI_14'
     >>> q.feat.pandas_ta.bbands(ohlc, length=20)    # DataFrame BBL/BBM/BBU...
     >>> q.feat.pandas_ta.cdl_pattern(ohlc, name="doji")
