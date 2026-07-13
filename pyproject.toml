@@ -31,13 +31,7 @@ dev = [
     "pytest>=8.0",
 ]
 docs = [
-    "ghp-import>=2.1",
-    "myst-parser>=4.0",
-    "pydata-sphinx-theme>=0.16",
-    "sphinx>=8.1",
-    "sphinx-autobuild>=2024.10",
-    "sphinx-autodoc2>=0.5",
-    "sphinx-copybutton>=0.5",
+    "quartodoc>=0.11.1",
 ]
 
 [build-system]

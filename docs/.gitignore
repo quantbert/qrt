@@ -1,2 +1,2 @@
-/_build/
-/apidocs/
+/.quarto/
+**/*.quarto_ipynb
