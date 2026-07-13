@@ -167,8 +167,11 @@ venv.bak/
 # Rope project settings
 .ropeproject
 
-# mkdocs documentation
-/site
+# Quarto documentation build artifacts
+/docs/_site/
+/docs/.quarto/
+/docs/reference/
+/docs/objects.json
 
 # mypy
 .mypy_cache/

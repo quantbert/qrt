@@ -1,4 +1,6 @@
-# Feature Engineering
+---
+title: Feature Engineering
+---
 
 `q.feat` collects feature engineering tools under one namespace, organized as submodules:
 

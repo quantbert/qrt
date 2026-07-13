@@ -1,4 +1,6 @@
-# Getting Started
+---
+title: Getting Started
+---
 
 QRT is an umbrella library of Quantitative Research Tools 
 
@@ -18,8 +20,9 @@ uv sync
 uv run python -c "import qrt as q"
 ```
 
-!!! note
-    Not yet published to PyPI — install from source for now.
+::: {.callout-note}
+Not yet published to PyPI — install from source for now.
+:::
 
 To use qrt from another uv project:
 

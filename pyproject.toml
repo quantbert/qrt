@@ -1,6 +1,6 @@
 [project]
 name = "pyqrt"
-version = "0.0.4"
+version = "0.0.5"
 description = "Quant Research Tools"
 readme = "README.md"
 requires-python = ">=3.13"
@@ -31,10 +31,7 @@ dev = [
     "pytest>=8.0",
 ]
 docs = [
-    "mkdocs>=1.6.1",
-    "mkdocs-material>=9.7.6",
-    "mkdocs-open-in-new-tab>=1.0.8",
-    "mkdocstrings[python]>=0.27",
+    "quartodoc>=0.11.1",
 ]
 
 [build-system]

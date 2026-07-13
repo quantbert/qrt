@@ -14,12 +14,13 @@ test: ## Run the test suite
 stubs: ## Regenerate .pyi stubs for the dynamic feat wrappers
 	uv run python tools/gen_feat_stubs.py
 
-docs: ## Serve the docs locally with live reload
-	uv run --group docs mkdocs serve
+docs: ## Build the API reference and serve the docs locally with live reload
+	uv run --group docs quartodoc build --config docs/_quarto.yml
+	quarto preview docs
 
-docs-deploy: ## Build and deploy the docs to GitHub Pages
-	uv run --group docs mkdocs gh-deploy --strict
-	rm -rf site
+docs-deploy: ## Build the API reference and publish the docs to GitHub Pages
+	uv run --group docs quartodoc build --config docs/_quarto.yml
+	quarto publish gh-pages docs --no-prompt
 
 publish: test ## Runs test first. Then bump patch version, build and publish to PyPI
 	uv version --bump patch
@@ -28,5 +29,5 @@ publish: test ## Runs test first. Then bump patch version, build and publish to 
 	uv publish
 
 clean: ## Remove caches and build artifacts
-	rm -rf .pytest_cache dist build site
+	rm -rf .pytest_cache dist build docs/_site docs/.quarto docs/reference
 	find . -type d -name __pycache__ -not -path './.venv/*' -exec rm -rf {} +

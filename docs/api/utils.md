@@ -1,3 +1,0 @@
-# q.utils
-
-::: qrt.utils

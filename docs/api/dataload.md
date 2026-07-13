@@ -1,3 +1,0 @@
-# q.dataload
-
-::: qrt.dataload

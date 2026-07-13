@@ -66,3 +66,12 @@ qrt/
 ├── examples/        # notebooks
 └── pyproject.toml
 ```
+
+## Docs
+
+Docs are built with [Quarto](https://quarto.org/) + [quartodoc](https://machow.github.io/quartodoc/) (API reference from docstrings). Quarto's CLI is a separate system install (not a Python package) — see [quarto.org/docs/get-started](https://quarto.org/docs/get-started/). Once installed:
+
+```bash
+make docs         # build API reference + serve the docs locally
+make docs-deploy  # build + publish to GitHub Pages
+```

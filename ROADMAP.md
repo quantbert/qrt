@@ -7,7 +7,7 @@ Ideas and planned work per submodule. Checked items are done, unchecked are plan
 
 - [ ] Package scaffolding (`pyproject.toml`, CI, tests)
 - [ ] Examples folder with notebooks demonstrating each submodule
-- [ ] Docs site (mkdocs) with API reference per submodule
+- [ ] Docs site (Quarto) with API reference per submodule
 
 ## `q.plot` — plotting with premade quant-finance configs
 
