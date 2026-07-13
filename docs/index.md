@@ -2,12 +2,13 @@
 title: Getting Started
 ---
 
-QRT is an umbrella library of Quantitative Research Tools 
+# Getting Started
 
+QRT is an umbrella library of Quantitative Research Tools
 
-::: {.callout-note}
+```{warning}
 STILL IN ALPHA! DONT USE!
-:::
+```
 
 ## Quickstart
 
@@ -49,4 +50,12 @@ make install   # sync the environment
 make test      # run the test suite
 make stubs     # regenerate .pyi stubs for the dynamic feat wrappers
 make docs      # serve these docs locally
+```
+
+```{toctree}
+:hidden:
+:maxdepth: 2
+
+feat
+apidocs/index
 ```
