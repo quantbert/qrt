@@ -20,11 +20,11 @@ website:
     search: true
     left:
       - text: "Getting Started"
-        href: index.qmd
+        href: index.ipynb
       - text: "Feature Engineering"
-        href: feat.qmd
+        href: feat.ipynb
       - text: "Interactive Demo"
-        href: demo.qmd
+        href: demo.ipynb
       - text: "API Reference"
         href: reference/index.qmd
     tools:

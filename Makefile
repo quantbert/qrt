@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := help
 
-.PHONY: help install test stubs docs docs-deploy clean publish
+.PHONY: help install test stubs nb-execute docs docs-deploy clean publish
 
 help: ## Show available targets
 	@grep -E '^[a-z-]+:.*##' $(MAKEFILE_LIST) | awk -F ':.*## ' '{printf "  %-12s %s\n", $$1, $$2}'
@@ -13,6 +13,9 @@ test: ## Run the test suite
 
 stubs: ## Regenerate .pyi stubs for the dynamic feat wrappers
 	uv run python tools/gen_feat_stubs.py
+
+nb-execute: ## Re-run docs/*.ipynb in place so they carry saved cell outputs (for local editor preview)
+	uv run --group docs jupyter nbconvert --to notebook --execute --inplace docs/demo.ipynb
 
 docs: ## Build the API reference and serve the docs locally with live reload. Must run in active venv!
 	uv run --group docs quartodoc build --config docs/_quarto.yml
