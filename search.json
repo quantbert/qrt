@@ -1,45 +1,31 @@
 [
   {
-    "objectID": "demo.html",
-    "href": "demo.html",
-    "title": "Interactive Demo",
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Getting Started",
     "section": "",
-    "text": "This page’s code cells are executed live by Quarto (via Jupyter) every time the docs are built, and the charts below are real interactive Plotly figures — not static images. Zoom, pan, and hover over them."
+    "text": "QRT is an umbrella library of Quantitative Research Tools"
   },
   {
-    "objectID": "demo.html#synthetic-data",
-    "href": "demo.html#synthetic-data",
-    "title": "Interactive Demo",
-    "section": "Synthetic data",
-    "text": "Synthetic data\nWe simulate a daily OHLCV price series with a random walk so this page has no network dependency:\n\nimport numpy as np\nimport pandas as pd\n\nimport qrt as q\n\nrng = np.random.default_rng(7)\ndates = pd.bdate_range(\"2022-01-03\", \"2025-12-31\")\n\ndaily_returns = rng.normal(loc=0.0004, scale=0.012, size=len(dates))\nclose = 100 * (1 + pd.Series(daily_returns, index=dates)).cumprod()\n\nnoise = rng.normal(scale=0.003, size=len(dates))\nohlc = pd.DataFrame(\n    {\n        \"open\": close.shift(1).fillna(close.iloc[0]) * (1 + noise),\n        \"high\": close * (1 + np.abs(noise) + 0.001),\n        \"low\": close * (1 - np.abs(noise) - 0.001),\n        \"close\": close,\n        \"volume\": rng.integers(1_000_000, 5_000_000, size=len(dates)),\n    }\n)\nohlc.tail()\n\n\n\n\n\n\n\n\nopen\nhigh\nlow\nclose\nvolume\n\n\n\n\n2025-12-25\n55.250837\n55.715184\n55.257148\n55.486166\n3883087\n\n\n2025-12-26\n55.774081\n55.687042\n55.001992\n55.344517\n1870201\n\n\n2025-12-29\n55.189438\n56.131828\n55.706610\n55.919219\n3042885\n\n\n2025-12-30\n55.869102\n56.018281\n55.806236\n55.912258\n2286012\n\n\n2025-12-31\n56.088654\n57.339900\n56.865391\n57.102645\n1970835"
+    "objectID": "index.html#quickstart",
+    "href": "index.html#quickstart",
+    "title": "Getting Started",
+    "section": "Quickstart",
+    "text": "Quickstart\nuv add pyqrt\nimport qrt as q\n\n# fetch OHLCV data (cached as parquet)\nvendor = q.vendors.YFinance()\nohlc = vendor.fetch_ohlc(\"SPY\", \"2024-01-01\", \"2025-01-01\", \"1d\")\n\n# features\nX = q.feat.qta.lags(ohlc[\"close\"], [1, 5, 21])\nX[\"sma_20\"] = q.feat.qta.sma(ohlc[\"close\"], 20)\nX[\"rsi_14\"] = q.feat.talib.RSI(ohlc)"
   },
   {
-    "objectID": "demo.html#feature-engineering",
-    "href": "demo.html#feature-engineering",
-    "title": "Interactive Demo",
-    "section": "Feature engineering",
-    "text": "Feature engineering\nA couple of q.feat.qta indicators on the synthetic close price:\n\nsma_20 = q.feat.qta.sma(ohlc[\"close\"], 20)\nsma_100 = q.feat.qta.sma(ohlc[\"close\"], 100)\n\nfeatures = pd.DataFrame({\"close\": ohlc[\"close\"], \"sma_20\": sma_20, \"sma_100\": sma_100})\nfeatures.tail()\n\n\n\n\n\n\n\n\nclose\nsma_20\nsma_100\n\n\n\n\n2025-12-25\n55.486166\n55.379015\n57.514449\n\n\n2025-12-26\n55.344517\n55.218206\n57.534925\n\n\n2025-12-29\n55.919219\n55.075381\n57.558336\n\n\n2025-12-30\n55.912258\n54.981532\n57.576871\n\n\n2025-12-31\n57.102645\n55.006677\n57.611276"
+    "objectID": "index.html#library-layout",
+    "href": "index.html#library-layout",
+    "title": "Getting Started",
+    "section": "Library layout",
+    "text": "Library layout\n\n\n\n\n\n\n\nModule\nPurpose\n\n\n\n\nq.feat\nfeature engineering: own indicators + TA-Lib + pandas-ta-classic\n\n\nq.vendors\nmarket data vendors (Yahoo Finance, Binance) with parquet caching\n\n\nq.dataload\nloading and aggregating raw trade data into OHLC bars\n\n\nq.data\nmaster securities database (DuckDB)\n\n\nq.splits\nleakage-aware CV splits (walk-forward, purged K-fold, embargo)\n\n\nq.models\nPyTorch model wrappers\n\n\nq.bt\nevent-driven backtesting\n\n\nq.plot\nplotting + performance reports (tearsheets)\n\n\nq.portfolio\nportfolio analysis"
   },
   {
-    "objectID": "demo.html#interactive-price-chart",
-    "href": "demo.html#interactive-price-chart",
-    "title": "Interactive Demo",
-    "section": "Interactive price chart",
-    "text": "Interactive price chart\nq.plot.interactive.line builds a Plotly figure with hover, zoom, and range-selector buttons:\n\nfig = q.plot.interactive.line(\n    features,\n    title=\"Synthetic close price with SMA overlays\",\n    yaxis_title=\"Price\",\n)\nfig.show()"
-  },
-  {
-    "objectID": "demo.html#interactive-performance-report",
-    "href": "demo.html#interactive-performance-report",
-    "title": "Interactive Demo",
-    "section": "Interactive performance report",
-    "text": "Interactive performance report\nA simple SMA-crossover strategy (long when sma_20 &gt; sma_100) plotted as a full equity / drawdown / stats tearsheet:\n\nposition = (sma_20 &gt; sma_100).astype(int).shift(1).fillna(0)\nstrategy_returns = (ohlc[\"close\"].pct_change() * position).rename(\"SMA crossover\")\n\nfig = q.plot.interactive.performance(strategy_returns, benchmark=ohlc[\"close\"].pct_change().rename(\"Buy & hold\"))\nfig.show()"
-  },
-  {
-    "objectID": "demo.html#monthly-returns-heatmap",
-    "href": "demo.html#monthly-returns-heatmap",
-    "title": "Interactive Demo",
-    "section": "Monthly returns heatmap",
-    "text": "Monthly returns heatmap\n\nfig = q.plot.interactive.monthly_heatmap(strategy_returns)\nfig.show()"
+    "objectID": "index.html#development",
+    "href": "index.html#development",
+    "title": "Getting Started",
+    "section": "Development",
+    "text": "Development\nmake install   # sync the environment\nmake test      # run the test suite\nmake stubs     # regenerate .pyi stubs for the dynamic feat wrappers\nmake docs      # serve these docs locally"
   },
   {
     "objectID": "reference/vendors.binance.html",
@@ -234,32 +220,46 @@
     ]
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Getting Started",
+    "objectID": "demo.html",
+    "href": "demo.html",
+    "title": "Interactive Demo",
     "section": "",
-    "text": "QRT is an umbrella library of Quantitative Research Tools"
+    "text": "This page’s code cells are executed live by Quarto (via Jupyter) every time the docs are built, and the charts below are real interactive Plotly figures — not static images. Zoom, pan, and hover over them."
   },
   {
-    "objectID": "index.html#quickstart",
-    "href": "index.html#quickstart",
-    "title": "Getting Started",
-    "section": "Quickstart",
-    "text": "Quickstart\nuv add pyqrt\nimport qrt as q\n\n# fetch OHLCV data (cached as parquet)\nvendor = q.vendors.YFinance()\nohlc = vendor.fetch_ohlc(\"SPY\", \"2024-01-01\", \"2025-01-01\", \"1d\")\n\n# features\nX = q.feat.qta.lags(ohlc[\"close\"], [1, 5, 21])\nX[\"sma_20\"] = q.feat.qta.sma(ohlc[\"close\"], 20)\nX[\"rsi_14\"] = q.feat.talib.RSI(ohlc)"
+    "objectID": "demo.html#synthetic-data",
+    "href": "demo.html#synthetic-data",
+    "title": "Interactive Demo",
+    "section": "Synthetic data",
+    "text": "Synthetic data\nWe simulate a daily OHLCV price series with a random walk so this page has no network dependency:\n\nimport numpy as np\nimport pandas as pd\nimport plotly.io as pio\n\nimport qrt as q\n\n# Renderer used only when THIS notebook is executed directly (e.g. via\n# `make nb-execute`) so it has viewable output when opened in VS Code.\n# \"notebook_connected\" loads plotly.js from a CDN link (keeps this .ipynb\n# small) instead of embedding the full library inline. The *published* docs\n# site does not depend on this at all: `execute: enabled: true` above makes\n# Quarto always re-execute fresh with its own Jupyter engine, which extracts\n# plotly.js into the site's own static demo_files/libs/ folder (no CDN, no\n# per-chart embed) regardless of what's cached here.\n# See https://github.com/orgs/quarto-dev/discussions/5264\n#pio.renderers.default = \"notebook_connected\"\n\nrng = np.random.default_rng(7)\ndates = pd.bdate_range(\"2022-01-03\", \"2025-12-31\")\n\ndaily_returns = rng.normal(loc=0.0004, scale=0.012, size=len(dates))\nclose = 100 * (1 + pd.Series(daily_returns, index=dates)).cumprod()\n\nnoise = rng.normal(scale=0.003, size=len(dates))\nohlc = pd.DataFrame(\n    {\n        \"open\": close.shift(1).fillna(close.iloc[0]) * (1 + noise),\n        \"high\": close * (1 + np.abs(noise) + 0.001),\n        \"low\": close * (1 - np.abs(noise) - 0.001),\n        \"close\": close,\n        \"volume\": rng.integers(1_000_000, 5_000_000, size=len(dates)),\n    }\n)\nohlc.tail()\n\n\n\n\n\n\n\n\nopen\nhigh\nlow\nclose\nvolume\n\n\n\n\n2025-12-25\n55.250837\n55.715184\n55.257148\n55.486166\n3883087\n\n\n2025-12-26\n55.774081\n55.687042\n55.001992\n55.344517\n1870201\n\n\n2025-12-29\n55.189438\n56.131828\n55.706610\n55.919219\n3042885\n\n\n2025-12-30\n55.869102\n56.018281\n55.806236\n55.912258\n2286012\n\n\n2025-12-31\n56.088654\n57.339900\n56.865391\n57.102645\n1970835"
   },
   {
-    "objectID": "index.html#library-layout",
-    "href": "index.html#library-layout",
-    "title": "Getting Started",
-    "section": "Library layout",
-    "text": "Library layout\n\n\n\n\n\n\n\nModule\nPurpose\n\n\n\n\nq.feat\nfeature engineering: own indicators + TA-Lib + pandas-ta-classic\n\n\nq.vendors\nmarket data vendors (Yahoo Finance, Binance) with parquet caching\n\n\nq.dataload\nloading and aggregating raw trade data into OHLC bars\n\n\nq.data\nmaster securities database (DuckDB)\n\n\nq.splits\nleakage-aware CV splits (walk-forward, purged K-fold, embargo)\n\n\nq.models\nPyTorch model wrappers\n\n\nq.bt\nevent-driven backtesting\n\n\nq.plot\nplotting + performance reports (tearsheets)\n\n\nq.portfolio\nportfolio analysis"
+    "objectID": "demo.html#feature-engineering",
+    "href": "demo.html#feature-engineering",
+    "title": "Interactive Demo",
+    "section": "Feature engineering",
+    "text": "Feature engineering\nA couple of q.feat.qta indicators on the synthetic close price:\n\nsma_20 = q.feat.qta.sma(ohlc[\"close\"], 20)\nsma_100 = q.feat.qta.sma(ohlc[\"close\"], 100)\n\nfeatures = pd.DataFrame({\"close\": ohlc[\"close\"], \"sma_20\": sma_20, \"sma_100\": sma_100})\nfeatures.tail()\n\n\n\n\n\n\n\n\nclose\nsma_20\nsma_100\n\n\n\n\n2025-12-25\n55.486166\n55.379015\n57.514449\n\n\n2025-12-26\n55.344517\n55.218206\n57.534925\n\n\n2025-12-29\n55.919219\n55.075381\n57.558336\n\n\n2025-12-30\n55.912258\n54.981532\n57.576871\n\n\n2025-12-31\n57.102645\n55.006677\n57.611276"
   },
   {
-    "objectID": "index.html#development",
-    "href": "index.html#development",
-    "title": "Getting Started",
-    "section": "Development",
-    "text": "Development\nmake install   # sync the environment\nmake test      # run the test suite\nmake stubs     # regenerate .pyi stubs for the dynamic feat wrappers\nmake docs      # serve these docs locally"
+    "objectID": "demo.html#interactive-price-chart",
+    "href": "demo.html#interactive-price-chart",
+    "title": "Interactive Demo",
+    "section": "Interactive price chart",
+    "text": "Interactive price chart\nq.plot.interactive.line builds a Plotly figure with hover, zoom, and range-selector buttons:\n\nfig = q.plot.interactive.line(\n    features,\n    title=\"Synthetic close price with SMA overlays\",\n    yaxis_title=\"Price\",\n)\nfig.show()"
+  },
+  {
+    "objectID": "demo.html#interactive-performance-report",
+    "href": "demo.html#interactive-performance-report",
+    "title": "Interactive Demo",
+    "section": "Interactive performance report",
+    "text": "Interactive performance report\nA simple SMA-crossover strategy (long when sma_20 &gt; sma_100) plotted as a full equity / drawdown / stats tearsheet:\n\nposition = (sma_20 &gt; sma_100).astype(int).shift(1).fillna(0)\nstrategy_returns = (ohlc[\"close\"].pct_change() * position).rename(\"SMA crossover\")\n\nfig = q.plot.interactive.performance(strategy_returns, benchmark=ohlc[\"close\"].pct_change().rename(\"Buy & hold\"))\nfig.show()"
+  },
+  {
+    "objectID": "demo.html#monthly-returns-heatmap",
+    "href": "demo.html#monthly-returns-heatmap",
+    "title": "Interactive Demo",
+    "section": "Monthly returns heatmap",
+    "text": "Monthly returns heatmap\n\nfig = q.plot.interactive.monthly_heatmap(strategy_returns)\nfig.show()"
   },
   {
     "objectID": "reference/index.html",
