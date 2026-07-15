@@ -1,0 +1,32 @@
+project:
+  type: website
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+    keep-md: true
+  commonmark: default
+
+website:
+  title: "qrt — Quant Research Tools"
+  twitter-card: true
+  open-graph: true
+  repo-actions: [issue, edit]
+  navbar:
+    background: primary
+    search: true
+    left:
+      - text: "Getting Started"
+        href: index.ipynb
+      - text: "Feature Engineering"
+        href: guides/feat.ipynb
+      - text: "Interactive Demo"
+        href: guides/demo.ipynb
+      - text: "API Reference"
+        href: api/qrt.html
+  sidebar:
+    style: floating
+
+metadata-files: [nbdev.yml, sidebar.yml]

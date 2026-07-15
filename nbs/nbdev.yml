@@ -1,0 +1,14 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "pyqrt"
+  site-url: "https://quantbert.github.io/qrt"
+  description: "Quant Research Tools"
+  repo-branch: main
+  repo-url: "https://github.com/quantbert/qrt"
+
+format-links:
+  - html
+  - format: commonmark
+    text: Markdown

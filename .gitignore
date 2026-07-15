@@ -1,6 +1,19 @@
 .temp/*
 examples/plot_tutorial_assets/
 
+# nbdev: qrt/ is generated from nbs/ by `make export` (build-only, not committed).
+# .pyi stubs are hand-maintained (see tools/gen_feat_stubs.py) and stay tracked.
+/qrt/**/*.py
+/qrt/_modidx.py
+
+# nbdev/quarto/pdoc build artifacts
+_docs/
+_proc/
+.quarto/
+nbs/.quarto/
+.ipynb_checkpoints/
+**/.ipynb_checkpoints/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

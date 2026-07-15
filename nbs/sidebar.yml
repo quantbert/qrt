@@ -1,0 +1,37 @@
+website:
+  sidebar:
+    contents:
+      - index.ipynb
+      - 00_utils.ipynb
+      - 01_dataload.ipynb
+      - 02_splits.ipynb
+      - 03_bt.ipynb
+      - 04_data.ipynb
+      - 05_models.ipynb
+      - 06_portfolio.ipynb
+      - 07_init.ipynb
+      - section: feat
+        contents:
+          - feat/00_talib.ipynb
+          - feat/01_pandas_ta.ipynb
+          - feat/02_init.ipynb
+          - section: qta
+            contents:
+              - feat/qta/00_sma.ipynb
+              - feat/qta/01_lags.ipynb
+              - feat/qta/02_init.ipynb
+      - section: guides
+        contents:
+          - guides/demo.ipynb
+          - guides/feat.ipynb
+      - section: plot
+        contents:
+          - plot/00_core.ipynb
+          - plot/01_interactive.ipynb
+          - plot/02_init.ipynb
+      - section: vendors
+        contents:
+          - vendors/00_base.ipynb
+          - vendors/01_yfinance.ipynb
+          - vendors/02_binance.ipynb
+          - vendors/03_init.ipynb
