@@ -63,22 +63,24 @@ def test_plot_accepts_log_returns():
 
 def test_performance_calculates_standard_metrics_and_infers_frequency():
     returns = pd.Series([0.01, -0.02, 0.03], index=pd.date_range("2025-01-01", periods=3), name="strategy")
-    stats = q.plot.performance(returns)
+    stats = q.stats.performance(returns)
     assert stats["Total Return"] == pytest.approx((1.0 + returns).prod() - 1.0)
     assert stats["Periods"] == 3
-    assert q.plot.infer_periods_per_year(returns.index) == 252
+    assert q.stats.infer_periods_per_year(returns.index) == 252
     assert {"Sharpe", "Sortino", "Calmar", "Max Drawdown"}.issubset(stats.index)
 
 
 def test_rolling_diagnostics_and_benchmark_stats():
     benchmark = pd.Series([0.01, -0.01, 0.02, 0.01, -0.01], index=pd.date_range("2025-01-01", periods=5), name="SPY")
     returns = (benchmark * 2).rename("strategy")
-    assert q.plot.rolling_volatility(returns, window=3).iloc[-1] > 0
-    assert q.plot.rolling_sharpe(returns, window=3).iloc[-1] != 0
-    assert q.plot.rolling_beta(returns, benchmark, window=3).iloc[-1] == pytest.approx(2.0)
-    assert q.plot.rolling_alpha(returns, benchmark, window=3).iloc[-1] == pytest.approx(0.0)
+    assert q.stats.rolling_volatility(returns, window=3).iloc[-1] > 0
+    assert q.stats.rolling_sharpe(returns, window=3).iloc[-1] != 0
+    assert q.stats.rolling_beta(returns, benchmark, window=3).iloc[-1] == pytest.approx(2.0)
+    assert q.stats.rolling_alpha(returns, benchmark, window=3).iloc[-1] == pytest.approx(0.0)
+    assert q.stats.beta(returns, benchmark) == pytest.approx(2.0)
+    assert q.stats.alpha(returns, benchmark) == pytest.approx(0.0)
 
-    stats = q.plot.benchmark_stats(returns, benchmark)
+    stats = q.stats.benchmark_stats(returns, benchmark)
     assert stats["Beta"] == pytest.approx(2.0)
     assert stats["Periods"] == len(returns)
 
@@ -87,13 +89,32 @@ def test_monthly_returns_and_heatmap():
     returns = pd.Series(
         [0.01, 0.02, -0.01], index=pd.to_datetime(["2025-01-02", "2025-01-31", "2025-02-03"]), name="strategy"
     )
-    table = q.plot.monthly_returns(returns)
+    table = q.stats.monthly_returns(returns)
     assert table.loc[2025, 1] == pytest.approx((1.01 * 1.02) - 1.0)
     assert table.loc[2025, 2] == pytest.approx(-0.01)
 
     figure = q.plot.monthly_heatmap(returns)
     assert isinstance(figure, PlotlyFigure)
     assert figure.layout.title.text == "Monthly returns"
+
+
+def test_stats_returns_chains_bound_stats_and_plotting():
+    benchmark = pd.Series([0.01, -0.01, 0.02, 0.01, -0.01], index=pd.date_range("2025-01-01", periods=5), name="SPY")
+    returns = (benchmark * 2).rename("strategy")
+
+    bound = q.stats.returns(returns, benchmark=benchmark)
+    assert isinstance(bound, q.stats.Returns)
+    assert bound.beta() == pytest.approx(2.0)
+    assert bound.alpha() == pytest.approx(0.0)
+    assert bound.performance()["Periods"] == len(returns)
+    assert bound.rolling_beta(window=3).iloc[-1] == pytest.approx(2.0)
+
+    figure = bound.plot("equity")
+    assert isinstance(figure, PlotlyFigure)
+
+    unbenchmarked = q.stats.returns(returns)
+    with pytest.raises(ValueError):
+        unbenchmarked.beta()
 
 
 def test_plotly_figures_are_available_at_root_and_interactive_namespace():

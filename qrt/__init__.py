@@ -4,7 +4,7 @@ Usage:
     import qrt as q
 """
 
-from qrt import bt, data, dataload, feat, models, plot, portfolio, splits, utils, vendors
+from qrt import bt, data, dataload, feat, models, plot, portfolio, splits, stats, utils, vendors
 from qrt.utils import log, set_seed
 
 from typing import Dict, List, Tuple, Union                     # Type hints for function signatures
@@ -38,6 +38,7 @@ __all__ = [
     "plot",
     "portfolio",
     "splits",
+    "stats",
     "utils",
     "vendors",
     "log",

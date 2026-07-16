@@ -9,6 +9,22 @@ Ideas and planned work per submodule. Checked items are done, unchecked are plan
 - [ ] Examples folder with notebooks demonstrating each submodule
 - [ ] Docs site (Quarto) with API reference per submodule
 
+## `q.stats` — return-stream statistics
+
+Stateless analytics for periodic return streams (no plotting dependency),
+plus an optional bound `q.stats.returns(...)` object for chaining stats and
+plots. Consumed by `q.plot` for rendering.
+
+- [x] `q.stats.performance(returns)` — Total Return, CAGR, Volatility, Sharpe, Sortino, Calmar, Max Drawdown, Win Rate
+- [x] `q.stats.alpha(returns, benchmark)` / `q.stats.beta(returns, benchmark)`
+- [x] `q.stats.rolling_alpha` / `q.stats.rolling_beta` / `q.stats.rolling_sharpe` / `q.stats.rolling_volatility`
+- [x] `q.stats.benchmark_stats(returns, benchmark)` — active return, beta, alpha, correlation, tracking error, information ratio
+- [x] `q.stats.monthly_returns(returns)` — year-by-month compounded return table
+- [x] `q.stats.returns(returns, benchmark=...)` — bound object exposing chained stats (`.alpha()`, `.beta()`, ...) and `.plot(kind=...)`
+- [ ] Animated rolling-beta / CAPM regression plot (`q.stats.returns(...).plot("capm")`), auto-detecting bar timestep with an overridable rolling window
+- [ ] `q.load_settings("settings.json")` — project-level defaults (rolling window, annualization, theme) that override library defaults without cluttering call sites
+- [ ] tsfresh-style automated return-stream feature extraction
+
 ## `q.plot` — plotting with premade quant-finance configs
 
 Opinionated plotting helpers with sensible defaults for quant research.

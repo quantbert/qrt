@@ -11,10 +11,10 @@ import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-from qrt.plot.core import (
+from qrt.plot.core import _as_frame
+from qrt.stats.core import (
     ReturnType,
     _aligned_returns,
-    _as_frame,
     _periods_per_year,
     _simple_returns,
     monthly_returns,
