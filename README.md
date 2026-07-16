@@ -30,6 +30,7 @@ q.plot.tearsheet(result.returns, benchmark="SPY")
 
 - **Model wrappers** — thin, opinionated wrappers around PyTorch models for training, checkpointing and inference on financial time series (`q.models`)
 - **Data splitting** — leakage-aware splits: walk-forward, purged K-fold and combinatorial purged CV with embargo (à la López de Prado) (`q.splits`)
+- **Return statistics** — performance, alpha/beta, rolling diagnostics, and benchmark-relative stats for return streams, with a chained `Returns` helper for notebook exploration (`q.stats`)
 - **Plotting & tearsheets** — interactive Plotly reports for return streams: Sharpe/Sortino/Calmar, drawdowns, rolling stats, monthly heatmaps, benchmark comparison (`q.plot`)
 - **Portfolio analysis** — attribution, exposure, turnover and risk decomposition (`q.portfolio`)
 - **Backtesting** — event-driven backtesting of model signals, connected to the master securities database (DuckDB) (`q.bt`)

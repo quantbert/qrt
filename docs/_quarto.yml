@@ -23,6 +23,8 @@ website:
         href: index.ipynb
       - text: "Feature Engineering"
         href: feat.ipynb
+      - text: "Return Statistics"
+        href: stats.ipynb
       - text: "Interactive Demo"
         href: demo.ipynb
       - text: "API Reference"
@@ -58,6 +60,11 @@ quartodoc:
           members: []
         - name: feat.pandas_ta
           members: []
+    - title: q.stats
+      desc: "Return-stream statistics: performance, alpha/beta, rolling diagnostics, and the chained `Returns` helper (no plotting dependency)."
+      contents:
+        - name: stats
+          include_imports: true
     - title: q.plot
       desc: "Plotting + performance reports (tearsheets)."
       contents:
