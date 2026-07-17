@@ -1,12 +1,95 @@
-"""General-purpose helper functions."""
+"""General-purpose helper functions.
+
+Add new concerns (config loading, caching, retry helpers, ...) as
+additional modules in this package as they land, same convention as
+``q.feat``/``q.data``.
+"""
 
 import os
 import random
+import shutil
+from pathlib import Path
+from typing import Any
 
 import numpy as np
 import torch
+from dotenv import load_dotenv as _load_dotenv
+from joblib import Memory
+from platformdirs import user_cache_dir
+from rich.console import Console
 
-__all__ = ["log", "set_seed"]
+__all__ = [
+    "cache_dir",
+    "clear_cache",
+    "console",
+    "load_env",
+    "log",
+    "memory",
+    "set_seed",
+]
+
+#: Shared rich console for pretty CLI/notebook output (progress, tables, ...).
+console = Console()
+
+
+def cache_dir(name: str = "") -> Path:
+    """Return (creating if needed) qrt's OS-standard user cache directory.
+
+    Resolved via :mod:`platformdirs`, e.g. ``~/.cache/qrt`` on Linux,
+    ``~/Library/Caches/qrt`` on macOS. Used as the default location for
+    downloaded/cached data (see ``q.data.sources``) so caches don't depend
+    on the current working directory.
+
+    Args:
+        name: Optional subdirectory under the qrt cache dir (e.g. ``"joblib"``).
+    """
+    path = Path(user_cache_dir("qrt"))
+    if name:
+        path = path / name
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+#: Disk-backed memoization for expensive, pure functions, e.g.:
+#:     @q.utils.memory.cache
+#:     def slow_feature(df): ...
+memory = Memory(location=cache_dir("joblib"), verbose=0)
+
+
+def clear_cache(name: str = "") -> None:
+    """Delete qrt's cached files, e.g. for a clean re-fetch or freeing disk space.
+
+    Safe to call anytime: caches (downloaded OHLC/trades parquet, joblib
+    memoization, ...) are rebuilt lazily on next use.
+
+    Args:
+        name: Optional subdirectory to clear (e.g. ``"data"``, ``"joblib"``).
+            If omitted, clears everything under :func:`cache_dir`.
+    """
+    if name in ("", "joblib"):
+        memory.clear(warn=False)
+    target = cache_dir(name)
+    shutil.rmtree(target, ignore_errors=True)
+    target.mkdir(parents=True, exist_ok=True)
+
+
+def load_env(path: str | Path | None = None, **kwargs: Any) -> bool:
+    """Load environment variables from a ``.env`` file into ``os.environ``.
+
+    Thin wrapper around :func:`dotenv.load_dotenv`, useful for API keys/
+    secrets needed by data sources (e.g. a paid vendor or an
+    authenticated Binance endpoint). Call explicitly where needed --
+    qrt does not load a ``.env`` file automatically on import.
+
+    Args:
+        path: Path to the ``.env`` file. If ``None``, searches upward from
+            the current working directory (dotenv's default behavior).
+        **kwargs: Passed through to :func:`dotenv.load_dotenv`.
+
+    Returns:
+        ``True`` if a file was found and loaded, ``False`` otherwise.
+    """
+    return _load_dotenv(dotenv_path=path, **kwargs)
 
 
 def log(values):

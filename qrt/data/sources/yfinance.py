@@ -3,11 +3,13 @@
     ohlc = q.data.sources.yfinance.read("AAPL", "2024-01-01", "2025-01-01", "1d")
 """
 
+import logging
 from datetime import datetime, timedelta
 from pathlib import Path
 
 import pandas as pd
 import yfinance as yf
+from tenacity import before_sleep_log, retry, stop_after_attempt, wait_exponential
 
 from qrt.data.sources._util import (
     DEFAULT_CACHE_DIR,
@@ -16,6 +18,8 @@ from qrt.data.sources._util import (
     normalize_range,
     read_many,
 )
+
+logger = logging.getLogger(__name__)
 
 
 def read(
@@ -73,11 +77,15 @@ def _read_one(
     )
 
 
-def _download(
-    symbol: str, start: datetime, end: datetime, interval: str
-) -> pd.DataFrame:
-    """Download and normalize OHLCV bars from Yahoo."""
-    df = yf.download(
+@retry(
+    stop=stop_after_attempt(3),
+    wait=wait_exponential(multiplier=1, min=2, max=10),
+    before_sleep=before_sleep_log(logger, logging.WARNING),
+    reraise=True,
+)
+def _yf_download(symbol: str, start: datetime, end: datetime, interval: str):
+    """Network call, isolated so transient failures can be retried."""
+    return yf.download(
         symbol,
         start=start,
         # yfinance treats `end` as exclusive; our contract is inclusive.
@@ -88,6 +96,13 @@ def _download(
         multi_level_index=False,
         timeout=30,
     )
+
+
+def _download(
+    symbol: str, start: datetime, end: datetime, interval: str
+) -> pd.DataFrame:
+    """Download and normalize OHLCV bars from Yahoo."""
+    df = _yf_download(symbol, start, end, interval)
     if df is None or df.empty:
         raise no_data_error(symbol, start, end)
 

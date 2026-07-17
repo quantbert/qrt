@@ -37,3 +37,4 @@ publish: test datasets ## Runs test first, refreshes bundled datasets. Then bump
 clean: ## Remove caches and build artifacts
 	rm -rf .pytest_cache dist build docs/_site docs/.quarto docs/reference
 	find . -type d -name __pycache__ -not -path './.venv/*' -exec rm -rf {} +
+	uv run python -c "import qrt as q; q.utils.clear_cache()"

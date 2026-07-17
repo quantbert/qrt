@@ -13,6 +13,13 @@ from pathlib import Path
 
 import pandas as pd
 import requests
+from tenacity import (
+    before_sleep_log,
+    retry,
+    retry_if_exception_type,
+    stop_after_attempt,
+    wait_exponential,
+)
 from tqdm import tqdm
 
 from qrt.data.sources._util import (
@@ -171,25 +178,37 @@ def _download_and_unzip(symbol: str, date_str: str, download_dir: Path) -> Path:
     url = f"{_BASE_URL}/{symbol}/{symbol}-trades-{date_str}.zip"
 
     try:
-        response = requests.get(url, stream=True, timeout=60)
-        response.raise_for_status()
-        total = int(response.headers.get("content-length", 0))
-        with (
-            open(zip_path, "wb") as f,
-            tqdm(
-                total=total,
-                unit="B",
-                unit_scale=True,
-                desc=zip_path.name,
-                leave=False,
-            ) as bar,
-        ):
-            for chunk in response.iter_content(chunk_size=1 << 20):
-                f.write(chunk)
-                bar.update(len(chunk))
+        _fetch_zip(url, zip_path)
         with zipfile.ZipFile(zip_path) as zf:
             zf.extractall(download_dir)
     finally:
         zip_path.unlink(missing_ok=True)
 
     return download_dir / f"{symbol}-trades-{date_str}.csv"
+
+
+@retry(
+    stop=stop_after_attempt(3),
+    wait=wait_exponential(multiplier=1, min=2, max=10),
+    retry=retry_if_exception_type(requests.exceptions.RequestException),
+    before_sleep=before_sleep_log(logger, logging.WARNING),
+    reraise=True,
+)
+def _fetch_zip(url: str, zip_path: Path) -> None:
+    """Stream-download one zip file, isolated so transient failures can be retried."""
+    response = requests.get(url, stream=True, timeout=60)
+    response.raise_for_status()
+    total = int(response.headers.get("content-length", 0))
+    with (
+        open(zip_path, "wb") as f,
+        tqdm(
+            total=total,
+            unit="B",
+            unit_scale=True,
+            desc=zip_path.name,
+            leave=False,
+        ) as bar,
+    ):
+        for chunk in response.iter_content(chunk_size=1 << 20):
+            f.write(chunk)
+            bar.update(len(chunk))

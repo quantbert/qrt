@@ -18,6 +18,4 @@ __all__ = [
     "portfolio",
     "stats",
     "utils",
-    "log",
-    "set_seed",
 ]

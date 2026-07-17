@@ -9,10 +9,13 @@ import duckdb
 import pandas as pd
 from tqdm import tqdm
 
+from qrt.utils import cache_dir
+
 logger = logging.getLogger(__name__)
 
-#: Default directory for parquet caches, shared by all sources.
-DEFAULT_CACHE_DIR = ".cache"
+#: Default directory for parquet caches, shared by all sources (OS-standard
+#: user cache dir, e.g. ~/.cache/qrt/data on Linux -- doesn't depend on cwd).
+DEFAULT_CACHE_DIR = cache_dir("data")
 
 
 def cached(
