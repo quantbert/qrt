@@ -109,6 +109,10 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">Return Statistics</span></a>
   </li>  
   <li class="nav-item">
+    <a class="nav-link" href="./plot.html"> 
+<span class="menu-text">Plotting</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link" href="./reference/index.html"> 
 <span class="menu-text">API Reference</span></a>
   </li>  
@@ -192,6 +196,51 @@ ul.task-list li input[type="checkbox"] {
 <li><label><input type="checkbox">Animated rolling-beta / CAPM regression plot (<code>q.stats.returns(...).plot("capm")</code>), auto-detecting bar timestep with an overridable rolling window</label></li>
 <li><label><input type="checkbox"><code>q.load_settings("settings.json")</code> — project-level defaults (rolling window, annualization, theme) that override library defaults without cluttering call sites</label></li>
 <li><label><input type="checkbox">tsfresh-style automated return-stream feature extraction</label></li>
+<li><label><input type="checkbox" checked="">Additional risk/return ratios, gap-analyzed against <a href="https://github.com/ranaroussi/quantstats">quantstats</a>’s <code>stats.py</code>:</label>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="">Smart Sharpe / Smart Sortino (autocorrelation-penalized; <code>sharpe(smart=True)</code>, <code>autocorr_penalty</code>)</label></li>
+<li><label><input type="checkbox" checked="">Probabilistic Sharpe / Sortino / Adjusted-Sortino Ratio (<code>probabilistic_ratio</code>)</label></li>
+<li><label><input type="checkbox" checked="">Adjusted Sortino (÷√2, Schwager; <code>adjusted_sortino</code>)</label></li>
+<li><label><input type="checkbox" checked="">Treynor Ratio (<code>treynor_ratio</code>)</label></li>
+<li><label><input type="checkbox" checked="">Omega Ratio (<code>omega</code>)</label></li>
+<li><label><input type="checkbox" checked="">Gain-to-Pain Ratio (<code>gain_to_pain_ratio</code>)</label></li>
+<li><label><input type="checkbox" checked="">Risk-Adjusted Return, CAGR/exposure (<code>rar</code>)</label></li>
+<li><label><input type="checkbox" checked="">Skew / Kurtosis (<code>skew</code>, <code>kurtosis</code>)</label></li>
+<li><label><input type="checkbox" checked="">Ulcer Index / Ulcer Performance Index (<code>ulcer_index</code>, <code>ulcer_performance_index</code>)</label></li>
+<li><label><input type="checkbox" checked="">Serenity Index (<code>serenity_index</code>)</label></li>
+<li><label><input type="checkbox" checked="">Risk of Ruin (<code>risk_of_ruin</code>)</label></li>
+<li><label><input type="checkbox" checked="">Value at Risk (VaR) / Conditional VaR (Expected Shortfall) (<code>value_at_risk</code>, <code>conditional_value_at_risk</code>)</label></li>
+<li><label><input type="checkbox" checked="">Tail Ratio (<code>tail_ratio</code>)</label></li>
+<li><label><input type="checkbox" checked="">Payoff/Win-Loss Ratio, Profit Ratio, Profit Factor (<code>payoff_ratio</code>, <code>profit_ratio</code>, <code>profit_factor</code>)</label></li>
+<li><label><input type="checkbox" checked="">CPC Index, Common Sense Ratio (<code>cpc_index</code>, <code>common_sense_ratio</code>)</label></li>
+<li><label><input type="checkbox" checked="">Outlier Win/Loss Ratio (<code>outlier_win_ratio</code>, <code>outlier_loss_ratio</code>)</label></li>
+<li><label><input type="checkbox" checked="">Recovery Factor, Risk-Return Ratio (<code>recovery_factor</code>, <code>risk_return_ratio</code>)</label></li>
+<li><label><input type="checkbox" checked="">Kelly Criterion (<code>kelly_criterion</code>)</label></li>
+<li><label><input type="checkbox" checked="">Best/Worst period, Consecutive Wins/Losses, Exposure (time-in-market), Avg Win/Loss/Return (<code>best</code>, <code>worst</code>, <code>consecutive_wins</code>, <code>consecutive_losses</code>, <code>exposure</code>, <code>avg_return</code>, <code>avg_win</code>, <code>avg_loss</code>)</label></li>
+<li><label><input type="checkbox" checked="">Return distribution analysis by period w/ IQR outlier detection (<code>distribution</code>)</label></li>
+<li><label><input type="checkbox" checked="">R² vs benchmark (<code>r_squared</code>)</label></li>
+<li><label><input type="checkbox" checked=""><code>q.stats.compare(returns, benchmark)</code> — side-by-side strategy-vs-benchmark aggregated table (<code>compare</code>)</label></li>
+</ul></li>
+<li><label><input type="checkbox" checked=""><code>q.stats.drawdown_details(returns)</code> — per-episode drawdown table (start/valley/end/days/max DD), sorted by depth or duration; prerequisite for <code>q.plot</code>’s longest-drawdown highlighting (quantstats <code>to_drawdown_series</code> + <code>drawdown_details</code>)</label></li>
+<li><label><input type="checkbox" checked="">Monte Carlo simulation (<code>q.stats.montecarlo</code>) — bootstrap-resampled (with replacement, not quantstats’ order-invariant shuffle) return simulation with bust/goal probability and percentile confidence bands, plus an optional stationary block bootstrap (<code>block_size</code>) preserving autocorrelation/volatility clustering that i.i.d. resampling destroys, and a <code>periods</code> parameter decoupling the simulated horizon from the (long, multi-regime) resampling pool length — avoiding both single-regime sampling bias and the saturated bust/goal probabilities and unreadable terminal-value scale that result from compounding over an unrealistically long horizon (a limitation quantstats’ own <code>_montecarlo.py</code> shares) (quantstats <code>_montecarlo.py</code>)</label></li>
+<li><label><input type="checkbox" checked="">Return-prep utilities: <code>aggregate_returns</code> (resample to W/M/Q/Y), <code>make_portfolio</code> (combine returns into an equity curve with rebalancing modes), <code>to_prices</code>/<code>rebase</code> helpers (quantstats <code>utils.py</code>)</label></li>
+<li><label><input type="checkbox" checked="">Standalone metrics currently only computed inline inside <code>performance()</code>/<code>benchmark_stats()</code>, gap-analyzed against quantstats’ <code>stats.py</code>:</label>
+<ul class="task-list">
+<li><label><input type="checkbox" checked=""><code>to_drawdown_series(returns)</code> — running drawdown series (also a prerequisite for <code>drawdown_details</code>)</label></li>
+<li><label><input type="checkbox" checked=""><code>max_drawdown(returns)</code> — standalone Max Drawdown</label></li>
+<li><label><input type="checkbox" checked=""><code>volatility(returns)</code> — standalone annualized volatility</label></li>
+<li><label><input type="checkbox" checked=""><code>calmar(returns)</code> — standalone Calmar ratio</label></li>
+<li><label><input type="checkbox" checked=""><code>win_rate(returns)</code> — standalone win rate</label></li>
+<li><label><input type="checkbox" checked=""><code>information_ratio(returns, benchmark)</code> — standalone Information Ratio</label></li>
+</ul></li>
+<li><label><input type="checkbox" checked="">Return-transform &amp; descriptive utilities, gap-analyzed against quantstats’ <code>stats.py</code>/<code>utils.py</code>:</label>
+<ul class="task-list">
+<li><label><input type="checkbox" checked=""><code>excess_returns(returns, rf)</code> — public per-period excess-return series (quantstats <code>to_excess_returns</code>)</label></li>
+<li><label><input type="checkbox" checked=""><code>to_log_returns(returns)</code> — convert simple returns to log returns (quantstats <code>to_log_returns</code>)</label></li>
+<li><label><input type="checkbox" checked=""><code>exponential_volatility(returns)</code> — EWM-weighted volatility (quantstats <code>exponential_stdev</code>)</label></li>
+<li><label><input type="checkbox" checked=""><code>geometric_mean(returns)</code> — geometric mean return per period (quantstats <code>expected_return</code>/<code>geometric_mean</code>/<code>ghpr</code>)</label></li>
+<li><label><input type="checkbox" checked=""><code>outliers(returns)</code> / <code>remove_outliers(returns)</code> — quantile-based outlier filter (distinct from the IQR-based <code>distribution</code>)</label></li>
+</ul></li>
 </ul>
 </section>
 <section id="q.plot-plotting-with-premade-quant-finance-configs" class="level2">
@@ -203,9 +252,13 @@ ul.task-list li input[type="checkbox"] {
 <li><label><input type="checkbox"><code>q.plot.plot(...)</code> — enriched plot variant with stats and graphical extras:</label>
 <ul class="task-list">
 <li><label><input type="checkbox">Underwater (drawdown) plot</label></li>
-<li><label><input type="checkbox">Longest drawdown highlighted, with dates on drawdown periods</label></li>
+<li><label><input type="checkbox">Longest drawdown highlighted, with dates on drawdown periods (needs <code>q.stats.drawdown_details</code>; quantstats <code>plot_longest_drawdowns</code>)</label></li>
 <li><label><input type="checkbox">Annotations of notable historical events (Covid, wars, etc.)</label></li>
 <li><label><input type="checkbox">Key metrics overlaid/inset (Sharpe, CAGR, max DD, …)</label></li>
+<li><label><input type="checkbox">Returns distribution / histogram by period, with outliers marked (quantstats <code>plot_distribution</code>, <code>plot_histogram</code>)</label></li>
+<li><label><input type="checkbox">Rolling volatility / Sharpe / Sortino / beta charts — stats already computed in <code>q.stats</code>, just need renderers (quantstats <code>rolling_volatility</code>/<code>rolling_sharpe</code>/<code>rolling_sortino</code>/<code>rolling_beta</code> plot wrappers)</label></li>
+<li><label><input type="checkbox">Yearly / daily returns bar charts (quantstats <code>yearly_returns</code>, <code>daily_returns</code>)</label></li>
+<li><label><input type="checkbox" checked="">Monte Carlo fan chart / distribution plot, pairs with <code>q.stats.montecarlo</code> (quantstats <code>plot_montecarlo</code>, <code>plot_montecarlo_distribution</code>)</label></li>
 </ul></li>
 <li><label><input type="checkbox">Interactive plots (plain plotly backend)</label></li>
 <li><label><input type="checkbox">Animated plots — play button / slider to watch values evolve over time</label></li>
@@ -217,6 +270,8 @@ ul.task-list li input[type="checkbox"] {
 <li><label><input type="checkbox">Monthly returns heatmap</label></li>
 <li><label><input type="checkbox">Benchmark comparison (e.g.&nbsp;vs SPY)</label></li>
 <li><label><input type="checkbox">HTML export</label></li>
+<li><label><input type="checkbox">Comprehensive metrics table — basic vs.&nbsp;full mode, multi-strategy columns, benchmark column (quantstats <code>reports.metrics</code>)</label></li>
+<li><label><input type="checkbox">Full 3-panel “snapshot” report: cumulative return / drawdown / daily returns in one figure (quantstats <code>snapshot</code>)</label></li>
 </ul></li>
 </ul>
 </section>
@@ -224,7 +279,7 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="q.feat-feature-engineering"><code>q.feat</code> — feature engineering</h2>
 <ul class="task-list">
 <li><label><input type="checkbox">Indicator wrappers: TA-Lib (<code>q.feat.talib</code>) and pandas-ta-classic (<code>q.feat.pandas_ta</code>)</label></li>
-<li><label><input type="checkbox">Hand-rolled primitives in <code>q.feat.qta</code> (sma, lags, …)</label></li>
+<li><label><input type="checkbox">Hand-rolled primitives in <code>q.feat.qta</code> (sma, lags, pct_rank, …)</label></li>
 <li><label><input type="checkbox">tsfresh wrappers for automated feature extraction</label></li>
 <li><label><input type="checkbox">Feature pipelines: apply a set of features across a universe of symbols</label></li>
 </ul>

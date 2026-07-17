@@ -146,6 +146,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Return Statistics</span></a>
   </li>  
   <li class="nav-item">
+    <a class="nav-link" href="../plot.html"> 
+<span class="menu-text">Plotting</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link active" href="../reference/index.html" aria-current="page"> 
 <span class="menu-text">API Reference</span></a>
   </li>  
@@ -373,6 +377,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions">Functions</a>
   <ul class="collapse">
   <li><a href="#qrt.feat.qta.lags" id="toc-qrt.feat.qta.lags" class="nav-link" data-scroll-target="#qrt.feat.qta.lags">lags</a></li>
+  <li><a href="#qrt.feat.qta.pct_rank" id="toc-qrt.feat.qta.pct_rank" class="nav-link" data-scroll-target="#qrt.feat.qta.pct_rank">pct_rank</a></li>
   <li><a href="#qrt.feat.qta.sma" id="toc-qrt.feat.qta.sma" class="nav-link" data-scroll-target="#qrt.feat.qta.sma">sma</a></li>
   </ul></li>
   </ul></li>
@@ -412,6 +417,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Create lagged copies of a Series or DataFrame.</td>
 </tr>
 <tr class="even">
+<td><a href="#qrt.feat.qta.pct_rank">pct_rank</a></td>
+<td>Rolling percentile rank of each value within a trailing window.</td>
+</tr>
+<tr class="odd">
 <td><a href="#qrt.feat.qta.sma">sma</a></td>
 <td>Simple moving average.</td>
 </tr>
@@ -484,12 +493,84 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> q.feat.qta.lags(df, [<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">21</span>])          <span class="co"># daily, weekly, monthly lags</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
-<section id="qrt.feat.qta.sma" class="level3">
-<h3 class="anchored" data-anchor-id="qrt.feat.qta.sma">sma</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>feat.qta.sma(series, window)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Simple moving average.</p>
+<section id="qrt.feat.qta.pct_rank" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.feat.qta.pct_rank">pct_rank</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>feat.qta.pct_rank(series, window<span class="op">=</span><span class="dv">60</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Rolling percentile rank of each value within a trailing window.</p>
+<p>Useful for gauging whether a price or indicator value is relatively high or low compared to its own recent history, independent of absolute scale.</p>
 <section id="parameters-1" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 13%">
+<col style="width: 62%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>series</td>
+<td>pd.Series</td>
+<td>Input series (e.g.&nbsp;close prices or an indicator).</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>window</td>
+<td>int</td>
+<td>Rolling window size, in periods.</td>
+<td><code>60</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-1" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-1">Returns</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 11%">
+<col style="width: 79%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>pd.Series</td>
+<td>Series of percentile ranks (0-100 scale), same index as <code>series</code>. The</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>pd.Series</td>
+<td>first <code>window - 1</code> values are <code>NaN</code> (insufficient history).</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="examples-1" class="level4 doc-section doc-section-examples">
+<h4 class="doc-section doc-section-examples anchored" data-anchor-id="examples-1">Examples</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> q.feat.qta.pct_rank(prices[<span class="st">"close"</span>], <span class="dv">60</span>)   <span class="co"># rank vs trailing 60 periods</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+<section id="qrt.feat.qta.sma" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.feat.qta.sma">sma</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>feat.qta.sma(series, window)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Simple moving average.</p>
+<section id="parameters-2" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-2">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -515,8 +596,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="returns-1" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-1">Returns</h4>
+<section id="returns-2" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-2">Returns</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 9%">
@@ -539,9 +620,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="examples-1" class="level4 doc-section doc-section-examples">
-<h4 class="doc-section doc-section-examples anchored" data-anchor-id="examples-1">Examples</h4>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> q.feat.qta.sma(prices[<span class="st">"close"</span>], <span class="dv">20</span>)      <span class="co"># 20-period SMA</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="examples-2" class="level4 doc-section doc-section-examples">
+<h4 class="doc-section doc-section-examples anchored" data-anchor-id="examples-2">Examples</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> q.feat.qta.sma(prices[<span class="st">"close"</span>], <span class="dv">20</span>)      <span class="co"># 20-period SMA</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>

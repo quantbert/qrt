@@ -146,6 +146,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Return Statistics</span></a>
   </li>  
   <li class="nav-item">
+    <a class="nav-link" href="../plot.html"> 
+<span class="menu-text">Plotting</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link active" href="../reference/index.html" aria-current="page"> 
 <span class="menu-text">API Reference</span></a>
   </li>  
@@ -374,6 +378,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#qrt.plot.interactive.drawdown" id="toc-qrt.plot.interactive.drawdown" class="nav-link" data-scroll-target="#qrt.plot.interactive.drawdown">drawdown</a></li>
   <li><a href="#qrt.plot.interactive.equity" id="toc-qrt.plot.interactive.equity" class="nav-link" data-scroll-target="#qrt.plot.interactive.equity">equity</a></li>
   <li><a href="#qrt.plot.interactive.line" id="toc-qrt.plot.interactive.line" class="nav-link" data-scroll-target="#qrt.plot.interactive.line">line</a></li>
+  <li><a href="#qrt.plot.interactive.montecarlo" id="toc-qrt.plot.interactive.montecarlo" class="nav-link" data-scroll-target="#qrt.plot.interactive.montecarlo">montecarlo</a></li>
+  <li><a href="#qrt.plot.interactive.montecarlo_distribution" id="toc-qrt.plot.interactive.montecarlo_distribution" class="nav-link" data-scroll-target="#qrt.plot.interactive.montecarlo_distribution">montecarlo_distribution</a></li>
   <li><a href="#qrt.plot.interactive.monthly_heatmap" id="toc-qrt.plot.interactive.monthly_heatmap" class="nav-link" data-scroll-target="#qrt.plot.interactive.monthly_heatmap">monthly_heatmap</a></li>
   <li><a href="#qrt.plot.interactive.performance" id="toc-qrt.plot.interactive.performance" class="nav-link" data-scroll-target="#qrt.plot.interactive.performance">performance</a></li>
   <li><a href="#qrt.plot.interactive.show" id="toc-qrt.plot.interactive.show" class="nav-link" data-scroll-target="#qrt.plot.interactive.show">show</a></li>
@@ -413,6 +419,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td><a href="#qrt.plot.interactive.line">line</a></td>
 <td>Create an interactive line chart from selected Series or DataFrame columns.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.plot.interactive.montecarlo">montecarlo</a></td>
+<td>Create an interactive Monte Carlo fan chart of bootstrap-resampled return simulations.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.plot.interactive.montecarlo_distribution">montecarlo_distribution</a></td>
+<td>Create interactive terminal-return and Max Drawdown distributions from a Monte Carlo run.</td>
 </tr>
 <tr class="even">
 <td><a href="#qrt.plot.interactive.monthly_heatmap">monthly_heatmap</a></td>
@@ -668,18 +682,281 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </section>
 </section>
-<section id="qrt.plot.interactive.monthly_heatmap" class="level3">
-<h3 class="anchored" data-anchor-id="qrt.plot.interactive.monthly_heatmap">monthly_heatmap</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>plot.interactive.monthly_heatmap(</span>
+<section id="qrt.plot.interactive.montecarlo" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.plot.interactive.montecarlo">montecarlo</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>plot.interactive.montecarlo(</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'Monthly returns'</span>,</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Create an interactive, annotated calendar-month return heatmap.</p>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    sims<span class="op">=</span><span class="dv">1000</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    bust<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    goal<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    confidence<span class="op">=</span><span class="fl">0.95</span>,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    seed<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    block_size<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    periods<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    sample<span class="op">=</span><span class="dv">200</span>,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">520</span>,</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create an interactive Monte Carlo fan chart of bootstrap-resampled return simulations.</p>
+<p>Runs :func:<code>qrt.stats.montecarlo</code> on the full <code>sims</code> simulations, so the shaded confidence band and any <code>bust</code>/<code>goal</code> probabilities reflect the entire sample, then renders only a <code>sample</code> of the individual paths for readability. Unlike quantstats’ <code>plot_montecarlo</code> (which colors paths arbitrarily and, being built on a plain permutation of returns, can only vary each path’s <em>shape</em>, never its terminal value — see the note on :func:<code>qrt.stats.montecarlo</code>), each rendered path here is colored by its own outcome:</p>
+<ul>
+<li><strong>Original</strong> (unresampled) path: bold black line, drawn on top.</li>
+<li><strong>Busted</strong> paths (Max Drawdown breached <code>bust</code>): red.</li>
+<li><strong>Reached goal</strong> paths (terminal return met <code>goal</code>): green.</li>
+<li>Everything else: light gray.</li>
+</ul>
 <section id="parameters-3" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-3">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 3%">
+<col style="width: 3%">
+<col style="width: 89%">
+<col style="width: 3%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>returns</td>
+<td>pd.Series</td>
+<td>Periodic return series (simple or log, per <code>return_type</code>).</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>sims</td>
+<td>int</td>
+<td>Number of simulated paths to run; statistics use all of them.</td>
+<td><code>1000</code></td>
+</tr>
+<tr class="odd">
+<td>return_type</td>
+<td>ReturnType</td>
+<td>Whether <code>returns</code> are <code>"simple"</code> or <code>"log"</code> returns.</td>
+<td><code>'simple'</code></td>
+</tr>
+<tr class="even">
+<td>bust</td>
+<td>float | None</td>
+<td>Optional Max Drawdown threshold (e.g.&nbsp;<code>-0.2</code>); breaching paths are colored red.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>goal</td>
+<td>float | None</td>
+<td>Optional cumulative-return threshold (e.g.&nbsp;<code>1.0</code>); paths reaching it are colored green and a reference line is drawn at that level.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>confidence</td>
+<td>float</td>
+<td>Confidence level for the shaded fan. Defaults to <code>0.95</code>.</td>
+<td><code>0.95</code></td>
+</tr>
+<tr class="odd">
+<td>seed</td>
+<td>int | None</td>
+<td>Optional random seed for reproducibility.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>block_size</td>
+<td>float | None</td>
+<td>Optional mean block length (in periods) for a stationary block bootstrap, preserving autocorrelation/volatility clustering that i.i.d. resampling destroys. See the Note on :func:<code>qrt.stats.montecarlo</code>. Defaults to <code>None</code> (i.i.d.).</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>periods</td>
+<td>int | None</td>
+<td>Optional simulation horizon in periods, decoupled from <code>len(returns)</code> so a long, multi-regime history can be used as the resampling pool while each simulated path only covers a realistic forward horizon (e.g.&nbsp;<code>252</code> for one trading year). See the Note on :func:<code>qrt.stats.montecarlo</code>. Defaults to <code>None</code> (the full length of <code>returns</code>).</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>sample</td>
+<td>int</td>
+<td>Max number of individual simulated paths rendered (statistics still use all <code>sims</code>). Defaults to <code>200</code>.</td>
+<td><code>200</code></td>
+</tr>
+<tr class="odd">
+<td>title</td>
+<td>str | None</td>
+<td>Figure title. Defaults to <code>returns.name</code>.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>height</td>
+<td>int</td>
+<td>Figure height in pixels.</td>
+<td><code>520</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-3" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-3">Returns</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>Figure</td>
+<td>A Plotly <code>Figure</code>.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="qrt.plot.interactive.montecarlo_distribution" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.plot.interactive.montecarlo_distribution">montecarlo_distribution</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>plot.interactive.montecarlo_distribution(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    sims<span class="op">=</span><span class="dv">1000</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    bust<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    goal<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    confidence<span class="op">=</span><span class="fl">0.95</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    seed<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    block_size<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    periods<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">420</span>,</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create interactive terminal-return and Max Drawdown distributions from a Monte Carlo run.</p>
+<p>Complements :func:<code>montecarlo</code>‘s fan chart with two histograms, both built from all <code>sims</code> simulations: the spread of terminal cumulative returns (reward) side-by-side with the spread of each simulation’s Max Drawdown (risk). Where quantstats’ <code>plot_montecarlo_distribution</code> shows only the former, pairing it with the drawdown distribution surfaces the downside risk a single terminal-value histogram hides. This distinction matters more than it first appears: since :func:<code>qrt.stats.montecarlo</code> resamples <em>with replacement</em>, the terminal-return panel here carries real information (a plain permutation-based simulation, as used by quantstats, cannot vary the terminal value at all — see the note on :func:<code>qrt.stats.montecarlo</code>). The original (unresampled) outcome is marked on both panels, along with the <code>goal</code>/<code>bust</code> thresholds and probabilities when given.</p>
+<section id="parameters-4" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-4">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 3%">
+<col style="width: 3%">
+<col style="width: 89%">
+<col style="width: 3%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>returns</td>
+<td>pd.Series</td>
+<td>Periodic return series (simple or log, per <code>return_type</code>).</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>sims</td>
+<td>int</td>
+<td>Number of simulated paths.</td>
+<td><code>1000</code></td>
+</tr>
+<tr class="odd">
+<td>return_type</td>
+<td>ReturnType</td>
+<td>Whether <code>returns</code> are <code>"simple"</code> or <code>"log"</code> returns.</td>
+<td><code>'simple'</code></td>
+</tr>
+<tr class="even">
+<td>bust</td>
+<td>float | None</td>
+<td>Optional Max Drawdown threshold (e.g.&nbsp;<code>-0.2</code>), marked on the drawdown panel.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>goal</td>
+<td>float | None</td>
+<td>Optional cumulative-return threshold (e.g.&nbsp;<code>1.0</code>), marked on the return panel.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>confidence</td>
+<td>float</td>
+<td>Confidence level, forwarded to :func:<code>qrt.stats.montecarlo</code> for the reported probabilities. Defaults to <code>0.95</code>.</td>
+<td><code>0.95</code></td>
+</tr>
+<tr class="odd">
+<td>seed</td>
+<td>int | None</td>
+<td>Optional random seed for reproducibility.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>block_size</td>
+<td>float | None</td>
+<td>Optional mean block length (in periods) for a stationary block bootstrap, preserving autocorrelation/volatility clustering that i.i.d. resampling destroys. See the Note on :func:<code>qrt.stats.montecarlo</code>. Defaults to <code>None</code> (i.i.d.).</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>periods</td>
+<td>int | None</td>
+<td>Optional simulation horizon in periods, decoupled from <code>len(returns)</code> so a long, multi-regime history can be used as the resampling pool while each simulated path only covers a realistic forward horizon (e.g.&nbsp;<code>252</code> for one trading year). See the Note on :func:<code>qrt.stats.montecarlo</code>. Defaults to <code>None</code> (the full length of <code>returns</code>).</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>title</td>
+<td>str | None</td>
+<td>Figure title. Defaults to <code>returns.name</code>.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>height</td>
+<td>int</td>
+<td>Figure height in pixels.</td>
+<td><code>420</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-4" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-4">Returns</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>Figure</td>
+<td>A Plotly <code>Figure</code>.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="qrt.plot.interactive.monthly_heatmap" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.plot.interactive.monthly_heatmap">monthly_heatmap</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>plot.interactive.monthly_heatmap(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'Monthly returns'</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create an interactive, annotated calendar-month return heatmap.</p>
+<section id="parameters-5" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-5">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 10%">
@@ -723,8 +1000,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="returns-3" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-3">Returns</h4>
+<section id="returns-5" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-5">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -745,19 +1022,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="qrt.plot.interactive.performance" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.plot.interactive.performance">performance</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>plot.interactive.performance(</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    benchmark<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">700</span>,</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>plot.interactive.performance(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    benchmark<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">700</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create an interactive equity, drawdown, and headline-statistics report.</p>
 <p>The figure has linked time axes, unified hover, zooming, and date-range buttons. If supplied, the benchmark is aligned to the strategy’s shared observations before plotting.</p>
-<section id="parameters-4" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-4">Parameters</h4>
+<section id="parameters-6" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-6">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 13%">
@@ -813,8 +1090,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="returns-4" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-4">Returns</h4>
+<section id="returns-6" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-6">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -835,19 +1112,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="qrt.plot.interactive.show" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.plot.interactive.show">show</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>plot.interactive.show(</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    figure,</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    save_to<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    formats<span class="op">=</span>(<span class="st">'png'</span>,),</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    width<span class="op">=</span><span class="dv">1400</span>,</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">800</span>,</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="dv">2</span>,</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>plot.interactive.show(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    figure,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    save_to<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    formats<span class="op">=</span>(<span class="st">'png'</span>,),</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    width<span class="op">=</span><span class="dv">1400</span>,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">800</span>,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Display a figure, optionally saving it to <code>save_to</code> as PNG (default) and/or self-contained HTML.</p>
-<section id="parameters-5" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-5">Parameters</h4>
+<section id="parameters-7" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-7">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 7%">

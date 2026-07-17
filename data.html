@@ -147,6 +147,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Return Statistics</span></a>
   </li>  
   <li class="nav-item">
+    <a class="nav-link" href="./plot.html"> 
+<span class="menu-text">Plotting</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link" href="./reference/index.html"> 
 <span class="menu-text">API Reference</span></a>
   </li>  
@@ -230,7 +234,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="prepackaged-sample-datasets" class="level2">
 <h2 class="anchored" data-anchor-id="prepackaged-sample-datasets">Prepackaged sample datasets</h2>
 <p><code>q.data.datasets.load</code> ships daily OHLCV parquet files for a handful of symbols so tests, demos, and tutorials (like this one, and the <a href="./feat.html">Feature Engineering</a> and <a href="./stats.html">Return Statistics</a> pages) don’t need network access:</p>
-<div id="a73eefed" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-17T12:17:00.965458Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-17T12:17:00.965273Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-17T12:17:01.910056Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-17T12:17:01.909128Z&quot;}}" data-execution_count="1">
+<div id="a73eefed" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-17T15:23:17.279069Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-17T15:23:17.278940Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-17T15:23:18.112405Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-17T15:23:18.111748Z&quot;}}" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> qrt <span class="im">as</span> q</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>q.data.datasets.AVAILABLE</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -238,7 +242,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>('aapl', 'btcusd', 'spy')</code></pre>
 </div>
 </div>
-<div id="6ad617e9" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-17T12:17:01.912402Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-17T12:17:01.912273Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-17T12:17:02.022556Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-17T12:17:02.021725Z&quot;}}" data-execution_count="2">
+<div id="6ad617e9" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-17T15:23:18.113639Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-17T15:23:18.113507Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-17T15:23:18.227894Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-17T15:23:18.227727Z&quot;}}" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>aapl <span class="op">=</span> q.data.datasets.load(<span class="st">"aapl"</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>aapl.tail()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="2">
@@ -316,7 +320,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="local-files" class="level2">
 <h2 class="anchored" data-anchor-id="local-files">Local files</h2>
 <p><code>q.data.load</code>/<code>q.data.save</code> dispatch on the file suffix: <code>.parquet</code> (via DuckDB) or <code>.csv</code> (via pandas). A quick round trip through a temp directory:</p>
-<div id="470411ea" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-17T12:17:02.024677Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-17T12:17:02.024617Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-17T12:17:02.031555Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-17T12:17:02.031037Z&quot;}}" data-execution_count="3">
+<div id="470411ea" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-17T15:23:18.229132Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-17T15:23:18.229075Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-17T15:23:18.235624Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-17T15:23:18.235375Z&quot;}}" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tempfile</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -406,7 +410,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Binance futures — daily trade dumps aggregated into OHLC bars, also cached</span></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>ohlc <span class="op">=</span> q.data.sources.binance.read(<span class="st">"BTCUSDT"</span>, <span class="st">"2025-01-01"</span>, <span class="st">"2025-01-07"</span>, <span class="st">"1h"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>q.data.sources.duckdb</code> is different: rather than a fixed schema/vendor, it reads and writes arbitrary tables in a DuckDB database, keyed by <code>symbol</code> and <code>datetime</code>. It works offline (<code>:memory:</code> by default), so we can run it live:</p>
-<div id="d85b4774" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-17T12:17:02.033633Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-17T12:17:02.033579Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-17T12:17:02.047023Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-17T12:17:02.046554Z&quot;}}" data-execution_count="4">
+<div id="d85b4774" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-17T15:23:18.237013Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-17T15:23:18.236962Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-17T15:23:18.251120Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-17T15:23:18.250794Z&quot;}}" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>table <span class="op">=</span> aapl.tail(<span class="dv">30</span>).reset_index()</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>table.insert(<span class="dv">1</span>, <span class="st">"symbol"</span>, <span class="st">"AAPL"</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
