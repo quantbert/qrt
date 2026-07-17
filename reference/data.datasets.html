@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>feat.qta – qrt</title>
+<title>data.datasets – qrt</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -68,8 +68,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../reference/feat.talib.html" rel="next">
-<link href="../reference/feat.html" rel="prev">
+<link href="../reference/data.sources.html" rel="next">
+<link href="../reference/data.local.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -165,7 +165,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/feat.html">q.feat</a></li><li class="breadcrumb-item"><a href="../reference/feat.qta.html">feat.qta</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/data.html">q.data</a></li><li class="breadcrumb-item"><a href="../reference/data.datasets.html">data.datasets</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -200,7 +200,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/feat.qta.html" class="sidebar-item-text sidebar-link active">
+  <a href="../reference/feat.qta.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">feat.qta</span></a>
   </div>
 </li>
@@ -281,7 +281,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/data.datasets.html" class="sidebar-item-text sidebar-link">
+  <a href="../reference/data.datasets.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">data.datasets</span></a>
   </div>
 </li>
@@ -367,36 +367,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#qrt.feat.qta" id="toc-qrt.feat.qta" class="nav-link active" data-scroll-target="#qrt.feat.qta">feat.qta</a>
+  <li><a href="#qrt.data.datasets" id="toc-qrt.data.datasets" class="nav-link active" data-scroll-target="#qrt.data.datasets">data.datasets</a>
   <ul class="collapse">
-  <li><a href="#to-add-a-feature" id="toc-to-add-a-feature" class="nav-link" data-scroll-target="#to-add-a-feature">To add a feature</a></li>
   <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions">Functions</a>
   <ul class="collapse">
-  <li><a href="#qrt.feat.qta.lags" id="toc-qrt.feat.qta.lags" class="nav-link" data-scroll-target="#qrt.feat.qta.lags">lags</a></li>
-  <li><a href="#qrt.feat.qta.sma" id="toc-qrt.feat.qta.sma" class="nav-link" data-scroll-target="#qrt.feat.qta.sma">sma</a></li>
+  <li><a href="#qrt.data.datasets.load" id="toc-qrt.data.datasets.load" class="nav-link" data-scroll-target="#qrt.data.datasets.load">load</a></li>
+  <li><a href="#qrt.data.datasets.refresh" id="toc-qrt.data.datasets.refresh" class="nav-link" data-scroll-target="#qrt.data.datasets.refresh">refresh</a></li>
   </ul></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/feat.qta.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/feat.qta.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/data.datasets.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/data.datasets.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/feat.html">q.feat</a></li><li class="breadcrumb-item"><a href="../reference/feat.qta.html">feat.qta</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/data.html">q.data</a></li><li class="breadcrumb-item"><a href="../reference/data.datasets.html">data.datasets</a></li></ol></nav></header>
 
 
 
 
-<section id="qrt.feat.qta" class="level1">
-<h1>feat.qta</h1>
-<p><code>feat.qta</code></p>
-<p>qta: our own hand-rolled features, one module per feature.</p>
-<section id="to-add-a-feature" class="level2 doc-section doc-section-to-add-a-feature">
-<h2 class="doc-section doc-section-to-add-a-feature anchored" data-anchor-id="to-add-a-feature">To add a feature</h2>
-<ol type="1">
-<li>Create <code>qrt/feat/qta/_&lt;feature&gt;.py</code> (leading underscore – it’s a private implementation module; the function itself stays public).</li>
-<li>Define one public function taking a Series/DataFrame and returning one, with the index preserved. Helpers should be prefixed with <code>_</code>.</li>
-<li>Re-export it below (one import line + one <code>__all__</code> entry), so it is visible to IDEs and available as <code>q.feat.qta.&lt;feature&gt;</code>.</li>
-</ol>
-</section>
+<section id="qrt.data.datasets" class="level1">
+<h1>data.datasets</h1>
+<p><code>data.datasets</code></p>
+<p>Prepackaged sample datasets (daily OHLCV) shipped with qrt for offline use – handy for tests, demos, and tutorials without hitting yfinance every time you just need some SPY or AAPL data on hand.</p>
+<pre><code>import qrt as q
+
+spy = q.data.datasets.load("spy")
+aapl = q.data.datasets.load("aapl")</code></pre>
+<p>The bundled parquet files are refreshed via :func:<code>refresh</code> (see <code>tools/update_datasets.py</code>, wired into <code>make datasets</code> / <code>make publish</code>) so released versions of qrt always ship reasonably current data – but they are not guaranteed to be fully up to date for a given install. Fetch live data via :mod:<code>qrt.data.sources</code> if you need the latest bar.</p>
 <section id="functions" class="level2">
 <h2 class="anchored" data-anchor-id="functions">Functions</h2>
 <table class="caption-top table">
@@ -408,27 +404,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#qrt.feat.qta.lags">lags</a></td>
-<td>Create lagged copies of a Series or DataFrame.</td>
+<td><a href="#qrt.data.datasets.load">load</a></td>
+<td>Load a bundled sample dataset (offline, no network required).</td>
 </tr>
 <tr class="even">
-<td><a href="#qrt.feat.qta.sma">sma</a></td>
-<td>Simple moving average.</td>
+<td><a href="#qrt.data.datasets.refresh">refresh</a></td>
+<td>Re-download bundled datasets from Yahoo Finance and overwrite their parquet files.</td>
 </tr>
 </tbody>
 </table>
-<section id="qrt.feat.qta.lags" class="level3">
-<h3 class="anchored" data-anchor-id="qrt.feat.qta.lags">lags</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>feat.qta.lags(data, lags)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Create lagged copies of a Series or DataFrame.</p>
+<section id="qrt.data.datasets.load" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.data.datasets.load">load</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data.datasets.load(name)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Load a bundled sample dataset (offline, no network required).</p>
 <section id="parameters" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 7%">
-<col style="width: 24%">
-<col style="width: 57%">
-<col style="width: 10%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 69%">
+<col style="width: 12%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -440,15 +436,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td>data</td>
-<td>pd.Series | pd.DataFrame</td>
-<td>Input series or frame (rows ordered in time).</td>
-<td><em>required</em></td>
-</tr>
-<tr class="even">
-<td>lags</td>
-<td>int | Iterable[int]</td>
-<td>Number of lags (1..n) or an explicit iterable of lag periods.</td>
+<td>name</td>
+<td>str</td>
+<td>One of :data:<code>AVAILABLE</code> (<code>"aapl"</code>, <code>"btcusd"</code>, <code>"spy"</code>).</td>
 <td><em>required</em></td>
 </tr>
 </tbody>
@@ -458,9 +448,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns">Returns</h4>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 8%">
-<col style="width: 15%">
-<col style="width: 76%">
+<col style="width: 11%">
+<col style="width: 20%">
+<col style="width: 68%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -473,56 +463,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td></td>
 <td>pd.DataFrame</td>
-<td>DataFrame with one column per (column, lag), named <code>{name}_lag{k}</code>.</td>
+<td>Daily OHLCV DataFrame indexed by <code>datetime</code>.</td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="examples" class="level4 doc-section doc-section-examples">
-<h4 class="doc-section doc-section-examples anchored" data-anchor-id="examples">Examples</h4>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> q.feat.qta.lags(prices[<span class="st">"close"</span>], <span class="dv">3</span>)      <span class="co"># close_lag1..close_lag3</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> q.feat.qta.lags(df, [<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">21</span>])          <span class="co"># daily, weekly, monthly lags</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-</section>
-<section id="qrt.feat.qta.sma" class="level3">
-<h3 class="anchored" data-anchor-id="qrt.feat.qta.sma">sma</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>feat.qta.sma(series, window)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Simple moving average.</p>
-<section id="parameters-1" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
+<section id="raises" class="level4 doc-section doc-section-raises">
+<h4 class="doc-section doc-section-raises anchored" data-anchor-id="raises">Raises</h4>
 <table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-<th>Default</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>series</td>
-<td>pd.Series</td>
-<td>Input series (e.g.&nbsp;close prices).</td>
-<td><em>required</em></td>
-</tr>
-<tr class="even">
-<td>window</td>
-<td>int</td>
-<td>Rolling window size, in periods.</td>
-<td><em>required</em></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="returns-1" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-1">Returns</h4>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 9%">
-<col style="width: 13%">
-<col style="width: 77%">
-</colgroup>
 <thead>
 <tr class="header">
 <th>Name</th>
@@ -533,15 +481,49 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td></td>
-<td>pd.Series</td>
-<td>Series of the rolling mean, with the same index as <code>series</code>.</td>
+<td>KeyError</td>
+<td>If <code>name</code> isn’t a bundled dataset.</td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="examples-1" class="level4 doc-section doc-section-examples">
-<h4 class="doc-section doc-section-examples anchored" data-anchor-id="examples-1">Examples</h4>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> q.feat.qta.sma(prices[<span class="st">"close"</span>], <span class="dv">20</span>)      <span class="co"># 20-period SMA</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="qrt.data.datasets.refresh" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.data.datasets.refresh">refresh</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>data.datasets.refresh(names<span class="op">=</span><span class="va">None</span>, end_date<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Re-download bundled datasets from Yahoo Finance and overwrite their parquet files.</p>
+<section id="parameters-1" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 20%">
+<col style="width: 60%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>names</td>
+<td>list[str] | None</td>
+<td>Dataset names to refresh (default: all of :data:<code>AVAILABLE</code>).</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>end_date</td>
+<td>str | date | None</td>
+<td>Last date to fetch, <code>YYYY-MM-DD</code> (default: today).</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
 
 
 </section>
@@ -952,13 +934,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../reference/feat.html" class="pagination-link" aria-label="feat">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">feat</span>
+      <a href="../reference/data.local.html" class="pagination-link" aria-label="data.local">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">data.local</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../reference/feat.talib.html" class="pagination-link" aria-label="feat.talib">
-        <span class="nav-page-text">feat.talib</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../reference/data.sources.html" class="pagination-link" aria-label="data.sources">
+        <span class="nav-page-text">data.sources</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -967,4 +949,4 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/feat.qta.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/feat.qta.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/data.datasets.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/data.datasets.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

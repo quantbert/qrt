@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>vendors.yfinance – qrt</title>
+<title>data.sources.binance – qrt</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -68,8 +68,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../reference/vendors.binance.html" rel="next">
-<link href="../reference/vendors.base.html" rel="prev">
+<link href="../reference/data.sources.duckdb.html" rel="next">
+<link href="../reference/data.sources.yfinance.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -138,12 +138,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Feature Engineering</span></a>
   </li>  
   <li class="nav-item">
+    <a class="nav-link" href="../stats.html"> 
+<span class="menu-text">Return Statistics</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link" href="../demo.html"> 
 <span class="menu-text">Interactive Demo</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link active" href="../reference/index.html" aria-current="page"> 
 <span class="menu-text">API Reference</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../roadmap.html"> 
+<span class="menu-text">Roadmap</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -157,7 +165,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/vendors.html">q.vendors</a></li><li class="breadcrumb-item"><a href="../reference/vendors.yfinance.html">vendors.yfinance</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/data.html">q.data</a></li><li class="breadcrumb-item"><a href="../reference/data.sources.binance.html">data.sources.binance</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -213,12 +221,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">q.plot</span></a>
+ <span class="menu-text">q.stats</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/stats.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">stats</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">q.plot</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../reference/plot.html" class="sidebar-item-text sidebar-link">
@@ -235,43 +260,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
- <span class="menu-text">q.vendors</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/vendors.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">vendors</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/vendors.base.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">vendors.base</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/vendors.yfinance.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">vendors.yfinance</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/vendors.binance.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">vendors.binance</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
- <span class="menu-text">q.dataload</span></a>
+ <span class="menu-text">q.data</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -279,8 +269,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/dataload.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">dataload</span></a>
+  <a href="../reference/data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/data.local.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">data.local</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/data.datasets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">data.datasets</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/data.sources.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">data.sources</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/data.sources.yfinance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">data.sources.yfinance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/data.sources.binance.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">data.sources.binance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/data.sources.duckdb.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">data.sources.duckdb</span></a>
   </div>
 </li>
       </ul>
@@ -288,12 +314,41 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">q.utils</span></a>
+ <span class="menu-text">q.model</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">model</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/model.torch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">model.torch</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/model.selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">model.selection</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">q.utils</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../reference/utils.html" class="sidebar-item-text sidebar-link">
@@ -312,28 +367,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#qrt.vendors.yfinance" id="toc-qrt.vendors.yfinance" class="nav-link active" data-scroll-target="#qrt.vendors.yfinance">vendors.yfinance</a>
+  <li><a href="#qrt.data.sources.binance" id="toc-qrt.data.sources.binance" class="nav-link active" data-scroll-target="#qrt.data.sources.binance">data.sources.binance</a>
   <ul class="collapse">
-  <li><a href="#classes" id="toc-classes" class="nav-link" data-scroll-target="#classes">Classes</a>
+  <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions">Functions</a>
   <ul class="collapse">
-  <li><a href="#qrt.vendors.yfinance.YFinanceVendor" id="toc-qrt.vendors.yfinance.YFinanceVendor" class="nav-link" data-scroll-target="#qrt.vendors.yfinance.YFinanceVendor">YFinanceVendor</a></li>
+  <li><a href="#qrt.data.sources.binance.fetch_trades" id="toc-qrt.data.sources.binance.fetch_trades" class="nav-link" data-scroll-target="#qrt.data.sources.binance.fetch_trades">fetch_trades</a></li>
+  <li><a href="#qrt.data.sources.binance.fetch_trades_day" id="toc-qrt.data.sources.binance.fetch_trades_day" class="nav-link" data-scroll-target="#qrt.data.sources.binance.fetch_trades_day">fetch_trades_day</a></li>
+  <li><a href="#qrt.data.sources.binance.read" id="toc-qrt.data.sources.binance.read" class="nav-link" data-scroll-target="#qrt.data.sources.binance.read">read</a></li>
   </ul></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/vendors.yfinance.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/vendors.yfinance.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/data.sources.binance.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/data.sources.binance.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/vendors.html">q.vendors</a></li><li class="breadcrumb-item"><a href="../reference/vendors.yfinance.html">vendors.yfinance</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/data.html">q.data</a></li><li class="breadcrumb-item"><a href="../reference/data.sources.binance.html">data.sources.binance</a></li></ol></nav></header>
 
 
 
 
-<section id="qrt.vendors.yfinance" class="level1">
-<h1>vendors.yfinance</h1>
-<p><code>vendors.yfinance</code></p>
-<p>Yahoo Finance market data vendor (stocks, ETFs, indices).</p>
-<section id="classes" class="level2">
-<h2 class="anchored" data-anchor-id="classes">Classes</h2>
+<section id="qrt.data.sources.binance" class="level1">
+<h1>data.sources.binance</h1>
+<p><code>data.sources.binance</code></p>
+<p>Binance futures market data source.</p>
+<p>Downloads daily tick-level trade dumps from <code>data.binance.vision</code> and caches them locally as parquet. OHLC bars are aggregated from trades.</p>
+<pre><code>ohlc = q.data.sources.binance.read("BTCUSDT", "2025-01-01", "2025-01-07", "1h")</code></pre>
+<section id="functions" class="level2">
+<h2 class="anchored" data-anchor-id="functions">Functions</h2>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -343,24 +402,48 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#qrt.vendors.yfinance.YFinanceVendor">YFinanceVendor</a></td>
-<td>Vendor backed by the <code>yfinance</code> package.</td>
+<td><a href="#qrt.data.sources.binance.fetch_trades">fetch_trades</a></td>
+<td>Fetch trades for a date range (inclusive), concatenated.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.data.sources.binance.fetch_trades_day">fetch_trades_day</a></td>
+<td>Fetch all trades for <code>symbol</code> on a single day (cached as parquet).</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.data.sources.binance.read">read</a></td>
+<td>Fetch OHLCV bars aggregated from tick trades.</td>
 </tr>
 </tbody>
 </table>
-<section id="qrt.vendors.yfinance.YFinanceVendor" class="level3">
-<h3 class="anchored" data-anchor-id="qrt.vendors.yfinance.YFinanceVendor">YFinanceVendor</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>vendors.yfinance.YFinanceVendor(cache_dir<span class="op">=</span>DEFAULT_CACHE_DIR)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Vendor backed by the <code>yfinance</code> package.</p>
-<p>Fetched OHLC data is cached locally as parquet files named like <code>{symbol}-{interval}-{start}-{end}.parquet</code> so repeated requests for the same range don’t hit the network.</p>
+<section id="qrt.data.sources.binance.fetch_trades" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.data.sources.binance.fetch_trades">fetch_trades</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data.sources.binance.fetch_trades(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    symbol,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    start_date,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    end_date,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    download_dir<span class="op">=</span><span class="st">'data'</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    cache_dir<span class="op">=</span>DEFAULT_CACHE_DIR,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Fetch trades for a date range (inclusive), concatenated.</p>
+<p>Days that fail to download are skipped with a warning.</p>
+</section>
+<section id="qrt.data.sources.binance.fetch_trades_day" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.data.sources.binance.fetch_trades_day">fetch_trades_day</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>data.sources.binance.fetch_trades_day(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    symbol,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    date,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    download_dir<span class="op">=</span><span class="st">'data'</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    cache_dir<span class="op">=</span>DEFAULT_CACHE_DIR,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Fetch all trades for <code>symbol</code> on a single day (cached as parquet).</p>
 <section id="parameters" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 13%">
-<col style="width: 16%">
-<col style="width: 44%">
-<col style="width: 25%">
+<col style="width: 14%">
+<col style="width: 17%">
+<col style="width: 45%">
+<col style="width: 21%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -372,43 +455,161 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
+<td>symbol</td>
+<td>str</td>
+<td>Binance symbol, e.g.&nbsp;<code>"BTCUSDT"</code>.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>date</td>
+<td>str | datetime</td>
+<td>Day to fetch, <code>YYYY-MM-DD</code> or datetime.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="odd">
+<td>download_dir</td>
+<td>str | Path</td>
+<td>Directory for temporary zip/csv downloads.</td>
+<td><code>'data'</code></td>
+</tr>
+<tr class="even">
 <td>cache_dir</td>
 <td>str | Path</td>
-<td>Directory for parquet OHLC caches.</td>
+<td>Directory for parquet trade caches.</td>
 <td><code>DEFAULT_CACHE_DIR</code></td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="methods" class="level4">
-<h4 class="anchored" data-anchor-id="methods">Methods</h4>
+<section id="returns" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns">Returns</h4>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 17%">
+<col style="width: 72%">
+</colgroup>
 <thead>
 <tr class="header">
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#qrt.vendors.yfinance.YFinanceVendor.fetch_ohlc">fetch_ohlc</a></td>
-<td>Fetch OHLCV bars from Yahoo Finance (cached as parquet).</td>
+<td></td>
+<td>pd.DataFrame</td>
+<td>DataFrame with columns <code>id, price, qty, quote_qty, time, | |        | pd.DataFrame | is_buyer_maker, datetime</code>.</td>
 </tr>
 </tbody>
 </table>
-<section id="qrt.vendors.yfinance.YFinanceVendor.fetch_ohlc" class="level5">
-<h5 class="anchored" data-anchor-id="qrt.vendors.yfinance.YFinanceVendor.fetch_ohlc">fetch_ohlc</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>vendors.yfinance.YFinanceVendor.fetch_ohlc(</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    symbol,</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    start_date,</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    end_date,</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    time_interval<span class="op">=</span><span class="st">'1D'</span>,</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Fetch OHLCV bars from Yahoo Finance (cached as parquet).</p>
-<p>See :meth:<code>DataVendor.fetch_ohlc</code>. Only intervals supported by Yahoo are available (e.g.&nbsp;<code>1m, 5m, 1h, 1D</code>); intraday data is limited to recent history by Yahoo.</p>
-
-
 </section>
+</section>
+<section id="qrt.data.sources.binance.read" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.data.sources.binance.read">read</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>data.sources.binance.read(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    symbols,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    start_date,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    end_date,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    time_interval<span class="op">=</span><span class="st">'1h'</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    download_dir<span class="op">=</span><span class="st">'data'</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    cache_dir<span class="op">=</span>DEFAULT_CACHE_DIR,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Fetch OHLCV bars aggregated from tick trades.</p>
+<p>Bars are aggregated per day and concatenated, so intervals should divide evenly into one day.</p>
+<section id="parameters-1" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 18%">
+<col style="width: 48%">
+<col style="width: 19%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>symbols</td>
+<td>str | list[str]</td>
+<td>A single symbol, or a list of symbols.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>start_date</td>
+<td>str | datetime</td>
+<td>Start date (inclusive), <code>YYYY-MM-DD</code> or datetime.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="odd">
+<td>end_date</td>
+<td>str | datetime</td>
+<td>End date (inclusive), <code>YYYY-MM-DD</code> or datetime.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>time_interval</td>
+<td>str</td>
+<td>Pandas offset alias (e.g.&nbsp;<code>"1h"</code>, <code>"5min"</code>).</td>
+<td><code>'1h'</code></td>
+</tr>
+<tr class="odd">
+<td>download_dir</td>
+<td>str | Path</td>
+<td>Directory for temporary zip/csv downloads.</td>
+<td><code>'data'</code></td>
+</tr>
+<tr class="even">
+<td>cache_dir</td>
+<td>str | Path</td>
+<td>Directory for parquet trade caches.</td>
+<td><code>DEFAULT_CACHE_DIR</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-1" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-1">Returns</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 36%">
+<col style="width: 57%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>pd.DataFrame | dict[str, pd.DataFrame]</td>
+<td>A single DataFrame if <code>symbols</code> is a string, otherwise a dict of</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>pd.DataFrame | dict[str, pd.DataFrame]</td>
+<td>DataFrames keyed by symbol (failed symbols are skipped with a</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>pd.DataFrame | dict[str, pd.DataFrame]</td>
+<td>warning, with a progress bar shown).</td>
+</tr>
+</tbody>
+</table>
+
+
 </section>
 </section>
 </section>
@@ -817,13 +1018,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../reference/vendors.base.html" class="pagination-link" aria-label="vendors.base">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">vendors.base</span>
+      <a href="../reference/data.sources.yfinance.html" class="pagination-link" aria-label="data.sources.yfinance">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">data.sources.yfinance</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../reference/vendors.binance.html" class="pagination-link" aria-label="vendors.binance">
-        <span class="nav-page-text">vendors.binance</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../reference/data.sources.duckdb.html" class="pagination-link" aria-label="data.sources.duckdb">
+        <span class="nav-page-text">data.sources.duckdb</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -832,4 +1033,4 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/vendors.yfinance.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/vendors.yfinance.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/data.sources.binance.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/data.sources.binance.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

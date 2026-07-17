@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>vendors – qrt</title>
+<title>data.sources.duckdb – qrt</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -68,8 +68,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../reference/vendors.base.html" rel="next">
-<link href="../reference/plot.interactive.html" rel="prev">
+<link href="../reference/model.html" rel="next">
+<link href="../reference/data.sources.binance.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -138,12 +138,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Feature Engineering</span></a>
   </li>  
   <li class="nav-item">
+    <a class="nav-link" href="../stats.html"> 
+<span class="menu-text">Return Statistics</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link" href="../demo.html"> 
 <span class="menu-text">Interactive Demo</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link active" href="../reference/index.html" aria-current="page"> 
 <span class="menu-text">API Reference</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../roadmap.html"> 
+<span class="menu-text">Roadmap</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -157,7 +165,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/vendors.html">q.vendors</a></li><li class="breadcrumb-item"><a href="../reference/vendors.html">vendors</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/data.html">q.data</a></li><li class="breadcrumb-item"><a href="../reference/data.sources.duckdb.html">data.sources.duckdb</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -213,12 +221,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">q.plot</span></a>
+ <span class="menu-text">q.stats</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/stats.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">stats</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">q.plot</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../reference/plot.html" class="sidebar-item-text sidebar-link">
@@ -235,43 +260,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
- <span class="menu-text">q.vendors</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/vendors.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">vendors</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/vendors.base.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">vendors.base</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/vendors.yfinance.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">vendors.yfinance</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/vendors.binance.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">vendors.binance</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
- <span class="menu-text">q.dataload</span></a>
+ <span class="menu-text">q.data</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -279,8 +269,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/dataload.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">dataload</span></a>
+  <a href="../reference/data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/data.local.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">data.local</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/data.datasets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">data.datasets</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/data.sources.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">data.sources</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/data.sources.yfinance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">data.sources.yfinance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/data.sources.binance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">data.sources.binance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/data.sources.duckdb.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">data.sources.duckdb</span></a>
   </div>
 </li>
       </ul>
@@ -288,12 +314,41 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">q.utils</span></a>
+ <span class="menu-text">q.model</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">model</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/model.torch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">model.torch</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/model.selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">model.selection</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">q.utils</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../reference/utils.html" class="sidebar-item-text sidebar-link">
@@ -312,32 +367,102 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#qrt.vendors" id="toc-qrt.vendors" class="nav-link active" data-scroll-target="#qrt.vendors">vendors</a>
+  <li><a href="#qrt.data.sources.duckdb" id="toc-qrt.data.sources.duckdb" class="nav-link active" data-scroll-target="#qrt.data.sources.duckdb">data.sources.duckdb</a>
   <ul class="collapse">
+  <li><a href="#classes" id="toc-classes" class="nav-link" data-scroll-target="#classes">Classes</a>
+  <ul class="collapse">
+  <li><a href="#qrt.data.sources.duckdb.DuckDBConnection" id="toc-qrt.data.sources.duckdb.DuckDBConnection" class="nav-link" data-scroll-target="#qrt.data.sources.duckdb.DuckDBConnection">DuckDBConnection</a></li>
+  </ul></li>
   <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions">Functions</a>
   <ul class="collapse">
-  <li><a href="#qrt.vendors.get_vendor" id="toc-qrt.vendors.get_vendor" class="nav-link" data-scroll-target="#qrt.vendors.get_vendor">get_vendor</a></li>
+  <li><a href="#qrt.data.sources.duckdb.connect" id="toc-qrt.data.sources.duckdb.connect" class="nav-link" data-scroll-target="#qrt.data.sources.duckdb.connect">connect</a></li>
   </ul></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/vendors.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/vendors.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/data.sources.duckdb.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/data.sources.duckdb.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/vendors.html">q.vendors</a></li><li class="breadcrumb-item"><a href="../reference/vendors.html">vendors</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/data.html">q.data</a></li><li class="breadcrumb-item"><a href="../reference/data.sources.duckdb.html">data.sources.duckdb</a></li></ol></nav></header>
 
 
 
 
-<section id="qrt.vendors" class="level1">
-<h1>vendors</h1>
-<p><code>vendors</code></p>
-<p>Market data vendors.</p>
-<p>Each vendor implements the :class:<code>~qrt.vendors.base.DataVendor</code> interface, so downstream code can stay vendor-agnostic:</p>
-<pre><code>import qrt as q
-
-vendor = q.vendors.get_vendor("binance")
-ohlc = vendor.fetch_ohlc("BTCUSDT", "2025-01-01", "2025-01-07", "1h")</code></pre>
-<p>To add a new vendor, subclass <code>DataVendor</code> in a new module and register it in <code>_VENDORS</code> below.</p>
+<section id="qrt.data.sources.duckdb" class="level1">
+<h1>data.sources.duckdb</h1>
+<p><code>data.sources.duckdb</code></p>
+<p>Generic DuckDB-backed data source.</p>
+<p>Unlike the network vendors, this reads/writes arbitrary tables in a DuckDB database rather than a fixed schema – point :func:<code>connect</code> at a database file (or <code>:memory:</code>) and pass a <code>table</code> name to <code>read</code>/<code>write</code>.</p>
+<p>Multiple independent connections are just multiple :func:<code>connect</code> calls – there is no shared/cached registry::</p>
+<pre><code>prod = q.data.sources.duckdb.connect(path="prod.duckdb")
+paper = q.data.sources.duckdb.connect(path="paper.duckdb")</code></pre>
+<section id="classes" class="level2">
+<h2 class="anchored" data-anchor-id="classes">Classes</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#qrt.data.sources.duckdb.DuckDBConnection">DuckDBConnection</a></td>
+<td>A single DuckDB connection, opened via :func:<code>connect</code>.</td>
+</tr>
+</tbody>
+</table>
+<section id="qrt.data.sources.duckdb.DuckDBConnection" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.data.sources.duckdb.DuckDBConnection">DuckDBConnection</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data.sources.duckdb.DuckDBConnection(conn)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A single DuckDB connection, opened via :func:<code>connect</code>.</p>
+<section id="methods" class="level4">
+<h4 class="anchored" data-anchor-id="methods">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#qrt.data.sources.duckdb.DuckDBConnection.close">close</a></td>
+<td>Close the underlying connection.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.data.sources.duckdb.DuckDBConnection.read">read</a></td>
+<td>Read OHLC(V) rows for one symbol from <code>table</code>.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.data.sources.duckdb.DuckDBConnection.write">write</a></td>
+<td>Insert <code>df</code> into <code>table</code> (created on first write).</td>
+</tr>
+</tbody>
+</table>
+<section id="qrt.data.sources.duckdb.DuckDBConnection.close" class="level5">
+<h5 class="anchored" data-anchor-id="qrt.data.sources.duckdb.DuckDBConnection.close">close</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>data.sources.duckdb.DuckDBConnection.close()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Close the underlying connection.</p>
+</section>
+<section id="qrt.data.sources.duckdb.DuckDBConnection.read" class="level5">
+<h5 class="anchored" data-anchor-id="qrt.data.sources.duckdb.DuckDBConnection.read">read</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>data.sources.duckdb.DuckDBConnection.read(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    symbol,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    start_date,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    end_date,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    table<span class="op">=</span><span class="st">'ohlc'</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Read OHLC(V) rows for one symbol from <code>table</code>.</p>
+</section>
+<section id="qrt.data.sources.duckdb.DuckDBConnection.write" class="level5">
+<h5 class="anchored" data-anchor-id="qrt.data.sources.duckdb.DuckDBConnection.write">write</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>data.sources.duckdb.DuckDBConnection.write(df, <span class="op">*</span>, table<span class="op">=</span><span class="st">'ohlc'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Insert <code>df</code> into <code>table</code> (created on first write).</p>
+</section>
+</section>
+</section>
+</section>
 <section id="functions" class="level2">
 <h2 class="anchored" data-anchor-id="functions">Functions</h2>
 <table class="caption-top table">
@@ -349,22 +474,22 @@ ohlc = vendor.fetch_ohlc("BTCUSDT", "2025-01-01", "2025-01-07", "1h")</code></pr
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#qrt.vendors.get_vendor">get_vendor</a></td>
-<td>Instantiate a vendor by name.</td>
+<td><a href="#qrt.data.sources.duckdb.connect">connect</a></td>
+<td>Open a DuckDB connection for reading/writing OHLC(V) tables.</td>
 </tr>
 </tbody>
 </table>
-<section id="qrt.vendors.get_vendor" class="level3">
-<h3 class="anchored" data-anchor-id="qrt.vendors.get_vendor">get_vendor</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>vendors.get_vendor(name, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Instantiate a vendor by name.</p>
+<section id="qrt.data.sources.duckdb.connect" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.data.sources.duckdb.connect">connect</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>data.sources.duckdb.<span class="ex">connect</span>(path<span class="op">=</span><span class="st">':memory:'</span>, <span class="op">**</span>connect_kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Open a DuckDB connection for reading/writing OHLC(V) tables.</p>
 <section id="parameters" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 10%">
-<col style="width: 8%">
-<col style="width: 67%">
+<col style="width: 17%">
+<col style="width: 12%">
+<col style="width: 56%">
 <col style="width: 13%">
 </colgroup>
 <thead>
@@ -377,35 +502,16 @@ ohlc = vendor.fetch_ohlc("BTCUSDT", "2025-01-01", "2025-01-07", "1h")</code></pr
 </thead>
 <tbody>
 <tr class="odd">
-<td>name</td>
-<td>str</td>
-<td>Registered vendor name (e.g.&nbsp;<code>"binance"</code>, <code>"yfinance"</code>).</td>
-<td><em>required</em></td>
+<td>path</td>
+<td>str | Path</td>
+<td>Database file, or <code>:memory:</code> for an in-memory database.</td>
+<td><code>':memory:'</code></td>
 </tr>
 <tr class="even">
-<td>**kwargs</td>
+<td>**connect_kwargs</td>
 <td>Any</td>
-<td>Passed to the vendor constructor (e.g.&nbsp;<code>cache_dir</code>).</td>
+<td>Passed to :func:<code>duckdb.connect</code>.</td>
 <td><code>{}</code></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="raises" class="level4 doc-section doc-section-raises">
-<h4 class="doc-section doc-section-raises anchored" data-anchor-id="raises">Raises</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td></td>
-<td>KeyError</td>
-<td>If no vendor is registered under <code>name</code>.</td>
 </tr>
 </tbody>
 </table>
@@ -819,13 +925,13 @@ ohlc = vendor.fetch_ohlc("BTCUSDT", "2025-01-01", "2025-01-07", "1h")</code></pr
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../reference/plot.interactive.html" class="pagination-link" aria-label="plot.interactive">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">plot.interactive</span>
+      <a href="../reference/data.sources.binance.html" class="pagination-link" aria-label="data.sources.binance">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">data.sources.binance</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../reference/vendors.base.html" class="pagination-link" aria-label="vendors.base">
-        <span class="nav-page-text">vendors.base</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../reference/model.html" class="pagination-link" aria-label="model">
+        <span class="nav-page-text">model</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -834,4 +940,4 @@ ohlc = vendor.fetch_ohlc("BTCUSDT", "2025-01-01", "2025-01-07", "1h")</code></pr
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/vendors.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/vendors.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/data.sources.duckdb.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/data.sources.duckdb.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

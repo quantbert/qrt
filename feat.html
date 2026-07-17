@@ -136,12 +136,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Feature Engineering</span></a>
   </li>  
   <li class="nav-item">
+    <a class="nav-link" href="./stats.html"> 
+<span class="menu-text">Return Statistics</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link" href="./demo.html"> 
 <span class="menu-text">Interactive Demo</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./reference/index.html"> 
 <span class="menu-text">API Reference</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./roadmap.html"> 
+<span class="menu-text">Roadmap</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -212,7 +220,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<p>All indicator functions share the same convention: they accept an <strong>OHLCV DataFrame</strong> with lowercase columns (<code>open, high, low, close, volume</code>) — the frame layout returned by <code>q.vendors</code> — and preserve the datetime index on the output. Indicators that only need a price series also accept a plain <code>Series</code> (treated as <code>close</code>).</p>
+<p>All indicator functions share the same convention: they accept an <strong>OHLCV DataFrame</strong> with lowercase columns (<code>open, high, low, close, volume</code>) — the frame layout returned by <code>q.data.sources</code>’s <code>read()</code> functions (e.g.&nbsp;<code>q.data.sources.yfinance.read(...)</code>) — and preserve the datetime index on the output. Indicators that only need a price series also accept a plain <code>Series</code> (treated as <code>close</code>).</p>
 <section id="qta-our-own-features" class="level2">
 <h2 class="anchored" data-anchor-id="qta-our-own-features">qta — our own features</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>q.feat.qta.sma(ohlc[<span class="st">"close"</span>], <span class="dv">20</span>)</span>

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>vendors.base – qrt</title>
+<title>data.local – qrt</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -68,8 +68,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../reference/vendors.yfinance.html" rel="next">
-<link href="../reference/vendors.html" rel="prev">
+<link href="../reference/data.datasets.html" rel="next">
+<link href="../reference/data.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -138,12 +138,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Feature Engineering</span></a>
   </li>  
   <li class="nav-item">
+    <a class="nav-link" href="../stats.html"> 
+<span class="menu-text">Return Statistics</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link" href="../demo.html"> 
 <span class="menu-text">Interactive Demo</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link active" href="../reference/index.html" aria-current="page"> 
 <span class="menu-text">API Reference</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../roadmap.html"> 
+<span class="menu-text">Roadmap</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -157,7 +165,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/vendors.html">q.vendors</a></li><li class="breadcrumb-item"><a href="../reference/vendors.base.html">vendors.base</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/data.html">q.data</a></li><li class="breadcrumb-item"><a href="../reference/data.local.html">data.local</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -213,12 +221,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">q.plot</span></a>
+ <span class="menu-text">q.stats</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/stats.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">stats</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">q.plot</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../reference/plot.html" class="sidebar-item-text sidebar-link">
@@ -235,43 +260,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
- <span class="menu-text">q.vendors</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/vendors.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">vendors</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/vendors.base.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">vendors.base</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/vendors.yfinance.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">vendors.yfinance</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/vendors.binance.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">vendors.binance</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
- <span class="menu-text">q.dataload</span></a>
+ <span class="menu-text">q.data</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -279,8 +269,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/dataload.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">dataload</span></a>
+  <a href="../reference/data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/data.local.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">data.local</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/data.datasets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">data.datasets</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/data.sources.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">data.sources</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/data.sources.yfinance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">data.sources.yfinance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/data.sources.binance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">data.sources.binance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/data.sources.duckdb.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">data.sources.duckdb</span></a>
   </div>
 </li>
       </ul>
@@ -288,12 +314,41 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">q.utils</span></a>
+ <span class="menu-text">q.model</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">model</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/model.torch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">model.torch</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/model.selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">model.selection</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">q.utils</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../reference/utils.html" class="sidebar-item-text sidebar-link">
@@ -312,32 +367,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#qrt.vendors.base" id="toc-qrt.vendors.base" class="nav-link active" data-scroll-target="#qrt.vendors.base">vendors.base</a>
+  <li><a href="#qrt.data.local" id="toc-qrt.data.local" class="nav-link active" data-scroll-target="#qrt.data.local">data.local</a>
   <ul class="collapse">
-  <li><a href="#classes" id="toc-classes" class="nav-link" data-scroll-target="#classes">Classes</a>
-  <ul class="collapse">
-  <li><a href="#qrt.vendors.base.DataVendor" id="toc-qrt.vendors.base.DataVendor" class="nav-link" data-scroll-target="#qrt.vendors.base.DataVendor">DataVendor</a></li>
-  </ul></li>
   <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions">Functions</a>
   <ul class="collapse">
-  <li><a href="#qrt.vendors.base.trades_to_ohlc" id="toc-qrt.vendors.base.trades_to_ohlc" class="nav-link" data-scroll-target="#qrt.vendors.base.trades_to_ohlc">trades_to_ohlc</a></li>
+  <li><a href="#qrt.data.local.load" id="toc-qrt.data.local.load" class="nav-link" data-scroll-target="#qrt.data.local.load">load</a></li>
+  <li><a href="#qrt.data.local.load_ohlc_timeseries_range" id="toc-qrt.data.local.load_ohlc_timeseries_range" class="nav-link" data-scroll-target="#qrt.data.local.load_ohlc_timeseries_range">load_ohlc_timeseries_range</a></li>
+  <li><a href="#qrt.data.local.save" id="toc-qrt.data.local.save" class="nav-link" data-scroll-target="#qrt.data.local.save">save</a></li>
   </ul></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/vendors.base.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/vendors.base.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/data.local.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/data.local.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/vendors.html">q.vendors</a></li><li class="breadcrumb-item"><a href="../reference/vendors.base.html">vendors.base</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/data.html">q.data</a></li><li class="breadcrumb-item"><a href="../reference/data.local.html">data.local</a></li></ol></nav></header>
 
 
 
 
-<section id="qrt.vendors.base" class="level1">
-<h1>vendors.base</h1>
-<p><code>vendors.base</code></p>
-<p>Common interface for market data vendors.</p>
-<section id="classes" class="level2">
-<h2 class="anchored" data-anchor-id="classes">Classes</h2>
+<section id="qrt.data.local" class="level1">
+<h1>data.local</h1>
+<p><code>data.local</code></p>
+<p>Local file loading and saving (parquet, csv, …) plus raw trade aggregation from cached files.</p>
+<section id="functions" class="level2">
+<h2 class="anchored" data-anchor-id="functions">Functions</h2>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -347,24 +400,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#qrt.vendors.base.DataVendor">DataVendor</a></td>
-<td>Abstract base class all data vendors implement.</td>
+<td><a href="#qrt.data.local.load">load</a></td>
+<td>Load a local data file into a DataFrame.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.data.local.load_ohlc_timeseries_range">load_ohlc_timeseries_range</a></td>
+<td>Load daily trade CSV files and aggregate them into OHLC bars.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.data.local.save">save</a></td>
+<td>Save a DataFrame to a local file.</td>
 </tr>
 </tbody>
 </table>
-<section id="qrt.vendors.base.DataVendor" class="level3">
-<h3 class="anchored" data-anchor-id="qrt.vendors.base.DataVendor">DataVendor</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>vendors.base.DataVendor(cache_dir<span class="op">=</span>DEFAULT_CACHE_DIR)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Abstract base class all data vendors implement.</p>
-<p>A vendor knows how to fetch raw market data for a symbol and return it as a pandas DataFrame indexed by <code>datetime</code>. Concrete vendors may additionally expose vendor-specific methods (e.g.&nbsp;tick-level trades), but the methods below form the common contract.</p>
+<section id="qrt.data.local.load" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.data.local.load">load</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>data.local.load(path, index<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Load a local data file into a DataFrame.</p>
+<p>Dispatches on the file suffix: <code>.parquet</code> is read via DuckDB (see :func:<code>~qrt.data.sources._util.cached</code> for why), <code>.csv</code> via pandas.</p>
 <section id="parameters" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 11%">
-<col style="width: 14%">
-<col style="width: 51%">
-<col style="width: 22%">
+<col style="width: 18%">
+<col style="width: 52%">
+<col style="width: 17%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -376,51 +437,83 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td>cache_dir</td>
+<td>path</td>
 <td>str | Path</td>
-<td>Directory for parquet caches of fetched data.</td>
-<td><code>DEFAULT_CACHE_DIR</code></td>
+<td>File to load.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>index</td>
+<td>str | None</td>
+<td>Column to set as the index, if any.</td>
+<td><code>None</code></td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="methods" class="level4">
-<h4 class="anchored" data-anchor-id="methods">Methods</h4>
+<section id="returns" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#qrt.vendors.base.DataVendor.fetch_ohlc">fetch_ohlc</a></td>
-<td>Fetch OHLC(V) bars for <code>symbol</code> between two dates (inclusive).</td>
-</tr>
-<tr class="even">
-<td><a href="#qrt.vendors.base.DataVendor.fetch_ohlc_many">fetch_ohlc_many</a></td>
-<td>Fetch OHLCV bars for multiple symbols with a progress bar.</td>
+<td></td>
+<td>pd.DataFrame</td>
+<td>The loaded DataFrame.</td>
 </tr>
 </tbody>
 </table>
-<section id="qrt.vendors.base.DataVendor.fetch_ohlc" class="level5">
-<h5 class="anchored" data-anchor-id="qrt.vendors.base.DataVendor.fetch_ohlc">fetch_ohlc</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>vendors.base.DataVendor.fetch_ohlc(</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    symbol,</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    start_date,</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    end_date,</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    time_interval<span class="op">=</span><span class="st">'1h'</span>,</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Fetch OHLC(V) bars for <code>symbol</code> between two dates (inclusive).</p>
-<section id="parameters-1" class="level6 doc-section doc-section-parameters">
-<h6 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h6>
+</section>
+<section id="raises" class="level4 doc-section doc-section-raises">
+<h4 class="doc-section doc-section-raises anchored" data-anchor-id="raises">Raises</h4>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 14%">
-<col style="width: 16%">
-<col style="width: 57%">
 <col style="width: 11%">
+<col style="width: 16%">
+<col style="width: 72%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>ValueError</td>
+<td>If the file suffix isn’t <code>.parquet</code> or <code>.csv</code>.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="qrt.data.local.load_ohlc_timeseries_range" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.data.local.load_ohlc_timeseries_range">load_ohlc_timeseries_range</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data.local.load_ohlc_timeseries_range(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    sym,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    time_interval,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    start_date,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    end_date,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    data_path<span class="op">=</span><span class="st">'./cache'</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Load daily trade CSV files and aggregate them into OHLC bars.</p>
+<p>Expects daily files named like <code>{sym}-trades-YYYY-MM-DD.csv</code>, e.g. <code>BTCUSDT-trades-2025-09-22.csv</code>, containing at least a <code>datetime</code> and a <code>price</code> column. A <code>qty</code> column, if present, is summed into a <code>volume</code> column.</p>
+<section id="parameters-1" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 14%">
+<col style="width: 54%">
+<col style="width: 14%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -432,34 +525,40 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td>symbol</td>
+<td>sym</td>
 <td>str</td>
-<td>Vendor-specific symbol (e.g.&nbsp;<code>"BTCUSDT"</code>, <code>"AAPL"</code>).</td>
-<td><em>required</em></td>
-</tr>
-<tr class="even">
-<td>start_date</td>
-<td>str | datetime</td>
-<td>Start date (inclusive), <code>YYYY-MM-DD</code> or datetime.</td>
-<td><em>required</em></td>
-</tr>
-<tr class="odd">
-<td>end_date</td>
-<td>str | datetime</td>
-<td>End date (inclusive), <code>YYYY-MM-DD</code> or datetime.</td>
+<td>Symbol prefix (e.g.&nbsp;<code>"BTCUSDT"</code>).</td>
 <td><em>required</em></td>
 </tr>
 <tr class="even">
 <td>time_interval</td>
 <td>str</td>
-<td>Pandas offset alias (e.g.&nbsp;<code>"1h"</code>, <code>"5min"</code>, <code>"1D"</code>).</td>
-<td><code>'1h'</code></td>
+<td>Pandas offset alias (e.g.&nbsp;<code>"1h"</code>, <code>"5min"</code>).</td>
+<td><em>required</em></td>
+</tr>
+<tr class="odd">
+<td>start_date</td>
+<td>datetime</td>
+<td>Start datetime (inclusive).</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>end_date</td>
+<td>datetime</td>
+<td>End datetime (inclusive).</td>
+<td><em>required</em></td>
+</tr>
+<tr class="odd">
+<td>data_path</td>
+<td>str | Path</td>
+<td>Directory containing the cached trade CSV files.</td>
+<td><code>'./cache'</code></td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="returns" class="level6 doc-section doc-section-returns">
-<h6 class="doc-section doc-section-returns anchored" data-anchor-id="returns">Returns</h6>
+<section id="returns-1" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-1">Returns</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 9%">
@@ -488,23 +587,57 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </section>
 </section>
-<section id="qrt.vendors.base.DataVendor.fetch_ohlc_many" class="level5">
-<h5 class="anchored" data-anchor-id="qrt.vendors.base.DataVendor.fetch_ohlc_many">fetch_ohlc_many</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>vendors.base.DataVendor.fetch_ohlc_many(</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    symbols,</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    start_date,</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    end_date,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    time_interval<span class="op">=</span><span class="st">'1D'</span>,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Fetch OHLCV bars for multiple symbols with a progress bar.</p>
-<p>Symbols that fail are skipped with a warning.</p>
-<section id="returns-1" class="level6 doc-section doc-section-returns">
-<h6 class="doc-section doc-section-returns anchored" data-anchor-id="returns-1">Returns</h6>
+<section id="qrt.data.local.save" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.data.local.save">save</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>data.local.save(df, path, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Save a DataFrame to a local file.</p>
+<p>Dispatches on the file suffix: <code>.parquet</code> is written via DuckDB, <code>.csv</code> via pandas.</p>
+<section id="parameters-2" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-2">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 10%">
-<col style="width: 36%">
-<col style="width: 52%">
+<col style="width: 8%">
+<col style="width: 14%">
+<col style="width: 64%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>df</td>
+<td>pd.DataFrame</td>
+<td>DataFrame to save.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>path</td>
+<td>str | Path</td>
+<td>Destination file. Parent directories are created if needed.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="odd">
+<td>index</td>
+<td>bool</td>
+<td>Whether to keep the DataFrame index as a leading column.</td>
+<td><code>False</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="raises-1" class="level4 doc-section doc-section-raises">
+<h4 class="doc-section doc-section-raises anchored" data-anchor-id="raises-1">Raises</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 16%">
+<col style="width: 72%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -516,39 +649,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td></td>
-<td>dict[str, pd.DataFrame]</td>
-<td>Mapping of symbol to OHLCV DataFrame.</td>
+<td>ValueError</td>
+<td>If the file suffix isn’t <code>.parquet</code> or <code>.csv</code>.</td>
 </tr>
 </tbody>
 </table>
-</section>
-</section>
-</section>
-</section>
-</section>
-<section id="functions" class="level2">
-<h2 class="anchored" data-anchor-id="functions">Functions</h2>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="#qrt.vendors.base.trades_to_ohlc">trades_to_ohlc</a></td>
-<td>Aggregate tick trades into OHLCV bars.</td>
-</tr>
-</tbody>
-</table>
-<section id="qrt.vendors.base.trades_to_ohlc" class="level3">
-<h3 class="anchored" data-anchor-id="qrt.vendors.base.trades_to_ohlc">trades_to_ohlc</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>vendors.base.trades_to_ohlc(trades, time_interval)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Aggregate tick trades into OHLCV bars.</p>
-<p>Expects <code>datetime</code>, <code>price</code> and <code>qty</code> columns.</p>
 
 
+</section>
 </section>
 </section>
 </section>
@@ -956,13 +1064,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../reference/vendors.html" class="pagination-link" aria-label="vendors">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">vendors</span>
+      <a href="../reference/data.html" class="pagination-link" aria-label="data">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">data</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../reference/vendors.yfinance.html" class="pagination-link" aria-label="vendors.yfinance">
-        <span class="nav-page-text">vendors.yfinance</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../reference/data.datasets.html" class="pagination-link" aria-label="data.datasets">
+        <span class="nav-page-text">data.datasets</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -971,4 +1079,4 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/vendors.base.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/vendors.base.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/data.local.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/data.local.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

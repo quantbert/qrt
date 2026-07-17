@@ -136,12 +136,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Feature Engineering</span></a>
   </li>  
   <li class="nav-item">
+    <a class="nav-link" href="./stats.html"> 
+<span class="menu-text">Return Statistics</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link" href="./demo.html"> 
 <span class="menu-text">Interactive Demo</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./reference/index.html"> 
 <span class="menu-text">API Reference</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./roadmap.html"> 
+<span class="menu-text">Roadmap</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -162,6 +170,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#quickstart" id="toc-quickstart" class="nav-link active" data-scroll-target="#quickstart">Quickstart</a></li>
   <li><a href="#library-layout" id="toc-library-layout" class="nav-link" data-scroll-target="#library-layout">Library layout</a></li>
+  <li><a href="#libraries-used" id="toc-libraries-used" class="nav-link" data-scroll-target="#libraries-used">Libraries used</a></li>
+  <li><a href="#project-layout" id="toc-project-layout" class="nav-link" data-scroll-target="#project-layout">Project layout</a></li>
   <li><a href="#development" id="toc-development" class="nav-link" data-scroll-target="#development">Development</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.dev/quantbert/qrt/blob/main/index.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/index.ipynb" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
@@ -208,13 +218,18 @@ Note
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> qrt <span class="im">as</span> q</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># fetch OHLCV data (cached as parquet)</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>vendor <span class="op">=</span> q.vendors.YFinance()</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>ohlc <span class="op">=</span> vendor.fetch_ohlc(<span class="st">"SPY"</span>, <span class="st">"2024-01-01"</span>, <span class="st">"2025-01-01"</span>, <span class="st">"1d"</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>aapl <span class="op">=</span> q.data.sources.yfinance.read(<span class="st">"AAPL"</span>, <span class="st">"2024-01-01"</span>, <span class="st">"2025-01-01"</span>, <span class="st">"1d"</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>spy <span class="op">=</span> q.data.sources.yfinance.read(<span class="st">"SPY"</span>, <span class="st">"2024-01-01"</span>, <span class="st">"2025-01-01"</span>, <span class="st">"1d"</span>)</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># features</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> q.feat.qta.lags(ohlc[<span class="st">"close"</span>], [<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">21</span>])</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>X[<span class="st">"sma_20"</span>] <span class="op">=</span> q.feat.qta.sma(ohlc[<span class="st">"close"</span>], <span class="dv">20</span>)</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>X[<span class="st">"rsi_14"</span>] <span class="op">=</span> q.feat.talib.RSI(ohlc)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> q.feat.qta.lags(aapl[<span class="st">"close"</span>], [<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">21</span>])</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>X[<span class="st">"sma_20"</span>] <span class="op">=</span> q.feat.qta.sma(aapl[<span class="st">"close"</span>], <span class="dv">20</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>X[<span class="st">"rsi_14"</span>] <span class="op">=</span> q.feat.talib.RSI(aapl)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># strategy vs benchmark returns</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>strategy <span class="op">=</span> aapl[<span class="st">"close"</span>].pct_change().rename(<span class="st">"AAPL"</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>benchmark <span class="op">=</span> spy[<span class="st">"close"</span>].pct_change().rename(<span class="st">"SPY"</span>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>q.stats.benchmark_stats(strategy, benchmark)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="library-layout" class="level2">
 <h2 class="anchored" data-anchor-id="library-layout">Library layout</h2>
@@ -235,46 +250,113 @@ Note
 <td>feature engineering: own indicators + TA-Lib + pandas-ta-classic</td>
 </tr>
 <tr class="even">
-<td><code>q.vendors</code></td>
-<td>market data vendors (Yahoo Finance, Binance) with parquet caching</td>
-</tr>
-<tr class="odd">
-<td><code>q.dataload</code></td>
-<td>loading and aggregating raw trade data into OHLC bars</td>
-</tr>
-<tr class="even">
 <td><code>q.data</code></td>
-<td>master securities database (DuckDB)</td>
+<td>loading/saving local files, downloadable market data sources (Yahoo Finance, Binance, DuckDB)</td>
 </tr>
 <tr class="odd">
-<td><code>q.splits</code></td>
+<td><code>q.model.selection</code></td>
 <td>leakage-aware CV splits (walk-forward, purged K-fold, embargo)</td>
 </tr>
 <tr class="even">
-<td><code>q.models</code></td>
-<td>PyTorch model wrappers</td>
+<td><code>q.model</code></td>
+<td>ML model utilities: PyTorch helpers via torchinfo (<code>q.model.torch.summary</code>)</td>
 </tr>
 <tr class="odd">
 <td><code>q.bt</code></td>
 <td>event-driven backtesting</td>
 </tr>
 <tr class="even">
+<td><code>q.stats</code></td>
+<td>return-stream statistics: performance, alpha/beta, rolling diagnostics</td>
+</tr>
+<tr class="odd">
 <td><code>q.plot</code></td>
 <td>plotting + performance reports (tearsheets)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>q.portfolio</code></td>
 <td>portfolio analysis</td>
 </tr>
 </tbody>
 </table>
 </section>
+<section id="libraries-used" class="level2">
+<h2 class="anchored" data-anchor-id="libraries-used">Libraries used</h2>
+<p>Notable libraries qrt is built on and/or wraps:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Library</th>
+<th>Used for</th>
+<th>Docs</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="https://github.com/pandas-dev/pandas">pandas</a></td>
+<td>DataFrames/Series as the common data format throughout</td>
+<td><a href="https://pandas.pydata.org/docs/">docs</a></td>
+</tr>
+<tr class="even">
+<td><a href="https://github.com/ta-lib/ta-lib-python">TA-Lib</a></td>
+<td>technical indicators, wrapped in <code>q.feat.talib</code></td>
+<td><a href="https://ta-lib.github.io/ta-lib-python/">docs</a></td>
+</tr>
+<tr class="odd">
+<td><a href="https://github.com/xgboosted/pandas-ta-classic">pandas-ta-classic</a></td>
+<td>technical indicators &amp; candlestick patterns, wrapped in <code>q.feat.pandas_ta</code></td>
+<td><a href="https://xgboosted.github.io/pandas-ta-classic/">docs</a></td>
+</tr>
+<tr class="even">
+<td><a href="https://github.com/pytorch/pytorch">PyTorch</a></td>
+<td>model training and inference (<code>q.model</code>)</td>
+<td><a href="https://docs.pytorch.org/docs/stable/">docs</a></td>
+</tr>
+<tr class="odd">
+<td><a href="https://github.com/TylerYep/torchinfo">torchinfo</a></td>
+<td>PyTorch model summaries, wrapped in <code>q.model.torch</code></td>
+<td><a href="https://github.com/TylerYep/torchinfo#readme">docs</a></td>
+</tr>
+<tr class="even">
+<td><a href="https://github.com/duckdb/duckdb">DuckDB</a></td>
+<td>in-process database, used for local parquet caching and as a generic data source (<code>q.data.sources.duckdb</code>)</td>
+<td><a href="https://duckdb.org/docs/">docs</a></td>
+</tr>
+<tr class="odd">
+<td><a href="https://github.com/ranaroussi/yfinance">yfinance</a></td>
+<td>Yahoo Finance market data (<code>q.data.sources.yfinance</code>)</td>
+<td><a href="https://ranaroussi.github.io/yfinance/">docs</a></td>
+</tr>
+<tr class="even">
+<td><a href="https://github.com/plotly/plotly.py">Plotly</a></td>
+<td>interactive charts, tearsheets, and image export</td>
+<td><a href="https://plotly.com/python/">docs</a></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="project-layout" class="level2">
+<h2 class="anchored" data-anchor-id="project-layout">Project layout</h2>
+<pre><code>qrt/
+├── qrt/
+│   ├── model/       # ML model utilities (PyTorch helpers via torchinfo, CV splitters in model.selection)
+│   ├── plot/        # plotting + performance reports
+│   ├── portfolio/   # portfolio analysis
+│   ├── bt/          # backtesting engine
+│   ├── feat/        # feature engineering
+│   └── data/        # loading/saving local files, market data sources, prepackaged datasets
+├── tests/
+├── examples/        # notebooks
+└── pyproject.toml</code></pre>
+<p>See the <a href="./roadmap.html">Roadmap</a> for planned work per submodule.</p>
+</section>
 <section id="development" class="level2">
 <h2 class="anchored" data-anchor-id="development">Development</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> install   <span class="co"># sync the environment</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> test      <span class="co"># run the test suite</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> stubs     <span class="co"># regenerate .pyi stubs for the dynamic feat wrappers</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> docs      <span class="co"># serve these docs locally</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> install   <span class="co"># sync the environment</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> test      <span class="co"># run the test suite</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> stubs     <span class="co"># regenerate .pyi stubs for the dynamic feat wrappers</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> datasets  <span class="co"># refresh the prepackaged sample datasets (AAPL, SPY, BTC-USD)</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> docs      <span class="co"># serve these docs locally</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>

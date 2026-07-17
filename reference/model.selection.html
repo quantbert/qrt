@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>feat.qta – qrt</title>
+<title>model.selection – qrt</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -68,8 +68,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../reference/feat.talib.html" rel="next">
-<link href="../reference/feat.html" rel="prev">
+<link href="../reference/utils.html" rel="next">
+<link href="../reference/model.torch.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -165,7 +165,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/feat.html">q.feat</a></li><li class="breadcrumb-item"><a href="../reference/feat.qta.html">feat.qta</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/model.html">q.model</a></li><li class="breadcrumb-item"><a href="../reference/model.selection.html">model.selection</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -200,7 +200,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/feat.qta.html" class="sidebar-item-text sidebar-link active">
+  <a href="../reference/feat.qta.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">feat.qta</span></a>
   </div>
 </li>
@@ -334,7 +334,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/model.selection.html" class="sidebar-item-text sidebar-link">
+  <a href="../reference/model.selection.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">model.selection</span></a>
   </div>
 </li>
@@ -367,35 +367,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#qrt.feat.qta" id="toc-qrt.feat.qta" class="nav-link active" data-scroll-target="#qrt.feat.qta">feat.qta</a>
+  <li><a href="#qrt.model.selection" id="toc-qrt.model.selection" class="nav-link active" data-scroll-target="#qrt.model.selection">model.selection</a>
   <ul class="collapse">
-  <li><a href="#to-add-a-feature" id="toc-to-add-a-feature" class="nav-link" data-scroll-target="#to-add-a-feature">To add a feature</a></li>
+  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
   <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions">Functions</a>
   <ul class="collapse">
-  <li><a href="#qrt.feat.qta.lags" id="toc-qrt.feat.qta.lags" class="nav-link" data-scroll-target="#qrt.feat.qta.lags">lags</a></li>
-  <li><a href="#qrt.feat.qta.sma" id="toc-qrt.feat.qta.sma" class="nav-link" data-scroll-target="#qrt.feat.qta.sma">sma</a></li>
+  <li><a href="#qrt.model.selection.timeseries_split" id="toc-qrt.model.selection.timeseries_split" class="nav-link" data-scroll-target="#qrt.model.selection.timeseries_split">timeseries_split</a></li>
   </ul></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/feat.qta.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/feat.qta.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/model.selection.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/model.selection.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/feat.html">q.feat</a></li><li class="breadcrumb-item"><a href="../reference/feat.qta.html">feat.qta</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/model.html">q.model</a></li><li class="breadcrumb-item"><a href="../reference/model.selection.html">model.selection</a></li></ol></nav></header>
 
 
 
 
-<section id="qrt.feat.qta" class="level1">
-<h1>feat.qta</h1>
-<p><code>feat.qta</code></p>
-<p>qta: our own hand-rolled features, one module per feature.</p>
-<section id="to-add-a-feature" class="level2 doc-section doc-section-to-add-a-feature">
-<h2 class="doc-section doc-section-to-add-a-feature anchored" data-anchor-id="to-add-a-feature">To add a feature</h2>
-<ol type="1">
-<li>Create <code>qrt/feat/qta/_&lt;feature&gt;.py</code> (leading underscore – it’s a private implementation module; the function itself stays public).</li>
-<li>Define one public function taking a Series/DataFrame and returning one, with the index preserved. Helpers should be prefixed with <code>_</code>.</li>
-<li>Re-export it below (one import line + one <code>__all__</code> entry), so it is visible to IDEs and available as <code>q.feat.qta.&lt;feature&gt;</code>.</li>
-</ol>
+<section id="qrt.model.selection" class="level1">
+<h1>model.selection</h1>
+<p><code>model.selection</code></p>
+<p>Model selection: leakage-aware CV splitters for time-series data.</p>
+<p>Naming mirrors scikit-learn’s <code>model_selection</code> (e.g.&nbsp;<code>TimeSeriesSplit</code>) under <code>q.model.selection</code>.</p>
+<pre><code>q.model.selection.timeseries_split(X, n_splits=5, embargo="5D")</code></pre>
+<section id="examples" class="level2 doc-section doc-section-examples">
+<h2 class="doc-section doc-section-examples anchored" data-anchor-id="examples">Examples</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> <span class="cf">for</span> train_idx, test_idx <span class="kw">in</span> q.model.selection.timeseries_split(X, n_splits<span class="op">=</span><span class="dv">5</span>):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>...     ...</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="functions" class="level2">
 <h2 class="anchored" data-anchor-id="functions">Functions</h2>
@@ -408,143 +406,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#qrt.feat.qta.lags">lags</a></td>
-<td>Create lagged copies of a Series or DataFrame.</td>
-</tr>
-<tr class="even">
-<td><a href="#qrt.feat.qta.sma">sma</a></td>
-<td>Simple moving average.</td>
+<td><a href="#qrt.model.selection.timeseries_split">timeseries_split</a></td>
+<td>Walk-forward (expanding-window) splits. Placeholder.</td>
 </tr>
 </tbody>
 </table>
-<section id="qrt.feat.qta.lags" class="level3">
-<h3 class="anchored" data-anchor-id="qrt.feat.qta.lags">lags</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>feat.qta.lags(data, lags)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Create lagged copies of a Series or DataFrame.</p>
-<section id="parameters" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h4>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 7%">
-<col style="width: 24%">
-<col style="width: 57%">
-<col style="width: 10%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-<th>Default</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>data</td>
-<td>pd.Series | pd.DataFrame</td>
-<td>Input series or frame (rows ordered in time).</td>
-<td><em>required</em></td>
-</tr>
-<tr class="even">
-<td>lags</td>
-<td>int | Iterable[int]</td>
-<td>Number of lags (1..n) or an explicit iterable of lag periods.</td>
-<td><em>required</em></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="returns" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns">Returns</h4>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 8%">
-<col style="width: 15%">
-<col style="width: 76%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td></td>
-<td>pd.DataFrame</td>
-<td>DataFrame with one column per (column, lag), named <code>{name}_lag{k}</code>.</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="examples" class="level4 doc-section doc-section-examples">
-<h4 class="doc-section doc-section-examples anchored" data-anchor-id="examples">Examples</h4>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> q.feat.qta.lags(prices[<span class="st">"close"</span>], <span class="dv">3</span>)      <span class="co"># close_lag1..close_lag3</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> q.feat.qta.lags(df, [<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">21</span>])          <span class="co"># daily, weekly, monthly lags</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-</section>
-<section id="qrt.feat.qta.sma" class="level3">
-<h3 class="anchored" data-anchor-id="qrt.feat.qta.sma">sma</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>feat.qta.sma(series, window)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Simple moving average.</p>
-<section id="parameters-1" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-<th>Default</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>series</td>
-<td>pd.Series</td>
-<td>Input series (e.g.&nbsp;close prices).</td>
-<td><em>required</em></td>
-</tr>
-<tr class="even">
-<td>window</td>
-<td>int</td>
-<td>Rolling window size, in periods.</td>
-<td><em>required</em></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="returns-1" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-1">Returns</h4>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 9%">
-<col style="width: 13%">
-<col style="width: 77%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td></td>
-<td>pd.Series</td>
-<td>Series of the rolling mean, with the same index as <code>series</code>.</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="examples-1" class="level4 doc-section doc-section-examples">
-<h4 class="doc-section doc-section-examples anchored" data-anchor-id="examples-1">Examples</h4>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> q.feat.qta.sma(prices[<span class="st">"close"</span>], <span class="dv">20</span>)      <span class="co"># 20-period SMA</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="qrt.model.selection.timeseries_split" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.model.selection.timeseries_split">timeseries_split</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>model.selection.timeseries_split(X, n_splits<span class="op">=</span><span class="dv">5</span>, embargo<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Walk-forward (expanding-window) splits. Placeholder.</p>
 
 
-</section>
 </section>
 </section>
 </section>
@@ -952,13 +824,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../reference/feat.html" class="pagination-link" aria-label="feat">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">feat</span>
+      <a href="../reference/model.torch.html" class="pagination-link" aria-label="model.torch">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">model.torch</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../reference/feat.talib.html" class="pagination-link" aria-label="feat.talib">
-        <span class="nav-page-text">feat.talib</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../reference/utils.html" class="pagination-link" aria-label="utils">
+        <span class="nav-page-text">utils</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -967,4 +839,4 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/feat.qta.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/feat.qta.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/model.selection.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/model.selection.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
