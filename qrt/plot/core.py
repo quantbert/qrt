@@ -176,6 +176,113 @@ def plot(
     )
 
 
+def montecarlo(
+    returns: pd.Series,
+    sims: int = 1000,
+    *,
+    return_type: ReturnType = "simple",
+    bust: float | None = None,
+    goal: float | None = None,
+    confidence: float = 0.95,
+    seed: int | None = None,
+    block_size: float | None = None,
+    periods: int | None = None,
+    sample: int = 200,
+    title: str | None = None,
+    height: int = 520,
+) -> Figure:
+    """Create an interactive Monte Carlo fan chart of shuffled-return simulations.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        sims: Number of simulated paths to run; statistics use all of them.
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        bust: Optional Max Drawdown threshold (e.g. ``-0.2``); breaching paths are colored red.
+        goal: Optional cumulative-return threshold (e.g. ``1.0``); paths reaching it are colored
+            green and a reference line is drawn at that level.
+        confidence: Confidence level for the shaded fan. Defaults to ``0.95``.
+        seed: Optional random seed for reproducibility.
+        block_size: Optional mean block length (in periods) for a stationary block bootstrap;
+            see the Note on :func:`qrt.stats.montecarlo`. Defaults to ``None`` (i.i.d.).
+        periods: Optional simulation horizon in periods, decoupled from ``len(returns)``; see
+            the Note on :func:`qrt.stats.montecarlo`. Defaults to ``None`` (full length).
+        sample: Max number of individual simulated paths rendered. Defaults to ``200``.
+        title: Figure title. Defaults to ``returns.name``.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
+    from qrt.plot.interactive import montecarlo as _montecarlo
+
+    return _montecarlo(
+        returns,
+        sims,
+        return_type=return_type,
+        bust=bust,
+        goal=goal,
+        confidence=confidence,
+        seed=seed,
+        block_size=block_size,
+        periods=periods,
+        sample=sample,
+        title=title,
+        height=height,
+    )
+
+
+def montecarlo_distribution(
+    returns: pd.Series,
+    sims: int = 1000,
+    *,
+    return_type: ReturnType = "simple",
+    bust: float | None = None,
+    goal: float | None = None,
+    confidence: float = 0.95,
+    seed: int | None = None,
+    block_size: float | None = None,
+    periods: int | None = None,
+    title: str | None = None,
+    height: int = 420,
+) -> Figure:
+    """Create interactive terminal-return and Max Drawdown distributions from a Monte Carlo run.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        sims: Number of simulated paths.
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        bust: Optional Max Drawdown threshold (e.g. ``-0.2``), marked on the drawdown panel.
+        goal: Optional cumulative-return threshold (e.g. ``1.0``), marked on the return panel.
+        confidence: Confidence level, forwarded to :func:`qrt.stats.montecarlo` for the
+            reported probabilities. Defaults to ``0.95``.
+        seed: Optional random seed for reproducibility.
+        block_size: Optional mean block length (in periods) for a stationary block bootstrap;
+            see the Note on :func:`qrt.stats.montecarlo`. Defaults to ``None`` (i.i.d.).
+        periods: Optional simulation horizon in periods, decoupled from ``len(returns)``; see
+            the Note on :func:`qrt.stats.montecarlo`. Defaults to ``None`` (full length).
+        title: Figure title. Defaults to ``returns.name``.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
+    from qrt.plot.interactive import montecarlo_distribution as _montecarlo_distribution
+
+    return _montecarlo_distribution(
+        returns,
+        sims,
+        return_type=return_type,
+        bust=bust,
+        goal=goal,
+        confidence=confidence,
+        seed=seed,
+        block_size=block_size,
+        periods=periods,
+        title=title,
+        height=height,
+    )
+
+
 def tearsheet(returns: pd.Series, **kwargs: object) -> Figure:
     """Alias for the interactive :func:`plot` performance report.
 

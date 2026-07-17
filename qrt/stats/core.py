@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Literal
 
 import numpy as np
 import pandas as pd
+from scipy.stats import norm
 
 if TYPE_CHECKING:
     from plotly.graph_objects import Figure
@@ -85,48 +86,100 @@ def _aligned_returns(
     return aligned.iloc[:, 0], aligned.iloc[:, 1]
 
 
+def _excess_returns(series: pd.Series, rf: float, periods: int) -> pd.Series:
+    """Subtract a deannualized risk-free rate from each period's return.
+
+    ``rf`` is an annualized rate; it is converted to a per-period rate
+    assuming ``periods`` compounding periods per year (``(1 + rf) ** (1 /
+    periods) - 1``) before being subtracted, matching common excess-return
+    conventions (e.g. [quantstats](https://github.com/ranaroussi/quantstats)).
+    A zero ``rf`` (the default) returns ``series`` unchanged.
+    """
+    if rf == 0:
+        return series
+    rf_per_period = (1.0 + rf) ** (1.0 / periods) - 1.0
+    return series - rf_per_period
+
+
+def _cagr(excess: pd.Series, periods: int) -> float:
+    """Compound a (possibly excess-adjusted) return series into an annualized growth rate."""
+    curve = (1.0 + excess).cumprod()
+    return curve.iloc[-1] ** (periods / len(excess)) - 1.0 if curve.iloc[-1] > 0 else -1.0
+
+
 def performance(
     returns: pd.Series,
     *,
     return_type: ReturnType = "simple",
     periods_per_year: int | None = None,
+    rf: float = 0.0,
+    smart: bool = False,
 ) -> pd.Series:
     """Calculate standard performance statistics for a periodic return stream.
 
     Annualized metrics use ``periods_per_year`` when supplied; otherwise, a
-    conventional frequency is inferred from a datetime index.
+    conventional frequency is inferred from a datetime index. ``rf`` (an
+    annualized risk-free rate) is deannualized to match ``periods`` and
+    subtracted from returns before computing CAGR, Sharpe, and Sortino (and,
+    through CAGR, Calmar); Total Return, Volatility, Max Drawdown, and Win
+    Rate always use raw returns.
 
     Args:
         returns: Periodic return series (simple or log, per ``return_type``).
         return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
         periods_per_year: Annualization frequency. Inferred from the index
             when not given.
+        rf: Annualized risk-free rate, subtracted (after deannualizing) from
+            returns before computing excess-return ratios. Defaults to ``0.0``.
+        smart: Whether to penalize Sharpe/Sortino for return autocorrelation,
+            see :func:`sharpe`/:func:`sortino`. Defaults to ``False``.
 
     Returns:
-        Series indexed by metric name: ``Total Return, CAGR, Volatility, Sharpe, Sortino, Calmar, Max Drawdown, Win Rate, Periods``.
+        Series indexed by metric name:
+
+        - ``Total Return``: Simple compounded return over the full period.
+        - ``CAGR``: [Compound Annual Growth Rate](https://en.wikipedia.org/wiki/Compound_annual_growth_rate)
+                — the constant annual rate of return that would produce the same total growth.
+        - ``Volatility``: [Volatility](https://en.wikipedia.org/wiki/Volatility_(finance)) —
+                annualized standard deviation of returns, the most common measure of risk.
+        - ``Sharpe``: [Sharpe ratio](https://en.wikipedia.org/wiki/Sharpe_ratio) — annualized
+                excess return per unit of volatility, i.e. return earned per unit of total risk taken.
+        - ``Sortino``: [Sortino ratio](https://en.wikipedia.org/wiki/Sortino_ratio) — like Sharpe,
+                but only penalizes downside volatility, since investors rarely mind upside swings.
+        - ``Calmar``: [Calmar ratio](https://en.wikipedia.org/wiki/Calmar_ratio) — CAGR divided by
+                the absolute Max Drawdown, i.e. return per unit of worst-case pain endured.
+        - ``Max Drawdown``: [Drawdown](https://en.wikipedia.org/wiki/Drawdown_(economics)) —
+                largest peak-to-trough decline in cumulative value over the period.
+        - ``Win Rate``: Share of non-zero-return periods that were positive
+                (periods with exactly zero return are excluded from both the count of wins and the total).
+        - ``Periods``: Number of return observations used.
     """
     series = _simple_returns(returns, return_type)
     periods = _periods_per_year(periods_per_year, series.index)
+    excess = _excess_returns(series, rf, periods)
     curve = (1.0 + series).cumprod()
     total_return = curve.iloc[-1] - 1.0
-    cagr = curve.iloc[-1] ** (periods / len(series)) - 1.0 if curve.iloc[-1] > 0 else -1.0
+    cagr = _cagr(excess, periods)
     volatility = series.std(ddof=1) * periods**0.5 if len(series) > 1 else float("nan")
-    sharpe = series.mean() / series.std(ddof=1) * periods**0.5 if volatility and np.isfinite(volatility) else float("nan")
-    downside_deviation = np.sqrt(np.mean(np.minimum(series.to_numpy(), 0.0) ** 2)) * periods**0.5
-    sortino = series.mean() * periods / downside_deviation if downside_deviation else float("nan")
-    max_drawdown = curve.div(curve.cummax()).sub(1.0).min()
+    sharpe_value = sharpe(series, periods_per_year=periods, rf=rf, smart=smart)
+    sortino_value = sortino(series, periods_per_year=periods, rf=rf, smart=smart)
+    # cummax() alone would miss a drawdown on the very first period, since it treats
+    # curve[0] as the peak; clip to the implicit starting capital of 1.0 to catch it.
+    max_drawdown = curve.div(curve.cummax().clip(lower=1.0)).sub(1.0).min()
     calmar = cagr / abs(max_drawdown) if max_drawdown else float("nan")
+    non_zero = series[series != 0]
+    win_rate = (non_zero > 0).mean() if len(non_zero) else float("nan")
 
     return pd.Series(
         {
             "Total Return": total_return,
             "CAGR": cagr,
             "Volatility": volatility,
-            "Sharpe": sharpe,
-            "Sortino": sortino,
+            "Sharpe": sharpe_value,
+            "Sortino": sortino_value,
             "Calmar": calmar,
             "Max Drawdown": max_drawdown,
-            "Win Rate": (series > 0).mean(),
+            "Win Rate": win_rate,
             "Periods": len(series),
         },
         dtype=float,
@@ -142,6 +195,10 @@ def rolling_volatility(
     periods_per_year: int | None = None,
 ) -> pd.Series:
     """Return annualized rolling volatility for a periodic return stream.
+
+    [Volatility](https://en.wikipedia.org/wiki/Volatility_(finance)) is the standard deviation of
+    returns — the most common measure of risk. Unlike Sortino-style measures, it penalizes upside
+    and downside swings equally.
 
     Args:
         returns: Periodic return series.
@@ -166,8 +223,13 @@ def rolling_sharpe(
     *,
     return_type: ReturnType = "simple",
     periods_per_year: int | None = None,
+    rf: float = 0.0,
 ) -> pd.Series:
-    """Return annualized rolling Sharpe ratios using a zero risk-free rate.
+    """Return annualized rolling Sharpe ratios over a moving window.
+
+    The [Sharpe ratio](https://en.wikipedia.org/wiki/Sharpe_ratio) is the annualized mean excess
+    return divided by the annualized volatility of returns — return earned per unit of total risk
+    taken.
 
     Args:
         returns: Periodic return series.
@@ -175,6 +237,8 @@ def rolling_sharpe(
         return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
         periods_per_year: Annualization frequency. Inferred from the index
             when not given.
+        rf: Annualized risk-free rate, subtracted (after deannualizing) from
+            returns before computing the ratio. Defaults to ``0.0``.
 
     Returns:
         Series of annualized rolling Sharpe ratios.
@@ -183,7 +247,8 @@ def rolling_sharpe(
     if window < 2:
         raise ValueError("window must be at least 2")
     periods = _periods_per_year(periods_per_year, series.index)
-    return (series.rolling(window).mean().div(series.rolling(window).std(ddof=1)) * periods**0.5).rename(
+    excess = _excess_returns(series, rf, periods)
+    return (excess.rolling(window).mean().div(excess.rolling(window).std(ddof=1)) * periods**0.5).rename(
         f"{series.name} rolling Sharpe"
     )
 
@@ -196,6 +261,13 @@ def rolling_beta(
     return_type: ReturnType = "simple",
 ) -> pd.Series:
     """Return rolling beta of strategy returns relative to a benchmark.
+
+    [Beta](https://en.wikipedia.org/wiki/Beta_(finance)) measures sensitivity to benchmark (market)
+    movements: the covariance of strategy and benchmark returns divided by the benchmark's
+    variance. A beta of 1 tracks the benchmark 1:1; above 1 amplifies its moves; below 1 dampens
+    them. See also the
+    [Capital Asset Pricing Model](https://en.wikipedia.org/wiki/Capital_asset_pricing_model), which
+    uses beta to model expected return as a function of systematic risk.
 
     Args:
         returns: Strategy periodic return series.
@@ -222,6 +294,10 @@ def rolling_alpha(
     periods_per_year: int | None = None,
 ) -> pd.Series:
     """Return annualized rolling Jensen alpha relative to a benchmark.
+
+    [Jensen's alpha](https://en.wikipedia.org/wiki/Jensen%27s_alpha) is the annualized return left
+    over after accounting for the return explained by beta exposure to the benchmark — the excess
+    return generated (or lost) beyond what market risk alone would predict.
 
     Args:
         returns: Strategy periodic return series.
@@ -251,6 +327,10 @@ def beta(
 ) -> float:
     """Calculate the market beta of a return stream relative to a benchmark.
 
+    [Beta](https://en.wikipedia.org/wiki/Beta_(finance)) is the covariance of strategy and
+    benchmark returns divided by the benchmark's variance — a measure of sensitivity to benchmark
+    (market) movements, i.e. systematic risk.
+
     Args:
         returns: Strategy periodic return series.
         benchmark: Benchmark periodic return series, aligned on shared dates.
@@ -274,6 +354,10 @@ def alpha(
 ) -> float:
     """Calculate the annualized Jensen alpha of a return stream relative to a benchmark.
 
+    [Jensen's alpha](https://en.wikipedia.org/wiki/Jensen%27s_alpha) is the annualized return left
+    over after accounting for the return explained by beta exposure to the benchmark — the excess
+    return generated (or lost) beyond what market risk alone would predict.
+
     Args:
         returns: Strategy periodic return series.
         benchmark: Benchmark periodic return series, aligned on shared dates.
@@ -294,16 +378,22 @@ def alpha(
 
 
 def monthly_returns(
-    returns: pd.Series, *, return_type: ReturnType = "simple"
+    returns: pd.Series, *, return_type: ReturnType = "simple", eoy: bool = True
 ) -> pd.DataFrame:
     """Compound returns by calendar month into a year-by-month table.
+
+    Useful for spotting seasonal patterns and feeding a monthly-returns
+    heatmap (see :func:`qrt.plot.monthly_heatmap`).
 
     Args:
         returns: Periodic return series with a ``DatetimeIndex``.
         return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        eoy: Whether to append an ``EOY`` (end-of-year) column with each
+            year's compounded total return. Defaults to ``True``.
 
     Returns:
-        DataFrame indexed by year with one column per calendar month (1-12).
+        DataFrame indexed by year with one column per calendar month (1-12),
+        plus an ``EOY`` column when ``eoy=True``.
     """
     series = _simple_returns(returns, return_type)
     if not isinstance(series.index, pd.DatetimeIndex):
@@ -312,7 +402,102 @@ def monthly_returns(
     periods = series.index.to_period("M")
     compounded = (1.0 + series).groupby(periods).prod().sub(1.0)
     table = compounded.groupby([compounded.index.year, compounded.index.month]).first().unstack()
-    return table.reindex(columns=range(1, 13)).rename_axis(index="Year", columns="Month")
+    table = table.reindex(columns=range(1, 13)).rename_axis(index="Year", columns="Month")
+    if eoy:
+        table["EOY"] = (1.0 + series).groupby(series.index.year).prod().sub(1.0)
+    return table
+
+
+_AGGREGATE_RESAMPLE_RULES: dict[str, str] = {"W": "W-MON", "M": "ME", "Q": "QE", "Y": "YE"}
+
+
+def aggregate_returns(
+    returns: pd.Series, period: Literal["W", "M", "Q", "Y"], *, return_type: ReturnType = "simple"
+) -> pd.Series:
+    """Compound a return series into coarser calendar periods.
+
+    Args:
+        returns: Periodic return series with a ``DatetimeIndex``.
+        period: Target period: ``"W"`` (weekly), ``"M"`` (monthly), ``"Q"`` (quarterly), or
+            ``"Y"`` (yearly).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+
+    Returns:
+        Series of compounded returns, one value per ``period``, indexed by period end date.
+    """
+    series = _simple_returns(returns, return_type)
+    if not isinstance(series.index, pd.DatetimeIndex):
+        raise TypeError("returns must have a DatetimeIndex for period aggregation")
+    if period not in _AGGREGATE_RESAMPLE_RULES:
+        raise ValueError(f"period must be one of {sorted(_AGGREGATE_RESAMPLE_RULES)}")
+    compounded = (1.0 + series).resample(_AGGREGATE_RESAMPLE_RULES[period]).prod().sub(1.0)
+    return compounded.rename(series.name)
+
+
+def to_prices(returns: pd.Series, *, return_type: ReturnType = "simple", base: float = 1.0) -> pd.Series:
+    """Convert a return series into a cumulative price/equity curve.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        base: Starting value of the curve. Defaults to ``1.0``.
+
+    Returns:
+        Cumulative price series starting at ``base``, same index as ``returns``.
+    """
+    series = _simple_returns(returns, return_type)
+    return (base * (1.0 + series).cumprod()).rename(f"{series.name} price")
+
+
+def rebase(prices: pd.Series, base: float = 100.0) -> pd.Series:
+    """Rescale a price series to a common starting value.
+
+    Useful for plotting or comparing price series that start on different scales
+    (e.g. a strategy's equity curve against a benchmark index).
+
+    Args:
+        prices: Price series. Must contain at least one non-null, non-zero value.
+        base: Starting value after rebasing. Defaults to ``100.0``.
+
+    Returns:
+        Rebased price series, same index as ``prices``.
+    """
+    if not isinstance(prices, pd.Series):
+        raise TypeError("prices must be a pandas Series")
+    clean = prices.dropna()
+    if clean.empty:
+        raise ValueError("prices must contain at least one non-null value")
+    if clean.iloc[0] == 0:
+        raise ValueError("prices must not start at zero")
+    return (prices / clean.iloc[0] * base).rename(prices.name)
+
+
+def make_portfolio(
+    returns: pd.Series,
+    *,
+    return_type: ReturnType = "simple",
+    start_balance: float = 100_000.0,
+    mode: Literal["compound", "linear"] = "compound",
+) -> pd.Series:
+    """Turn a return series into a portfolio equity curve.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        start_balance: Starting portfolio balance. Defaults to ``100,000``.
+        mode: ``"compound"`` (default) reinvests gains/losses each period (equivalent to
+            :func:`to_prices`, rebased to ``start_balance``); ``"linear"`` applies each
+            period's return to the original ``start_balance`` only, without reinvestment.
+
+    Returns:
+        Portfolio balance series, same index as ``returns``.
+    """
+    series = _simple_returns(returns, return_type)
+    if mode == "compound":
+        return to_prices(series, base=start_balance).rename(f"{series.name} portfolio")
+    if mode == "linear":
+        return (start_balance * (1.0 + series.cumsum())).rename(f"{series.name} portfolio")
+    raise ValueError("mode must be either 'compound' or 'linear'")
 
 
 def benchmark_stats(
@@ -333,7 +518,25 @@ def benchmark_stats(
             when not given.
 
     Returns:
-        Series indexed by metric name: ``Strategy Total Return, Benchmark Total Return, Active Return, Beta, Alpha, Correlation, Tracking Error, Information Ratio, Periods``.
+        Series indexed by metric name:
+
+        - ``Strategy Total Return`` / ``Benchmark Total Return``: Simple
+                compounded returns over the full period.
+        - ``Active Return``: Geometric excess growth of the strategy over the
+                benchmark (final value of the strategy/benchmark equity ratio, minus 1).
+        - ``Beta``: [Beta](https://en.wikipedia.org/wiki/Beta_(finance)) — sensitivity to
+                benchmark movements.
+        - ``Alpha``: [Jensen's alpha](https://en.wikipedia.org/wiki/Jensen%27s_alpha) —
+                annualized excess return not explained by beta exposure.
+        - ``Correlation``: [Correlation](https://en.wikipedia.org/wiki/Correlation) — Pearson
+                correlation between strategy and benchmark returns.
+        - ``Tracking Error``: [Tracking error](https://en.wikipedia.org/wiki/Tracking_error) —
+                annualized standard deviation of active returns (strategy minus benchmark), i.e.
+                how consistently the strategy diverges from the benchmark.
+        - ``Information Ratio``: [Information ratio](https://en.wikipedia.org/wiki/Information_ratio)
+                — annualized active return divided by tracking error, i.e. consistency of
+                benchmark-beating performance.
+        - ``Periods``: Number of aligned return observations used.
     """
     strategy, reference = _aligned_returns(returns, benchmark, return_type)
     periods = _periods_per_year(periods_per_year, strategy.index)
@@ -361,6 +564,1448 @@ def benchmark_stats(
     )
 
 
+def to_drawdown_series(returns: pd.Series, *, return_type: ReturnType = "simple") -> pd.Series:
+    """Convert a return series into its running drawdown series.
+
+    Each value is the percentage decline from the running peak of cumulative growth (0 at new
+    highs, negative during drawdowns).
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+
+    Returns:
+        Drawdown series (non-positive values), same index as ``returns``.
+    """
+    series = _simple_returns(returns, return_type)
+    curve = (1.0 + series).cumprod()
+    return curve.div(curve.cummax().clip(lower=1.0)).sub(1.0).rename(f"{series.name} drawdown")
+
+
+def max_drawdown(returns: pd.Series, *, return_type: ReturnType = "simple") -> float:
+    """Calculate the maximum [drawdown](https://en.wikipedia.org/wiki/Drawdown_(economics)).
+
+    The largest peak-to-trough decline in cumulative value over the period. See
+    :func:`to_drawdown_series` for the full running series.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+
+    Returns:
+        Max Drawdown (a non-positive number, e.g. ``-0.25`` for a 25% decline).
+    """
+    return float(to_drawdown_series(returns, return_type=return_type).min())
+
+
+def drawdown_details(
+    returns: pd.Series,
+    *,
+    return_type: ReturnType = "simple",
+    sort_by: Literal["depth", "duration"] = "depth",
+) -> pd.DataFrame:
+    """Break a return stream's drawdown series into individual peak-to-recovery episodes.
+
+    A prerequisite for `q.plot`'s longest-drawdown highlighting. See :func:`to_drawdown_series`
+    for the underlying running drawdown series.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        sort_by: Order episodes by ``"depth"`` (deepest drawdown first, default) or
+            ``"duration"`` (longest first).
+
+    Returns:
+        DataFrame with one row per drawdown episode and columns:
+
+        - ``Start``: Last date at a new high before the decline began.
+        - ``Valley``: Date of the deepest point of the drawdown.
+        - ``End``: Last date the drawdown was still active (before recovering to a new high,
+                or the final date in ``returns`` if the drawdown never recovered).
+        - ``Days``: Number of calendar days from ``Start`` to ``End``.
+        - ``Max Drawdown``: The episode's trough value (a non-positive number).
+
+        Empty (no rows) if ``returns`` never drew down.
+    """
+    drawdown = to_drawdown_series(returns, return_type=return_type)
+    if not isinstance(drawdown.index, pd.DatetimeIndex):
+        raise TypeError("returns must have a DatetimeIndex for drawdown episode duration")
+
+    underwater = drawdown < 0.0
+    if not underwater.any():
+        return pd.DataFrame(columns=["Start", "Valley", "End", "Days", "Max Drawdown"])
+
+    episode_id = (underwater != underwater.shift(1, fill_value=False)).cumsum()
+    episodes = []
+    for _, group in drawdown[underwater].groupby(episode_id[underwater]):
+        loc = drawdown.index.get_loc(group.index[0])
+        start = drawdown.index[loc - 1] if loc > 0 else group.index[0]
+        end = group.index[-1]
+        episodes.append(
+            {
+                "Start": start,
+                "Valley": group.idxmin(),
+                "End": end,
+                "Days": (end - start).days,
+                "Max Drawdown": float(group.min()),
+            }
+        )
+
+    table = pd.DataFrame(episodes)
+    sort_col = "Max Drawdown" if sort_by == "depth" else "Days"
+    return table.sort_values(sort_col, ascending=sort_by == "depth").reset_index(drop=True)
+
+
+def volatility(
+    returns: pd.Series,
+    *,
+    return_type: ReturnType = "simple",
+    periods_per_year: int | None = None,
+) -> float:
+    """Calculate annualized [volatility](https://en.wikipedia.org/wiki/Volatility_(finance)).
+
+    The standard deviation of returns — the most common measure of risk. See
+    :func:`rolling_volatility` for a moving-window variant.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        periods_per_year: Annualization frequency. Inferred from the index
+            when not given.
+
+    Returns:
+        Annualized volatility.
+    """
+    series = _simple_returns(returns, return_type)
+    if len(series) < 2:
+        return float("nan")
+    periods = _periods_per_year(periods_per_year, series.index)
+    return float(series.std(ddof=1) * periods**0.5)
+
+
+def calmar(
+    returns: pd.Series,
+    *,
+    return_type: ReturnType = "simple",
+    periods_per_year: int | None = None,
+    rf: float = 0.0,
+) -> float:
+    """Calculate the [Calmar ratio](https://en.wikipedia.org/wiki/Calmar_ratio).
+
+    CAGR divided by the absolute Max Drawdown, i.e. return per unit of worst-case pain endured.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        periods_per_year: Annualization frequency. Inferred from the index
+            when not given.
+        rf: Annualized risk-free rate, subtracted (after deannualizing) from
+            returns before computing CAGR. Defaults to ``0.0``.
+
+    Returns:
+        Calmar ratio.
+    """
+    series = _simple_returns(returns, return_type)
+    periods = _periods_per_year(periods_per_year, series.index)
+    excess = _excess_returns(series, rf, periods)
+    drawdown = max_drawdown(series, return_type="simple")
+    return _cagr(excess, periods) / abs(drawdown) if drawdown else float("nan")
+
+
+def win_rate(returns: pd.Series, *, return_type: ReturnType = "simple") -> float:
+    """Calculate the win rate: the share of non-zero-return periods that were positive.
+
+    Periods with exactly zero return are excluded from both the count of wins and the total.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+
+    Returns:
+        Win rate (0-1 scale).
+    """
+    series = _simple_returns(returns, return_type)
+    non_zero = series[series != 0]
+    return float((non_zero > 0).mean()) if len(non_zero) else float("nan")
+
+
+def information_ratio(
+    returns: pd.Series,
+    benchmark: pd.Series,
+    *,
+    return_type: ReturnType = "simple",
+    periods_per_year: int | None = None,
+) -> float:
+    """Calculate the [Information ratio](https://en.wikipedia.org/wiki/Information_ratio).
+
+    Annualized active return (strategy minus benchmark) divided by tracking error, i.e.
+    consistency of benchmark-beating performance.
+
+    Args:
+        returns: Strategy periodic return series.
+        benchmark: Benchmark periodic return series, aligned on shared dates.
+        return_type: Whether ``returns``/``benchmark`` are ``"simple"`` or
+            ``"log"`` returns.
+        periods_per_year: Annualization frequency. Inferred from the index
+            when not given.
+
+    Returns:
+        Information Ratio.
+    """
+    strategy, reference = _aligned_returns(returns, benchmark, return_type)
+    periods = _periods_per_year(periods_per_year, strategy.index)
+    active = strategy - reference
+    tracking_error = active.std(ddof=1) if len(active) > 1 else float("nan")
+    return float(active.mean() / tracking_error * periods**0.5) if tracking_error else float("nan")
+
+
+def excess_returns(
+    returns: pd.Series,
+    rf: float = 0.0,
+    *,
+    return_type: ReturnType = "simple",
+    periods_per_year: int | None = None,
+) -> pd.Series:
+    """Calculate per-period excess returns over a deannualized risk-free rate.
+
+    ``rf`` is an annualized rate; it is converted to a per-period rate before being subtracted
+    from each period's return (see :func:`performance`'s ``rf`` parameter for the same convention).
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        rf: Annualized risk-free rate. Defaults to ``0.0`` (returns unchanged).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        periods_per_year: Annualization frequency used to deannualize ``rf``.
+            Inferred from the index when not given.
+
+    Returns:
+        Excess return series.
+    """
+    series = _simple_returns(returns, return_type)
+    periods = _periods_per_year(periods_per_year, series.index)
+    return _excess_returns(series, rf, periods).rename(f"{series.name} excess")
+
+
+def to_log_returns(returns: pd.Series, *, return_type: ReturnType = "simple") -> pd.Series:
+    """Convert a return series to log (continuously compounded) returns.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+
+    Returns:
+        Log return series (``ln(1 + returns)``).
+    """
+    series = _simple_returns(returns, return_type)
+    return np.log1p(series).rename(f"{series.name} log returns")
+
+
+def exponential_volatility(
+    returns: pd.Series,
+    span: int = 30,
+    *,
+    return_type: ReturnType = "simple",
+    periods_per_year: int | None = None,
+    annualize: bool = True,
+) -> pd.Series:
+    """Calculate exponentially-weighted volatility, giving more weight to recent returns.
+
+    Unlike :func:`rolling_volatility`'s fixed window with equal weighting, each observation's
+    influence decays geometrically with age, controlled by ``span``.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        span: Decay span (same semantics as ``pandas.Series.ewm``); roughly the
+            number of recent periods that dominate the estimate.
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        periods_per_year: Annualization frequency. Inferred from the index
+            when not given.
+        annualize: Whether to annualize the result. Defaults to ``True``.
+
+    Returns:
+        Series of (optionally annualized) exponentially-weighted volatility.
+    """
+    series = _simple_returns(returns, return_type)
+    if span < 2:
+        raise ValueError("span must be at least 2")
+    ewm_std = series.ewm(span=span, min_periods=span).std()
+    if annualize:
+        periods = _periods_per_year(periods_per_year, series.index)
+        ewm_std = ewm_std * periods**0.5
+    return ewm_std.rename(f"{series.name} exponential volatility")
+
+
+def geometric_mean(returns: pd.Series, *, return_type: ReturnType = "simple") -> float:
+    """Calculate the [geometric mean](https://en.wikipedia.org/wiki/Geometric_mean) return per period.
+
+    The constant per-period return that would produce the same compounded growth as the actual
+    return sequence (the un-annualized building block of :func:`_cagr`).
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+
+    Returns:
+        Geometric mean return per period.
+    """
+    series = _simple_returns(returns, return_type)
+    return float((1.0 + series).prod() ** (1.0 / len(series)) - 1.0)
+
+
+def outliers(returns: pd.Series, quantile: float = 0.95, *, return_type: ReturnType = "simple") -> pd.Series:
+    """Return the subset of returns above a given quantile threshold.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        quantile: Quantile threshold, e.g. ``0.95`` for the top 5% of returns.
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+
+    Returns:
+        Returns above the ``quantile`` threshold.
+    """
+    series = _simple_returns(returns, return_type)
+    return series[series > series.quantile(quantile)]
+
+
+def remove_outliers(returns: pd.Series, quantile: float = 0.95, *, return_type: ReturnType = "simple") -> pd.Series:
+    """Return the subset of returns below a given quantile threshold, discarding upper-tail outliers.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        quantile: Quantile threshold, e.g. ``0.95`` to discard the top 5% of returns.
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+
+    Returns:
+        Returns below the ``quantile`` threshold.
+    """
+    series = _simple_returns(returns, return_type)
+    return series[series < series.quantile(quantile)]
+
+
+def autocorr_penalty(returns: pd.Series, *, return_type: ReturnType = "simple") -> float:
+    """Calculate a penalty factor for return autocorrelation.
+
+    Serially correlated returns (e.g. from stale pricing, smoothing, or illiquid assets)
+    understate true volatility and can artificially inflate Sharpe- and Sortino-style ratios.
+    This factor (>= 1) is meant to multiply the ratio's denominator to correct for that; see
+    ``smart=True`` on :func:`sharpe`/:func:`sortino`.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+
+    Returns:
+        Autocorrelation penalty factor (``1.0`` when lag-1 autocorrelation is zero or undefined).
+    """
+    series = _simple_returns(returns, return_type)
+    n = len(series)
+    if n < 3:
+        return 1.0
+    coef = abs(np.corrcoef(series.iloc[:-1], series.iloc[1:])[0, 1])
+    if not np.isfinite(coef):
+        return 1.0
+    lags = np.arange(1, n)
+    terms = ((n - lags) / n) * (coef**lags)
+    return float(np.sqrt(1.0 + 2.0 * terms.sum()))
+
+
+def sharpe(
+    returns: pd.Series,
+    *,
+    return_type: ReturnType = "simple",
+    periods_per_year: int | None = None,
+    rf: float = 0.0,
+    smart: bool = False,
+) -> float:
+    """Calculate the annualized Sharpe ratio of excess returns.
+
+    The [Sharpe ratio](https://en.wikipedia.org/wiki/Sharpe_ratio) is the annualized mean excess
+    return divided by the annualized volatility of returns — return earned per unit of total risk
+    taken.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        periods_per_year: Annualization frequency. Inferred from the index
+            when not given.
+        rf: Annualized risk-free rate, subtracted (after deannualizing) from
+            returns before computing the ratio. Defaults to ``0.0``.
+        smart: Whether to penalize the denominator for return autocorrelation via
+            :func:`autocorr_penalty`, which otherwise inflates the ratio for serially correlated
+            (e.g. smoothed or illiquid) return streams. Defaults to ``False``.
+
+    Returns:
+        Annualized Sharpe ratio.
+    """
+    series = _simple_returns(returns, return_type)
+    periods = _periods_per_year(periods_per_year, series.index)
+    excess = _excess_returns(series, rf, periods)
+    volatility = excess.std(ddof=1) if len(excess) > 1 else float("nan")
+    if smart and np.isfinite(volatility):
+        volatility *= autocorr_penalty(series, return_type="simple")
+    return excess.mean() / volatility * periods**0.5 if volatility else float("nan")
+
+
+def sortino(
+    returns: pd.Series,
+    *,
+    return_type: ReturnType = "simple",
+    periods_per_year: int | None = None,
+    rf: float = 0.0,
+    smart: bool = False,
+) -> float:
+    """Calculate the annualized Sortino ratio of excess returns.
+
+    The [Sortino ratio](https://en.wikipedia.org/wiki/Sortino_ratio) is like the Sharpe ratio, but
+    only penalizes downside volatility, since investors rarely mind upside swings.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        periods_per_year: Annualization frequency. Inferred from the index
+            when not given.
+        rf: Annualized risk-free rate, subtracted (after deannualizing) from
+            returns before computing the ratio. Defaults to ``0.0``.
+        smart: Whether to penalize the denominator for return autocorrelation, see
+            :func:`autocorr_penalty`. Defaults to ``False``.
+
+    Returns:
+        Annualized Sortino ratio.
+    """
+    series = _simple_returns(returns, return_type)
+    periods = _periods_per_year(periods_per_year, series.index)
+    excess = _excess_returns(series, rf, periods)
+    downside_deviation = np.sqrt(np.mean(np.minimum(excess.to_numpy(), 0.0) ** 2))
+    if smart and downside_deviation:
+        downside_deviation *= autocorr_penalty(series, return_type="simple")
+    return excess.mean() / downside_deviation * periods**0.5 if downside_deviation else float("nan")
+
+
+def adjusted_sortino(
+    returns: pd.Series,
+    *,
+    return_type: ReturnType = "simple",
+    periods_per_year: int | None = None,
+    rf: float = 0.0,
+    smart: bool = False,
+) -> float:
+    """Calculate Jack Schwager's adjusted Sortino ratio.
+
+    Divides the [Sortino ratio](https://en.wikipedia.org/wiki/Sortino_ratio) by
+    $\\sqrt{2}$ so it can be compared directly against the Sharpe ratio, which otherwise tends to
+    run higher since it divides by an unconditional rather than downside-only deviation.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        periods_per_year: Annualization frequency. Inferred from the index
+            when not given.
+        rf: Annualized risk-free rate, subtracted (after deannualizing) from
+            returns before computing the ratio. Defaults to ``0.0``.
+        smart: Whether to penalize for return autocorrelation, see :func:`sortino`.
+
+    Returns:
+        Adjusted Sortino ratio.
+    """
+    return (
+        sortino(returns, return_type=return_type, periods_per_year=periods_per_year, rf=rf, smart=smart)
+        / 2.0**0.5
+    )
+
+
+def probabilistic_ratio(
+    returns: pd.Series,
+    *,
+    base: Literal["sharpe", "sortino", "adjusted_sortino"] = "sharpe",
+    return_type: ReturnType = "simple",
+    periods_per_year: int | None = None,
+    rf: float = 0.0,
+    smart: bool = False,
+) -> float:
+    """Calculate the probability that a risk-adjusted ratio is truly positive.
+
+    The Probabilistic Sharpe Ratio (Bailey & Lopez de Prado, 2012) converts a point-estimate ratio
+    into a confidence level by accounting for sample size, skew, and kurtosis, all of which affect
+    how noisy the ratio estimate is. The same correction is applied here to the Sortino and
+    adjusted-Sortino ratios.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        base: Which ratio to convert: ``"sharpe"``, ``"sortino"``, or ``"adjusted_sortino"``.
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        periods_per_year: Annualization frequency. Inferred from the index
+            when not given.
+        rf: Annualized risk-free rate, subtracted (after deannualizing) from
+            returns before computing the base ratio. Defaults to ``0.0``.
+        smart: Whether to penalize the base ratio for return autocorrelation, see
+            :func:`sharpe`/:func:`sortino`.
+
+    Returns:
+        Probability (0-1) that the true ratio is greater than zero.
+    """
+    if base not in ("sharpe", "sortino", "adjusted_sortino"):
+        raise ValueError("base must be one of 'sharpe', 'sortino', or 'adjusted_sortino'")
+    series = _simple_returns(returns, return_type)
+    periods = _periods_per_year(periods_per_year, series.index)
+    base_fn = {"sharpe": sharpe, "sortino": sortino, "adjusted_sortino": adjusted_sortino}[base]
+    annualized = base_fn(series, periods_per_year=periods, rf=rf, smart=smart)
+    ratio = annualized / periods**0.5
+    n = len(series)
+    if n < 2 or not np.isfinite(ratio):
+        return float("nan")
+    skewness = float(series.skew())
+    kurtosis_raw = float(series.kurtosis()) + 3.0
+    variance = 1.0 - skewness * ratio + (kurtosis_raw - 1.0) / 4.0 * ratio**2
+    if variance <= 0:
+        return float("nan")
+    z = ratio * (n - 1) ** 0.5 / variance**0.5
+    return float(norm.cdf(z))
+
+
+def treynor_ratio(
+    returns: pd.Series,
+    benchmark: pd.Series,
+    *,
+    return_type: ReturnType = "simple",
+    periods_per_year: int | None = None,
+    rf: float = 0.0,
+) -> float:
+    """Calculate the annualized Treynor ratio relative to a benchmark.
+
+    The [Treynor ratio](https://en.wikipedia.org/wiki/Treynor_ratio) is the annualized mean excess
+    return divided by beta — like the Sharpe ratio, but measuring return earned per unit of
+    systematic (market) risk rather than total risk.
+
+    Args:
+        returns: Strategy periodic return series.
+        benchmark: Benchmark periodic return series, aligned on shared dates.
+        return_type: Whether ``returns``/``benchmark`` are ``"simple"`` or ``"log"`` returns.
+        periods_per_year: Annualization frequency. Inferred from the index
+            when not given.
+        rf: Annualized risk-free rate, subtracted (after deannualizing) from
+            returns before computing the ratio. Defaults to ``0.0``.
+
+    Returns:
+        Annualized Treynor ratio.
+    """
+    strategy, reference = _aligned_returns(returns, benchmark, return_type)
+    periods = _periods_per_year(periods_per_year, strategy.index)
+    excess = _excess_returns(strategy, rf, periods)
+    beta_value = beta(strategy, reference, return_type="simple")
+    return excess.mean() * periods / beta_value if beta_value and np.isfinite(beta_value) else float("nan")
+
+
+def omega(
+    returns: pd.Series,
+    *,
+    return_type: ReturnType = "simple",
+    periods_per_year: int | None = None,
+    rf: float = 0.0,
+    required_return: float = 0.0,
+) -> float:
+    """Calculate the Omega ratio of a return stream.
+
+    The [Omega ratio](https://en.wikipedia.org/wiki/Omega_ratio) is the probability-weighted ratio
+    of gains above a required-return threshold to losses below it, using the full return
+    distribution rather than just its mean and variance (unlike Sharpe/Sortino).
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        periods_per_year: Annualization frequency. Inferred from the index
+            when not given.
+        rf: Annualized risk-free rate, subtracted (after deannualizing) from
+            returns before computing the ratio. Defaults to ``0.0``.
+        required_return: Annualized minimum acceptable return threshold, deannualized the same
+            way as ``rf``. Defaults to ``0.0``.
+
+    Returns:
+        Omega ratio.
+    """
+    series = _simple_returns(returns, return_type)
+    periods = _periods_per_year(periods_per_year, series.index)
+    excess = _excess_returns(series, rf, periods)
+    threshold = (1.0 + required_return) ** (1.0 / periods) - 1.0 if required_return else 0.0
+    diff = excess - threshold
+    gains = diff[diff > 0].sum()
+    losses = -diff[diff < 0].sum()
+    return gains / losses if losses else float("nan")
+
+
+def gain_to_pain_ratio(
+    returns: pd.Series,
+    *,
+    return_type: ReturnType = "simple",
+    periods_per_year: int | None = None,
+    rf: float = 0.0,
+) -> float:
+    """Calculate Jack Schwager's Gain-to-Pain ratio.
+
+    Sum of all (excess) returns divided by the absolute sum of losing periods — a simple measure
+    of total profit generated per unit of total loss endured, without regard to distribution shape
+    or timing.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        periods_per_year: Annualization frequency, used to deannualize ``rf``. Inferred from the
+            index when not given.
+        rf: Annualized risk-free rate, subtracted (after deannualizing) from returns. Defaults to
+            ``0.0``.
+
+    Returns:
+        Gain-to-Pain ratio.
+    """
+    series = _simple_returns(returns, return_type)
+    periods = _periods_per_year(periods_per_year, series.index)
+    excess = _excess_returns(series, rf, periods)
+    losses = -excess[excess < 0].sum()
+    return excess.sum() / losses if losses else float("nan")
+
+
+def exposure(returns: pd.Series, *, return_type: ReturnType = "simple") -> float:
+    """Calculate the fraction of periods with a non-zero return (time in market).
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+
+    Returns:
+        Share of periods with a non-zero return, in ``[0, 1]``.
+    """
+    series = _simple_returns(returns, return_type)
+    return float((series != 0).mean())
+
+
+def rar(
+    returns: pd.Series,
+    *,
+    return_type: ReturnType = "simple",
+    periods_per_year: int | None = None,
+    rf: float = 0.0,
+) -> float:
+    """Calculate the Risk-Adjusted Return (CAGR divided by exposure).
+
+    Divides CAGR by :func:`exposure` (the fraction of periods actually invested, i.e. with
+    non-zero returns), so a strategy that earns its return while sitting in cash most of the time
+    scores higher than one that needed to be fully invested throughout.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        periods_per_year: Annualization frequency. Inferred from the index
+            when not given.
+        rf: Annualized risk-free rate, subtracted (after deannualizing) from
+            returns before computing CAGR. Defaults to ``0.0``.
+
+    Returns:
+        Risk-adjusted return.
+    """
+    series = _simple_returns(returns, return_type)
+    periods = _periods_per_year(periods_per_year, series.index)
+    excess = _excess_returns(series, rf, periods)
+    time_in_market = exposure(series, return_type="simple")
+    return _cagr(excess, periods) / time_in_market if time_in_market else float("nan")
+
+
+def skew(returns: pd.Series, *, return_type: ReturnType = "simple") -> float:
+    """Calculate the [skewness](https://en.wikipedia.org/wiki/Skewness) of returns.
+
+    Skewness measures the degree of asymmetry of the return distribution around its mean.
+    Positive skew means a longer right tail (occasional large gains); negative skew means a longer
+    left tail (occasional large losses).
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+
+    Returns:
+        Sample skewness.
+    """
+    series = _simple_returns(returns, return_type)
+    return float(series.skew())
+
+
+def kurtosis(returns: pd.Series, *, return_type: ReturnType = "simple") -> float:
+    """Calculate the excess [kurtosis](https://en.wikipedia.org/wiki/Kurtosis) of returns.
+
+    Kurtosis measures how fat-tailed the return distribution is relative to a normal distribution
+    (which has an excess kurtosis of 0). Higher values mean more frequent extreme returns than a
+    normal distribution would predict.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+
+    Returns:
+        Sample excess kurtosis.
+    """
+    series = _simple_returns(returns, return_type)
+    return float(series.kurtosis())
+
+
+def ulcer_index(returns: pd.Series, *, return_type: ReturnType = "simple") -> float:
+    """Calculate the Ulcer Index.
+
+    The [Ulcer Index](https://en.wikipedia.org/wiki/Ulcer_index) is the root-mean-square of
+    drawdowns from the running peak, capturing both the depth and duration of drawdowns rather
+    than just their worst point (unlike Max Drawdown).
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+
+    Returns:
+        Ulcer Index.
+    """
+    series = _simple_returns(returns, return_type)
+    curve = (1.0 + series).cumprod()
+    drawdown = curve.div(curve.cummax().clip(lower=1.0)).sub(1.0)
+    return float(np.sqrt((drawdown**2).mean()))
+
+
+def ulcer_performance_index(
+    returns: pd.Series,
+    *,
+    return_type: ReturnType = "simple",
+    periods_per_year: int | None = None,
+    rf: float = 0.0,
+) -> float:
+    """Calculate the Ulcer Performance Index (Martin ratio).
+
+    Annualized excess return divided by the :func:`ulcer_index` — like Calmar, but risk is
+    measured by the depth *and* duration of drawdowns rather than just the single worst one.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        periods_per_year: Annualization frequency. Inferred from the index
+            when not given.
+        rf: Annualized risk-free rate, subtracted (after deannualizing) from
+            returns before computing CAGR. Defaults to ``0.0``.
+
+    Returns:
+        Ulcer Performance Index.
+    """
+    series = _simple_returns(returns, return_type)
+    periods = _periods_per_year(periods_per_year, series.index)
+    excess = _excess_returns(series, rf, periods)
+    ulcer = ulcer_index(series, return_type="simple")
+    return _cagr(excess, periods) / ulcer if ulcer else float("nan")
+
+
+def value_at_risk(
+    returns: pd.Series,
+    *,
+    return_type: ReturnType = "simple",
+    confidence: float = 0.95,
+) -> float:
+    """Calculate the parametric (variance-covariance) Value at Risk.
+
+    [Value at Risk](https://en.wikipedia.org/wiki/Value_at_risk) assumes normally distributed
+    returns and estimates the maximum expected loss over one period at the given confidence level
+    from the sample mean and standard deviation.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        confidence: Confidence level, e.g. ``0.95`` for a 95% VaR. Defaults to ``0.95``.
+
+    Returns:
+        Value at Risk (a negative number representing a loss).
+    """
+    series = _simple_returns(returns, return_type)
+    return float(norm.ppf(1.0 - confidence, series.mean(), series.std(ddof=1)))
+
+
+def conditional_value_at_risk(
+    returns: pd.Series,
+    *,
+    return_type: ReturnType = "simple",
+    confidence: float = 0.95,
+) -> float:
+    """Calculate the historical Conditional Value at Risk (Expected Shortfall).
+
+    [Expected Shortfall](https://en.wikipedia.org/wiki/Expected_shortfall) is the average return
+    among periods that fell below the :func:`value_at_risk` threshold — the expected loss *given*
+    that a tail event occurred, which VaR alone doesn't capture.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        confidence: Confidence level, e.g. ``0.95`` for a 95% CVaR. Defaults to ``0.95``.
+
+    Returns:
+        Conditional Value at Risk (a negative number representing an expected loss).
+    """
+    series = _simple_returns(returns, return_type)
+    threshold = value_at_risk(series, return_type="simple", confidence=confidence)
+    tail = series[series < threshold]
+    return float(tail.mean()) if len(tail) else threshold
+
+
+def serenity_index(
+    returns: pd.Series,
+    *,
+    return_type: ReturnType = "simple",
+    rf: float = 0.0,
+) -> float:
+    """Calculate the Serenity Index.
+
+    A composite drawdown-aware risk-adjusted return measure (KeyQuant, 2011): total excess return
+    divided by the :func:`ulcer_index` scaled by a "pitfall" factor — the tail risk of drawdowns
+    (their Conditional VaR) relative to overall return volatility. Penalizes strategies whose
+    drawdowns are both deep/prolonged (high Ulcer Index) and concentrated in a few severe episodes
+    (high pitfall).
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        rf: Amount subtracted from total return before dividing. Defaults to ``0.0``.
+
+    Returns:
+        Serenity Index.
+    """
+    series = _simple_returns(returns, return_type)
+    curve = (1.0 + series).cumprod()
+    drawdown = curve.div(curve.cummax().clip(lower=1.0)).sub(1.0)
+    std_returns = series.std(ddof=1) if len(series) > 1 else float("nan")
+    if not std_returns or not np.isfinite(std_returns):
+        return float("nan")
+    pitfall = -conditional_value_at_risk(drawdown, return_type="simple") / std_returns
+    ulcer = float(np.sqrt((drawdown**2).mean()))
+    denominator = ulcer * pitfall
+    return (series.sum() - rf) / denominator if denominator else float("nan")
+
+
+def risk_of_ruin(returns: pd.Series, *, return_type: ReturnType = "simple") -> float:
+    """Estimate the risk of ruin.
+
+    The [risk of ruin](https://en.wikipedia.org/wiki/Gambler%27s_ruin) is the probability of
+    losing the entire trading account, from the classic gambler's-ruin formula applied to the
+    strategy's per-period win rate.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+
+    Returns:
+        Probability of ruin, in ``[0, 1]``.
+    """
+    series = _simple_returns(returns, return_type)
+    non_zero = series[series != 0]
+    win_rate = (non_zero > 0).mean() if len(non_zero) else float("nan")
+    if not np.isfinite(win_rate):
+        return float("nan")
+    return float(((1.0 - win_rate) / (1.0 + win_rate)) ** len(series))
+
+
+def tail_ratio(
+    returns: pd.Series,
+    *,
+    return_type: ReturnType = "simple",
+    cutoff: float = 0.95,
+) -> float:
+    """Calculate the tail ratio between the right and left tails of the return distribution.
+
+    Ratio of the ``cutoff`` percentile (e.g. 95th) to the ``1 - cutoff`` percentile (e.g. 5th) of
+    returns — how large favorable outliers are relative to unfavorable ones.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        cutoff: Upper percentile used for the right tail; ``1 - cutoff`` is used for the left
+            tail. Defaults to ``0.95``.
+
+    Returns:
+        Tail ratio.
+    """
+    series = _simple_returns(returns, return_type)
+    upper = series.quantile(cutoff)
+    lower = series.quantile(1.0 - cutoff)
+    return float(abs(upper / lower)) if lower else float("nan")
+
+
+def avg_return(returns: pd.Series, *, return_type: ReturnType = "simple") -> float:
+    """Calculate the average return across non-zero periods.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+
+    Returns:
+        Mean of non-zero periodic returns.
+    """
+    series = _simple_returns(returns, return_type)
+    non_zero = series[series != 0]
+    return float(non_zero.mean()) if len(non_zero) else float("nan")
+
+
+def avg_win(returns: pd.Series, *, return_type: ReturnType = "simple") -> float:
+    """Calculate the average return across winning (positive-return) periods.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+
+    Returns:
+        Mean of positive periodic returns.
+    """
+    series = _simple_returns(returns, return_type)
+    wins = series[series > 0]
+    return float(wins.mean()) if len(wins) else float("nan")
+
+
+def avg_loss(returns: pd.Series, *, return_type: ReturnType = "simple") -> float:
+    """Calculate the average return across losing (negative-return) periods.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+
+    Returns:
+        Mean of negative periodic returns.
+    """
+    series = _simple_returns(returns, return_type)
+    losses = series[series < 0]
+    return float(losses.mean()) if len(losses) else float("nan")
+
+
+def payoff_ratio(returns: pd.Series, *, return_type: ReturnType = "simple") -> float:
+    """Calculate the payoff ratio: average win divided by absolute average loss.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+
+    Returns:
+        Payoff ratio.
+    """
+    series = _simple_returns(returns, return_type)
+    loss = avg_loss(series, return_type="simple")
+    win = avg_win(series, return_type="simple")
+    return float(win / abs(loss)) if loss and np.isfinite(loss) else float("nan")
+
+
+def profit_ratio(returns: pd.Series, *, return_type: ReturnType = "simple") -> float:
+    """Calculate the profit ratio: win frequency divided by loss frequency.
+
+    Distinct from :func:`payoff_ratio` (which compares win/loss *size*) and :func:`profit_factor`
+    (which compares total gains vs. total losses) — this compares how often the strategy wins vs.
+    how often it loses.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+
+    Returns:
+        Profit ratio.
+    """
+    series = _simple_returns(returns, return_type)
+    non_zero = series[series != 0]
+    if not len(non_zero):
+        return float("nan")
+    wins = int((non_zero > 0).sum())
+    losses = int((non_zero < 0).sum())
+    if not wins:
+        return 0.0
+    if not losses:
+        return float("nan")
+    return float(wins / losses)
+
+
+def profit_factor(returns: pd.Series, *, return_type: ReturnType = "simple") -> float:
+    """Calculate the profit factor: total gains divided by total losses.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+
+    Returns:
+        Profit factor.
+    """
+    series = _simple_returns(returns, return_type)
+    gains = series[series > 0].sum()
+    losses = abs(series[series < 0].sum())
+    if not losses:
+        return float("inf") if gains else float("nan")
+    return float(gains / losses)
+
+
+def cpc_index(returns: pd.Series, *, return_type: ReturnType = "simple") -> float:
+    """Calculate the CPC Index: Profit Factor x Win Rate x Payoff Ratio.
+
+    A composite score combining how much is won per unit lost (:func:`profit_factor`), how often
+    periods win (win rate), and the relative size of wins vs. losses (:func:`payoff_ratio`).
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+
+    Returns:
+        CPC Index.
+    """
+    series = _simple_returns(returns, return_type)
+    non_zero = series[series != 0]
+    win_rate = (non_zero > 0).mean() if len(non_zero) else float("nan")
+    return float(profit_factor(series, return_type="simple") * win_rate * payoff_ratio(series, return_type="simple"))
+
+
+def common_sense_ratio(returns: pd.Series, *, return_type: ReturnType = "simple") -> float:
+    """Calculate the Common Sense Ratio: Profit Factor x Tail Ratio.
+
+    Combines overall profitability (:func:`profit_factor`) with the shape of extreme returns
+    (:func:`tail_ratio`), so it penalizes strategies with a poor tail-risk profile even if their
+    average profit factor looks good.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+
+    Returns:
+        Common Sense Ratio.
+    """
+    series = _simple_returns(returns, return_type)
+    return float(profit_factor(series, return_type="simple") * tail_ratio(series, return_type="simple"))
+
+
+def outlier_win_ratio(
+    returns: pd.Series,
+    *,
+    return_type: ReturnType = "simple",
+    quantile: float = 0.99,
+) -> float:
+    """Calculate the outlier win ratio: a high quantile of returns vs. the average win.
+
+    Ratio of the ``quantile`` (e.g. 99th percentile) return to the average winning return — how
+    much a strategy's best outcomes are driven by rare, outsized wins rather than typical ones.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        quantile: Upper quantile used for the outlier threshold. Defaults to ``0.99``.
+
+    Returns:
+        Outlier win ratio.
+    """
+    series = _simple_returns(returns, return_type)
+    win = avg_win(series, return_type="simple")
+    return float(series.quantile(quantile) / win) if win and np.isfinite(win) else float("nan")
+
+
+def outlier_loss_ratio(
+    returns: pd.Series,
+    *,
+    return_type: ReturnType = "simple",
+    quantile: float = 0.01,
+) -> float:
+    """Calculate the outlier loss ratio: a low quantile of returns vs. the average loss.
+
+    Ratio of the ``quantile`` (e.g. 1st percentile) return to the average losing return — how much
+    a strategy's worst outcomes are driven by rare, outsized losses rather than typical ones.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        quantile: Lower quantile used for the outlier threshold. Defaults to ``0.01``.
+
+    Returns:
+        Outlier loss ratio.
+    """
+    series = _simple_returns(returns, return_type)
+    loss = avg_loss(series, return_type="simple")
+    return float(series.quantile(quantile) / loss) if loss and np.isfinite(loss) else float("nan")
+
+
+def recovery_factor(
+    returns: pd.Series,
+    *,
+    return_type: ReturnType = "simple",
+    rf: float = 0.0,
+) -> float:
+    """Calculate the recovery factor: total return divided by Max Drawdown.
+
+    How many multiples of the worst peak-to-trough decline the strategy ultimately earned back —
+    higher values mean faster, more complete recovery from drawdowns.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        rf: Amount subtracted from total return before dividing. Defaults to ``0.0``.
+
+    Returns:
+        Recovery factor.
+    """
+    series = _simple_returns(returns, return_type)
+    curve = (1.0 + series).cumprod()
+    total_return = curve.iloc[-1] - 1.0 - rf
+    max_drawdown = curve.div(curve.cummax().clip(lower=1.0)).sub(1.0).min()
+    return float(abs(total_return) / abs(max_drawdown)) if max_drawdown else float("nan")
+
+
+def risk_return_ratio(returns: pd.Series, *, return_type: ReturnType = "simple") -> float:
+    """Calculate the risk-return ratio: mean return divided by its standard deviation.
+
+    Like the Sharpe ratio, but un-annualized and without a risk-free rate — the simplest possible
+    return-per-unit-of-risk measure.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+
+    Returns:
+        Risk-return ratio.
+    """
+    series = _simple_returns(returns, return_type)
+    std = series.std(ddof=1) if len(series) > 1 else float("nan")
+    return float(series.mean() / std) if std and np.isfinite(std) else float("nan")
+
+
+def kelly_criterion(returns: pd.Series, *, return_type: ReturnType = "simple") -> float:
+    """Calculate the Kelly Criterion fraction.
+
+    The [Kelly Criterion](https://en.wikipedia.org/wiki/Kelly_criterion) is the recommended
+    fraction of capital to allocate to a strategy given its win rate and :func:`payoff_ratio`, to
+    maximize long-run geometric growth without risking ruin.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+
+    Returns:
+        Kelly fraction (can be negative, indicating the strategy has negative expectancy).
+    """
+    series = _simple_returns(returns, return_type)
+    non_zero = series[series != 0]
+    win_rate = (non_zero > 0).mean() if len(non_zero) else float("nan")
+    payoff = payoff_ratio(series, return_type="simple")
+    if not payoff or not np.isfinite(payoff) or not np.isfinite(win_rate):
+        return float("nan")
+    return float((payoff * win_rate - (1.0 - win_rate)) / payoff)
+
+
+def best(returns: pd.Series, *, return_type: ReturnType = "simple") -> float:
+    """Return the single best (highest) period return.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+
+    Returns:
+        Maximum periodic return.
+    """
+    series = _simple_returns(returns, return_type)
+    return float(series.max())
+
+
+def worst(returns: pd.Series, *, return_type: ReturnType = "simple") -> float:
+    """Return the single worst (lowest) period return.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+
+    Returns:
+        Minimum periodic return.
+    """
+    series = _simple_returns(returns, return_type)
+    return float(series.min())
+
+
+def _max_consecutive(mask: pd.Series) -> int:
+    """Return the longest run of consecutive ``True`` values in a boolean Series."""
+    if not len(mask):
+        return 0
+    groups = (~mask).cumsum()
+    streaks = mask.groupby(groups).sum()
+    return int(streaks.max()) if len(streaks) else 0
+
+
+def consecutive_wins(returns: pd.Series, *, return_type: ReturnType = "simple") -> int:
+    """Return the longest streak of consecutive positive-return periods.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+
+    Returns:
+        Length of the longest winning streak.
+    """
+    series = _simple_returns(returns, return_type)
+    return _max_consecutive(series > 0)
+
+
+def consecutive_losses(returns: pd.Series, *, return_type: ReturnType = "simple") -> int:
+    """Return the longest streak of consecutive negative-return periods.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+
+    Returns:
+        Length of the longest losing streak.
+    """
+    series = _simple_returns(returns, return_type)
+    return _max_consecutive(series < 0)
+
+
+def distribution(returns: pd.Series, *, return_type: ReturnType = "simple") -> dict[str, dict[str, list[float]]]:
+    """Break down compounded returns by period, flagging IQR outliers within each.
+
+    Compounds ``returns`` into Daily (as given), Weekly, Monthly, Quarterly, and Yearly buckets,
+    then splits each bucket's values into "normal" and "outlier" using the standard 1.5x
+    interquartile-range rule.
+
+    Args:
+        returns: Periodic return series with a ``DatetimeIndex``.
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+
+    Returns:
+        Dict keyed by period name (``"Daily"``, ``"Weekly"``, ``"Monthly"``, ``"Quarterly"``,
+        ``"Yearly"``), each mapping to ``{"values": [...], "outliers": [...]}``.
+    """
+    series = _simple_returns(returns, return_type)
+    if not isinstance(series.index, pd.DatetimeIndex):
+        raise TypeError("returns must have a DatetimeIndex for distribution analysis")
+
+    def compound(group: pd.Series) -> float:
+        return float((1.0 + group).prod() - 1.0)
+
+    def split(values: pd.Series) -> dict[str, list[float]]:
+        q1, q3 = values.quantile(0.25), values.quantile(0.75)
+        iqr = q3 - q1
+        within = (values >= q1 - 1.5 * iqr) & (values <= q3 + 1.5 * iqr)
+        return {"values": values[within].tolist(), "outliers": values[~within].tolist()}
+
+    return {
+        "Daily": split(series),
+        "Weekly": split(series.resample("W-MON").apply(compound)),
+        "Monthly": split(series.resample("ME").apply(compound)),
+        "Quarterly": split(series.resample("QE").apply(compound)),
+        "Yearly": split(series.resample("YE").apply(compound)),
+    }
+
+
+def r_squared(returns: pd.Series, benchmark: pd.Series, *, return_type: ReturnType = "simple") -> float:
+    """Calculate R² (coefficient of determination) between strategy and benchmark returns.
+
+    [R²](https://en.wikipedia.org/wiki/Coefficient_of_determination) is the square of the Pearson
+    correlation between strategy and benchmark returns — how much of the strategy's variance is
+    explained by benchmark movements. Closer to 1 means the strategy moves in lockstep with the
+    benchmark; closer to 0 means it's largely independent.
+
+    Args:
+        returns: Strategy periodic return series.
+        benchmark: Benchmark periodic return series, aligned on shared dates.
+        return_type: Whether ``returns``/``benchmark`` are ``"simple"`` or ``"log"`` returns.
+
+    Returns:
+        R², in ``[0, 1]``.
+    """
+    strategy, reference = _aligned_returns(returns, benchmark, return_type)
+    return float(strategy.corr(reference) ** 2)
+
+
+def compare(returns: pd.Series, benchmark: pd.Series, *, return_type: ReturnType = "simple") -> pd.DataFrame:
+    """Compare strategy and benchmark returns period-by-period.
+
+    Args:
+        returns: Strategy periodic return series.
+        benchmark: Benchmark periodic return series, aligned on shared dates.
+        return_type: Whether ``returns``/``benchmark`` are ``"simple"`` or ``"log"`` returns.
+
+    Returns:
+        DataFrame indexed like the aligned returns, with columns:
+
+        - ``Strategy``: Strategy return for the period.
+        - ``Benchmark``: Benchmark return for the period.
+        - ``Multiplier``: ``Strategy / Benchmark`` for the period.
+        - ``Won``: ``True`` where the strategy return met or beat the benchmark.
+    """
+    strategy, reference = _aligned_returns(returns, benchmark, return_type)
+    return pd.DataFrame(
+        {
+            "Strategy": strategy,
+            "Benchmark": reference,
+            "Multiplier": strategy / reference.replace(0.0, np.nan),
+            "Won": strategy >= reference,
+        }
+    )
+
+
+def _stationary_bootstrap_indices(rng: np.random.Generator, pool_size: int, length: int, block_size: float) -> np.ndarray:
+    """Build one circular stationary-bootstrap index sequence of the given ``length``.
+
+    Implements the [Politis & Romano (1994)](https://doi.org/10.2307/2290993) stationary
+    bootstrap: the sequence is stitched together out of contiguous, circularly-wrapped blocks
+    drawn from a pool of ``pool_size`` source periods (a block can run off the end of the pool
+    and continue from the start) whose lengths are drawn from a Geometric distribution with mean
+    ``block_size``. Resampling contiguous runs instead of individual points preserves local
+    autocorrelation and volatility clustering that an i.i.d. (point-by-point) bootstrap destroys,
+    while the randomized (rather than fixed) block length keeps the resampled series statistically
+    stationary — unlike a fixed-length moving-block bootstrap, it doesn't inject an artificial
+    periodicity at the block boundary. ``length`` may differ from ``pool_size`` (e.g. simulating a
+    shorter forward horizon than the historical sample used as the resampling pool).
+    """
+    indices = np.empty(length, dtype=np.int64)
+    p = 1.0 / block_size
+    filled = 0
+    while filled < length:
+        start = int(rng.integers(pool_size))
+        run = min(int(rng.geometric(p)), length - filled)
+        indices[filled : filled + run] = (start + np.arange(run)) % pool_size
+        filled += run
+    return indices
+
+
+def montecarlo(
+    returns: pd.Series,
+    sims: int = 1000,
+    *,
+    return_type: ReturnType = "simple",
+    bust: float | None = None,
+    goal: float | None = None,
+    confidence: float = 0.95,
+    seed: int | None = None,
+    block_size: float | None = None,
+    periods: int | None = None,
+) -> dict[str, object]:
+    """Simulate bootstrap-resampled return paths to gauge the range of plausible outcomes.
+
+    Each simulated path is built by resampling the historical returns *with replacement*
+    (a [bootstrap](https://en.wikipedia.org/wiki/Bootstrapping_(statistics))), then compounding
+    them into a cumulative growth path. Useful for estimating how much of a strategy's realized
+    performance could plausibly be attributed to chance, and what range of terminal outcomes and
+    drawdowns a similar return distribution could plausibly produce.
+
+    Note:
+        This deliberately resamples *with* replacement rather than merely permuting (shuffling)
+        the historical returns. A plain permutation only reorders the same fixed set of returns,
+        and since compounding is a product, its terminal value ``prod(1 + r)`` is invariant to
+        the order of the factors — every permuted path compounds to *exactly* the same terminal
+        return as the original. That makes a permutation-only simulation's terminal-value spread,
+        ``goal_probability``, degenerate (every path either meets the goal or none do) even
+        though its *path shape* (and therefore Max Drawdown) still varies meaningfully. Bootstrap
+        resampling avoids this: some returns are drawn more than once and others not at all, so
+        the terminal value genuinely varies across simulations, making
+        ``terminal_stats``/``goal_probability`` statistically meaningful.
+
+    Note:
+        By default (``block_size=None``) each period is resampled independently (i.i.d.), which
+        implicitly assumes returns have no serial dependence. Real return series routinely
+        violate that: volatility clustering (calm/turbulent periods cluster together),
+        short-term autocorrelation, and macro-regime persistence are all well documented. i.i.d.
+        resampling destroys these dependencies, which tends to *understate* tail risk (it can't
+        produce a realistic run of consecutive bad days beyond what chance alone would predict).
+        Pass ``block_size`` (e.g. ``20`` for roughly a trading month) to instead draw contiguous,
+        circularly-wrapped blocks of historical returns with Geometrically-distributed lengths
+        (mean ``block_size``) — a stationary block bootstrap — which preserves that local
+        structure. Larger ``block_size`` preserves longer-range dependence at the cost of fewer
+        effectively-independent blocks (and thus less path diversity) per simulation; it should
+        typically be set to roughly the horizon over which returns are believed to be
+        autocorrelated (e.g. the length of a typical volatility cluster). For explicitly modeling
+        time-varying volatility/regime shifts, a fitted parametric model (ARMA-GARCH) is a more
+        appropriate but heavier tool than resampling; that's out of scope here.
+
+    Note:
+        Compounding is multiplicative, so its variance accumulates with the number of resampled
+        periods: simulating as many periods as a long history contains (the default,
+        ``periods=None``) makes the terminal-value spread balloon (easily spanning multiple
+        orders of magnitude for a volatile asset) and pushes any fixed ``bust``/``goal``
+        threshold's probability toward 0% or 100%, since a long enough random path is nearly
+        guaranteed to cross it at some point — both effects are real, not bugs, but make for a
+        poorly-differentiated simulation. Pass ``periods`` to decouple the simulation horizon from
+        the length of ``returns``: the full history is still used as the resampling pool (so a
+        long, multi-regime history avoids biasing *what* gets resampled — see the module-level
+        guidance on avoiding a single-regime sample), while each simulated path only covers
+        ``periods`` steps forward, matching whatever horizon ``bust``/``goal`` are actually meant
+        to evaluate (e.g. ``periods=252`` for one trading year). Must satisfy
+        ``1 <= periods <= len(returns)``. When given, ``sim_0`` (the "original" reference path) is
+        the most recent ``periods``-length window of ``returns`` rather than the entire history.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``). Also serves as the
+            resampling pool when ``periods`` is narrower than ``returns`` itself.
+        sims: Number of simulated paths, including the original (unresampled) path as the first
+            column (``sim_0``). Must be at least 1.
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        bust: Optional Max Drawdown threshold (e.g. ``-0.2`` for -20%). When given,
+            ``bust_probability`` reports the fraction of simulated paths whose max drawdown
+            breached it.
+        goal: Optional cumulative-return threshold (e.g. ``1.0`` for +100%). When given,
+            ``goal_probability`` reports the fraction of simulated paths that reached it.
+        confidence: Confidence level for the per-period ``confidence_band``. Defaults to
+            ``0.95`` (a 95% band).
+        seed: Optional random seed for reproducibility.
+        block_size: Optional mean block length (in periods) for a stationary block bootstrap
+            (see Note above). Defaults to ``None``, resampling each period independently (i.i.d.).
+        periods: Optional simulation horizon in periods, decoupled from ``len(returns)`` (see
+            Note above). Defaults to ``None`` (simulate as many periods as ``returns`` contains).
+
+    Returns:
+        Dict with keys:
+
+        - ``paths``: DataFrame of cumulative simulated returns, one column per simulation,
+                indexed like ``returns``.
+        - ``terminal_stats``: Summary statistics (mean, std, min/25%/50%/75%/max) of the final
+                cumulative return across simulations.
+        - ``max_drawdown_stats``: Same summary statistics for each simulation's Max Drawdown.
+        - ``confidence_band``: DataFrame with ``Lower``/``Upper`` columns holding the
+                ``confidence``-level percentile range of cumulative return at each period.
+        - ``bust_probability``: Fraction of simulations at or below ``bust`` (``None`` if
+                ``bust`` wasn't given).
+        - ``goal_probability``: Fraction of simulations at or above ``goal`` (``None`` if
+                ``goal`` wasn't given).
+    """
+    series = _simple_returns(returns, return_type)
+    if sims < 1:
+        raise ValueError("sims must be at least 1")
+    if not 0.0 < confidence < 1.0:
+        raise ValueError("confidence must be between 0 and 1")
+    if block_size is not None and block_size <= 0:
+        raise ValueError("block_size must be positive")
+
+    rng = np.random.default_rng(seed)
+    values = series.to_numpy()
+    pool_size = len(values)
+    horizon = pool_size if periods is None else periods
+    if horizon < 1 or horizon > pool_size:
+        raise ValueError("periods must be between 1 and len(returns)")
+
+    resampled = np.empty((horizon, sims))
+    resampled[:, 0] = values[-horizon:]
+    for i in range(1, sims):
+        if block_size is None:
+            resampled[:, i] = rng.choice(values, size=horizon, replace=True)
+        else:
+            resampled[:, i] = values[_stationary_bootstrap_indices(rng, pool_size, horizon, block_size)]
+
+    paths = pd.DataFrame(
+        np.cumprod(1.0 + resampled, axis=0) - 1.0,
+        index=series.index[-horizon:],
+        columns=[f"sim_{i}" for i in range(sims)],
+    )
+
+    terminal = paths.iloc[-1]
+    drawdowns = (1.0 + paths).div((1.0 + paths).cummax()).sub(1.0)
+    max_drawdowns = drawdowns.min()
+
+    percentiles = [0.05, 0.25, 0.5, 0.75, 0.95]
+    lower_q, upper_q = (1.0 - confidence) / 2.0, 1.0 - (1.0 - confidence) / 2.0
+    confidence_band = pd.DataFrame(
+        {"Lower": paths.quantile(lower_q, axis=1), "Upper": paths.quantile(upper_q, axis=1)}
+    )
+
+    return {
+        "paths": paths,
+        "terminal_stats": terminal.describe(percentiles=percentiles),
+        "max_drawdown_stats": max_drawdowns.describe(percentiles=percentiles),
+        "confidence_band": confidence_band,
+        "bust_probability": float((max_drawdowns <= bust).mean()) if bust is not None else None,
+        "goal_probability": float((terminal >= goal).mean()) if goal is not None else None,
+    }
+
+
 class Returns:
     """Bind a return stream (and optional benchmark) for chained stats and plotting.
 
@@ -374,10 +2019,12 @@ class Returns:
         *,
         return_type: ReturnType = "simple",
         periods_per_year: int | None = None,
+        rf: float = 0.0,
     ) -> None:
         self.returns = _simple_returns(data, return_type)
         self.benchmark = _simple_returns(benchmark, return_type, "Benchmark") if benchmark is not None else None
         self.periods_per_year = periods_per_year
+        self.rf = rf
 
     def _require_benchmark(self) -> pd.Series:
         if self.benchmark is None:
@@ -386,7 +2033,7 @@ class Returns:
 
     def performance(self) -> pd.Series:
         """See :func:`performance`."""
-        return performance(self.returns, periods_per_year=self.periods_per_year)
+        return performance(self.returns, periods_per_year=self.periods_per_year, rf=self.rf)
 
     def alpha(self) -> float:
         """See :func:`alpha`."""
@@ -406,15 +2053,15 @@ class Returns:
 
     def rolling_sharpe(self, window: int = 63) -> pd.Series:
         """See :func:`rolling_sharpe`."""
-        return rolling_sharpe(self.returns, window, periods_per_year=self.periods_per_year)
+        return rolling_sharpe(self.returns, window, periods_per_year=self.periods_per_year, rf=self.rf)
 
     def rolling_volatility(self, window: int = 63) -> pd.Series:
         """See :func:`rolling_volatility`."""
         return rolling_volatility(self.returns, window, periods_per_year=self.periods_per_year)
 
-    def monthly_returns(self) -> pd.DataFrame:
+    def monthly_returns(self, *, eoy: bool = True) -> pd.DataFrame:
         """See :func:`monthly_returns`."""
-        return monthly_returns(self.returns)
+        return monthly_returns(self.returns, eoy=eoy)
 
     def benchmark_stats(self) -> pd.Series:
         """See :func:`benchmark_stats`."""
@@ -453,6 +2100,7 @@ def returns(
     *,
     return_type: ReturnType = "simple",
     periods_per_year: int | None = None,
+    rf: float = 0.0,
 ) -> Returns:
     """Bind a return stream (and optional benchmark) for chained stats and plotting.
 
@@ -465,9 +2113,11 @@ def returns(
             ``"log"`` returns.
         periods_per_year: Annualization frequency. Inferred from the index
             when not given.
+        rf: Annualized risk-free rate, used by ``.performance()`` and
+            ``.rolling_sharpe()``. Defaults to ``0.0``.
 
     Returns:
         A :class:`Returns` object exposing bound stats (``.performance()``,
         ``.alpha()``, ``.beta()``, ``.rolling_beta()``, ...) and ``.plot(kind=...)``.
     """
-    return Returns(data, benchmark, return_type=return_type, periods_per_year=periods_per_year)
+    return Returns(data, benchmark, return_type=return_type, periods_per_year=periods_per_year, rf=rf)

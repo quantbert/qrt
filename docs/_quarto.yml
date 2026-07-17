@@ -23,10 +23,12 @@ website:
         href: index.ipynb
       - text: "Feature Engineering"
         href: feat.ipynb
+      - text: "Data Access"
+        href: data.ipynb
       - text: "Return Statistics"
         href: stats.ipynb
-      - text: "Interactive Demo"
-        href: demo.ipynb
+      - text: "Plotting"
+        href: plot.ipynb
       - text: "API Reference"
         href: reference/index.qmd
       - text: "Roadmap"

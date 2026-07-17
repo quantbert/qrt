@@ -18,7 +18,7 @@ datasets: ## Refresh prepackaged sample datasets (AAPL, SPY, BTC-USD) from Yahoo
 	uv run python tools/update_datasets.py
 
 nb-execute: ## Re-run docs/*.ipynb in place so they carry saved cell outputs (for local editor preview)
-	uv run --group docs jupyter nbconvert --to notebook --execute --inplace docs/demo.ipynb
+	uv run --group docs jupyter nbconvert --to notebook --execute --inplace docs/feat.ipynb docs/data.ipynb docs/stats.ipynb
 
 docs: ## Build the API reference and serve the docs locally with live reload. Must run in active venv!
 	uv run --group docs quartodoc build --config docs/_quarto.yml

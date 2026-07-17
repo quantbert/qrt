@@ -1,5 +1,6 @@
 import math
 
+import numpy as np
 import pandas as pd
 from plotly.graph_objects import Figure as PlotlyFigure
 import pytest
@@ -43,6 +44,14 @@ def test_lags_dataframe_explicit_periods():
     out = q.feat.qta.lags(df, [1, 2])
     assert list(out.columns) == ["a_lag1", "a_lag2", "b_lag1", "b_lag2"]
     assert out["b_lag2"].iloc[-1] == 10.0
+
+
+def test_pct_rank():
+    s = pd.Series([1.0, 2.0, 3.0, 4.0, 2.0])
+    out = q.feat.qta.pct_rank(s, 3)
+    assert out.iloc[:2].isna().all()
+    assert out.iloc[2] == pytest.approx(100.0)
+    assert out.iloc[-1] == pytest.approx(100 / 3)
 
 
 def test_log_preserves_pandas_series():
@@ -130,6 +139,282 @@ def test_stats_returns_chains_bound_stats_and_plotting():
         unbenchmarked.beta()
 
 
+def test_sharpe_sortino_smart_and_adjusted_variants():
+    returns = pd.Series(
+        [0.01, -0.02, 0.03, 0.01, -0.01, 0.02, -0.03, 0.02], index=pd.date_range("2025-01-01", periods=8), name="s"
+    )
+    plain = q.stats.sharpe(returns)
+    smart = q.stats.sharpe(returns, smart=True)
+    assert q.stats.autocorr_penalty(returns) >= 1.0
+    assert smart != plain
+
+    assert q.stats.adjusted_sortino(returns) == pytest.approx(q.stats.sortino(returns) / math.sqrt(2))
+
+    for base in ("sharpe", "sortino", "adjusted_sortino"):
+        prob = q.stats.probabilistic_ratio(returns, base=base)
+        assert 0.0 <= prob <= 1.0
+    with pytest.raises(ValueError):
+        q.stats.probabilistic_ratio(returns, base="not-a-ratio")
+
+    stats = q.stats.performance(returns, smart=True)
+    assert stats["Sharpe"] == pytest.approx(q.stats.sharpe(returns, smart=True))
+    assert stats["Sortino"] == pytest.approx(q.stats.sortino(returns, smart=True))
+
+
+def test_treynor_omega_gain_to_pain_and_rar():
+    benchmark = pd.Series([0.01, -0.01, 0.02, 0.01, -0.01], index=pd.date_range("2025-01-01", periods=5), name="SPY")
+    returns = (benchmark * 2).rename("strategy")
+
+    assert q.stats.treynor_ratio(returns, benchmark) > 0
+    assert q.stats.omega(returns) > 1.0
+    assert q.stats.gain_to_pain_ratio(returns) > 0
+    assert q.stats.exposure(returns) == pytest.approx(1.0)
+    assert q.stats.rar(returns) == pytest.approx(q.stats.performance(returns)["CAGR"] / q.stats.exposure(returns))
+
+    with_zeros = pd.Series([0.01, 0.0, 0.02, 0.0], index=pd.date_range("2025-01-01", periods=4))
+    assert q.stats.exposure(with_zeros) == pytest.approx(0.5)
+
+
+def test_distribution_shape_and_risk_measures():
+    returns = pd.Series(
+        [0.01, -0.02, 0.03, 0.01, -0.01, 0.02, -0.03, 0.02, 0.15, -0.15],
+        index=pd.date_range("2025-01-01", periods=10),
+        name="s",
+    )
+    assert q.stats.skew(returns) == pytest.approx(returns.skew())
+    assert q.stats.kurtosis(returns) == pytest.approx(returns.kurtosis())
+    assert q.stats.ulcer_index(returns) >= 0
+    assert q.stats.value_at_risk(returns) < 0
+    assert q.stats.conditional_value_at_risk(returns) <= q.stats.value_at_risk(returns)
+    assert q.stats.risk_of_ruin(returns) >= 0
+    assert q.stats.tail_ratio(returns) > 0
+    assert 0.0 <= q.stats.risk_of_ruin(returns) <= 1.0
+    assert q.stats.serenity_index(returns) == q.stats.serenity_index(returns)  # not NaN
+    assert q.stats.ulcer_performance_index(returns) == q.stats.ulcer_performance_index(returns)
+
+    dist = q.stats.distribution(returns)
+    assert set(dist) == {"Daily", "Weekly", "Monthly", "Quarterly", "Yearly"}
+    assert len(dist["Daily"]["values"]) + len(dist["Daily"]["outliers"]) == len(returns)
+
+
+def test_win_loss_ratios_and_kelly_criterion():
+    returns = pd.Series(
+        [0.02, 0.03, -0.01, 0.01, -0.02, 0.04, -0.01, 0.02],
+        index=pd.date_range("2025-01-01", periods=8),
+        name="s",
+    )
+    assert q.stats.avg_win(returns) > 0
+    assert q.stats.avg_loss(returns) < 0
+    assert q.stats.avg_return(returns) == pytest.approx(returns[returns != 0].mean())
+    assert q.stats.payoff_ratio(returns) == pytest.approx(q.stats.avg_win(returns) / abs(q.stats.avg_loss(returns)))
+    assert q.stats.profit_ratio(returns) == pytest.approx(5 / 3)
+    assert q.stats.profit_factor(returns) > 0
+    assert q.stats.cpc_index(returns) > 0
+    assert q.stats.common_sense_ratio(returns) > 0
+    assert q.stats.outlier_win_ratio(returns) > 0
+    assert q.stats.outlier_loss_ratio(returns) > 0
+    assert q.stats.recovery_factor(returns) > 0
+    assert q.stats.risk_return_ratio(returns) == pytest.approx(returns.mean() / returns.std(ddof=1))
+    assert q.stats.kelly_criterion(returns) == q.stats.kelly_criterion(returns)  # not NaN
+
+    assert q.stats.best(returns) == pytest.approx(returns.max())
+    assert q.stats.worst(returns) == pytest.approx(returns.min())
+    assert q.stats.consecutive_wins(returns) == 2
+    assert q.stats.consecutive_losses(returns) == 1
+
+
+def test_r_squared_and_compare_vs_benchmark():
+    benchmark = pd.Series([0.01, -0.01, 0.02, 0.01, -0.01], index=pd.date_range("2025-01-01", periods=5), name="SPY")
+    returns = (benchmark * 2).rename("strategy")
+
+    assert q.stats.r_squared(returns, benchmark) == pytest.approx(1.0)
+
+    table = q.stats.compare(returns, benchmark)
+    assert list(table.columns) == ["Strategy", "Benchmark", "Multiplier", "Won"]
+    assert len(table) == len(returns)
+    assert table["Multiplier"].iloc[0] == pytest.approx(2.0)
+    assert table["Won"].dtype == bool
+    assert bool(table["Won"].iloc[0])  # positive benchmark period: 2x return still wins
+
+
+def test_standalone_metrics_match_performance_and_benchmark_stats():
+    benchmark = pd.Series([0.01, -0.01, 0.02, 0.01, -0.01], index=pd.date_range("2025-01-01", periods=5), name="SPY")
+    returns = (benchmark * 2).rename("strategy")
+
+    stats = q.stats.performance(returns)
+    assert q.stats.max_drawdown(returns) == pytest.approx(stats["Max Drawdown"])
+    assert q.stats.volatility(returns) == pytest.approx(stats["Volatility"])
+    assert q.stats.calmar(returns) == pytest.approx(stats["Calmar"])
+    assert q.stats.win_rate(returns) == pytest.approx(stats["Win Rate"])
+    assert q.stats.to_drawdown_series(returns).min() == pytest.approx(stats["Max Drawdown"])
+
+    bstats = q.stats.benchmark_stats(returns, benchmark)
+    assert q.stats.information_ratio(returns, benchmark) == pytest.approx(bstats["Information Ratio"])
+
+
+def test_return_transform_and_descriptive_utilities():
+    returns = pd.Series(
+        [0.01, -0.02, 0.03, 0.01, -0.01, 0.02, -0.03, 0.02, 0.15, -0.15],
+        index=pd.date_range("2025-01-01", periods=10),
+        name="s",
+    )
+
+    excess = q.stats.excess_returns(returns, rf=0.02)
+    assert excess.iloc[0] < returns.iloc[0]
+
+    log_rets = q.stats.to_log_returns(returns)
+    assert log_rets.iloc[0] == pytest.approx(math.log1p(returns.iloc[0]))
+
+    ewm_vol = q.stats.exponential_volatility(returns, span=3)
+    assert ewm_vol.dropna().gt(0).all()
+
+    assert q.stats.geometric_mean(returns) == pytest.approx((1.0 + returns).prod() ** (1.0 / len(returns)) - 1.0)
+
+    high = q.stats.outliers(returns, 0.8)
+    low = q.stats.remove_outliers(returns, 0.8)
+    assert len(high) + len(low) == len(returns)
+    assert (high > returns.quantile(0.8)).all()
+    assert (low < returns.quantile(0.8)).all()
+
+
+def test_drawdown_details_matches_max_drawdown_and_sorting():
+    idx = pd.date_range("2025-01-01", periods=8)
+    returns = pd.Series([0.05, -0.10, -0.05, 0.20, -0.20, -0.02, 0.30, -0.01], index=idx, name="s")
+
+    details = q.stats.drawdown_details(returns)
+    assert list(details.columns) == ["Start", "Valley", "End", "Days", "Max Drawdown"]
+    assert (details["Max Drawdown"] <= 0).all()
+    assert details["Max Drawdown"].min() == pytest.approx(q.stats.max_drawdown(returns))
+    assert details["Max Drawdown"].is_monotonic_increasing
+
+    by_duration = q.stats.drawdown_details(returns, sort_by="duration")
+    assert by_duration["Days"].is_monotonic_decreasing
+
+
+def test_drawdown_details_empty_when_no_drawdown():
+    idx = pd.date_range("2025-01-01", periods=3)
+    returns = pd.Series([0.01, 0.02, 0.03], index=idx, name="s")
+    details = q.stats.drawdown_details(returns)
+    assert details.empty
+    assert list(details.columns) == ["Start", "Valley", "End", "Days", "Max Drawdown"]
+
+
+def test_return_prep_utilities():
+    idx = pd.date_range("2025-01-01", periods=400, freq="D")
+    returns = pd.Series([0.001] * 400, index=idx, name="s")
+
+    monthly = q.stats.aggregate_returns(returns, "M")
+    assert len(monthly) < len(returns)
+    assert monthly.iloc[0] == pytest.approx((1.001) ** 31 - 1.0, rel=1e-6)
+
+    yearly = q.stats.aggregate_returns(returns, "Y")
+    assert len(yearly) == 2
+
+    prices = q.stats.to_prices(returns, base=100.0)
+    assert prices.iloc[0] == pytest.approx(100.0 * 1.001)
+    assert prices.iloc[-1] == pytest.approx(100.0 * (1.001) ** 400, rel=1e-6)
+
+    rebased = q.stats.rebase(prices, base=1.0)
+    assert rebased.iloc[0] == pytest.approx(1.0)
+
+    port_compound = q.stats.make_portfolio(returns, start_balance=1000.0, mode="compound")
+    assert port_compound.iloc[-1] == pytest.approx(1000.0 * (1.001) ** 400, rel=1e-6)
+
+    port_linear = q.stats.make_portfolio(returns, start_balance=1000.0, mode="linear")
+    assert port_linear.iloc[-1] == pytest.approx(1000.0 * (1.0 + 400 * 0.001), rel=1e-6)
+
+    with pytest.raises(ValueError):
+        q.stats.make_portfolio(returns, mode="bogus")  # type: ignore[arg-type]
+
+
+def test_montecarlo_shapes_and_probabilities():
+    idx = pd.date_range("2025-01-01", periods=60, freq="D")
+    returns = pd.Series([0.01, -0.01] * 30, index=idx, name="s")
+
+    mc = q.stats.montecarlo(returns, sims=50, bust=-0.5, goal=100.0, seed=7)
+    assert mc["paths"].shape == (60, 50)
+    assert mc["bust_probability"] == pytest.approx(0.0)
+    assert mc["goal_probability"] == pytest.approx(0.0)
+    assert (mc["confidence_band"]["Lower"] <= mc["confidence_band"]["Upper"]).all()
+
+    with pytest.raises(ValueError):
+        q.stats.montecarlo(returns, sims=0)
+
+
+def test_montecarlo_bootstrap_varies_terminal_value():
+    # Bootstrap resampling (with replacement) must produce a genuine spread of terminal
+    # outcomes, unlike plain permutation, whose compounded terminal value is order-invariant.
+    idx = pd.date_range("2025-01-01", periods=250, freq="D")
+    values = [0.01 if i % 3 else -0.015 for i in range(250)]
+    returns = pd.Series(values, index=idx, name="s")
+
+    mc = q.stats.montecarlo(returns, sims=200, seed=3)
+    terminal = mc["paths"].iloc[-1]
+    assert terminal.nunique() > 1
+    assert terminal["sim_0"] == pytest.approx((1.0 + returns).prod() - 1.0)
+
+
+def test_montecarlo_block_bootstrap_preserves_contiguity():
+    # A stationary block bootstrap should resample contiguous (circularly-wrapped) runs whose
+    # average length matches block_size, rather than shuffling individual periods independently.
+    from qrt.stats.core import _stationary_bootstrap_indices
+
+    rng = np.random.default_rng(11)
+    n = 500
+    idx = _stationary_bootstrap_indices(rng, n, n, block_size=20)
+    assert idx.shape == (n,)
+    assert idx.min() >= 0
+    assert idx.max() < n
+
+    run_lengths = []
+    run = 1
+    for prev, curr in zip(idx[:-1], idx[1:]):
+        if curr == (prev + 1) % n:
+            run += 1
+        else:
+            run_lengths.append(run)
+            run = 1
+    run_lengths.append(run)
+    assert 10 <= (sum(run_lengths) / len(run_lengths)) <= 40
+
+
+def test_montecarlo_block_size_validation_and_variation():
+    idx = pd.date_range("2025-01-01", periods=250, freq="D")
+    values = [0.01 if i % 3 else -0.015 for i in range(250)]
+    returns = pd.Series(values, index=idx, name="s")
+
+    with pytest.raises(ValueError):
+        q.stats.montecarlo(returns, sims=5, block_size=0)
+
+    mc = q.stats.montecarlo(returns, sims=200, seed=3, block_size=15)
+    terminal = mc["paths"].iloc[-1]
+    assert terminal.nunique() > 1
+    assert terminal["sim_0"] == pytest.approx((1.0 + returns).prod() - 1.0)
+
+
+def test_montecarlo_periods_decouples_horizon_from_pool():
+    idx = pd.date_range("2025-01-01", periods=250, freq="D")
+    values = [0.01 if i % 3 else -0.015 for i in range(250)]
+    returns = pd.Series(values, index=idx, name="s")
+
+    with pytest.raises(ValueError):
+        q.stats.montecarlo(returns, sims=5, periods=0)
+    with pytest.raises(ValueError):
+        q.stats.montecarlo(returns, sims=5, periods=len(returns) + 1)
+
+    for block_size in (None, 15):
+        mc = q.stats.montecarlo(returns, sims=50, seed=3, periods=60, block_size=block_size)
+        assert mc["paths"].shape == (60, 50)
+        assert mc["paths"].index.equals(returns.index[-60:])
+        terminal = mc["paths"].iloc[-1]
+        expected = (1.0 + returns.tail(60)).prod() - 1.0
+        assert terminal["sim_0"] == pytest.approx(expected)
+
+    full = q.stats.montecarlo(returns, sims=10, seed=3, periods=len(returns))
+    default = q.stats.montecarlo(returns, sims=10, seed=3)
+    pd.testing.assert_frame_equal(full["paths"], default["paths"])
+
+
 def test_plotly_figures_are_available_at_root_and_interactive_namespace():
     index = pd.date_range("2025-01-01", periods=3)
     benchmark = pd.Series([0.01, -0.01, 0.02], index=index, name="SPY")
@@ -149,6 +434,31 @@ def test_plotly_figures_are_available_at_root_and_interactive_namespace():
     assert len(report_figure.data) == 3
     assert isinstance(heatmap_figure, PlotlyFigure)
     assert heatmap_figure.data[0].type == "heatmap"
+
+
+def test_montecarlo_plots():
+    idx = pd.date_range("2025-01-01", periods=120, freq="D")
+    returns = pd.Series([0.01, -0.008] * 60, index=idx, name="strategy")
+
+    fan_figure = q.plot.montecarlo(returns, sims=40, bust=-0.3, goal=0.2, seed=1, sample=20)
+    assert isinstance(fan_figure, PlotlyFigure)
+    # band (2) + sampled paths (<=20) + original (1)
+    assert 3 <= len(fan_figure.data) <= 23
+    assert fan_figure.data[-1].name == "Original"
+
+    dist_figure = q.plot.montecarlo_distribution(returns, sims=40, bust=-0.3, goal=0.2, seed=1)
+    assert isinstance(dist_figure, PlotlyFigure)
+    assert len(dist_figure.data) == 2
+    assert {trace.type for trace in dist_figure.data} == {"histogram"}
+
+    block_fan_figure = q.plot.montecarlo(returns, sims=40, seed=1, sample=20, block_size=15)
+    assert isinstance(block_fan_figure, PlotlyFigure)
+
+    horizon_figure = q.plot.montecarlo(returns, sims=40, seed=1, sample=20, periods=30)
+    assert isinstance(horizon_figure, PlotlyFigure)
+
+    horizon_dist_figure = q.plot.montecarlo_distribution(returns, sims=40, seed=1, periods=30)
+    assert isinstance(horizon_dist_figure, PlotlyFigure)
 
 
 def _ohlc(n: int = 60) -> pd.DataFrame:

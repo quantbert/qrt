@@ -10,9 +10,11 @@ To add a feature:
 """
 
 from qrt.feat.qta._lags import lags
+from qrt.feat.qta._pct_rank import pct_rank
 from qrt.feat.qta._sma import sma
 
 __all__ = [
     "lags",
+    "pct_rank",
     "sma",
 ]
