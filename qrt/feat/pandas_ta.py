@@ -2,7 +2,8 @@
 
 Every pandas-ta-classic indicator is available under its usual (lowercase)
 name and accepts an OHLCV DataFrame with lowercase columns (``open, high,
-low, close, volume``) -- the frame layout returned by ``qrt.vendors``.
+low, close, volume``) -- the frame layout returned by ``qrt.data.sources``'s
+``read()`` functions (e.g. ``qrt.data.sources.yfinance.read(...)``).
 Indicators that only need a price series also accept a plain Series
 (treated as ``close``). The datetime index is preserved and outputs keep
 pandas-ta's parameterised names (e.g. ``RSI_14``, ``MACD_12_26_9``).

@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := help
 
-.PHONY: help install test stubs nb-execute docs docs-deploy clean publish
+.PHONY: help install test stubs datasets nb-execute docs docs-deploy clean publish
 
 help: ## Show available targets
 	@grep -E '^[a-z-]+:.*##' $(MAKEFILE_LIST) | awk -F ':.*## ' '{printf "  %-12s %s\n", $$1, $$2}'
@@ -14,6 +14,9 @@ test: ## Run the test suite
 stubs: ## Regenerate .pyi stubs for the dynamic feat wrappers
 	uv run python tools/gen_feat_stubs.py
 
+datasets: ## Refresh prepackaged sample datasets (AAPL, SPY, BTC-USD) from Yahoo Finance
+	uv run python tools/update_datasets.py
+
 nb-execute: ## Re-run docs/*.ipynb in place so they carry saved cell outputs (for local editor preview)
 	uv run --group docs jupyter nbconvert --to notebook --execute --inplace docs/demo.ipynb
 
@@ -25,7 +28,7 @@ docs-deploy: ## Build the API reference and publish the docs to GitHub Pages. Mu
 	uv run --group docs quartodoc build --config docs/_quarto.yml
 	quarto publish gh-pages docs --no-prompt
 
-publish: test ## Runs test first. Then bump patch version, build and publish to PyPI
+publish: test datasets ## Runs test first, refreshes bundled datasets. Then bump patch version, build and publish to PyPI
 	uv version --bump patch
 	rm -rf dist
 	uv build

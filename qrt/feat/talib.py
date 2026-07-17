@@ -2,8 +2,9 @@
 
 Every TA-Lib function is available under its usual name and accepts an
 OHLCV DataFrame with lowercase columns (``open, high, low, close,
-volume``) -- the frame layout returned by ``qrt.vendors``. Indicators
-that only need a price series also accept a plain Series (treated as
+volume``) -- the frame layout returned by ``qrt.data.sources``'s ``read()``
+functions (e.g. ``qrt.data.sources.yfinance.read(...)``). Indicators that
+only need a price series also accept a plain Series (treated as
 ``close``). The datetime index is preserved on the output.
 
 Examples:

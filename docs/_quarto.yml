@@ -29,6 +29,8 @@ website:
         href: demo.ipynb
       - text: "API Reference"
         href: reference/index.qmd
+      - text: "Roadmap"
+        href: roadmap.qmd
     tools:
       - icon: github
         href: https://github.com/quantbert/qrt
@@ -71,17 +73,25 @@ quartodoc:
         - name: plot
           include_imports: true
         - plot.interactive
-    - title: q.vendors
-      desc: "Market data vendors with parquet caching."
+    - title: q.data
+      desc: "Loading/saving local files, market data sources (Yahoo Finance, Binance, DuckDB) each exposed as their own submodule, prepackaged sample datasets, and the master securities database."
       contents:
-        - vendors
-        - vendors.base
-        - vendors.yfinance
-        - vendors.binance
-    - title: q.dataload
-      desc: "Loading and aggregating raw trade data into OHLC bars."
+        - name: data
+          include_imports: true
+        - data.local
+        - data.datasets
+        - name: data.sources
+          include_imports: true
+        - data.sources.yfinance
+        - data.sources.binance
+        - data.sources.duckdb
+    - title: q.model
+      desc: "ML model utilities: PyTorch helpers (model summaries via torchinfo) and leakage-aware CV splitters named after scikit-learn's model_selection."
       contents:
-        - dataload
+        - name: model
+          include_imports: true
+        - model.torch
+        - model.selection
     - title: q.utils
       desc: "Shared utilities."
       contents:

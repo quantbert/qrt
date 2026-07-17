@@ -1,12 +1,67 @@
-"""Data loading from local file caches."""
+"""Local file loading and saving (parquet, csv, ...) plus raw trade
+aggregation from cached files.
+"""
 
 import logging
 from datetime import datetime, timedelta
 from pathlib import Path
 
+import duckdb
 import pandas as pd
 
 logger = logging.getLogger(__name__)
+
+
+def load(path: str | Path, index: str | None = None) -> pd.DataFrame:
+    """Load a local data file into a DataFrame.
+
+    Dispatches on the file suffix: ``.parquet`` is read via DuckDB (see
+    :func:`~qrt.data.sources._util.cached` for why), ``.csv`` via pandas.
+
+    Args:
+        path: File to load.
+        index: Column to set as the index, if any.
+
+    Returns:
+        The loaded DataFrame.
+
+    Raises:
+        ValueError: If the file suffix isn't ``.parquet`` or ``.csv``.
+    """
+    path = Path(path)
+    if path.suffix == ".parquet":
+        df = duckdb.read_parquet(str(path)).df()
+    elif path.suffix == ".csv":
+        df = pd.read_csv(path)
+    else:
+        raise ValueError(f"Unsupported file type: {path.suffix}")
+    return df.set_index(index) if index else df
+
+
+def save(df: pd.DataFrame, path: str | Path, index: bool = False) -> None:
+    """Save a DataFrame to a local file.
+
+    Dispatches on the file suffix: ``.parquet`` is written via DuckDB,
+    ``.csv`` via pandas.
+
+    Args:
+        df: DataFrame to save.
+        path: Destination file. Parent directories are created if needed.
+        index: Whether to keep the DataFrame index as a leading column.
+
+    Raises:
+        ValueError: If the file suffix isn't ``.parquet`` or ``.csv``.
+    """
+    path = Path(path)
+    if path.suffix not in (".parquet", ".csv"):
+        raise ValueError(f"Unsupported file type: {path.suffix}")
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    out = df.reset_index() if index else df
+    if path.suffix == ".parquet":
+        duckdb.from_df(out).write_parquet(str(path))
+    else:
+        out.to_csv(path, index=False)
 
 
 def load_ohlc_timeseries_range(

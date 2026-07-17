@@ -11,6 +11,19 @@ def test_import():
     assert q.__version__
 
 
+def test_datasets_load_bundled_offline():
+    for name in q.data.datasets.AVAILABLE:
+        df = q.data.datasets.load(name)
+        assert list(df.columns) == ["open", "high", "low", "close", "volume"]
+        assert df.index.name == "datetime"
+        assert len(df) > 0
+
+
+def test_datasets_load_unknown_raises():
+    with pytest.raises(KeyError):
+        q.data.datasets.load("not-a-real-dataset")
+
+
 def test_sma():
     s = pd.Series([1.0, 2.0, 3.0, 4.0])
     out = q.feat.qta.sma(s, 2)
@@ -205,7 +218,7 @@ def test_load_ohlc_timeseries_range(tmp_path):
             }
         ).to_csv(tmp_path / f"TEST-trades-{day}.csv", index=False)
 
-    out = q.dataload.load_ohlc_timeseries_range(
+    out = q.data.load_ohlc_timeseries_range(
         "TEST", "1h", datetime(2025, 1, 1), datetime(2025, 1, 2), data_path=tmp_path
     )
     assert list(out.columns) == ["open", "high", "low", "close", "volume"]

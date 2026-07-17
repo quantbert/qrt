@@ -18,6 +18,7 @@ dependencies = [
     "requests>=2.32",
     "ta-lib>=0.7.0",
     "torch>=2.13.0",
+    "torchinfo>=1.8.0",
     "tqdm>=4.68.4",
     "yfinance>=1.5.1",
 ]
