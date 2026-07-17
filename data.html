@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>data.sources.yfinance – qrt</title>
+<title>Data Access – qrt</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -61,25 +61,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../">
-<link href="../reference/data.sources.binance.html" rel="next">
-<link href="../reference/data.sources.html" rel="prev">
-<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-d3afd1a119209b0135db8a092b56c5d7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-d3afd1a119209b0135db8a092b56c5d7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -107,19 +105,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
-<link rel="stylesheet" href="../reference/_styles-quartodoc.css">
+<link rel="stylesheet" href="reference/_styles-quartodoc.css">
 </head>
 
-<body class="nav-sidebar floating nav-fixed quarto-light">
+<body class="nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../index.html">
+    <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">qrt — Quant Research Tools</span>
     </a>
   </div>
@@ -130,27 +131,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../index.html"> 
+    <a class="nav-link" href="./index.html"> 
 <span class="menu-text">Getting Started</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../feat.html"> 
+    <a class="nav-link" href="./feat.html"> 
 <span class="menu-text">Feature Engineering</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../data.html"> 
+    <a class="nav-link active" href="./data.html" aria-current="page"> 
 <span class="menu-text">Data Access</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../stats.html"> 
+    <a class="nav-link" href="./stats.html"> 
 <span class="menu-text">Return Statistics</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="../reference/index.html" aria-current="page"> 
+    <a class="nav-link" href="./reference/index.html"> 
 <span class="menu-text">API Reference</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../roadmap.html"> 
+    <a class="nav-link" href="./roadmap.html"> 
 <span class="menu-text">Roadmap</span></a>
   </li>  
 </ul>
@@ -160,350 +161,334 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
       </div> <!-- /container-fluid -->
     </nav>
-  <nav class="quarto-secondary-nav">
-    <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-        <i class="bi bi-layout-text-sidebar-reverse"></i>
-      </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/data.html">q.data</a></li><li class="breadcrumb-item"><a href="../reference/data.sources.yfinance.html">data.sources.yfinance</a></li></ol></nav>
-        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-        </a>
-    </div>
-  </nav>
 </header>
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <div class="sidebar-menu-container"> 
-    <ul class="list-unstyled mt-1">
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Function reference</span></a>
-  </div>
-</li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">q.feat</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/feat.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">feat</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/feat.qta.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">feat.qta</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/feat.talib.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">feat.talib</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/feat.pandas_ta.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">feat.pandas_ta</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">q.stats</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/stats.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">stats</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
- <span class="menu-text">q.plot</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/plot.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">plot</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/plot.interactive.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">plot.interactive</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
- <span class="menu-text">q.data</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/data.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">data</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/data.local.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">data.local</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/data.datasets.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">data.datasets</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/data.sources.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">data.sources</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/data.sources.yfinance.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">data.sources.yfinance</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/data.sources.binance.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">data.sources.binance</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/data.sources.duckdb.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">data.sources.duckdb</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">q.model</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/model.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">model</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/model.torch.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">model.torch</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/model.selection.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">model.selection</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">q.utils</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/utils.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">utils</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-    </ul>
-    </div>
-</nav>
-<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#qrt.data.sources.yfinance" id="toc-qrt.data.sources.yfinance" class="nav-link active" data-scroll-target="#qrt.data.sources.yfinance">data.sources.yfinance</a>
-  <ul class="collapse">
-  <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions">Functions</a>
-  <ul class="collapse">
-  <li><a href="#qrt.data.sources.yfinance.read" id="toc-qrt.data.sources.yfinance.read" class="nav-link" data-scroll-target="#qrt.data.sources.yfinance.read">read</a></li>
-  </ul></li>
-  </ul></li>
+  <li><a href="#prepackaged-sample-datasets" id="toc-prepackaged-sample-datasets" class="nav-link active" data-scroll-target="#prepackaged-sample-datasets">Prepackaged sample datasets</a></li>
+  <li><a href="#local-files" id="toc-local-files" class="nav-link" data-scroll-target="#local-files">Local files</a></li>
+  <li><a href="#market-data-sources" id="toc-market-data-sources" class="nav-link" data-scroll-target="#market-data-sources">Market data sources</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/data.sources.yfinance.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/data.sources.yfinance.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.dev/quantbert/qrt/blob/main/data.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/data.ipynb" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/data.html">q.data</a></li><li class="breadcrumb-item"><a href="../reference/data.sources.yfinance.html">data.sources.yfinance</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Data Access</h1>
+</div>
 
 
 
+<div class="quarto-title-meta">
 
-<section id="qrt.data.sources.yfinance" class="level1">
-<h1>data.sources.yfinance</h1>
-<p><code>data.sources.yfinance</code></p>
-<p>Yahoo Finance market data source (stocks, ETFs, indices).</p>
-<p>ohlc = q.data.sources.yfinance.read(“AAPL”, “2024-01-01”, “2025-01-01”, “1d”)</p>
-<section id="functions" class="level2">
-<h2 class="anchored" data-anchor-id="functions">Functions</h2>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="#qrt.data.sources.yfinance.read">read</a></td>
-<td>Fetch OHLCV bars from Yahoo Finance (cached locally as parquet).</td>
-</tr>
-</tbody>
-</table>
-<section id="qrt.data.sources.yfinance.read" class="level3">
-<h3 class="anchored" data-anchor-id="qrt.data.sources.yfinance.read">read</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>data.sources.yfinance.read(</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    symbols,</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    start_date,</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    end_date,</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    time_interval<span class="op">=</span><span class="st">'1D'</span>,</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    cache_dir<span class="op">=</span>DEFAULT_CACHE_DIR,</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Fetch OHLCV bars from Yahoo Finance (cached locally as parquet).</p>
-<p>Fetched data is cached as parquet files named like <code>{symbol}-{interval}-{start}-{end}.parquet</code> under <code>cache_dir</code>, so repeated requests for the same range don’t hit the network. Only intervals supported by Yahoo are available (e.g.&nbsp;<code>1m, 5m, 1h, 1D</code>); intraday data is limited to recent history by Yahoo.</p>
-<section id="parameters" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h4>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>This page’s code cells are <strong>executed live</strong> by Quarto (via Jupyter) every time the docs are built. <code>q.data</code> collects everything data-related under one namespace:</p>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 12%">
-<col style="width: 17%">
-<col style="width: 51%">
-<col style="width: 18%">
+<col style="width: 50%">
+<col style="width: 50%">
 </colgroup>
 <thead>
 <tr class="header">
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-<th>Default</th>
+<th>Submodule</th>
+<th>What it is</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>symbols</td>
-<td>str | list[str]</td>
-<td>A single symbol, or a list of symbols.</td>
-<td><em>required</em></td>
+<td><code>q.data.datasets</code></td>
+<td>prepackaged sample OHLCV data (AAPL, SPY, BTC-USD), works offline</td>
 </tr>
 <tr class="even">
-<td>start_date</td>
-<td>str | datetime</td>
-<td>Start date (inclusive), <code>YYYY-MM-DD</code> or datetime.</td>
-<td><em>required</em></td>
+<td><code>q.data.local</code> (<code>q.data.load</code>/<code>q.data.save</code>)</td>
+<td>load/save local parquet or csv files</td>
 </tr>
 <tr class="odd">
-<td>end_date</td>
-<td>str | datetime</td>
-<td>End date (inclusive), <code>YYYY-MM-DD</code> or datetime.</td>
-<td><em>required</em></td>
-</tr>
-<tr class="even">
-<td>time_interval</td>
-<td>str</td>
-<td>Pandas offset alias (e.g.&nbsp;<code>"1h"</code>, <code>"5min"</code>, <code>"1D"</code>).</td>
-<td><code>'1D'</code></td>
-</tr>
-<tr class="odd">
-<td>cache_dir</td>
-<td>str | Path</td>
-<td>Directory for parquet OHLC caches.</td>
-<td><code>DEFAULT_CACHE_DIR</code></td>
+<td><code>q.data.sources</code></td>
+<td>downloadable market data vendors and generic backends, one submodule each</td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="returns" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns">Returns</h4>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 6%">
-<col style="width: 36%">
-<col style="width: 57%">
-</colgroup>
+<p>Live network calls (<code>q.data.sources.yfinance</code>, <code>.binance</code>) aren’t executed on this page so the docs build has no network dependency — see the code blocks below for how to call them yourself.</p>
+<section id="prepackaged-sample-datasets" class="level2">
+<h2 class="anchored" data-anchor-id="prepackaged-sample-datasets">Prepackaged sample datasets</h2>
+<p><code>q.data.datasets.load</code> ships daily OHLCV parquet files for a handful of symbols so tests, demos, and tutorials (like this one, and the <a href="./feat.html">Feature Engineering</a> and <a href="./stats.html">Return Statistics</a> pages) don’t need network access:</p>
+<div id="a73eefed" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-17T12:17:00.965458Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-17T12:17:00.965273Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-17T12:17:01.910056Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-17T12:17:01.909128Z&quot;}}" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> qrt <span class="im">as</span> q</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>q.data.datasets.AVAILABLE</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>('aapl', 'btcusd', 'spy')</code></pre>
+</div>
+</div>
+<div id="6ad617e9" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-17T12:17:01.912402Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-17T12:17:01.912273Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-17T12:17:02.022556Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-17T12:17:02.021725Z&quot;}}" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>aapl <span class="op">=</span> q.data.datasets.load(<span class="st">"aapl"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>aapl.tail()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
 <thead>
 <tr class="header">
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">open</th>
+<th data-quarto-table-cell-role="th">high</th>
+<th data-quarto-table-cell-role="th">low</th>
+<th data-quarto-table-cell-role="th">close</th>
+<th data-quarto-table-cell-role="th">volume</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">datetime</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td></td>
-<td>pd.DataFrame | dict[str, pd.DataFrame]</td>
-<td>A single DataFrame if <code>symbols</code> is a string, otherwise a dict of</td>
+<th data-quarto-table-cell-role="th">2026-07-10</th>
+<td>314.720001</td>
+<td>316.910004</td>
+<td>312.170013</td>
+<td>315.320007</td>
+<td>34132300</td>
 </tr>
 <tr class="even">
-<td></td>
-<td>pd.DataFrame | dict[str, pd.DataFrame]</td>
-<td>DataFrames keyed by symbol (failed symbols are skipped with a</td>
+<th data-quarto-table-cell-role="th">2026-07-13</th>
+<td>317.019989</td>
+<td>323.450012</td>
+<td>315.779999</td>
+<td>317.309998</td>
+<td>43257800</td>
 </tr>
 <tr class="odd">
-<td></td>
-<td>pd.DataFrame | dict[str, pd.DataFrame]</td>
-<td>warning, with a progress bar shown).</td>
+<th data-quarto-table-cell-role="th">2026-07-14</th>
+<td>313.760010</td>
+<td>316.190002</td>
+<td>311.910004</td>
+<td>314.859985</td>
+<td>36336800</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">2026-07-15</th>
+<td>317.619995</td>
+<td>328.730011</td>
+<td>317.320007</td>
+<td>327.500000</td>
+<td>60957600</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2026-07-16</th>
+<td>328.010010</td>
+<td>334.679993</td>
+<td>326.790009</td>
+<td>333.260010</td>
+<td>62727600</td>
 </tr>
 </tbody>
 </table>
 
+</div>
+</div>
+</div>
+<p>These bundled files are refreshed via <code>make datasets</code> before a release, so they’re reasonably current but not guaranteed to have today’s bar — fetch live data through <code>q.data.sources</code> if you need that.</p>
+</section>
+<section id="local-files" class="level2">
+<h2 class="anchored" data-anchor-id="local-files">Local files</h2>
+<p><code>q.data.load</code>/<code>q.data.save</code> dispatch on the file suffix: <code>.parquet</code> (via DuckDB) or <code>.csv</code> (via pandas). A quick round trip through a temp directory:</p>
+<div id="470411ea" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-17T12:17:02.024677Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-17T12:17:02.024617Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-17T12:17:02.031555Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-17T12:17:02.031037Z&quot;}}" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tempfile</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tempfile.TemporaryDirectory() <span class="im">as</span> tmp:</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    path <span class="op">=</span> Path(tmp) <span class="op">/</span> <span class="st">"aapl.parquet"</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    q.data.save(aapl.tail(<span class="dv">30</span>), path, index<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    roundtrip <span class="op">=</span> q.data.load(path, index<span class="op">=</span><span class="st">"datetime"</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>roundtrip.tail()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<div>
 
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">open</th>
+<th data-quarto-table-cell-role="th">high</th>
+<th data-quarto-table-cell-role="th">low</th>
+<th data-quarto-table-cell-role="th">close</th>
+<th data-quarto-table-cell-role="th">volume</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">datetime</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2026-07-10</th>
+<td>314.720001</td>
+<td>316.910004</td>
+<td>312.170013</td>
+<td>315.320007</td>
+<td>34132300</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">2026-07-13</th>
+<td>317.019989</td>
+<td>323.450012</td>
+<td>315.779999</td>
+<td>317.309998</td>
+<td>43257800</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2026-07-14</th>
+<td>313.760010</td>
+<td>316.190002</td>
+<td>311.910004</td>
+<td>314.859985</td>
+<td>36336800</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">2026-07-15</th>
+<td>317.619995</td>
+<td>328.730011</td>
+<td>317.320007</td>
+<td>327.500000</td>
+<td>60957600</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2026-07-16</th>
+<td>328.010010</td>
+<td>334.679993</td>
+<td>326.790009</td>
+<td>333.260010</td>
+<td>62727600</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
 </section>
-</section>
-</section>
+<section id="market-data-sources" class="level2">
+<h2 class="anchored" data-anchor-id="market-data-sources">Market data sources</h2>
+<p>Each vendor/backend is its own submodule under <code>q.data.sources</code>, all returning the same lowercase-column OHLCV <code>DataFrame</code> layout consumed by <code>q.feat</code> and <code>q.stats</code>. These examples hit the network, so they’re shown but not executed here:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Yahoo Finance — cached locally as parquet after the first call</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>ohlc <span class="op">=</span> q.data.sources.yfinance.read(<span class="st">"AAPL"</span>, <span class="st">"2024-01-01"</span>, <span class="st">"2025-01-01"</span>, <span class="st">"1d"</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Binance futures — daily trade dumps aggregated into OHLC bars, also cached</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>ohlc <span class="op">=</span> q.data.sources.binance.read(<span class="st">"BTCUSDT"</span>, <span class="st">"2025-01-01"</span>, <span class="st">"2025-01-07"</span>, <span class="st">"1h"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>q.data.sources.duckdb</code> is different: rather than a fixed schema/vendor, it reads and writes arbitrary tables in a DuckDB database, keyed by <code>symbol</code> and <code>datetime</code>. It works offline (<code>:memory:</code> by default), so we can run it live:</p>
+<div id="d85b4774" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-17T12:17:02.033633Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-17T12:17:02.033579Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-17T12:17:02.047023Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-17T12:17:02.046554Z&quot;}}" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>table <span class="op">=</span> aapl.tail(<span class="dv">30</span>).reset_index()</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>table.insert(<span class="dv">1</span>, <span class="st">"symbol"</span>, <span class="st">"AAPL"</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>db <span class="op">=</span> q.data.sources.duckdb.<span class="ex">connect</span>()  <span class="co"># in-memory</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>db.write(table)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>db.read(<span class="st">"AAPL"</span>, table[<span class="st">"datetime"</span>].<span class="bu">min</span>(), table[<span class="st">"datetime"</span>].<span class="bu">max</span>()).tail()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">datetime</th>
+<th data-quarto-table-cell-role="th">symbol</th>
+<th data-quarto-table-cell-role="th">open</th>
+<th data-quarto-table-cell-role="th">high</th>
+<th data-quarto-table-cell-role="th">low</th>
+<th data-quarto-table-cell-role="th">close</th>
+<th data-quarto-table-cell-role="th">volume</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">25</th>
+<td>2026-07-10</td>
+<td>AAPL</td>
+<td>314.720001</td>
+<td>316.910004</td>
+<td>312.170013</td>
+<td>315.320007</td>
+<td>34132300</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">26</th>
+<td>2026-07-13</td>
+<td>AAPL</td>
+<td>317.019989</td>
+<td>323.450012</td>
+<td>315.779999</td>
+<td>317.309998</td>
+<td>43257800</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">27</th>
+<td>2026-07-14</td>
+<td>AAPL</td>
+<td>313.760010</td>
+<td>316.190002</td>
+<td>311.910004</td>
+<td>314.859985</td>
+<td>36336800</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">28</th>
+<td>2026-07-15</td>
+<td>AAPL</td>
+<td>317.619995</td>
+<td>328.730011</td>
+<td>317.320007</td>
+<td>327.500000</td>
+<td>60957600</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">29</th>
+<td>2026-07-16</td>
+<td>AAPL</td>
+<td>328.010010</td>
+<td>334.679993</td>
+<td>326.790009</td>
+<td>333.260010</td>
+<td>62727600</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+
+
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
@@ -907,21 +892,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
   });
   </script>
-<nav class="page-navigation">
-  <div class="nav-page nav-page-previous">
-      <a href="../reference/data.sources.html" class="pagination-link" aria-label="data.sources">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">data.sources</span>
-      </a>          
-  </div>
-  <div class="nav-page nav-page-next">
-      <a href="../reference/data.sources.binance.html" class="pagination-link" aria-label="data.sources.binance">
-        <span class="nav-page-text">data.sources.binance</span> <i class="bi bi-arrow-right-short"></i>
-      </a>
-  </div>
-</nav>
 </div> <!-- /content -->
 
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/data.sources.yfinance.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/data.sources.yfinance.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.dev/quantbert/qrt/blob/main/data.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/data.ipynb" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

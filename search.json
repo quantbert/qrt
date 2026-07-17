@@ -246,55 +246,6 @@
     ]
   },
   {
-    "objectID": "stats.html",
-    "href": "stats.html",
-    "title": "Return Statistics",
-    "section": "",
-    "text": "This page’s code cells are executed live by Quarto (via Jupyter) every time the docs are built. q.stats computes return-stream statistics with no Plotly dependency; q.plot renders them. See the Interactive Demo for feature engineering and price-chart examples."
-  },
-  {
-    "objectID": "stats.html#real-return-streams",
-    "href": "stats.html#real-return-streams",
-    "title": "Return Statistics",
-    "section": "Real return streams",
-    "text": "Real return streams\nWe use qrt’s bundled sample datasets — AAPL as the “strategy” and SPY as the benchmark — loaded offline via q.data.datasets.load, no network dependency:\n\nimport pandas as pd\n\nimport qrt as q\n\naapl = q.data.datasets.load(\"aapl\")\nspy = q.data.datasets.load(\"spy\")\n\nreturns = pd.concat(\n    {\n        \"AAPL\": aapl[\"close\"].pct_change(),\n        \"SPY\": spy[\"close\"].pct_change(),\n    },\n    axis=1,\n).dropna()\nstrategy = returns[\"AAPL\"]\nbenchmark = returns[\"SPY\"]\n\nreturns.tail()\n\n\n\n\n\n\n\n\nAAPL\nSPY\n\n\ndatetime\n\n\n\n\n\n\n2026-07-10\n-0.002846\n0.004310\n\n\n2026-07-13\n0.006311\n-0.007656\n\n\n2026-07-14\n-0.007721\n0.003551\n\n\n2026-07-15\n0.040145\n0.003964\n\n\n2026-07-16\n0.017588\n-0.005419"
-  },
-  {
-    "objectID": "stats.html#headline-performance",
-    "href": "stats.html#headline-performance",
-    "title": "Return Statistics",
-    "section": "Headline performance",
-    "text": "Headline performance\nq.stats.performance returns a pandas Series of Total Return, CAGR, Volatility, Sharpe, Sortino, Calmar, Max Drawdown, Win Rate, and Periods. The annualization frequency is inferred from the index (252 for this daily series) unless periods_per_year is given explicitly:\n\nq.stats.performance(strategy)\n\nTotal Return     396.815843\nCAGR               0.253688\nVolatility         0.383121\nSharpe             0.789515\nSortino            1.128559\nCalmar             0.310126\nMax Drawdown      -0.818014\nWin Rate           0.523231\nPeriods         6672.000000\nName: AAPL, dtype: float64"
-  },
-  {
-    "objectID": "stats.html#benchmark-relative-alpha-and-beta",
-    "href": "stats.html#benchmark-relative-alpha-and-beta",
-    "title": "Return Statistics",
-    "section": "Benchmark-relative: alpha and beta",
-    "text": "Benchmark-relative: alpha and beta\nq.stats.beta measures sensitivity to the benchmark; q.stats.alpha is the annualized Jensen alpha unexplained by that beta exposure. q.stats.benchmark_stats combines both with active return, correlation, tracking error, and information ratio:\n\nprint(f\"Beta: {q.stats.beta(strategy, benchmark):.2f}\")\nprint(f\"Alpha: {q.stats.alpha(strategy, benchmark):.2%}\")\n\nq.stats.benchmark_stats(strategy, benchmark)\n\nBeta: 1.13\nAlpha: 19.14%\n\n\nStrategy Total Return      396.815843\nBenchmark Total Return       7.237650\nActive Return               47.292394\nBeta                         1.129952\nAlpha                        0.191429\nCorrelation                  0.569114\nTracking Error               0.316021\nInformation Ratio            0.646161\nPeriods                   6672.000000\nName: AAPL vs SPY, dtype: float64"
-  },
-  {
-    "objectID": "stats.html#rolling-diagnostics",
-    "href": "stats.html#rolling-diagnostics",
-    "title": "Return Statistics",
-    "section": "Rolling diagnostics",
-    "text": "Rolling diagnostics\nRolling metrics make regime changes visible. A 63-business-day window is roughly one quarter. The four diagnostics are combined into one interactive figure with q.plot.col:\n\nwindow = 63\nrolling = pd.concat(\n    {\n        \"Volatility\": q.stats.rolling_volatility(strategy, window),\n        \"Sharpe\": q.stats.rolling_sharpe(strategy, window),\n        \"Beta\": q.stats.rolling_beta(strategy, benchmark, window),\n        \"Alpha\": q.stats.rolling_alpha(strategy, benchmark, window),\n    },\n    axis=1,\n)\n\nfig = q.plot.col(\n    rolling,\n    title=f\"{window}-day rolling risk and benchmark diagnostics\",\n    ylabel=\"Value\",\n    height=550,\n)\nfig.show()"
-  },
-  {
-    "objectID": "stats.html#calendar-returns",
-    "href": "stats.html#calendar-returns",
-    "title": "Return Statistics",
-    "section": "Calendar returns",
-    "text": "Calendar returns\nq.stats.monthly_returns compounds daily returns within each calendar month into a year-by-month table; q.plot.monthly_heatmap renders it as an interactive heatmap:\n\ndisplay(q.stats.monthly_returns(strategy).style.format(\"{:.1%}\"))\n\nfig = q.plot.monthly_heatmap(strategy, title=\"Strategy monthly returns\")\nfig.show()\n\n\n\n\n\n\nMonth\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n\n\nYear\n \n \n \n \n \n \n \n \n \n \n \n \n\n\n\n\n2000\n-7.3%\n10.5%\n18.5%\n-8.7%\n-32.3%\n24.7%\n-3.0%\n19.9%\n-57.7%\n-24.0%\n-15.7%\n-9.8%\n\n\n2001\n45.4%\n-15.6%\n20.9%\n15.5%\n-21.7%\n16.5%\n-19.2%\n-1.3%\n-16.4%\n13.2%\n21.3%\n2.8%\n\n\n2002\n12.9%\n-12.2%\n9.1%\n2.5%\n-4.0%\n-23.9%\n-13.9%\n-3.3%\n-1.7%\n10.8%\n-3.5%\n-7.5%\n\n\n2003\n0.2%\n4.5%\n-5.8%\n0.6%\n26.2%\n6.2%\n10.6%\n7.3%\n-8.4%\n10.5%\n-8.7%\n2.2%\n\n\n2004\n5.6%\n6.0%\n13.0%\n-4.7%\n8.8%\n16.0%\n-0.6%\n6.6%\n12.4%\n35.2%\n28.0%\n-4.0%\n\n\n2005\n19.4%\n16.7%\n-7.1%\n-13.5%\n10.3%\n-7.4%\n15.9%\n9.9%\n14.3%\n7.4%\n17.8%\n6.0%\n\n\n2006\n5.0%\n-9.3%\n-8.4%\n12.2%\n-15.1%\n-4.2%\n18.7%\n-0.2%\n13.5%\n5.3%\n13.0%\n-7.4%\n\n\n2007\n1.0%\n-1.3%\n9.8%\n7.4%\n21.4%\n0.7%\n8.0%\n5.1%\n10.8%\n23.8%\n-4.1%\n8.7%\n\n\n2008\n-31.7%\n-7.6%\n14.8%\n21.2%\n8.5%\n-11.3%\n-5.1%\n6.7%\n-33.0%\n-5.3%\n-13.9%\n-7.9%\n\n\n2009\n5.6%\n-0.9%\n17.7%\n19.7%\n7.9%\n4.9%\n14.7%\n3.0%\n10.2%\n1.7%\n6.1%\n5.4%\n\n\n2010\n-8.9%\n6.5%\n14.8%\n11.1%\n-1.6%\n-2.1%\n2.3%\n-5.5%\n16.7%\n6.1%\n3.4%\n3.7%\n\n\n2011\n5.2%\n4.1%\n-1.3%\n0.5%\n-0.7%\n-3.5%\n16.3%\n-1.4%\n-0.9%\n6.2%\n-5.6%\n6.0%\n\n\n2012\n12.7%\n18.8%\n10.5%\n-2.6%\n-1.1%\n1.1%\n4.6%\n9.4%\n0.3%\n-10.8%\n-1.2%\n-9.1%\n\n\n2013\n-14.4%\n-2.5%\n0.3%\n0.0%\n2.2%\n-11.8%\n14.1%\n8.4%\n-2.1%\n9.6%\n7.0%\n0.9%\n\n\n2014\n-10.8%\n5.8%\n2.0%\n9.9%\n7.9%\n2.8%\n2.9%\n7.8%\n-1.7%\n7.2%\n10.6%\n-7.2%\n\n\n2015\n6.1%\n10.1%\n-3.1%\n0.6%\n4.5%\n-3.7%\n-3.3%\n-6.6%\n-2.2%\n8.3%\n-0.6%\n-11.0%\n\n\n2016\n-7.5%\n-0.1%\n12.7%\n-14.0%\n7.2%\n-4.3%\n9.0%\n2.4%\n6.6%\n0.4%\n-2.2%\n4.8%\n\n\n2017\n4.8%\n13.4%\n4.9%\n-0.0%\n6.8%\n-5.7%\n3.3%\n10.7%\n-6.0%\n9.7%\n2.0%\n-1.5%\n\n\n2018\n-1.1%\n6.8%\n-5.8%\n-1.5%\n13.5%\n-0.9%\n2.8%\n20.0%\n-0.8%\n-3.0%\n-18.1%\n-11.7%\n\n\n2019\n5.5%\n4.5%\n9.7%\n5.6%\n-12.4%\n13.1%\n7.6%\n-1.6%\n7.3%\n11.1%\n7.8%\n9.9%\n\n\n2020\n5.4%\n-11.5%\n-7.0%\n15.5%\n8.5%\n14.7%\n16.5%\n21.7%\n-10.3%\n-6.0%\n9.5%\n11.5%\n\n\n2021\n-0.6%\n-8.0%\n0.7%\n7.6%\n-5.0%\n9.9%\n6.5%\n4.2%\n-6.8%\n5.9%\n10.5%\n7.4%\n\n\n2022\n-1.6%\n-5.4%\n5.7%\n-9.7%\n-5.4%\n-8.1%\n18.9%\n-3.1%\n-12.1%\n11.0%\n-3.3%\n-12.2%\n\n\n2023\n11.1%\n2.3%\n11.9%\n2.9%\n4.6%\n9.4%\n1.3%\n-4.2%\n-8.9%\n-0.3%\n11.4%\n1.4%\n\n\n2024\n-4.2%\n-1.9%\n-5.1%\n-0.7%\n13.0%\n9.6%\n5.4%\n3.2%\n1.7%\n-3.0%\n5.2%\n5.5%\n\n\n2025\n-5.8%\n2.6%\n-8.2%\n-4.3%\n-5.4%\n2.2%\n1.2%\n12.0%\n9.7%\n6.2%\n3.2%\n-2.5%\n\n\n2026\n-4.6%\n1.9%\n-3.9%\n6.9%\n15.1%\n-7.3%\n15.2%\nnan%\nnan%\nnan%\nnan%\nnan%"
-  },
-  {
-    "objectID": "stats.html#chained-api-q.stats.returns...",
-    "href": "stats.html#chained-api-q.stats.returns...",
-    "title": "Return Statistics",
-    "section": "Chained API: q.stats.returns(...)",
-    "text": "Chained API: q.stats.returns(...)\nFor notebook exploration, q.stats.returns() binds a return stream (and optional benchmark) once and exposes the same stats as methods, plus .plot(kind=...) which delegates to q.plot. Each call creates a fresh, independent object — there is no hidden global state to reason about:\n\nbound = q.stats.returns(strategy, benchmark=benchmark)\n\nbound.performance()\n\nTotal Return     396.815843\nCAGR               0.253688\nVolatility         0.383121\nSharpe             0.789515\nSortino            1.128559\nCalmar             0.310126\nMax Drawdown      -0.818014\nWin Rate           0.523231\nPeriods         6672.000000\nName: AAPL, dtype: float64\n\n\nkind accepts \"performance\"/\"tearsheet\" (equity + drawdown report), \"equity\", \"drawdown\", or \"monthly_heatmap\". The bound benchmark is passed through automatically for the report variants:\n\nprint(f\"Beta: {bound.beta():.2f}\")\nprint(f\"Alpha: {bound.alpha():.2%}\")\n\nfig = bound.plot(\"performance\")\nfig.show()\n\nBeta: 1.13\nAlpha: 19.14%"
-  },
-  {
     "objectID": "roadmap.html",
     "href": "roadmap.html",
     "title": "Roadmap",
@@ -386,46 +337,81 @@
     "text": "Inspiration\nLibraries we take inspiration from (and in some cases wrap):\n\n\n\nLibrary\nWhat we borrow\n\n\n\n\nquantstats\ntearsheets, return-stream metrics\n\n\npyfolio-reloaded\nportfolio/performance analysis\n\n\nalphalens-reloaded\nalpha-factor evaluation\n\n\nempyrical-reloaded\nrisk/performance statistics\n\n\ntsfresh\nautomated time-series feature extraction\n\n\nskfolio\nsklearn-style portfolio optimization\n\n\nmlfinlab\npurged CV, embargo, financial ML (López de Prado)\n\n\npandas-ta\ntechnical indicators\n\n\npandas-ta-classic\nmaintained fork of pandas-ta indicators\n\n\nRiskfolio-Lib\nportfolio optimization & risk measures\n\n\nqlib\nend-to-end quant ML platform design\n\n\npytorch-forecasting\nPyTorch time-series model wrappers\n\n\nsktime\nunified time-series API design\n\n\nalphatools\nalpha research & factor tooling on a securities master\n\n\nPyStats\nstatistical distribution functions (pdf/cdf/quantile/sampling)"
   },
   {
-    "objectID": "demo.html",
-    "href": "demo.html",
-    "title": "Interactive Demo",
+    "objectID": "data.html",
+    "href": "data.html",
+    "title": "Data Access",
     "section": "",
-    "text": "This page’s code cells are executed live by Quarto (via Jupyter) every time the docs are built, and the charts below are real interactive Plotly figures — not static images. Zoom, pan, and hover over them."
+    "text": "This page’s code cells are executed live by Quarto (via Jupyter) every time the docs are built. q.data collects everything data-related under one namespace:\nLive network calls (q.data.sources.yfinance, .binance) aren’t executed on this page so the docs build has no network dependency — see the code blocks below for how to call them yourself."
   },
   {
-    "objectID": "demo.html#sample-data",
-    "href": "demo.html#sample-data",
-    "title": "Interactive Demo",
-    "section": "Sample data",
-    "text": "Sample data\nWe load AAPL’s bundled daily OHLCV dataset (shipped with qrt, no network dependency) via q.data.datasets.load:\n\nimport pandas as pd\nimport plotly.io as pio\n\nimport qrt as q\n\n# Renderer used only when THIS notebook is executed directly (e.g. via\n# `make nb-execute`) so it has viewable output when opened in VS Code.\n# \"notebook_connected\" loads plotly.js from a CDN link (keeps this .ipynb\n# small) instead of embedding the full library inline. The *published* docs\n# site does not depend on this at all: `execute: enabled: true` above makes\n# Quarto always re-execute fresh with its own Jupyter engine, which extracts\n# plotly.js into the site's own static demo_files/libs/ folder (no CDN, no\n# per-chart embed) regardless of what's cached here.\n# See https://github.com/orgs/quarto-dev/discussions/5264\n#pio.renderers.default = \"notebook_connected\"\n\nohlc = q.data.datasets.load(\"aapl\")\nohlc.tail()\n\n\n\n\n\n\n\n\nopen\nhigh\nlow\nclose\nvolume\n\n\ndatetime\n\n\n\n\n\n\n\n\n\n2026-07-10\n314.720001\n316.910004\n312.170013\n315.320007\n34132300\n\n\n2026-07-13\n317.019989\n323.450012\n315.779999\n317.309998\n43257800\n\n\n2026-07-14\n313.760010\n316.190002\n311.910004\n314.859985\n36336800\n\n\n2026-07-15\n317.619995\n328.730011\n317.320007\n327.500000\n60957600\n\n\n2026-07-16\n328.010010\n334.679993\n326.790009\n333.260010\n62727600"
+    "objectID": "data.html#prepackaged-sample-datasets",
+    "href": "data.html#prepackaged-sample-datasets",
+    "title": "Data Access",
+    "section": "Prepackaged sample datasets",
+    "text": "Prepackaged sample datasets\nq.data.datasets.load ships daily OHLCV parquet files for a handful of symbols so tests, demos, and tutorials (like this one, and the Feature Engineering and Return Statistics pages) don’t need network access:\n\nimport qrt as q\n\nq.data.datasets.AVAILABLE\n\n('aapl', 'btcusd', 'spy')\n\n\n\naapl = q.data.datasets.load(\"aapl\")\naapl.tail()\n\n\n\n\n\n\n\n\nopen\nhigh\nlow\nclose\nvolume\n\n\ndatetime\n\n\n\n\n\n\n\n\n\n2026-07-10\n314.720001\n316.910004\n312.170013\n315.320007\n34132300\n\n\n2026-07-13\n317.019989\n323.450012\n315.779999\n317.309998\n43257800\n\n\n2026-07-14\n313.760010\n316.190002\n311.910004\n314.859985\n36336800\n\n\n2026-07-15\n317.619995\n328.730011\n317.320007\n327.500000\n60957600\n\n\n2026-07-16\n328.010010\n334.679993\n326.790009\n333.260010\n62727600\n\n\n\n\n\n\n\nThese bundled files are refreshed via make datasets before a release, so they’re reasonably current but not guaranteed to have today’s bar — fetch live data through q.data.sources if you need that."
   },
   {
-    "objectID": "demo.html#feature-engineering",
-    "href": "demo.html#feature-engineering",
-    "title": "Interactive Demo",
-    "section": "Feature engineering",
-    "text": "Feature engineering\nA couple of q.feat.qta indicators on AAPL’s close price. We compute the SMAs over the full history (so there’s no warm-up gap) then focus the charts below on the last few years:\n\nsma_20 = q.feat.qta.sma(ohlc[\"close\"], 20)\nsma_100 = q.feat.qta.sma(ohlc[\"close\"], 100)\n\nfeatures = pd.DataFrame({\"close\": ohlc[\"close\"], \"sma_20\": sma_20, \"sma_100\": sma_100}).loc[\"2022\":]\nfeatures.tail()\n\n\n\n\n\n\n\n\nclose\nsma_20\nsma_100\n\n\ndatetime\n\n\n\n\n\n\n\n2026-07-10\n315.320007\n298.103001\n279.024360\n\n\n2026-07-13\n317.309998\n299.187001\n279.561089\n\n\n2026-07-14\n314.859985\n300.373500\n280.068622\n\n\n2026-07-15\n327.500000\n301.927499\n280.740221\n\n\n2026-07-16\n333.260010\n303.628500\n281.429456"
+    "objectID": "data.html#local-files",
+    "href": "data.html#local-files",
+    "title": "Data Access",
+    "section": "Local files",
+    "text": "Local files\nq.data.load/q.data.save dispatch on the file suffix: .parquet (via DuckDB) or .csv (via pandas). A quick round trip through a temp directory:\n\nimport tempfile\nfrom pathlib import Path\n\nwith tempfile.TemporaryDirectory() as tmp:\n    path = Path(tmp) / \"aapl.parquet\"\n    q.data.save(aapl.tail(30), path, index=True)\n    roundtrip = q.data.load(path, index=\"datetime\")\n\nroundtrip.tail()\n\n\n\n\n\n\n\n\nopen\nhigh\nlow\nclose\nvolume\n\n\ndatetime\n\n\n\n\n\n\n\n\n\n2026-07-10\n314.720001\n316.910004\n312.170013\n315.320007\n34132300\n\n\n2026-07-13\n317.019989\n323.450012\n315.779999\n317.309998\n43257800\n\n\n2026-07-14\n313.760010\n316.190002\n311.910004\n314.859985\n36336800\n\n\n2026-07-15\n317.619995\n328.730011\n317.320007\n327.500000\n60957600\n\n\n2026-07-16\n328.010010\n334.679993\n326.790009\n333.260010\n62727600"
   },
   {
-    "objectID": "demo.html#interactive-price-chart",
-    "href": "demo.html#interactive-price-chart",
-    "title": "Interactive Demo",
-    "section": "Interactive price chart",
-    "text": "Interactive price chart\nq.plot.interactive.line builds a Plotly figure with hover, zoom, and range-selector buttons:\n\nfig = q.plot.interactive.line(\n    features,\n    title=\"AAPL close price with SMA overlays\",\n    yaxis_title=\"Price\",\n)\nfig.show()"
+    "objectID": "data.html#market-data-sources",
+    "href": "data.html#market-data-sources",
+    "title": "Data Access",
+    "section": "Market data sources",
+    "text": "Market data sources\nEach vendor/backend is its own submodule under q.data.sources, all returning the same lowercase-column OHLCV DataFrame layout consumed by q.feat and q.stats. These examples hit the network, so they’re shown but not executed here:\n# Yahoo Finance — cached locally as parquet after the first call\nohlc = q.data.sources.yfinance.read(\"AAPL\", \"2024-01-01\", \"2025-01-01\", \"1d\")\n\n# Binance futures — daily trade dumps aggregated into OHLC bars, also cached\nohlc = q.data.sources.binance.read(\"BTCUSDT\", \"2025-01-01\", \"2025-01-07\", \"1h\")\nq.data.sources.duckdb is different: rather than a fixed schema/vendor, it reads and writes arbitrary tables in a DuckDB database, keyed by symbol and datetime. It works offline (:memory: by default), so we can run it live:\n\ntable = aapl.tail(30).reset_index()\ntable.insert(1, \"symbol\", \"AAPL\")\n\ndb = q.data.sources.duckdb.connect()  # in-memory\ndb.write(table)\ndb.read(\"AAPL\", table[\"datetime\"].min(), table[\"datetime\"].max()).tail()\n\n\n\n\n\n\n\n\ndatetime\nsymbol\nopen\nhigh\nlow\nclose\nvolume\n\n\n\n\n25\n2026-07-10\nAAPL\n314.720001\n316.910004\n312.170013\n315.320007\n34132300\n\n\n26\n2026-07-13\nAAPL\n317.019989\n323.450012\n315.779999\n317.309998\n43257800\n\n\n27\n2026-07-14\nAAPL\n313.760010\n316.190002\n311.910004\n314.859985\n36336800\n\n\n28\n2026-07-15\nAAPL\n317.619995\n328.730011\n317.320007\n327.500000\n60957600\n\n\n29\n2026-07-16\nAAPL\n328.010010\n334.679993\n326.790009\n333.260010\n62727600"
   },
   {
-    "objectID": "demo.html#interactive-performance-report",
-    "href": "demo.html#interactive-performance-report",
-    "title": "Interactive Demo",
-    "section": "Interactive performance report",
-    "text": "Interactive performance report\nA simple SMA-crossover strategy on AAPL (long when sma_20 &gt; sma_100) plotted as a full equity / drawdown / stats tearsheet, benchmarked against buying and holding SPY:\n\nspy = q.data.datasets.load(\"spy\")\n\nposition = (sma_20 &gt; sma_100).astype(int).shift(1).fillna(0)\nstrategy_returns = (ohlc[\"close\"].pct_change() * position).rename(\"AAPL SMA crossover\").loc[\"2022\":]\nbenchmark_returns = spy[\"close\"].pct_change().rename(\"SPY\").loc[\"2022\":]\n\nfig = q.plot.interactive.performance(strategy_returns, benchmark=benchmark_returns)\nfig.show()"
+    "objectID": "stats.html",
+    "href": "stats.html",
+    "title": "Return Statistics",
+    "section": "",
+    "text": "This page’s code cells are executed live by Quarto (via Jupyter) every time the docs are built. q.stats computes return-stream statistics with no Plotly dependency; q.plot renders them. See Feature Engineering for feature engineering and price-chart examples, and Data Access for loading/saving OHLCV data."
   },
   {
-    "objectID": "demo.html#monthly-returns-heatmap",
-    "href": "demo.html#monthly-returns-heatmap",
-    "title": "Interactive Demo",
-    "section": "Monthly returns heatmap",
-    "text": "Monthly returns heatmap\n\nfig = q.plot.interactive.monthly_heatmap(strategy_returns)\nfig.show()"
+    "objectID": "stats.html#real-return-streams",
+    "href": "stats.html#real-return-streams",
+    "title": "Return Statistics",
+    "section": "Real return streams",
+    "text": "Real return streams\nWe use qrt’s bundled sample datasets — AAPL as the “strategy” and SPY as the benchmark — loaded offline via q.data.datasets.load, no network dependency:\n\nimport pandas as pd\n\nimport qrt as q\n\naapl = q.data.datasets.load(\"aapl\")\nspy = q.data.datasets.load(\"spy\")\n\nreturns = pd.concat(\n    {\n        \"AAPL\": aapl[\"close\"].pct_change(),\n        \"SPY\": spy[\"close\"].pct_change(),\n    },\n    axis=1,\n).dropna()\nstrategy = returns[\"AAPL\"]\nbenchmark = returns[\"SPY\"]\n\nreturns.tail()\n\n\n\n\n\n\n\n\nAAPL\nSPY\n\n\ndatetime\n\n\n\n\n\n\n2026-07-10\n-0.002846\n0.004310\n\n\n2026-07-13\n0.006311\n-0.007656\n\n\n2026-07-14\n-0.007721\n0.003551\n\n\n2026-07-15\n0.040145\n0.003964\n\n\n2026-07-16\n0.017588\n-0.005419"
+  },
+  {
+    "objectID": "stats.html#headline-performance",
+    "href": "stats.html#headline-performance",
+    "title": "Return Statistics",
+    "section": "Headline performance",
+    "text": "Headline performance\nq.stats.performance returns a pandas Series of Total Return, CAGR, Volatility, Sharpe, Sortino, Calmar, Max Drawdown, Win Rate, and Periods. The annualization frequency is inferred from the index (252 for this daily series) unless periods_per_year is given explicitly:\n\nq.stats.performance(strategy)\n\nTotal Return     396.815871\nCAGR               0.253688\nVolatility         0.383120\nSharpe             0.789515\nSortino            1.128558\nCalmar             0.310126\nMax Drawdown      -0.818015\nWin Rate           0.523231\nPeriods         6672.000000\nName: AAPL, dtype: float64"
+  },
+  {
+    "objectID": "stats.html#benchmark-relative-alpha-and-beta",
+    "href": "stats.html#benchmark-relative-alpha-and-beta",
+    "title": "Return Statistics",
+    "section": "Benchmark-relative: alpha and beta",
+    "text": "Benchmark-relative: alpha and beta\nq.stats.beta measures sensitivity to the benchmark; q.stats.alpha is the annualized Jensen alpha unexplained by that beta exposure. q.stats.benchmark_stats combines both with active return, correlation, tracking error, and information ratio:\n\nprint(f\"Beta: {q.stats.beta(strategy, benchmark):.2f}\")\nprint(f\"Alpha: {q.stats.alpha(strategy, benchmark):.2%}\")\n\nq.stats.benchmark_stats(strategy, benchmark)\n\nBeta: 1.13\nAlpha: 19.14%\n\n\nStrategy Total Return      396.815871\nBenchmark Total Return       7.237651\nActive Return               47.292393\nBeta                         1.129954\nAlpha                        0.191428\nCorrelation                  0.569115\nTracking Error               0.316020\nInformation Ratio            0.646161\nPeriods                   6672.000000\nName: AAPL vs SPY, dtype: float64"
+  },
+  {
+    "objectID": "stats.html#rolling-diagnostics",
+    "href": "stats.html#rolling-diagnostics",
+    "title": "Return Statistics",
+    "section": "Rolling diagnostics",
+    "text": "Rolling diagnostics\nRolling metrics make regime changes visible. A 63-business-day window is roughly one quarter. The four diagnostics are combined into one interactive figure with q.plot.col:\n\nwindow = 63\nrolling = pd.concat(\n    {\n        \"Volatility\": q.stats.rolling_volatility(strategy, window),\n        \"Sharpe\": q.stats.rolling_sharpe(strategy, window),\n        \"Beta\": q.stats.rolling_beta(strategy, benchmark, window),\n        \"Alpha\": q.stats.rolling_alpha(strategy, benchmark, window),\n    },\n    axis=1,\n)\n\nfig = q.plot.col(\n    rolling,\n    title=f\"{window}-day rolling risk and benchmark diagnostics\",\n    ylabel=\"Value\",\n    height=550,\n)\nfig.show()"
+  },
+  {
+    "objectID": "stats.html#calendar-returns",
+    "href": "stats.html#calendar-returns",
+    "title": "Return Statistics",
+    "section": "Calendar returns",
+    "text": "Calendar returns\nq.stats.monthly_returns compounds daily returns within each calendar month into a year-by-month table; q.plot.monthly_heatmap renders it as an interactive heatmap:\n\ndisplay(q.stats.monthly_returns(strategy).style.format(\"{:.1%}\"))\n\nfig = q.plot.monthly_heatmap(strategy, title=\"Strategy monthly returns\")\nfig.show()\n\n\n\n\n\n\nMonth\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n\n\nYear\n \n \n \n \n \n \n \n \n \n \n \n \n\n\n\n\n2000\n-7.3%\n10.5%\n18.5%\n-8.7%\n-32.3%\n24.7%\n-3.0%\n19.9%\n-57.7%\n-24.0%\n-15.7%\n-9.8%\n\n\n2001\n45.4%\n-15.6%\n20.9%\n15.5%\n-21.7%\n16.5%\n-19.2%\n-1.3%\n-16.4%\n13.2%\n21.3%\n2.8%\n\n\n2002\n12.9%\n-12.2%\n9.1%\n2.5%\n-4.0%\n-23.9%\n-13.9%\n-3.3%\n-1.7%\n10.8%\n-3.5%\n-7.5%\n\n\n2003\n0.2%\n4.5%\n-5.8%\n0.6%\n26.2%\n6.2%\n10.6%\n7.3%\n-8.4%\n10.5%\n-8.7%\n2.2%\n\n\n2004\n5.6%\n6.0%\n13.0%\n-4.7%\n8.8%\n16.0%\n-0.6%\n6.6%\n12.4%\n35.2%\n28.0%\n-4.0%\n\n\n2005\n19.4%\n16.7%\n-7.1%\n-13.5%\n10.3%\n-7.4%\n15.9%\n9.9%\n14.3%\n7.4%\n17.8%\n6.0%\n\n\n2006\n5.0%\n-9.3%\n-8.4%\n12.2%\n-15.1%\n-4.2%\n18.7%\n-0.2%\n13.5%\n5.3%\n13.0%\n-7.4%\n\n\n2007\n1.0%\n-1.3%\n9.8%\n7.4%\n21.4%\n0.7%\n8.0%\n5.1%\n10.8%\n23.8%\n-4.1%\n8.7%\n\n\n2008\n-31.7%\n-7.6%\n14.8%\n21.2%\n8.5%\n-11.3%\n-5.1%\n6.7%\n-33.0%\n-5.3%\n-13.9%\n-7.9%\n\n\n2009\n5.6%\n-0.9%\n17.7%\n19.7%\n7.9%\n4.9%\n14.7%\n3.0%\n10.2%\n1.7%\n6.1%\n5.4%\n\n\n2010\n-8.9%\n6.5%\n14.8%\n11.1%\n-1.6%\n-2.1%\n2.3%\n-5.5%\n16.7%\n6.1%\n3.4%\n3.7%\n\n\n2011\n5.2%\n4.1%\n-1.3%\n0.5%\n-0.7%\n-3.5%\n16.3%\n-1.4%\n-0.9%\n6.2%\n-5.6%\n6.0%\n\n\n2012\n12.7%\n18.8%\n10.5%\n-2.6%\n-1.1%\n1.1%\n4.6%\n9.4%\n0.3%\n-10.8%\n-1.2%\n-9.1%\n\n\n2013\n-14.4%\n-2.5%\n0.3%\n0.0%\n2.2%\n-11.8%\n14.1%\n8.4%\n-2.1%\n9.6%\n7.0%\n0.9%\n\n\n2014\n-10.8%\n5.8%\n2.0%\n9.9%\n7.9%\n2.8%\n2.9%\n7.8%\n-1.7%\n7.2%\n10.6%\n-7.2%\n\n\n2015\n6.1%\n10.1%\n-3.1%\n0.6%\n4.5%\n-3.7%\n-3.3%\n-6.6%\n-2.2%\n8.3%\n-0.6%\n-11.0%\n\n\n2016\n-7.5%\n-0.1%\n12.7%\n-14.0%\n7.2%\n-4.3%\n9.0%\n2.4%\n6.6%\n0.4%\n-2.2%\n4.8%\n\n\n2017\n4.8%\n13.4%\n4.9%\n-0.0%\n6.8%\n-5.7%\n3.3%\n10.7%\n-6.0%\n9.7%\n2.0%\n-1.5%\n\n\n2018\n-1.1%\n6.8%\n-5.8%\n-1.5%\n13.5%\n-0.9%\n2.8%\n20.0%\n-0.8%\n-3.0%\n-18.1%\n-11.7%\n\n\n2019\n5.5%\n4.5%\n9.7%\n5.6%\n-12.4%\n13.1%\n7.6%\n-1.6%\n7.3%\n11.1%\n7.8%\n9.9%\n\n\n2020\n5.4%\n-11.5%\n-7.0%\n15.5%\n8.5%\n14.7%\n16.5%\n21.7%\n-10.3%\n-6.0%\n9.5%\n11.5%\n\n\n2021\n-0.6%\n-8.0%\n0.7%\n7.6%\n-5.0%\n9.9%\n6.5%\n4.2%\n-6.8%\n5.9%\n10.5%\n7.4%\n\n\n2022\n-1.6%\n-5.4%\n5.7%\n-9.7%\n-5.4%\n-8.1%\n18.9%\n-3.1%\n-12.1%\n11.0%\n-3.3%\n-12.2%\n\n\n2023\n11.1%\n2.3%\n11.9%\n2.9%\n4.6%\n9.4%\n1.3%\n-4.2%\n-8.9%\n-0.3%\n11.4%\n1.4%\n\n\n2024\n-4.2%\n-1.9%\n-5.1%\n-0.7%\n13.0%\n9.6%\n5.4%\n3.2%\n1.7%\n-3.0%\n5.2%\n5.5%\n\n\n2025\n-5.8%\n2.6%\n-8.2%\n-4.3%\n-5.4%\n2.2%\n1.2%\n12.0%\n9.7%\n6.2%\n3.2%\n-2.5%\n\n\n2026\n-4.6%\n1.9%\n-3.9%\n6.9%\n15.1%\n-7.3%\n15.2%\nnan%\nnan%\nnan%\nnan%\nnan%"
+  },
+  {
+    "objectID": "stats.html#chained-api-q.stats.returns...",
+    "href": "stats.html#chained-api-q.stats.returns...",
+    "title": "Return Statistics",
+    "section": "Chained API: q.stats.returns(...)",
+    "text": "Chained API: q.stats.returns(...)\nFor notebook exploration, q.stats.returns() binds a return stream (and optional benchmark) once and exposes the same stats as methods, plus .plot(kind=...) which delegates to q.plot. Each call creates a fresh, independent object — there is no hidden global state to reason about:\n\nbound = q.stats.returns(strategy, benchmark=benchmark)\n\nbound.performance()\n\nTotal Return     396.815871\nCAGR               0.253688\nVolatility         0.383120\nSharpe             0.789515\nSortino            1.128558\nCalmar             0.310126\nMax Drawdown      -0.818015\nWin Rate           0.523231\nPeriods         6672.000000\nName: AAPL, dtype: float64\n\n\nkind accepts \"performance\"/\"tearsheet\" (equity + drawdown report), \"equity\", \"drawdown\", or \"monthly_heatmap\". The bound benchmark is passed through automatically for the report variants:\n\nprint(f\"Beta: {bound.beta():.2f}\")\nprint(f\"Alpha: {bound.alpha():.2%}\")\n\nfig = bound.plot(\"performance\")\nfig.show()\n\nBeta: 1.13\nAlpha: 19.14%"
   },
   {
     "objectID": "reference/model.selection.html",
@@ -749,28 +735,42 @@
     "href": "feat.html",
     "title": "Feature Engineering",
     "section": "",
-    "text": "q.feat collects feature engineering tools under one namespace, organized as submodules:\nAll indicator functions share the same convention: they accept an OHLCV DataFrame with lowercase columns (open, high, low, close, volume) — the frame layout returned by q.data.sources’s read() functions (e.g. q.data.sources.yfinance.read(...)) — and preserve the datetime index on the output. Indicators that only need a price series also accept a plain Series (treated as close)."
+    "text": "This page’s code cells are executed live by Quarto (via Jupyter) every time the docs are built. q.feat collects feature engineering tools under one namespace, organized as submodules:\nAll indicator functions share the same convention: they accept an OHLCV DataFrame with lowercase columns (open, high, low, close, volume) — the frame layout returned by q.data.sources’s read() functions (e.g. q.data.sources.yfinance.read(...)) — and preserve the datetime index on the output. Indicators that only need a price series also accept a plain Series (treated as close)."
+  },
+  {
+    "objectID": "feat.html#sample-data",
+    "href": "feat.html#sample-data",
+    "title": "Feature Engineering",
+    "section": "Sample data",
+    "text": "Sample data\nWe use qrt’s bundled AAPL sample dataset — loaded offline via q.data.datasets.load, no network dependency (see the Data Access tutorial for more on q.data):\n\nimport pandas as pd\n\nimport qrt as q\n\naapl = q.data.datasets.load(\"aapl\")\naapl.tail()\n\n\n\n\n\n\n\n\nopen\nhigh\nlow\nclose\nvolume\n\n\ndatetime\n\n\n\n\n\n\n\n\n\n2026-07-10\n314.720001\n316.910004\n312.170013\n315.320007\n34132300\n\n\n2026-07-13\n317.019989\n323.450012\n315.779999\n317.309998\n43257800\n\n\n2026-07-14\n313.760010\n316.190002\n311.910004\n314.859985\n36336800\n\n\n2026-07-15\n317.619995\n328.730011\n317.320007\n327.500000\n60957600\n\n\n2026-07-16\n328.010010\n334.679993\n326.790009\n333.260010\n62727600"
   },
   {
     "objectID": "feat.html#qta-our-own-features",
     "href": "feat.html#qta-our-own-features",
     "title": "Feature Engineering",
     "section": "qta — our own features",
-    "text": "qta — our own features\nq.feat.qta.sma(ohlc[\"close\"], 20)\nq.feat.qta.lags(ohlc[\"close\"], [1, 5, 21])\nTo add a feature, create qrt/feat/qta/&lt;feature&gt;.py with one public function and re-export it in qrt/feat/qta/__init__.py (one import line + one __all__ entry)."
+    "text": "qta — our own features\nHand-rolled primitives, one file per feature under qrt/feat/qta/:\n\nsma_20 = q.feat.qta.sma(aapl[\"close\"], 20)\nsma_100 = q.feat.qta.sma(aapl[\"close\"], 100)\n\nprice_features = pd.DataFrame({\"close\": aapl[\"close\"], \"sma_20\": sma_20, \"sma_100\": sma_100})\nprice_features.tail()\n\n\n\n\n\n\n\n\nclose\nsma_20\nsma_100\n\n\ndatetime\n\n\n\n\n\n\n\n2026-07-10\n315.320007\n298.103001\n279.024360\n\n\n2026-07-13\n317.309998\n299.187001\n279.561089\n\n\n2026-07-14\n314.859985\n300.373500\n280.068622\n\n\n2026-07-15\n327.500000\n301.927499\n280.740221\n\n\n2026-07-16\n333.260010\n303.628500\n281.429456\n\n\n\n\n\n\n\n\nq.feat.qta.lags(aapl[\"close\"], [1, 5, 21]).tail()\n\n\n\n\n\n\n\n\nclose_lag1\nclose_lag5\nclose_lag21\n\n\ndatetime\n\n\n\n\n\n\n\n2026-07-10\n316.220001\n308.630005\n290.549988\n\n\n2026-07-13\n315.320007\n312.660004\n291.579987\n\n\n2026-07-14\n317.309998\n310.660004\n295.630005\n\n\n2026-07-15\n314.859985\n313.390015\n291.130005\n\n\n2026-07-16\n327.500000\n316.220001\n296.420013\n\n\n\n\n\n\n\nTo add a feature, create qrt/feat/qta/&lt;feature&gt;.py with one public function and re-export it in qrt/feat/qta/__init__.py (one import line + one __all__ entry)."
+  },
+  {
+    "objectID": "feat.html#visualizing-features",
+    "href": "feat.html#visualizing-features",
+    "title": "Feature Engineering",
+    "section": "Visualizing features",
+    "text": "Visualizing features\nq.plot.col renders any feature DataFrame as an interactive Plotly chart with hover, zoom, and range-selector buttons — handy for eyeballing an indicator against price before using it in a model:\n\nfig = q.plot.col(\n    price_features,\n    title=\"AAPL close price with SMA overlays\",\n    ylabel=\"Price\",\n    height=450,\n)\nfig.show()"
   },
   {
     "objectID": "feat.html#ta-lib",
     "href": "feat.html#ta-lib",
     "title": "Feature Engineering",
     "section": "TA-Lib",
-    "text": "TA-Lib\nq.feat.talib.RSI(ohlc)                    # Series named 'rsi'\nq.feat.talib.ATR(ohlc, timeperiod=20)     # uses high/low/close\nq.feat.talib.MACD(ohlc)                   # DataFrame: macd, macdsignal, macdhist\nq.feat.talib.SMA(prices, timeperiod=20)   # Series in, Series out\nSingle-output indicators return a Series named after the indicator; multi-output indicators return a DataFrame with TA-Lib’s output names as columns."
+    "text": "TA-Lib\nSingle-output indicators return a Series named after the indicator; multi-output indicators return a DataFrame with TA-Lib’s output names as columns:\n\nrsi = q.feat.talib.RSI(aapl)\natr = q.feat.talib.ATR(aapl, timeperiod=20)\nmacd = q.feat.talib.MACD(aapl)\n\npd.concat([rsi, atr, macd], axis=1).tail()\n\n\n\n\n\n\n\n\nrsi\natr\nmacd\nmacdsignal\nmacdhist\n\n\ndatetime\n\n\n\n\n\n\n\n\n\n2026-07-10\n62.940017\n7.838341\n4.624530\n1.907890\n2.716640\n\n\n2026-07-13\n64.170933\n7.852924\n5.248546\n2.576021\n2.672525\n\n\n2026-07-14\n61.464187\n7.730277\n5.482192\n3.157255\n2.324937\n\n\n2026-07-15\n68.780593\n8.037265\n6.611093\n3.848023\n2.763070\n\n\n2026-07-16\n71.441496\n8.029901\n7.879707\n4.654360\n3.225348"
   },
   {
     "objectID": "feat.html#pandas-ta-classic",
     "href": "feat.html#pandas-ta-classic",
     "title": "Feature Engineering",
     "section": "pandas-ta-classic",
-    "text": "pandas-ta-classic\nq.feat.pandas_ta.rsi(ohlc)                  # Series 'RSI_14'\nq.feat.pandas_ta.bbands(ohlc, length=20)    # DataFrame BBL/BBM/BBU...\nq.feat.pandas_ta.cdl_pattern(ohlc, name=\"doji\")\nOutputs keep pandas-ta’s parameterised names (e.g. RSI_14, MACD_12_26_9)."
+    "text": "pandas-ta-classic\nOutputs keep pandas-ta’s parameterised names (e.g. BBL_20_2.0, RSI_14):\n\nbbands = q.feat.pandas_ta.bbands(aapl, length=20)\nbbands.tail()\n\n\n\n\n\n\n\n\nBBL_20_2.0\nBBM_20_2.0\nBBU_20_2.0\nBBB_20_2.0\nBBP_20_2.0\n\n\ndatetime\n\n\n\n\n\n\n\n\n\n2026-07-10\n275.594425\n298.103001\n320.611578\n15.101208\n0.882454\n\n\n2026-07-13\n275.218388\n299.187001\n323.155614\n16.022496\n0.878057\n\n\n2026-07-14\n275.776575\n300.373500\n324.970425\n16.377560\n0.794478\n\n\n2026-07-15\n274.735727\n301.927499\n329.119271\n18.012120\n0.970225\n\n\n2026-07-16\n273.252201\n303.628500\n334.004799\n20.008859\n0.987741"
   },
   {
     "objectID": "feat.html#ide-support",
