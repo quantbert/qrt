@@ -15,5 +15,7 @@ Pages:
   (CAGR, Sharpe, Max Drawdown, ...) and benchmark-relative alpha/beta.
 - [Rolling & calendar](rolling.ipynb) — rolling diagnostics and year-by-month
   return tables.
+- [Factor analytics](factors.ipynb) — Fama-French-style multi-factor
+  regression: full-period loadings, rolling betas, and return attribution.
 - [Chained API](chained.ipynb) — `q.stats.returns(...)`, the bound
   stats-and-plots helper for notebook exploration.

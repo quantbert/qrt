@@ -358,6 +358,94 @@ def test_r_squared_and_compare_vs_benchmark():
     assert bool(table["Won"].iloc[0])  # positive benchmark period: 2x return still wins
 
 
+def _synthetic_factor_data(n=400, seed=0):
+    """Build a synthetic Fama-French-style factor set and a return stream with known betas."""
+    rng = np.random.default_rng(seed)
+    idx = pd.bdate_range("2022-01-03", periods=n)
+    factor_names = ["Mkt-RF", "SMB", "HML", "RMW", "CMA"]
+    scales = [0.010, 0.005, 0.005, 0.004, 0.004]
+    factor_frame = pd.DataFrame(
+        {name: rng.normal(0.0002 if name == "Mkt-RF" else 0.0, scale, n) for name, scale in zip(factor_names, scales)},
+        index=idx,
+    )
+    factor_frame["RF"] = 0.00006
+    alpha_true = 0.0001
+    betas_true = pd.Series({"Mkt-RF": 1.2, "SMB": -0.3, "HML": 0.4, "RMW": 0.2, "CMA": -0.1})
+    noise = rng.normal(0.0, 0.003, n)
+    excess = alpha_true + (factor_frame[factor_names] * betas_true).sum(axis=1) + noise
+    returns = (excess + factor_frame["RF"]).rename("Strategy")
+    return returns, factor_frame, alpha_true, betas_true
+
+
+def test_factor_regression_recovers_synthetic_coefficients():
+    returns, factors, alpha_true, betas_true = _synthetic_factor_data()
+
+    table = q.stats.factor_regression(returns, factors)
+    assert list(table.index) == ["Alpha", *betas_true.index]
+    assert table.loc["Alpha", "Coefficient"] == pytest.approx(alpha_true, abs=5e-4)
+    for factor, true_beta in betas_true.items():
+        assert table.loc[factor, "Coefficient"] == pytest.approx(true_beta, abs=0.1)
+        assert table.loc[factor, "CI Lower"] < table.loc[factor, "Coefficient"] < table.loc[factor, "CI Upper"]
+
+    summary = q.stats.factor_regression_stats(returns, factors)
+    assert summary["R²"] > 0.9
+    assert summary["Periods"] == len(returns)
+    assert summary["Alpha (ann.)"] == pytest.approx(summary["Alpha"] * q.stats.infer_periods_per_year(returns.index))
+
+
+def test_factor_regression_rf_column_not_subtracted_twice():
+    returns, factors, _, _ = _synthetic_factor_data()
+
+    with_rf_column = q.stats.factor_regression(returns, factors, rf="RF")
+    already_excess = q.stats.factor_regression(returns - factors["RF"], factors.drop(columns="RF"), rf=None)
+    pd.testing.assert_series_equal(with_rf_column["Coefficient"], already_excess["Coefficient"])
+
+    with pytest.raises(ValueError):
+        q.stats.factor_regression(returns, factors, rf="NotAColumn")
+
+
+def test_rolling_factor_regression_window_alignment():
+    returns, factors, _, betas_true = _synthetic_factor_data()
+    window = 63
+
+    rolling = q.stats.rolling_factor_regression(returns, factors, window=window)
+    assert list(rolling.columns) == ["Alpha", *betas_true.index, "R²", "N Obs"]
+    assert rolling.iloc[: window - 1].isna().all().all()
+    first_valid = rolling.iloc[window - 1]
+    assert first_valid.notna().all()
+    assert first_valid["N Obs"] == window
+    assert rolling["Mkt-RF"].dropna().mean() == pytest.approx(betas_true["Mkt-RF"], abs=0.2)
+
+    with pytest.raises(ValueError):
+        q.stats.rolling_factor_regression(returns, factors, window=window, min_observations=3)
+
+
+def test_factor_contributions_sum_to_excess_return():
+    returns, factors, _, _ = _synthetic_factor_data()
+
+    contributions = q.stats.factor_contributions(returns, factors)
+    assert list(contributions.columns) == ["Alpha", "Mkt-RF", "SMB", "HML", "RMW", "CMA", "Residual"]
+    excess = returns - factors["RF"]
+    total = contributions.sum(axis=1)
+    assert total.to_numpy() == pytest.approx(excess.to_numpy(), abs=1e-9)
+
+
+def test_factor_plots_build_without_error():
+    returns, factors, _, _ = _synthetic_factor_data(n=150)
+
+    loadings_figure = q.plot.factor_loadings(returns, factors)
+    assert isinstance(loadings_figure, PlotlyFigure)
+    assert [trace.name for trace in loadings_figure.data] == [None]  # single go.Bar trace
+
+    rolling_figure = q.plot.rolling_factor_betas(returns, factors, window=63)
+    assert isinstance(rolling_figure, PlotlyFigure)
+    assert {trace.name for trace in rolling_figure.data} == {"Mkt-RF", "SMB", "HML", "RMW", "CMA"}
+
+    contributions_figure = q.plot.factor_contributions(returns, factors)
+    assert isinstance(contributions_figure, PlotlyFigure)
+    assert "Total (Excess Return)" in {trace.name for trace in contributions_figure.data}
+
+
 def test_standalone_metrics_match_performance_and_benchmark_stats():
     benchmark = pd.Series([0.01, -0.01, 0.02, 0.01, -0.01], index=pd.date_range("2025-01-01", periods=5), name="SPY")
     returns = (benchmark * 2).rename("strategy")

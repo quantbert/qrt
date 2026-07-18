@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Literal
 import numpy as np
 import pandas as pd
 from scipy.stats import norm
+from scipy.stats import t as t_dist
 
 if TYPE_CHECKING:
     from plotly.graph_objects import Figure
@@ -355,6 +356,329 @@ def rolling_alpha(
     periods = _periods_per_year(periods_per_year, strategy.index)
     beta_series = rolling_beta(strategy, reference, window)
     return (strategy.sub(beta_series.mul(reference)).rolling(window).mean() * periods).rename("Rolling Alpha")
+
+
+# ---------------------------------------------------------------------------
+# Multi-factor regression (e.g. Fama-French three/five-factor models)
+# ---------------------------------------------------------------------------
+
+CovarianceType = Literal["nonrobust", "HC3"]
+
+
+def _factor_design_matrix(
+    returns: pd.Series,
+    factors: pd.DataFrame,
+    *,
+    return_type: ReturnType,
+    rf: str | pd.Series | None,
+) -> tuple[pd.Series, pd.DataFrame]:
+    """Align a return stream with factor returns and build the excess-return regression inputs.
+
+    Inner-joins ``returns`` with every column of ``factors`` on shared dates and drops any
+    row with a missing value (never forward-filled). Unless ``rf`` is ``None`` (meaning
+    ``returns`` is already excess of the risk-free rate), a per-period risk-free rate is
+    subtracted from ``returns`` to form the regression's dependent variable: ``rf`` either
+    names a column already present in ``factors`` (removed from the regressors -- e.g. Ken
+    French's own ``"RF"`` column, so it isn't also fit as a factor) or is a separate periodic
+    risk-free return series aligned like ``factors``.
+    """
+    if not isinstance(factors, pd.DataFrame) or factors.empty:
+        raise TypeError("factors must be a non-empty pandas DataFrame of factor return columns")
+    strategy = _simple_returns(returns, return_type, "Strategy")
+    # Concat under a private sentinel name (not `strategy.name`) so a strategy series that
+    # happens to share a name with one of the factor columns (e.g. "RF") doesn't collide.
+    frame = pd.concat([strategy.rename("__strategy__"), factors], axis=1, join="inner").dropna()
+    if frame.empty:
+        raise ValueError("returns and factors must share at least one non-null observation")
+
+    rf_series: pd.Series | None = None
+    factor_columns = list(factors.columns)
+    if isinstance(rf, str):
+        if rf not in factor_columns:
+            raise ValueError(f"rf={rf!r} is not a column of factors. Available: {factor_columns}")
+        rf_series = frame[rf]
+        factor_columns.remove(rf)
+    elif isinstance(rf, pd.Series):
+        rf_series = rf.reindex(frame.index)
+        if rf_series.isna().any():
+            raise ValueError("rf must cover every aligned returns/factors date")
+    elif rf is not None:
+        raise TypeError("rf must be a column name (str), a pandas Series, or None")
+
+    if not factor_columns:
+        raise ValueError("factors must contain at least one factor column besides rf")
+    excess = (frame["__strategy__"] - rf_series) if rf_series is not None else frame["__strategy__"]
+    return excess.rename(strategy.name), frame[factor_columns]
+
+
+def _ols_fit(y: np.ndarray, design: np.ndarray, covariance: CovarianceType) -> dict[str, object]:
+    """Fit OLS by least squares and compute coefficient covariance for inference.
+
+    ``design`` is the full design matrix, including a leading constant column for the
+    intercept (alpha). Uses ``numpy.linalg`` directly rather than forming an explicit
+    matrix inverse of ``design`` itself (only the small ``k x k`` ``(X'X)^-1`` is inverted).
+    """
+    n, k = design.shape
+    if n <= k:
+        raise ValueError(f"Need more observations ({n}) than regressors+intercept ({k}) to fit the regression")
+    xtx_inv = np.linalg.inv(design.T @ design)
+    coefficients = xtx_inv @ design.T @ y
+    residuals = y - design @ coefficients
+    dof = n - k
+    rss = float(residuals @ residuals)
+    sigma2 = rss / dof
+
+    if covariance == "nonrobust":
+        cov_matrix = sigma2 * xtx_inv
+    elif covariance == "HC3":
+        # White's HC3 estimator: leverage-corrected squared residuals, robust to
+        # heteroskedasticity without assuming a particular error variance structure.
+        hat_diag = np.einsum("ij,jk,ik->i", design, xtx_inv, design)
+        leverage = np.clip(1.0 - hat_diag, 1e-12, None)
+        meat = design.T @ (design * (residuals**2 / leverage**2)[:, None])
+        cov_matrix = xtx_inv @ meat @ xtx_inv
+    else:
+        raise ValueError("covariance must be one of 'nonrobust', 'HC3'")
+
+    tss = float(((y - y.mean()) ** 2).sum())
+    r_squared = 1.0 - rss / tss if tss else float("nan")
+    n_factors = k - 1
+    adj_r_squared = 1.0 - (1.0 - r_squared) * (n - 1) / dof if dof > n_factors and np.isfinite(r_squared) else float("nan")
+    return {
+        "coefficients": coefficients,
+        "std_errors": np.sqrt(np.diag(cov_matrix)),
+        "residuals": residuals,
+        "residual_std": sigma2**0.5,
+        "dof": dof,
+        "r_squared": r_squared,
+        "adj_r_squared": adj_r_squared,
+    }
+
+
+def factor_regression(
+    returns: pd.Series,
+    factors: pd.DataFrame,
+    *,
+    return_type: ReturnType = "simple",
+    rf: str | pd.Series | None = "RF",
+    covariance: CovarianceType = "nonrobust",
+    confidence_level: float = 0.95,
+) -> pd.DataFrame:
+    """Fit a full-period multi-factor OLS regression (e.g. the Fama-French five-factor model).
+
+    Decomposes ``returns``' excess return into a constant (alpha) plus a linear exposure
+    (beta) to each column of ``factors``:
+    ``R - Rf = alpha + beta_1 * factor_1 + ... + beta_k * factor_k + residual``. This is a
+    *return-attribution* regression, not a forecasting model -- it explains what already
+    happened, using every observation in the sample. See
+    [Fama-French three/five-factor model](https://en.wikipedia.org/wiki/Fama%E2%80%93French_three-factor_model)
+    and the [Kenneth French Data Library](https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html)
+    for the standard ``Mkt-RF``/``SMB``/``HML``/``RMW``/``CMA``/``RF`` factor set (any
+    factor set works, not only the Fama-French five). For time-varying exposures, see
+    :func:`rolling_factor_regression`.
+
+    Args:
+        returns: Strategy periodic return series.
+        factors: DataFrame of periodic factor return columns (e.g. ``Mkt-RF``, ``SMB``,
+            ``HML``, ``RMW``, ``CMA``, and optionally ``RF``), aligned to ``returns`` on
+            shared dates. Must be in the same decimal-return units as ``returns``.
+        return_type: Whether ``returns`` is ``"simple"`` or ``"log"`` returns.
+        rf: Risk-free rate used to convert ``returns`` into the regression's excess-return
+            target. Either a column name already present in ``factors`` (removed from the
+            regressors, e.g. Ken French's ``"RF"``) or a separate periodic risk-free return
+            series aligned like ``factors``. Pass ``None`` if ``returns`` is already an
+            excess return.
+        covariance: Standard-error estimator: ``"nonrobust"`` (classic OLS, default) or
+            ``"HC3"`` (heteroskedasticity-robust). Coefficients are identical either way;
+            only standard errors, t-statistics, p-values, and confidence intervals differ.
+        confidence_level: Confidence level for ``CI Lower``/``CI Upper``. Defaults to ``0.95``.
+
+    Returns:
+        DataFrame indexed by ``"Alpha"`` followed by each factor column (in ``factors``'
+        order, excluding ``rf`` when it names a column), with columns ``Coefficient``,
+        ``Std Error``, ``t-Statistic``, ``p-Value``, ``CI Lower``, ``CI Upper``. See
+        :func:`factor_regression_stats` for regression-level diagnostics (R², annualized
+        alpha, residual volatility) and :func:`factor_contributions` for the per-period
+        return attribution this fit implies.
+    """
+    excess, design_frame = _factor_design_matrix(returns, factors, return_type=return_type, rf=rf)
+    design = np.column_stack([np.ones(len(design_frame)), design_frame.to_numpy(dtype=float)])
+    fit = _ols_fit(excess.to_numpy(dtype=float), design, covariance)
+    coefficients, std_errors = fit["coefficients"], fit["std_errors"]
+
+    t_stats = coefficients / std_errors
+    p_values = 2.0 * t_dist.sf(np.abs(t_stats), fit["dof"])
+    margin = t_dist.ppf(0.5 + confidence_level / 2.0, fit["dof"]) * std_errors
+    return pd.DataFrame(
+        {
+            "Coefficient": coefficients,
+            "Std Error": std_errors,
+            "t-Statistic": t_stats,
+            "p-Value": p_values,
+            "CI Lower": coefficients - margin,
+            "CI Upper": coefficients + margin,
+        },
+        index=["Alpha", *design_frame.columns],
+    )
+
+
+def factor_regression_stats(
+    returns: pd.Series,
+    factors: pd.DataFrame,
+    *,
+    return_type: ReturnType = "simple",
+    rf: str | pd.Series | None = "RF",
+    covariance: CovarianceType = "nonrobust",
+    periods_per_year: int | None = None,
+) -> pd.Series:
+    """Calculate regression-level diagnostics for a full-period multi-factor OLS fit.
+
+    Companion to :func:`factor_regression` (which returns the per-factor coefficient
+    table); this returns the fit's overall explanatory power and alpha, annualized.
+
+    Args:
+        returns: Strategy periodic return series.
+        factors: DataFrame of periodic factor return columns, aligned to ``returns``.
+        return_type: Whether ``returns`` is ``"simple"`` or ``"log"`` returns.
+        rf: See :func:`factor_regression`.
+        covariance: See :func:`factor_regression` (only affects ``Alpha``'s
+            statistical significance, not shown here -- see :func:`factor_regression`
+            for alpha's standard error/t-statistic/p-value).
+        periods_per_year: Annualization frequency. Inferred from the index when not given.
+
+    Returns:
+        Series indexed by metric name:
+
+        - ``Alpha``: Per-period (e.g. daily) intercept.
+        - ``Alpha (ann.)``: Simple annualization (``periods_per_year * Alpha``); prefer this
+                over compounding a regression intercept, which implies more economic precision
+                than is justified.
+        - ``R²``: Fraction of excess-return variance explained by the factors.
+        - ``Adj. R²``: R² penalized for the number of factors, comparable across models
+                with a different factor count.
+        - ``Residual Volatility``: Annualized standard deviation of the fit's residuals --
+                variation left unexplained by the factors.
+        - ``Periods``: Number of aligned observations used.
+    """
+    excess, design_frame = _factor_design_matrix(returns, factors, return_type=return_type, rf=rf)
+    periods = _periods_per_year(periods_per_year, excess.index)
+    design = np.column_stack([np.ones(len(design_frame)), design_frame.to_numpy(dtype=float)])
+    fit = _ols_fit(excess.to_numpy(dtype=float), design, covariance)
+    alpha_value = float(fit["coefficients"][0])
+
+    return pd.Series(
+        {
+            "Alpha": alpha_value,
+            "Alpha (ann.)": alpha_value * periods,
+            "R²": fit["r_squared"],
+            "Adj. R²": fit["adj_r_squared"],
+            "Residual Volatility": fit["residual_std"] * periods**0.5,
+            "Periods": float(len(excess)),
+        },
+        name=excess.name,
+    )
+
+
+def rolling_factor_regression(
+    returns: pd.Series,
+    factors: pd.DataFrame,
+    window: int = 63,
+    *,
+    return_type: ReturnType = "simple",
+    rf: str | pd.Series | None = "RF",
+    min_observations: int | None = None,
+) -> pd.DataFrame:
+    """Calculate rolling multi-factor OLS betas over a moving window.
+
+    Refits :func:`factor_regression`'s OLS on each trailing ``window`` of aligned
+    observations, e.g. the rolling Fama-French five-factor betas that reveal
+    time-varying exposure a single full-period fit cannot. Following
+    [``statsmodels.regression.rolling.RollingOLS``](https://www.statsmodels.org/stable/examples/notebooks/generated/rolling_ls.html)'s
+    convention, each window's estimate is stored at the date of its *last*
+    observation, so the window is a trailing observation window (not a calendar-day
+    window) -- with daily data, ``window=63`` is roughly 3 trading months.
+
+    Args:
+        returns: Strategy periodic return series.
+        factors: DataFrame of periodic factor return columns, aligned to ``returns``.
+        window: Trailing window size, in periods. Defaults to ``63``.
+        return_type: Whether ``returns`` is ``"simple"`` or ``"log"`` returns.
+        rf: See :func:`factor_regression`.
+        min_observations: Minimum aligned observations required before the first
+            (noisier, shorter-window) estimate is produced. Defaults to ``window``
+            (a full window); every estimate still reports its actual observation
+            count in ``N Obs``.
+
+    Returns:
+        DataFrame indexed like the aligned returns/factors data, with columns
+        ``Alpha``, one per factor (in ``factors``' order), ``R²``, and ``N Obs``.
+        Rows before the first ``min_observations`` aligned dates are ``NaN``
+        (there is no complete window yet).
+    """
+    excess, design_frame = _factor_design_matrix(returns, factors, return_type=return_type, rf=rf)
+    if window < 2:
+        raise ValueError("window must be at least 2")
+    min_obs = window if min_observations is None else min_observations
+    n_regressors = design_frame.shape[1] + 1
+    if min_obs <= n_regressors:
+        raise ValueError(f"min_observations ({min_obs}) must exceed the number of regressors+intercept ({n_regressors})")
+
+    y = excess.to_numpy(dtype=float)
+    x = np.column_stack([np.ones(len(design_frame)), design_frame.to_numpy(dtype=float)])
+    columns = ["Alpha", *design_frame.columns, "R²", "N Obs"]
+    records = np.full((len(excess), len(columns)), np.nan)
+    for end in range(min_obs - 1, len(excess)):
+        start = max(0, end - window + 1)
+        fit = _ols_fit(y[start : end + 1], x[start : end + 1], "nonrobust")
+        records[end, : len(columns) - 2] = fit["coefficients"]
+        records[end, -2] = fit["r_squared"]
+        records[end, -1] = end - start + 1
+
+    return pd.DataFrame(records, index=excess.index, columns=columns)
+
+
+def factor_contributions(
+    returns: pd.Series,
+    factors: pd.DataFrame,
+    *,
+    return_type: ReturnType = "simple",
+    rf: str | pd.Series | None = "RF",
+    covariance: CovarianceType = "nonrobust",
+) -> pd.DataFrame:
+    """Decompose each period's excess return into per-factor contributions from a static fit.
+
+    A factor *loading* (:func:`factor_regression`) answers "how sensitive is the strategy
+    to this factor?"; a factor *contribution* answers "how much return did that exposure
+    generate?". Fits :func:`factor_regression` once over the full period, then attributes
+    every period's excess return to ``Alpha`` (the fitted intercept), one column per factor
+    (``coefficient * factor return``), and ``Residual`` (left unexplained). Columns sum,
+    period by period, to the excess return (``returns`` minus ``rf``).
+
+    Note:
+        Cumulative *arithmetic* sums of these columns reconstruct the cumulative excess
+        return exactly; compounding each column separately (e.g. ``(1 + contribution).cumprod()``)
+        would not, since return compounding creates cross-factor interaction terms. Use
+        arithmetic cumulative sums for additive attribution (see :func:`qrt.plot.factor_contributions`).
+
+    Args:
+        returns: Strategy periodic return series.
+        factors: DataFrame of periodic factor return columns, aligned to ``returns``.
+        return_type: Whether ``returns`` is ``"simple"`` or ``"log"`` returns.
+        rf: See :func:`factor_regression`.
+        covariance: See :func:`factor_regression` (only affects standard errors, not the
+            contributions themselves, which depend only on the fitted coefficients).
+
+    Returns:
+        DataFrame indexed like the aligned returns/factors data, with columns ``Alpha``,
+        one per factor (in ``factors``' order), and ``Residual``.
+    """
+    excess, design_frame = _factor_design_matrix(returns, factors, return_type=return_type, rf=rf)
+    loadings = factor_regression(returns, factors, return_type=return_type, rf=rf, covariance=covariance)["Coefficient"]
+
+    contributions = design_frame.mul(loadings.drop("Alpha"), axis=1)
+    contributions.insert(0, "Alpha", loadings["Alpha"])
+    contributions["Residual"] = excess - contributions.sum(axis=1)
+    return contributions
 
 
 def beta(

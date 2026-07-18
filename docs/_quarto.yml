@@ -84,6 +84,8 @@ website:
               href: stats/performance.ipynb
             - text: "Rolling & calendar returns"
               href: stats/rolling.ipynb
+            - text: "Factor analytics"
+              href: stats/factors.ipynb
             - text: "Chained API"
               href: stats/chained.ipynb
         - section: "q.utils — Utilities"

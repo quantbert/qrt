@@ -13,6 +13,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 from qrt.stats.core import (
+    CovarianceType,
     ReturnType,
     _aligned_returns,
     _periods_per_year,
@@ -20,10 +21,13 @@ from qrt.stats.core import (
     aggregate_returns,
     distribution as distribution_stats,
     drawdown_details,
+    factor_contributions as factor_contributions_stats,
+    factor_regression as factor_regression_stats,
     metrics as metrics_stats,
     monthly_returns,
     performance as performance_stats,
     rolling_beta as rolling_beta_stats,
+    rolling_factor_regression as rolling_factor_regression_stats,
     rolling_sharpe as rolling_sharpe_stats,
     rolling_sortino as rolling_sortino_stats,
     rolling_volatility as rolling_volatility_stats,
@@ -846,6 +850,182 @@ def rolling_beta(
     _base_layout(figure, title=title, height=height)
     _set_date_range(figure, first_index)
     figure.update_yaxes(title_text="Beta")
+    return figure
+
+
+def factor_loadings(
+    returns: pd.Series,
+    factors: pd.DataFrame,
+    *,
+    return_type: ReturnType = "simple",
+    rf: str | pd.Series | None = "RF",
+    covariance: CovarianceType = "nonrobust",
+    confidence_level: float = 0.95,
+    include_alpha: bool = False,
+    title: str = "Factor Loadings",
+    height: int = 400,
+) -> Figure:
+    """Create an interactive bar chart of full-period multi-factor regression coefficients.
+
+    See :func:`qrt.stats.factor_regression` for the underlying calculation, e.g. the
+    Fama-French five-factor model's ``Mkt-RF``/``SMB``/``HML``/``RMW``/``CMA`` betas.
+
+    Args:
+        returns: Strategy periodic return series.
+        factors: DataFrame of periodic factor return columns, aligned to ``returns``.
+        return_type: Whether ``returns`` is ``"simple"`` or ``"log"`` returns.
+        rf: See :func:`qrt.stats.factor_regression`.
+        covariance: Standard-error estimator; see :func:`qrt.stats.factor_regression`.
+        confidence_level: Confidence level for the error bars. Defaults to ``0.95``.
+        include_alpha: Whether to include the ``Alpha`` bar alongside the factor
+            betas. Defaults to ``False`` since alpha's scale/units usually differ
+            from a factor beta (see :func:`qrt.stats.factor_regression_stats`
+            for alpha shown on its own, annualized).
+        title: Figure title.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
+    table = factor_regression_stats(
+        returns, factors, return_type=return_type, rf=rf, covariance=covariance, confidence_level=confidence_level
+    )
+    if not include_alpha:
+        table = table.drop("Alpha")
+
+    colors = ["#54A24B" if value >= 0 else "#E45756" for value in table["Coefficient"]]
+    figure = go.Figure(
+        go.Bar(
+            x=table.index.astype(str),
+            y=table["Coefficient"],
+            marker_color=colors,
+            error_y={
+                "type": "data",
+                "array": table["CI Upper"] - table["Coefficient"],
+                "arrayminus": table["Coefficient"] - table["CI Lower"],
+                "visible": True,
+            },
+            text=[f"{value:+.2f}" for value in table["Coefficient"]],
+            textposition="outside",
+            customdata=table[["p-Value"]],
+            hovertemplate="%{x}<br>Coefficient: %{y:.3f}<br>p-value: %{customdata[0]:.3f}<extra></extra>",
+        )
+    )
+    figure.add_hline(y=0.0, line={"color": "#6B7280", "width": 1, "dash": "dash"})
+    _base_layout(figure, title=title, height=height, time_axis=False)
+    figure.update_yaxes(title_text="Coefficient (β)")
+    return figure
+
+
+def rolling_factor_betas(
+    returns: pd.Series,
+    factors: pd.DataFrame,
+    window: int = 63,
+    *,
+    return_type: ReturnType = "simple",
+    rf: str | pd.Series | None = "RF",
+    min_observations: int | None = None,
+    title: str | None = None,
+    height: int = 380,
+) -> Figure:
+    """Create an interactive chart of rolling multi-factor betas over time.
+
+    See :func:`qrt.stats.rolling_factor_regression` for the underlying calculation,
+    e.g. the rolling Fama-French five-factor betas that reveal time-varying exposure.
+
+    Args:
+        returns: Strategy periodic return series.
+        factors: DataFrame of periodic factor return columns, aligned to ``returns``.
+        window: Trailing window size, in periods. Defaults to ``63`` (~3 trading months).
+        return_type: Whether ``returns`` is ``"simple"`` or ``"log"`` returns.
+        rf: See :func:`qrt.stats.factor_regression`.
+        min_observations: See :func:`qrt.stats.rolling_factor_regression`.
+        title: Figure title. Defaults to a title naming ``window``.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``. Each factor's hover also shows that window's
+        observation count and R², to distinguish real exposure changes from
+        noisy/short-window estimation.
+    """
+    table = rolling_factor_regression_stats(
+        returns, factors, window, return_type=return_type, rf=rf, min_observations=min_observations
+    )
+    factor_columns = [column for column in table.columns if column not in ("Alpha", "R²", "N Obs")]
+    hover_extra = np.column_stack([table["N Obs"], table["R²"]])
+
+    figure = go.Figure()
+    for index, column in enumerate(factor_columns):
+        figure.add_scatter(
+            x=table.index,
+            y=table[column],
+            mode="lines",
+            name=str(column),
+            line={"color": _QUANT_COLORS[index % len(_QUANT_COLORS)], "width": 1.6},
+            customdata=hover_extra,
+            hovertemplate=(
+                f"{column} β: " + "%{y:.2f}<br>Window observations: %{customdata[0]:.0f}"
+                "<br>Window R²: %{customdata[1]:.2f}<extra></extra>"
+            ),
+        )
+    figure.add_hline(y=0.0, line={"color": "#6B7280", "width": 1, "dash": "dash"})
+    _base_layout(figure, title=title or f"Rolling Factor Betas ({window}-period window)", height=height)
+    _set_date_range(figure, table.index)
+    figure.update_yaxes(title_text="Beta")
+    return figure
+
+
+def factor_contributions(
+    returns: pd.Series,
+    factors: pd.DataFrame,
+    *,
+    return_type: ReturnType = "simple",
+    rf: str | pd.Series | None = "RF",
+    covariance: CovarianceType = "nonrobust",
+    title: str = "Cumulative Factor Contribution",
+    height: int = 400,
+) -> Figure:
+    """Create an interactive stacked-area chart of cumulative factor return contributions.
+
+    See :func:`qrt.stats.factor_contributions` for the underlying per-period return
+    attribution (alpha + one term per factor + residual, from a full-period fit).
+    Cumulative sums are *arithmetic* (not compounded), so the stacked areas always
+    add up exactly to the strategy's cumulative excess return, drawn overlaid as a
+    dotted reference line.
+
+    Args:
+        returns: Strategy periodic return series.
+        factors: DataFrame of periodic factor return columns, aligned to ``returns``.
+        return_type: Whether ``returns`` is ``"simple"`` or ``"log"`` returns.
+        rf: See :func:`qrt.stats.factor_regression`.
+        covariance: See :func:`qrt.stats.factor_regression`.
+        title: Figure title.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
+    contributions = factor_contributions_stats(returns, factors, return_type=return_type, rf=rf, covariance=covariance)
+    cumulative = contributions.cumsum()
+    total = cumulative.sum(axis=1).rename("Total (Excess Return)")
+
+    figure = go.Figure()
+    for index, column in enumerate(cumulative.columns):
+        figure.add_scatter(
+            x=cumulative.index,
+            y=cumulative[column],
+            mode="lines",
+            name=str(column),
+            stackgroup="contributions",
+            line={"color": _QUANT_COLORS[index % len(_QUANT_COLORS)], "width": 0.5},
+        )
+    figure.add_scatter(
+        x=total.index, y=total, mode="lines", name=total.name,
+        line={"color": "#111827", "width": 2, "dash": "dot"},
+    )
+    _base_layout(figure, title=title, height=height)
+    _set_date_range(figure, cumulative.index)
+    figure.update_yaxes(title_text="Cumulative contribution", tickformat=".0%")
     return figure
 
 
@@ -2033,6 +2213,8 @@ __all__ = [
     "drawdown",
     "eoy_returns",
     "equity",
+    "factor_contributions",
+    "factor_loadings",
     "line",
     "mae_mfe",
     "metrics_table",
@@ -2045,6 +2227,7 @@ __all__ = [
     "report",
     "return_quantiles",
     "rolling_beta",
+    "rolling_factor_betas",
     "rolling_sharpe",
     "rolling_sortino",
     "rolling_volatility",

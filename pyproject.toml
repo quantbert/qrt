@@ -1,6 +1,6 @@
 [project]
 name = "pyqrt"
-version = "0.0.14"
+version = "0.0.15"
 description = "Quant Research Tools"
 readme = "README.md"
 requires-python = ">=3.13"
