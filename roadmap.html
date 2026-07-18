@@ -33,6 +33,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
+<link href="./utils/index.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -42,7 +43,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-d3afd1a119209b0135db8a092b56c5d7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-a79b256da9955a746df7047a3fd5f361.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -75,7 +76,7 @@ ul.task-list li input[type="checkbox"] {
 <link rel="stylesheet" href="reference/_styles-quartodoc.css">
 </head>
 
-<body class="nav-fixed quarto-light">
+<body class="nav-sidebar docked nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -93,31 +94,15 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./index.html"> 
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
 <span class="menu-text">Getting Started</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./feat.html"> 
-<span class="menu-text">Feature Engineering</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./data.html"> 
-<span class="menu-text">Data Access</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./stats.html"> 
-<span class="menu-text">Return Statistics</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./plot.html"> 
-<span class="menu-text">Plotting</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./reference/index.html"> 
 <span class="menu-text">API Reference</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./roadmap.html" aria-current="page"> 
+    <a class="nav-link" href="./roadmap.html"> 
 <span class="menu-text">Roadmap</span></a>
   </li>  
 </ul>
@@ -127,10 +112,183 @@ ul.task-list li input[type="checkbox"] {
 </div>
       </div> <!-- /container-fluid -->
     </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./roadmap.html">Roadmap</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
 </header>
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Getting Started</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">q.bt — Backtesting</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./data/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.data — Data</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data/datasets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sample datasets</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data/schemas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data schemas</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data/local.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Local files</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data/sources.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Market data sources</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./feat/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.feat — Features</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./feat/qta.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">qta — our own features</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./feat/talib.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TA-Lib</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./feat/pandas_ta.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">pandas-ta-classic</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">q.model — Models</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./plot/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.plot — Plotting</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./plot/returns.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Return charts</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./plot/simulation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simulation tests</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./plot/trades.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Trade logs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./plot/saving.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Saving figures</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">q.portfolio — Portfolio</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./stats/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.stats — Statistics</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./stats/performance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Performance &amp; benchmark</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./stats/rolling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Rolling &amp; calendar returns</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./stats/chained.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chained API</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">q.utils — Utilities</span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./roadmap.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
@@ -181,6 +339,8 @@ ul.task-list li input[type="checkbox"] {
 <li><label><input type="checkbox">Package scaffolding (<code>pyproject.toml</code>, CI, tests)</label></li>
 <li><label><input type="checkbox">Examples folder with notebooks demonstrating each submodule</label></li>
 <li><label><input type="checkbox">Docs site (Quarto) with API reference per submodule</label></li>
+<li><label><input type="checkbox">Canonical <strong>trades format</strong> — a shared one-row-per-round-trip DataFrame schema (entry/exit time &amp; price, direction, entry/exit reason, direction-adjusted trade return, symbol; optionally size, fees, MAE/MFE) used library-wide: emitted by <code>q.bt</code> backtests, generated by demo strategy datasets, consumed by <code>q.stats</code> (trade-level metrics, exposure) and <code>q.plot</code> (entry/exit markers, trade-enriched tearsheets). Cumulative/derived quantities (duration, <code>return_cum</code>) are computed on demand, not stored, so slicing/filtering a trade log never leaves stale columns. Columns beyond the reserved set are <strong>entry-time feature snapshots</strong> (e.g.&nbsp;<code>rsi2</code>, <code>atr14</code>) — free-form trade metadata that plots surface in hover tooltips and stats accept as groupers; per-bar feature <em>series</em> (indicator lines, signal-state flags) live in a separate datetime-indexed companion frame, not in the trades table</label></li>
+<li><label><input type="checkbox"><code>q.stats.trades_to_returns(trades, prices=...)</code> bridge — convert a trade log into a periodic return stream (mark-to-market against prices when supplied, else attributed at exit) so every existing <code>q.stats</code>/<code>q.plot</code> function works on trades out of the box</label></li>
 </ul>
 </section>
 <section id="q.stats-return-stream-statistics" class="level2">
@@ -224,6 +384,7 @@ ul.task-list li input[type="checkbox"] {
 <li><label><input type="checkbox" checked=""><code>q.stats.drawdown_details(returns)</code> — per-episode drawdown table (start/valley/end/days/max DD), sorted by depth or duration; prerequisite for <code>q.plot</code>’s longest-drawdown highlighting (quantstats <code>to_drawdown_series</code> + <code>drawdown_details</code>)</label></li>
 <li><label><input type="checkbox" checked="">Monte Carlo simulation (<code>q.stats.montecarlo</code>) — bootstrap-resampled (with replacement, not quantstats’ order-invariant shuffle) return simulation with bust/goal probability and percentile confidence bands, plus an optional stationary block bootstrap (<code>block_size</code>) preserving autocorrelation/volatility clustering that i.i.d. resampling destroys, and a <code>periods</code> parameter decoupling the simulated horizon from the (long, multi-regime) resampling pool length — avoiding both single-regime sampling bias and the saturated bust/goal probabilities and unreadable terminal-value scale that result from compounding over an unrealistically long horizon (a limitation quantstats’ own <code>_montecarlo.py</code> shares) (quantstats <code>_montecarlo.py</code>)</label></li>
 <li><label><input type="checkbox" checked="">Variance Testing (<code>q.stats.variance_test</code>) — forward, trade-by-trade simulator that stress-tests a strategy’s edge by randomly perturbing its historical win rate (<code>win_rate_variance</code>) per simulation and resampling win/loss trade returns accordingly over an <code>periods</code>-trade horizon, reporting make-money/ruin probabilities, average profit/drawdown, a profit-to-drawdown (<code>pnldd_ratio</code>) ratio, and percentile confidence bands — expressed in compounded returns rather than account-currency dollars, unlike typical dollar-denominated variance-testing tools</label></li>
+<li><label><input type="checkbox" checked="">Noise Test (<code>q.stats.noise_test</code>) — sensitivity simulator that keeps the exact historical sequence of returns but perturbs each period’s return magnitude with multiplicative Gaussian noise (<code>noise</code>, scaled to the return series’ own volatility) without flipping its sign, asking whether a strategy holds up under different day-to-day noise/volatility rather than a different resampled order (<code>montecarlo</code>) or win rate (<code>variance_test</code>); reports the same bust/goal probability and percentile-confidence-band shape as <code>montecarlo</code>, expressed in compounded returns</label></li>
 <li><label><input type="checkbox" checked="">Return-prep utilities: <code>aggregate_returns</code> (resample to W/M/Q/Y), <code>make_portfolio</code> (combine returns into an equity curve with rebalancing modes), <code>to_prices</code>/<code>rebase</code> helpers (quantstats <code>utils.py</code>)</label></li>
 <li><label><input type="checkbox" checked="">Standalone metrics currently only computed inline inside <code>performance()</code>/<code>benchmark_stats()</code>, gap-analyzed against quantstats’ <code>stats.py</code>:</label>
 <ul class="task-list">
@@ -234,6 +395,7 @@ ul.task-list li input[type="checkbox"] {
 <li><label><input type="checkbox" checked=""><code>win_rate(returns)</code> — standalone win rate</label></li>
 <li><label><input type="checkbox" checked=""><code>information_ratio(returns, benchmark)</code> — standalone Information Ratio</label></li>
 </ul></li>
+<li><label><input type="checkbox" checked="">Trade-level statistics on the canonical trades format (<code>q.stats.trade_stats</code>, groupable by <code>exit_reason</code>/<code>direction</code>/any snapshot column): win rate / avg return / payoff / profit factor, holding-period stats, MAE/MFE summaries, true time-in-market exposure from the union of actual position spans (more accurate than the return-stream <code>exposure</code> heuristic)</label></li>
 <li><label><input type="checkbox" checked="">Return-transform &amp; descriptive utilities, gap-analyzed against quantstats’ <code>stats.py</code>/<code>utils.py</code>:</label>
 <ul class="task-list">
 <li><label><input type="checkbox" checked=""><code>excess_returns(returns, rf)</code> — public per-period excess-return series (quantstats <code>to_excess_returns</code>)</label></li>
@@ -261,6 +423,17 @@ ul.task-list li input[type="checkbox"] {
 <li><label><input type="checkbox">Yearly / daily returns bar charts (quantstats <code>yearly_returns</code>, <code>daily_returns</code>)</label></li>
 <li><label><input type="checkbox" checked="">Monte Carlo fan chart / distribution plot, pairs with <code>q.stats.montecarlo</code> (quantstats <code>plot_montecarlo</code>, <code>plot_montecarlo_distribution</code>)</label></li>
 <li><label><input type="checkbox" checked="">Variance Testing fan chart, pairs with <code>q.stats.variance_test</code> — colors simulated forward trade paths by ruined/profitable/neutral outcome, overlaid with the actual historical (“Real”) cumulative return path</label></li>
+<li><label><input type="checkbox" checked="">Noise Test fan chart, pairs with <code>q.stats.noise_test</code> — colors noise-perturbed return paths by bust/goal/neutral outcome (when given), overlaid with the actual historical (“Real”) cumulative return path</label></li>
+</ul></li>
+<li><label><input type="checkbox">Trades-format support across plots — accept a trade log alongside (or instead of) a return stream for enriched rendering:</label>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="">Entry/exit markers on price charts with per-trade outcome shading; hover shows reason, return, duration, and any feature-snapshot columns; optional indicator overlays via a per-bar <code>features=</code> frame recomputed via <code>q.feat</code> (<code>q.plot.trades</code>)</label></li>
+<li><label><input type="checkbox" checked="">MAE/MFE excursion scatter with identity-line bounds (<code>q.plot.mae_mfe</code>)</label></li>
+<li><label><input type="checkbox" checked="">Per-trade return distribution grouped by <code>exit_reason</code>/<code>direction</code>/any snapshot column (<code>q.plot.trade_distribution</code>)</label></li>
+<li><label><input type="checkbox">Position/exposure timeline panel (when in market, long vs short; <code>q.stats.trades_to_positions</code> provides the series, needs a renderer)</label></li>
+<li><label><input type="checkbox">Trade-aware tearsheet: trade log + <code>trades_to_returns</code> feeding the standard report with a <code>trade_stats</code> table</label></li>
+<li><label><input type="checkbox">Trade markers on <strong>equity/returns charts</strong> — combine a trades log with its return stream (<code>trades_to_returns</code>) so long/short entry/exit labels annotate the equity curve itself (not just the price chart, which <code>q.plot.trades</code> already covers), visually tying each bend in the curve to the trade that caused it</label></li>
+<li><label><input type="checkbox">Linked <strong>trade list view</strong> — an interactive table of all trades (entry/exit, direction, reason, return, duration) rendered alongside the trades chart; clicking a row “selects” that trade, highlighting it and zooming/focusing the plot on its span. Implementation options: Plotly <code>FigureWidget</code> click callbacks (notebook-only), or a self-contained HTML export with a JS-linked table + <code>Plotly.relayout</code> (works everywhere, pairs with <code>q.plot.show(formats=("html",))</code>)</label></li>
 </ul></li>
 <li><label><input type="checkbox">Interactive plots (plain plotly backend)</label></li>
 <li><label><input type="checkbox">Animated plots — play button / slider to watch values evolve over time</label></li>
@@ -325,6 +498,13 @@ ul.task-list li input[type="checkbox"] {
 <ul class="task-list">
 <li><label><input type="checkbox">Caching of source downloads</label></li>
 <li><label><input type="checkbox" checked="">Prepackaged sample datasets (AAPL, SPY, BTC-USD daily OHLCV, 2000-present) for offline use, refreshed via <code>make datasets</code> / <code>tools/update_datasets.py</code> (<code>q.data.datasets</code>)</label></li>
+<li><label><input type="checkbox" checked="">Demo <strong>strategy trade datasets</strong> in the canonical trades format, generated deterministically from the bundled SPY data via <code>tools/gen_demo_strategies.py</code> (rerun alongside <code>make datasets</code>), so docs/tests/tutorials showcase realistic trade-based equity curves instead of passing raw daily AAPL returns off as a “strategy”. Only the trade logs ship (with 1-2 entry-time feature-snapshot columns each); per-bar indicator series for chart overlays are recomputed on demand via <code>q.feat</code> from the bundled <code>spy</code> OHLCV rather than stored:</label>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="">EMA 50/200 cross (golden/death cross), long-only trend follower — few, long trades (<code>spy_ema_cross</code>)</label></li>
+<li><label><input type="checkbox" checked="">Connors RSI-2 mean reversion (RSI(2) oversold above SMA(200), exit on SMA(5)/RSI recovery) — many short-duration trades (<code>spy_rsi2</code>)</label></li>
+<li><label><input type="checkbox" checked="">Random entry/exit baseline (seeded, long &amp; short) — null strategy for sanity checks and “is my edge real?” comparisons (<code>spy_random</code>)</label></li>
+<li><label><input type="checkbox" checked="">Breakout with ATR trailing stop (252-day-high entry, 3x ATR(14) chandelier stop) — exercises OHLC-dependent exits so <code>exit_reason</code> (<code>trail_stop</code> vs <code>end_of_data</code>) and intra-trade MAE/MFE are meaningfully populated (<code>spy_breakout</code>)</label></li>
+</ul></li>
 </ul>
 </section>
 <section id="q.data.sources-market-data-sources" class="level2">
@@ -819,6 +999,15 @@ ul.task-list li input[type="checkbox"] {
     }
   });
   </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./utils/index.html" class="pagination-link" aria-label="q.utils — Utilities">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">q.utils — Utilities</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
 </div> <!-- /content -->
 
 
