@@ -462,6 +462,309 @@ def montecarlo(
     return figure
 
 
+def variance_test(
+    trades: pd.Series,
+    periods: int,
+    sims: int = 1000,
+    *,
+    return_type: ReturnType = "simple",
+    win_rate_variance: float = 0.1,
+    ruin: float = -0.9,
+    confidence: float = 0.95,
+    seed: int | None = None,
+    sample: int = 200,
+    title: str | None = None,
+    height: int = 520,
+) -> Figure:
+    """Create an interactive Variance Testing fan chart of forward win-rate-varied trade paths.
+
+    Runs :func:`qrt.stats.variance_test` on the full ``sims`` simulations, so the shaded
+    confidence band and the make-money/ruin probabilities reflect the entire sample, then renders
+    only a ``sample`` of the individual simulated paths for readability, alongside the actual
+    historical (``"Real"``) cumulative return over the most recent ``periods`` trades of
+    ``trades`` for comparison (truncated to ``periods`` rather than the full history so its
+    scale and length stay comparable to the simulated paths):
+
+    - **Real** (actual historical) path: bold black line, drawn on top.
+    - **Ruined** paths (Max Drawdown breached ``ruin``): red.
+    - **Profitable** paths (positive terminal return): green.
+    - Everything else: light gray.
+
+    The simulated paths and confidence band are 0-based when computed (statistics such as
+    ``make_money_probability``/``ruin_probability`` stay purely forward-looking, unaffected by
+    history), but are rebased for display onto the last ``"Real"`` cumulative return so the fan
+    chart continues smoothly from history instead of visually resetting to 0% at "Now" (the
+    ``ruin`` reference line is shifted the same way).
+
+    When ``trades`` has a ``DatetimeIndex``, the x-axis shows real calendar dates — the actual
+    dates for ``"Real"`` and dates extrapolated forward from the last one for the simulated
+    paths (marked with a dotted "Now" line at the boundary) — matching the date axes used
+    throughout :mod:`qrt.plot`. Falls back to a plain trade-count axis otherwise.
+
+    Args:
+        trades: Per-trade return series (simple or log, per ``return_type``).
+        periods: Number of future trades to simulate per path.
+        sims: Number of simulated paths to run; statistics use all of them.
+        return_type: Whether ``trades`` are ``"simple"`` or ``"log"`` returns.
+        win_rate_variance: Amount by which each simulation's win rate is randomly perturbed from
+            the historical win rate. See the Args on :func:`qrt.stats.variance_test`.
+        ruin: Max Drawdown threshold (e.g. ``-0.9``); breaching paths are colored red and marked
+            with a reference line. See the Args on :func:`qrt.stats.variance_test`.
+        confidence: Confidence level for the shaded fan. Defaults to ``0.95``.
+        seed: Optional random seed for reproducibility.
+        sample: Max number of individual simulated paths rendered (statistics still use all
+            ``sims``). Defaults to ``200``.
+        title: Figure title. Defaults to ``trades.name``.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
+    from qrt.stats.core import variance_test as variance_test_stats
+
+    result = variance_test_stats(
+        trades,
+        periods,
+        sims,
+        return_type=return_type,
+        win_rate_variance=win_rate_variance,
+        ruin=ruin,
+        confidence=confidence,
+        seed=seed,
+    )
+    paths: pd.DataFrame = result["paths"]  # type: ignore[assignment]
+    band: pd.DataFrame = result["confidence_band"]  # type: ignore[assignment]
+    real_path: pd.Series = result["real_path"]  # type: ignore[assignment]
+
+    drawdowns = (1.0 + paths).div((1.0 + paths).cummax()).sub(1.0)
+    max_drawdowns = drawdowns.min()
+    terminal = paths.iloc[-1]
+
+    # Simulated paths/band are computed as their own 0-based cumulative return (statistics stay
+    # forward-looking, unaffected by history). For display only, rebase them onto the last
+    # "Real" level so the fan chart continues smoothly from where history ends instead of
+    # visually resetting to 0% at "Now".
+    scale = 1.0 + (float(real_path.iloc[-1]) if len(real_path) else 0.0)
+    display_paths = (1.0 + paths) * scale - 1.0
+    display_band = (1.0 + band) * scale - 1.0
+    ruin_level = (1.0 + ruin) * scale - 1.0
+
+    status = pd.Series("neutral", index=paths.columns)
+    status[terminal > 0] = "profit"
+    status[max_drawdowns <= ruin] = "ruin"
+
+    rng = np.random.default_rng(seed)
+    columns = list(paths.columns)
+    shown = columns if len(columns) <= sample else list(rng.choice(columns, size=sample, replace=False))
+
+    figure = go.Figure()
+    figure.add_scatter(
+        x=display_band.index,
+        y=display_band["Upper"],
+        mode="lines",
+        line={"width": 0},
+        showlegend=False,
+        hoverinfo="skip",
+    )
+    figure.add_scatter(
+        x=display_band.index,
+        y=display_band["Lower"],
+        mode="lines",
+        line={"width": 0},
+        fill="tonexty",
+        fillcolor="rgba(76, 120, 168, 0.18)",
+        name=f"{confidence:.0%} band",
+        hoverinfo="skip",
+    )
+
+    palette = {
+        "neutral": "rgba(148, 163, 184, 0.35)",
+        "ruin": "rgba(228, 87, 86, 0.55)",
+        "profit": "rgba(84, 162, 75, 0.55)",
+    }
+    labels = {"neutral": "Random", "ruin": "Ruined", "profit": "Profitable"}
+    seen: set[str] = set()
+    for column in shown:
+        outcome = status[column]
+        figure.add_scatter(
+            x=display_paths.index,
+            y=display_paths[column],
+            mode="lines",
+            line={"color": palette[outcome], "width": 1},
+            name=labels[outcome],
+            legendgroup=outcome,
+            showlegend=outcome not in seen,
+            hoverinfo="skip",
+        )
+        seen.add(outcome)
+
+    figure.add_scatter(
+        x=real_path.index, y=real_path.values, mode="lines", name="Real", line={"color": "#111827", "width": 2.6}
+    )
+    figure.add_hline(
+        y=ruin_level, line={"color": _QUANT_COLORS[3], "width": 1, "dash": "dash"}, annotation_text="Ruin"
+    )
+
+    is_dated = isinstance(paths.index, pd.DatetimeIndex)
+    if is_dated:
+        figure.add_vline(
+            x=real_path.index[-1], line={"color": "#9CA3AF", "width": 1, "dash": "dot"}, annotation_text="Now"
+        )
+
+    stat_bits = [
+        f"Make money {result['make_money_probability']:.1%}",
+        f"Ruin odds {result['ruin_probability']:.1%}",
+        f"Avg profit {result['average_profit']:.1%}",
+        f"Avg drawdown {result['average_drawdown']:.1%}",
+        f"PNLDD {result['pnldd_ratio']:.2f}",
+    ]
+
+    chart_title = title or (trades.name or "Variance testing")
+    _base_layout(figure, title=chart_title, subtitle="  ·  ".join(stat_bits), height=height, time_axis=is_dated)
+    if is_dated:
+        _set_date_range(figure, real_path.index.append(paths.index))
+    else:
+        figure.update_xaxes(title_text="Trade #")
+    figure.update_yaxes(title_text="Cumulative return", tickformat=".0%")
+    return figure
+
+
+def noise_test(
+    returns: pd.Series,
+    sims: int = 1000,
+    *,
+    return_type: ReturnType = "simple",
+    noise: float = 0.1,
+    bust: float | None = None,
+    goal: float | None = None,
+    confidence: float = 0.95,
+    seed: int | None = None,
+    sample: int = 200,
+    title: str | None = None,
+    height: int = 520,
+) -> Figure:
+    """Create an interactive Noise Test fan chart of noise-perturbed return path simulations.
+
+    Runs :func:`qrt.stats.noise_test` on the full ``sims`` simulations, so the shaded confidence
+    band and any ``bust``/``goal`` probabilities reflect the entire sample, then renders only a
+    ``sample`` of the individual perturbed paths for readability. Unlike :func:`montecarlo`
+    (which bootstrap-resamples returns, varying their order/composition) or
+    :func:`variance_test` (which varies the win rate over a forward horizon), each rendered path
+    here keeps the exact historical sequence of ``returns`` but jitters the *magnitude* of every
+    period's return by multiplicative noise, testing sensitivity to day-to-day noise/volatility
+    rather than resampling variance:
+
+    - **Real** (original, unperturbed) path: bold black line, drawn on top.
+    - **Busted** paths (Max Drawdown breached ``bust``): red.
+    - **Reached goal** paths (terminal return met ``goal``): green.
+    - Everything else: light gray, labeled **Random**.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        sims: Number of simulated paths to run; statistics use all of them.
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        noise: Standard deviation of the multiplicative noise applied to each period's return.
+            See the Args on :func:`qrt.stats.noise_test`.
+        bust: Optional Max Drawdown threshold (e.g. ``-0.2``); breaching paths are colored red.
+        goal: Optional cumulative-return threshold (e.g. ``1.0``); paths reaching it are colored
+            green and a reference line is drawn at that level.
+        confidence: Confidence level for the shaded fan. Defaults to ``0.95``.
+        seed: Optional random seed for reproducibility.
+        sample: Max number of individual simulated paths rendered (statistics still use all
+            ``sims``). Defaults to ``200``.
+        title: Figure title. Defaults to ``returns.name``.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
+    from qrt.stats.core import noise_test as noise_test_stats
+
+    result = noise_test_stats(
+        returns,
+        sims,
+        return_type=return_type,
+        noise=noise,
+        bust=bust,
+        goal=goal,
+        confidence=confidence,
+        seed=seed,
+    )
+    paths: pd.DataFrame = result["paths"]  # type: ignore[assignment]
+    band: pd.DataFrame = result["confidence_band"]  # type: ignore[assignment]
+
+    drawdowns = (1.0 + paths).div((1.0 + paths).cummax()).sub(1.0)
+    max_drawdowns = drawdowns.min()
+    terminal = paths.iloc[-1]
+
+    status = pd.Series("neutral", index=paths.columns)
+    if goal is not None:
+        status[terminal >= goal] = "goal"
+    if bust is not None:
+        status[max_drawdowns <= bust] = "bust"
+
+    others = [column for column in paths.columns if column != "sim_0"]
+    rng = np.random.default_rng(seed)
+    shown = others if len(others) <= sample else list(rng.choice(others, size=sample, replace=False))
+
+    figure = go.Figure()
+    figure.add_scatter(
+        x=band.index, y=band["Upper"], mode="lines", line={"width": 0}, showlegend=False, hoverinfo="skip"
+    )
+    figure.add_scatter(
+        x=band.index,
+        y=band["Lower"],
+        mode="lines",
+        line={"width": 0},
+        fill="tonexty",
+        fillcolor="rgba(76, 120, 168, 0.18)",
+        name=f"{confidence:.0%} band",
+        hoverinfo="skip",
+    )
+
+    palette = {
+        "neutral": "rgba(148, 163, 184, 0.35)",
+        "bust": "rgba(228, 87, 86, 0.55)",
+        "goal": "rgba(84, 162, 75, 0.55)",
+    }
+    labels = {"neutral": "Random", "bust": "Busted", "goal": "Reached goal"}
+    seen: set[str] = set()
+    for column in shown:
+        outcome = status[column]
+        figure.add_scatter(
+            x=paths.index,
+            y=paths[column],
+            mode="lines",
+            line={"color": palette[outcome], "width": 1},
+            name=labels[outcome],
+            legendgroup=outcome,
+            showlegend=outcome not in seen,
+            hoverinfo="skip",
+        )
+        seen.add(outcome)
+
+    figure.add_scatter(
+        x=paths.index, y=paths["sim_0"], mode="lines", name="Real", line={"color": "#111827", "width": 2.6}
+    )
+
+    if goal is not None:
+        figure.add_hline(y=goal, line={"color": _QUANT_COLORS[2], "width": 1, "dash": "dash"}, annotation_text="Goal")
+    if bust is not None:
+        figure.add_hline(y=bust, line={"color": _QUANT_COLORS[3], "width": 1, "dash": "dash"}, annotation_text="Bust")
+
+    stat_bits = []
+    if result["bust_probability"] is not None:
+        stat_bits.append(f"P(bust) {result['bust_probability']:.1%}")
+    if result["goal_probability"] is not None:
+        stat_bits.append(f"P(goal) {result['goal_probability']:.1%}")
+
+    chart_title = title or (returns.name or "Noise test")
+    _base_layout(figure, title=chart_title, subtitle="  ·  ".join(stat_bits) or None, height=height)
+    _set_date_range(figure, paths.index)
+    figure.update_yaxes(title_text="Cumulative return", tickformat=".0%")
+    return figure
+
+
 def montecarlo_distribution(
     returns: pd.Series,
     sims: int = 1000,
@@ -631,6 +934,8 @@ __all__ = [
     "montecarlo",
     "montecarlo_distribution",
     "monthly_heatmap",
+    "noise_test",
     "performance",
     "show",
+    "variance_test",
 ]

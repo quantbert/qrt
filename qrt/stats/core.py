@@ -2006,6 +2006,266 @@ def montecarlo(
     }
 
 
+def _future_index(index: pd.Index, periods: int) -> pd.Index:
+    """Extrapolate ``periods`` timestamps continuing after a ``DatetimeIndex``.
+
+    Infers a step size from ``index`` (via :func:`pandas.infer_freq`, falling back to the
+    median spacing for irregular series) and projects it forward. Returns a plain
+    ``RangeIndex`` named ``"trade"`` instead when ``index`` isn't a usable ``DatetimeIndex``
+    (fewer than 2 timestamps), since there's no basis to infer a step size.
+    """
+    if not isinstance(index, pd.DatetimeIndex) or len(index) < 2:
+        return pd.RangeIndex(periods, name="trade")
+    freq = pd.infer_freq(index)
+    if freq is not None:
+        return pd.date_range(index[-1], periods=periods + 1, freq=freq)[1:]
+    spacing = index.to_series().diff().median()
+    return pd.DatetimeIndex([index[-1] + spacing * (i + 1) for i in range(periods)])
+
+
+def variance_test(
+    trades: pd.Series,
+    periods: int,
+    sims: int = 1000,
+    *,
+    return_type: ReturnType = "simple",
+    win_rate_variance: float = 0.1,
+    ruin: float = -0.9,
+    confidence: float = 0.95,
+    seed: int | None = None,
+) -> dict[str, object]:
+    """Simulate forward trades with a randomly varied win rate to stress-test a strategy's edge.
+
+    Unlike :func:`montecarlo` (which resamples *periodic* returns to explore plausible
+    histories), this simulates forward, trade-by-trade: each simulated path draws ``periods``
+    future trades by (1) picking a per-simulation win rate randomly perturbed by up to
+    ``win_rate_variance`` from the historical win rate, then (2) for each trade, flipping a coin
+    at that win rate and sampling a return with replacement from the historical winning or losing
+    trades accordingly. This directly stresses whether a strategy's edge holds up if its win rate
+    drifts, rather than just reordering/bootstrapping the exact historical return sequence.
+
+    Note:
+        Like the rest of this package, results are expressed as compounded (multiplicative)
+        cumulative returns rather than account-currency dollar P&L — pass per-trade *returns* in
+        ``trades``, not dollar amounts.
+
+    Note:
+        When ``trades`` has a ``DatetimeIndex``, ``paths`` is indexed by ``periods`` timestamps
+        extrapolated forward from the last historical trade date (step size inferred via
+        :func:`pandas.infer_freq`, falling back to the median spacing for irregular series),
+        continuing the timeline where ``real_path`` leaves off, rather than a bare trade count —
+        consistent with the date axes used throughout :mod:`qrt.plot`. Falls back to a plain
+        ``0..periods - 1`` trade-count index otherwise.
+
+    Args:
+        trades: Per-trade return series (simple or log, per ``return_type``) — one entry per
+            historical trade, not necessarily a periodic/calendar series, though a
+            ``DatetimeIndex`` is used to date the simulated horizon (see Note above) when
+            present. Must contain at least one winning and one losing (or breakeven) trade.
+        periods: Number of future trades to simulate per path. Must be at least 1.
+        sims: Number of simulated paths. Must be at least 1.
+        return_type: Whether ``trades`` are ``"simple"`` or ``"log"`` returns.
+        win_rate_variance: Amount by which each simulation's win rate is randomly perturbed
+            (uniformly, in both directions) from the historical win rate — e.g. ``0.1`` varies a
+            55% historical win rate anywhere from 45% to 65% per simulation. Clipped to
+            ``[0, 1]``. Defaults to ``0.1``.
+        ruin: Max Drawdown threshold (e.g. ``-0.9`` for -90%) below which a path is considered
+            "ruined" (having lost most or all of its capital). ``ruin_probability`` reports the
+            fraction of paths that breached it. Defaults to ``-0.9``.
+        confidence: Confidence level for the per-trade ``confidence_band``. Defaults to ``0.95``.
+        seed: Optional random seed for reproducibility.
+
+    Returns:
+        Dict with keys:
+
+        - ``paths``: DataFrame of cumulative simulated returns, one column per simulation,
+                indexed either by ``periods`` extrapolated future timestamps (when ``trades``
+                has a ``DatetimeIndex``) or a plain ``0..periods - 1`` trade count otherwise —
+                see the Note above.
+        - ``real_path``: Series of the actual historical cumulative compounded return over the
+                most recent ``min(periods, len(trades))`` trades, for reference/comparison —
+                not part of the simulation. Truncated to ``periods`` (rather than the full
+                ``trades`` history) so its scale and length stay comparable to the simulated
+                paths, and immediately precedes ``paths`` on the timeline when dated.
+        - ``win_rates``: Array of the randomly perturbed win rate used by each simulation.
+        - ``terminal_stats``: Summary statistics (mean, std, min/25%/50%/75%/max) of the final
+                cumulative return across simulations.
+        - ``max_drawdown_stats``: Same summary statistics for each simulation's Max Drawdown.
+        - ``confidence_band``: DataFrame with ``Lower``/``Upper`` columns holding the
+                ``confidence``-level percentile range of cumulative return at each trade.
+        - ``make_money_probability``: Fraction of simulations with a positive terminal return.
+        - ``ruin_probability``: Fraction of simulations whose Max Drawdown breached ``ruin``.
+        - ``average_profit``/``average_drawdown``: Mean terminal return / mean Max Drawdown
+                (signed) across simulations.
+        - ``pnldd_ratio``: ``average_profit / abs(average_drawdown)`` — average return earned
+                per unit of average drawdown risked.
+    """
+    series = _simple_returns(trades, return_type, "trades")
+    if periods < 1:
+        raise ValueError("periods must be at least 1")
+    if sims < 1:
+        raise ValueError("sims must be at least 1")
+    if not 0.0 < confidence < 1.0:
+        raise ValueError("confidence must be between 0 and 1")
+    if not 0.0 <= win_rate_variance <= 1.0:
+        raise ValueError("win_rate_variance must be between 0 and 1")
+
+    wins = series[series > 0].to_numpy()
+    losses = series[series <= 0].to_numpy()
+    if not len(wins) or not len(losses):
+        raise ValueError("trades must contain both winning and losing trades")
+
+    base_win_rate = len(wins) / len(series)
+    rng = np.random.default_rng(seed)
+
+    win_rates = np.clip(base_win_rate + rng.uniform(-win_rate_variance, win_rate_variance, size=sims), 0.0, 1.0)
+    is_win = rng.random((periods, sims)) < win_rates
+    resampled = np.where(
+        is_win,
+        rng.choice(wins, size=(periods, sims), replace=True),
+        rng.choice(losses, size=(periods, sims), replace=True),
+    )
+
+    paths = pd.DataFrame(np.cumprod(1.0 + resampled, axis=0) - 1.0, columns=[f"sim_{i}" for i in range(sims)])
+    paths.index = _future_index(series.index, periods)
+
+    recent = series.iloc[-periods:] if periods <= len(series) else series
+    real_path = (1.0 + recent).cumprod() - 1.0
+    if not isinstance(recent.index, pd.DatetimeIndex):
+        real_path.index = pd.RangeIndex(len(recent), name="trade")
+
+    terminal = paths.iloc[-1]
+    drawdowns = (1.0 + paths).div((1.0 + paths).cummax()).sub(1.0)
+    max_drawdowns = drawdowns.min()
+
+    percentiles = [0.05, 0.25, 0.5, 0.75, 0.95]
+    lower_q, upper_q = (1.0 - confidence) / 2.0, 1.0 - (1.0 - confidence) / 2.0
+    confidence_band = pd.DataFrame(
+        {"Lower": paths.quantile(lower_q, axis=1), "Upper": paths.quantile(upper_q, axis=1)}
+    )
+
+    average_profit = float(terminal.mean())
+    average_drawdown = float(max_drawdowns.mean())
+
+    return {
+        "paths": paths,
+        "real_path": real_path,
+        "win_rates": win_rates,
+        "terminal_stats": terminal.describe(percentiles=percentiles),
+        "max_drawdown_stats": max_drawdowns.describe(percentiles=percentiles),
+        "confidence_band": confidence_band,
+        "make_money_probability": float((terminal > 0).mean()),
+        "ruin_probability": float((max_drawdowns <= ruin).mean()),
+        "average_profit": average_profit,
+        "average_drawdown": average_drawdown,
+        "pnldd_ratio": float(average_profit / abs(average_drawdown)) if average_drawdown else float("nan"),
+    }
+
+
+def noise_test(
+    returns: pd.Series,
+    sims: int = 1000,
+    *,
+    return_type: ReturnType = "simple",
+    noise: float = 0.1,
+    bust: float | None = None,
+    goal: float | None = None,
+    confidence: float = 0.95,
+    seed: int | None = None,
+) -> dict[str, object]:
+    """Simulate noise-perturbed return paths to gauge sensitivity to day-to-day noise/volatility.
+
+    Each simulated path keeps the exact historical sequence of ``returns`` (same order, same
+    length, same index) but scales every period's return by ``1 + eps`` where
+    ``eps ~ Normal(0, noise)`` — i.e. jitters the *magnitude* of each period's move by a random
+    relative fraction without flipping its sign. This asks "would this exact strategy still
+    perform similarly if the day-to-day noise/volatility in prices had been slightly different,
+    but its underlying trend/edge (the sequence of up/down calls) was unchanged?" — a different
+    question from :func:`montecarlo` (which varies the *order*/composition of returns via
+    bootstrap resampling) or :func:`variance_test` (which varies the *win rate* itself over a
+    forward horizon).
+
+    Note:
+        Unlike :func:`montecarlo`, ``noise_test`` never reorders or resamples ``returns`` — every
+        simulated path is the same length as ``returns`` and stays aligned to its original index,
+        so no separate horizon/resampling-pool decoupling is needed here.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        sims: Number of simulated paths, including the original (unperturbed) path as the first
+            column (``sim_0``). Must be at least 1.
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        noise: Standard deviation of the multiplicative noise applied to each period's return,
+            e.g. ``0.1`` randomly scales each return's magnitude by roughly ±10%. Must be
+            non-negative.
+        bust: Optional Max Drawdown threshold (e.g. ``-0.2`` for -20%). When given,
+            ``bust_probability`` reports the fraction of simulated paths whose max drawdown
+            breached it.
+        goal: Optional cumulative-return threshold (e.g. ``1.0`` for +100%). When given,
+            ``goal_probability`` reports the fraction of simulated paths that reached it.
+        confidence: Confidence level for the per-period ``confidence_band``. Defaults to
+            ``0.95`` (a 95% band).
+        seed: Optional random seed for reproducibility.
+
+    Returns:
+        Dict with keys:
+
+        - ``paths``: DataFrame of cumulative simulated returns, one column per simulation
+                (``sim_0`` is the original, unperturbed path), indexed like ``returns``.
+        - ``terminal_stats``: Summary statistics (mean, std, min/25%/50%/75%/max) of the final
+                cumulative return across simulations.
+        - ``max_drawdown_stats``: Same summary statistics for each simulation's Max Drawdown.
+        - ``confidence_band``: DataFrame with ``Lower``/``Upper`` columns holding the
+                ``confidence``-level percentile range of cumulative return at each period.
+        - ``bust_probability``: Fraction of simulations at or below ``bust`` (``None`` if
+                ``bust`` wasn't given).
+        - ``goal_probability``: Fraction of simulations at or above ``goal`` (``None`` if
+                ``goal`` wasn't given).
+    """
+    series = _simple_returns(returns, return_type)
+    if sims < 1:
+        raise ValueError("sims must be at least 1")
+    if noise < 0.0:
+        raise ValueError("noise must be non-negative")
+    if not 0.0 < confidence < 1.0:
+        raise ValueError("confidence must be between 0 and 1")
+
+    rng = np.random.default_rng(seed)
+    values = series.to_numpy()
+    n = len(values)
+
+    eps = np.zeros((n, sims))
+    if noise > 0.0 and sims > 1:
+        eps[:, 1:] = rng.normal(0.0, noise, size=(n, sims - 1))
+    noisy = values[:, None] * (1.0 + eps)
+    noisy[:, 0] = values
+
+    paths = pd.DataFrame(
+        np.cumprod(1.0 + noisy, axis=0) - 1.0,
+        index=series.index,
+        columns=[f"sim_{i}" for i in range(sims)],
+    )
+
+    terminal = paths.iloc[-1]
+    drawdowns = (1.0 + paths).div((1.0 + paths).cummax()).sub(1.0)
+    max_drawdowns = drawdowns.min()
+
+    percentiles = [0.05, 0.25, 0.5, 0.75, 0.95]
+    lower_q, upper_q = (1.0 - confidence) / 2.0, 1.0 - (1.0 - confidence) / 2.0
+    confidence_band = pd.DataFrame(
+        {"Lower": paths.quantile(lower_q, axis=1), "Upper": paths.quantile(upper_q, axis=1)}
+    )
+
+    return {
+        "paths": paths,
+        "terminal_stats": terminal.describe(percentiles=percentiles),
+        "max_drawdown_stats": max_drawdowns.describe(percentiles=percentiles),
+        "confidence_band": confidence_band,
+        "bust_probability": float((max_drawdowns <= bust).mean()) if bust is not None else None,
+        "goal_probability": float((terminal >= goal).mean()) if goal is not None else None,
+    }
+
+
 class Returns:
     """Bind a return stream (and optional benchmark) for chained stats and plotting.
 

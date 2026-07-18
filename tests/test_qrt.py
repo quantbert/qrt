@@ -461,6 +461,155 @@ def test_montecarlo_plots():
     assert isinstance(horizon_dist_figure, PlotlyFigure)
 
 
+def test_variance_test_shapes_and_probabilities():
+    trades = pd.Series([0.05, -0.02] * 30, name="trades")
+
+    vt = q.stats.variance_test(trades, periods=100, sims=50, seed=7)
+    assert vt["paths"].shape == (100, 50)
+    assert vt["real_path"].shape == (60,)
+    assert len(vt["win_rates"]) == 50
+    assert 0.0 <= vt["make_money_probability"] <= 1.0
+    assert 0.0 <= vt["ruin_probability"] <= 1.0
+    assert (vt["confidence_band"]["Lower"] <= vt["confidence_band"]["Upper"]).all()
+    assert vt["pnldd_ratio"] == pytest.approx(vt["average_profit"] / abs(vt["average_drawdown"]))
+
+    with pytest.raises(ValueError):
+        q.stats.variance_test(trades, periods=0, sims=5)
+    with pytest.raises(ValueError):
+        q.stats.variance_test(trades, periods=10, sims=0)
+    with pytest.raises(ValueError):
+        q.stats.variance_test(trades, periods=10, sims=5, win_rate_variance=1.5)
+    with pytest.raises(ValueError):
+        q.stats.variance_test(pd.Series([0.05, 0.02, 0.03]), periods=10, sims=5)  # no losers
+
+
+def test_variance_test_win_rate_varies_per_simulation():
+    trades = pd.Series([0.05, -0.02] * 50, name="trades")
+
+    vt = q.stats.variance_test(trades, periods=200, sims=100, seed=3, win_rate_variance=0.2)
+    win_rates = vt["win_rates"]
+    assert win_rates.min() >= 0.0
+    assert win_rates.max() <= 1.0
+    assert win_rates.std() > 0.0
+    terminal = vt["paths"].iloc[-1]
+    assert terminal.nunique() > 1
+
+
+def test_variance_test_extrapolates_dates_when_indexed():
+    idx = pd.date_range("2025-01-01", periods=60, freq="D")
+    trades = pd.Series([0.05, -0.02] * 30, index=idx, name="trades")
+
+    vt = q.stats.variance_test(trades, periods=30, sims=20, seed=3)
+    assert isinstance(vt["real_path"].index, pd.DatetimeIndex)
+    assert isinstance(vt["paths"].index, pd.DatetimeIndex)
+    assert vt["real_path"].index.equals(idx[-30:])
+    assert vt["paths"].index.min() > vt["real_path"].index.max()
+    assert len(vt["paths"]) == 30
+
+
+def test_variance_test_plot():
+    trades = pd.Series([0.05, -0.02] * 30, name="strategy")
+
+    fan_figure = q.plot.variance_test(trades, periods=100, sims=40, seed=1, sample=20)
+    assert isinstance(fan_figure, PlotlyFigure)
+    # band (2) + sampled paths (<=20) + real (1)
+    assert 3 <= len(fan_figure.data) <= 23
+    assert fan_figure.data[-1].name == "Real"
+
+
+def test_variance_test_plot_uses_dates_when_indexed():
+    idx = pd.date_range("2025-01-01", periods=60, freq="D")
+    trades = pd.Series([0.05, -0.02] * 30, index=idx, name="strategy")
+
+    fan_figure = q.plot.variance_test(trades, periods=30, sims=20, seed=1, sample=20)
+    assert isinstance(fan_figure, PlotlyFigure)
+    assert fan_figure.layout.xaxis.rangeselector is not None
+
+
+def test_variance_test_plot_rebases_paths_onto_real_level():
+    trades = pd.Series([0.05, -0.02] * 30, name="strategy")
+
+    vt = q.stats.variance_test(trades, periods=100, sims=40, seed=1)
+    real_last = vt["real_path"].iloc[-1]
+
+    fan_figure = q.plot.variance_test(trades, periods=100, sims=40, seed=1, sample=40)
+    real_trace = next(t for t in fan_figure.data if t.name == "Real")
+    assert real_trace.y[-1] == pytest.approx(real_last)
+
+    random_traces = [t for t in fan_figure.data if t.name in ("Random", "Ruined", "Profitable")]
+    assert random_traces  # sanity: some simulated paths rendered
+    first_ys = [t.y[0] for t in random_traces]
+    # Rebased first simulated points should cluster near the real path's ending level,
+    # not reset back down to 0.
+    assert all(abs(y - real_last) < abs(y - 0.0) for y in first_ys)
+
+    band_trace = next(t for t in fan_figure.data if t.name == "95% band")
+    # The confidence band's first point should also be rebased near the real path's
+    # ending level rather than left at its own 0-based starting value.
+    assert abs(band_trace.y[0] - real_last) < abs(band_trace.y[0] - 0.0)
+
+
+def test_noise_test_shapes_and_probabilities():
+    idx = pd.date_range("2025-01-01", periods=60, freq="D")
+    returns = pd.Series([0.01, -0.008] * 30, index=idx, name="strategy")
+
+    nt = q.stats.noise_test(returns, sims=50, noise=0.1, bust=-0.5, goal=100.0, seed=7)
+    assert nt["paths"].shape == (60, 50)
+    assert isinstance(nt["paths"].index, pd.DatetimeIndex)
+    assert nt["bust_probability"] == pytest.approx(0.0)
+    assert nt["goal_probability"] == pytest.approx(0.0)
+    assert (nt["confidence_band"]["Lower"] <= nt["confidence_band"]["Upper"]).all()
+
+    real_path = (1.0 + returns).cumprod() - 1.0
+    pd.testing.assert_series_equal(nt["paths"]["sim_0"], real_path.rename("sim_0"))
+
+    with pytest.raises(ValueError):
+        q.stats.noise_test(returns, sims=0)
+    with pytest.raises(ValueError):
+        q.stats.noise_test(returns, sims=5, noise=-0.1)
+
+
+def test_noise_test_preserves_sign_and_varies_magnitude():
+    idx = pd.date_range("2025-01-01", periods=100, freq="D")
+    returns = pd.Series([0.01, -0.008] * 50, index=idx, name="strategy")
+
+    nt = q.stats.noise_test(returns, sims=50, noise=0.2, seed=3)
+    paths = nt["paths"]
+    # Every simulated period's return should keep the same sign as the original (noise scales
+    # magnitude, never flips direction), while terminal values still vary across simulations.
+    period_returns = (1.0 + paths).pct_change().iloc[1:]
+    original_sign = np.sign(returns.to_numpy()[1:])
+    for column in paths.columns:
+        assert (np.sign(period_returns[column].to_numpy()) == original_sign).all()
+    terminal = paths.iloc[-1]
+    assert terminal.nunique() > 1
+
+
+def test_noise_test_zero_noise_collapses_to_real_path():
+    idx = pd.date_range("2025-01-01", periods=40, freq="D")
+    returns = pd.Series([0.01, -0.005] * 20, index=idx, name="strategy")
+
+    nt = q.stats.noise_test(returns, sims=10, noise=0.0, seed=1)
+    real_path = (1.0 + returns).cumprod() - 1.0
+    for column in nt["paths"].columns:
+        pd.testing.assert_series_equal(nt["paths"][column], real_path.rename(column))
+
+
+def test_noise_test_plot():
+    idx = pd.date_range("2025-01-01", periods=80, freq="D")
+    returns = pd.Series([0.01, -0.008] * 40, index=idx, name="strategy")
+
+    fan_figure = q.plot.noise_test(returns, sims=40, noise=0.1, seed=1, sample=20)
+    assert isinstance(fan_figure, PlotlyFigure)
+    assert fan_figure.layout.xaxis.rangeselector is not None
+    real_trace = next(t for t in fan_figure.data if t.name == "Real")
+    real_path = (1.0 + returns).cumprod() - 1.0
+    assert real_trace.y[-1] == pytest.approx(real_path.iloc[-1])
+
+    goal_figure = q.plot.noise_test(returns, sims=40, noise=0.1, bust=-0.2, goal=0.5, seed=1, sample=20)
+    assert isinstance(goal_figure, PlotlyFigure)
+
+
 def _ohlc(n: int = 60) -> pd.DataFrame:
     idx = pd.date_range("2025-01-01", periods=n, freq="D")
     close = pd.Series(range(1, n + 1), index=idx, dtype=float)

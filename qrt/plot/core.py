@@ -283,6 +283,108 @@ def montecarlo_distribution(
     )
 
 
+def variance_test(
+    trades: pd.Series,
+    periods: int,
+    sims: int = 1000,
+    *,
+    return_type: ReturnType = "simple",
+    win_rate_variance: float = 0.1,
+    ruin: float = -0.9,
+    confidence: float = 0.95,
+    seed: int | None = None,
+    sample: int = 200,
+    title: str | None = None,
+    height: int = 520,
+) -> Figure:
+    """Create an interactive Variance Testing fan chart of forward win-rate-varied trade paths.
+
+    Args:
+        trades: Per-trade return series (simple or log, per ``return_type``).
+        periods: Number of future trades to simulate per path.
+        sims: Number of simulated paths to run; statistics use all of them.
+        return_type: Whether ``trades`` are ``"simple"`` or ``"log"`` returns.
+        win_rate_variance: Amount by which each simulation's win rate is randomly perturbed from
+            the historical win rate; see the Args on :func:`qrt.stats.variance_test`.
+        ruin: Max Drawdown threshold (e.g. ``-0.9``) below which a path is considered "ruined";
+            see the Args on :func:`qrt.stats.variance_test`.
+        confidence: Confidence level for the shaded fan. Defaults to ``0.95``.
+        seed: Optional random seed for reproducibility.
+        sample: Max number of individual simulated paths rendered. Defaults to ``200``.
+        title: Figure title. Defaults to ``trades.name``.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
+    from qrt.plot.interactive import variance_test as _variance_test
+
+    return _variance_test(
+        trades,
+        periods,
+        sims,
+        return_type=return_type,
+        win_rate_variance=win_rate_variance,
+        ruin=ruin,
+        confidence=confidence,
+        seed=seed,
+        sample=sample,
+        title=title,
+        height=height,
+    )
+
+
+def noise_test(
+    returns: pd.Series,
+    sims: int = 1000,
+    *,
+    return_type: ReturnType = "simple",
+    noise: float = 0.1,
+    bust: float | None = None,
+    goal: float | None = None,
+    confidence: float = 0.95,
+    seed: int | None = None,
+    sample: int = 200,
+    title: str | None = None,
+    height: int = 520,
+) -> Figure:
+    """Create an interactive Noise Test fan chart of noise-perturbed return path simulations.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        sims: Number of simulated paths to run; statistics use all of them.
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        noise: Standard deviation of the multiplicative noise applied to each period's return;
+            see the Args on :func:`qrt.stats.noise_test`.
+        bust: Optional Max Drawdown threshold (e.g. ``-0.2``); breaching paths are colored red.
+        goal: Optional cumulative-return threshold (e.g. ``1.0``); paths reaching it are colored
+            green and a reference line is drawn at that level.
+        confidence: Confidence level for the shaded fan. Defaults to ``0.95``.
+        seed: Optional random seed for reproducibility.
+        sample: Max number of individual simulated paths rendered. Defaults to ``200``.
+        title: Figure title. Defaults to ``returns.name``.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
+    from qrt.plot.interactive import noise_test as _noise_test
+
+    return _noise_test(
+        returns,
+        sims,
+        return_type=return_type,
+        noise=noise,
+        bust=bust,
+        goal=goal,
+        confidence=confidence,
+        seed=seed,
+        sample=sample,
+        title=title,
+        height=height,
+    )
+
+
 def tearsheet(returns: pd.Series, **kwargs: object) -> Figure:
     """Alias for the interactive :func:`plot` performance report.
 

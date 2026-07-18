@@ -15,9 +15,11 @@ from qrt.plot.core import (
 	montecarlo,
 	montecarlo_distribution,
 	monthly_heatmap,
+	noise_test,
 	plot,
 	show,
 	tearsheet,
+	variance_test,
 )
 
 __all__ = [
@@ -28,7 +30,9 @@ __all__ = [
 	"montecarlo",
 	"montecarlo_distribution",
 	"monthly_heatmap",
+	"noise_test",
 	"plot",
 	"show",
 	"tearsheet",
+	"variance_test",
 ]
