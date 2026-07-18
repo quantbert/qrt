@@ -358,31 +358,23 @@ ul.task-list li input[type="checkbox"] {
 <ul class="task-list">
 <li><label><input type="checkbox"><code>q.plot.plot(...)</code> — enriched plot variant with stats and graphical extras:</label>
 <ul class="task-list">
-<li><label><input type="checkbox">Underwater (drawdown) plot</label></li>
-<li><label><input type="checkbox">Longest drawdown highlighted, with dates on drawdown periods (needs <code>q.stats.drawdown_details</code>; quantstats <code>plot_longest_drawdowns</code>)</label></li>
 <li><label><input type="checkbox">Annotations of notable historical events (Covid, wars, etc.)</label></li>
-<li><label><input type="checkbox">Key metrics overlaid/inset (Sharpe, CAGR, max DD, …)</label></li>
-<li><label><input type="checkbox">Returns distribution / histogram by period, with outliers marked (quantstats <code>plot_distribution</code>, <code>plot_histogram</code>)</label></li>
-<li><label><input type="checkbox">Rolling volatility / Sharpe / Sortino / beta charts — stats already computed in <code>q.stats</code>, just need renderers (quantstats <code>rolling_volatility</code>/<code>rolling_sharpe</code>/<code>rolling_sortino</code>/<code>rolling_beta</code> plot wrappers)</label></li>
-<li><label><input type="checkbox">Yearly / daily returns bar charts (quantstats <code>yearly_returns</code>, <code>daily_returns</code>)</label></li>
 </ul></li>
 <li><label><input type="checkbox">Trades-format support across plots — accept a trade log alongside (or instead of) a return stream for enriched rendering:</label>
 <ul class="task-list">
 <li><label><input type="checkbox">Position/exposure timeline panel (when in market, long vs short; <code>q.stats.trades_to_positions</code> provides the series, needs a renderer)</label></li>
-<li><label><input type="checkbox">Trade-aware tearsheet: trade log + <code>trades_to_returns</code> feeding the standard report with a <code>trade_stats</code> table</label></li>
+<li><label><input type="checkbox">Trade-aware tearsheet: trade log + <code>trades_to_returns</code> feeding <code>q.plot.report</code> with a <code>trade_stats</code> table</label></li>
 <li><label><input type="checkbox">Trade markers on <strong>equity/returns charts</strong> — combine a trades log with its return stream (<code>trades_to_returns</code>) so long/short entry/exit labels annotate the equity curve itself (not just the price chart, which <code>q.plot.trades</code> already covers), visually tying each bend in the curve to the trade that caused it</label></li>
 <li><label><input type="checkbox">Linked <strong>trade list view</strong> — an interactive table of all trades (entry/exit, direction, reason, return, duration) rendered alongside the trades chart; clicking a row “selects” that trade, highlighting it and zooming/focusing the plot on its span. Implementation options: Plotly <code>FigureWidget</code> click callbacks (notebook-only), or a self-contained HTML export with a JS-linked table + <code>Plotly.relayout</code> (works everywhere, pairs with <code>q.plot.show(formats=("html",))</code>)</label></li>
 </ul></li>
 <li><label><input type="checkbox">Animated plots — play button / slider to watch values evolve over time</label></li>
 <li><label><input type="checkbox">Shared style/config presets (theme, figsize, grids)</label></li>
-<li><label><input type="checkbox">Tearsheets (performance reports, baked into <code>q.plot</code>):</label>
+<li><label><input type="checkbox">Tearsheet gaps — <code>q.plot.report()</code> covers the standard quantstats layout (cumulative returns linear/log/vol-matched, EOY bars, monthly distribution, daily returns, rolling beta/vol/Sharpe/Sortino, worst drawdown periods, underwater, monthly heatmap, full grouped metrics table with <code>mode="basic"|"full"</code> + EOY + worst-drawdowns tables); still missing vs.&nbsp;quantstats’ full report:</label>
 <ul class="task-list">
-<li><label><input type="checkbox">MVP report from a returns series</label></li>
-<li><label><input type="checkbox">Sharpe/Sortino/Calmar, drawdowns, rolling stats</label></li>
-<li><label><input type="checkbox">Monthly returns heatmap</label></li>
-<li><label><input type="checkbox">Benchmark comparison (e.g.&nbsp;vs SPY)</label></li>
-<li><label><input type="checkbox">HTML export</label></li>
-<li><label><input type="checkbox">Comprehensive metrics table — basic vs.&nbsp;full mode, multi-strategy columns, benchmark column (quantstats <code>reports.metrics</code>)</label></li>
+<li><label><input type="checkbox">Multi-strategy support — several return columns as side-by-side metrics columns and overlaid curves</label></li>
+<li><label><input type="checkbox">Active-returns mode — plot/tabulate strategy <em>minus</em> benchmark (quantstats <code>active_returns=True</code>)</label></li>
+<li><label><input type="checkbox">KDE overlay + outlier marking on the daily-returns distribution panel</label></li>
+<li><label><input type="checkbox">Self-contained HTML report export (quantstats <code>reports.html</code>)</label></li>
 <li><label><input type="checkbox">Full 3-panel “snapshot” report: cumulative return / drawdown / daily returns in one figure (quantstats <code>snapshot</code>)</label></li>
 </ul></li>
 </ul>
