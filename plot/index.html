@@ -225,6 +225,12 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../plot/report.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tearsheet report</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../plot/simulation.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Simulation tests</span></a>
   </div>
@@ -316,10 +322,11 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><code>q.plot</code> renders interactive Plotly figures for return streams — quick column charts, equity curves, drawdowns, calendar heatmaps, and Monte Carlo diagnostics — and for trade logs in qrt’s canonical trades format (entry/exit markers on price, excursion scatters, per-trade return distributions), with sensible defaults for quant research. Return-stream <em>statistics</em> (performance, alpha/beta, rolling diagnostics, <code>q.stats.montecarlo</code>, …) live in <code>q.stats</code>; see <a href="../stats/index.html">Return Statistics</a>. For feature engineering and price-chart examples, see <a href="../feat/index.html">Feature Engineering</a>.</p>
+<p><code>q.plot</code> renders interactive Plotly figures for return streams — quick column charts, equity curves, drawdowns, calendar heatmaps, full quantstats-style tearsheets, and Monte Carlo diagnostics — and for trade logs in qrt’s canonical trades format (entry/exit markers on price, excursion scatters, per-trade return distributions), with sensible defaults for quant research. Return-stream <em>statistics</em> (performance, alpha/beta, rolling diagnostics, <code>q.stats.montecarlo</code>, …) live in <code>q.stats</code>; see <a href="../stats/index.html">Return Statistics</a>. For feature engineering and price-chart examples, see <a href="../feat/index.html">Feature Engineering</a>.</p>
 <p>Pages:</p>
 <ul>
 <li><a href="../plot/returns.html">Return charts</a> — column charts, equity curves, drawdowns, full performance reports, and monthly heatmaps.</li>
+<li><a href="../plot/report.html">Tearsheet report</a> — full quantstats-style strategy tearsheet (<code>q.plot.report</code>) plus its individual panels (metrics table, cumulative returns, EOY returns, rolling diagnostics, worst drawdowns, …).</li>
 <li><a href="../plot/simulation.html">Simulation tests</a> — Monte Carlo fan charts and outcome distributions, variance testing, and noise testing.</li>
 <li><a href="../plot/trades.html">Trade logs</a> — trade markers on price, MAE/MFE excursions, per-trade return distributions, and the trades → tearsheet bridge.</li>
 <li><a href="../plot/saving.html">Saving figures</a> — exporting any figure to HTML/PNG.</li>
