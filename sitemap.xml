@@ -46,19 +46,19 @@
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/roadmap.html</loc>
-    <lastmod>2026-07-17T21:16:09.910Z</lastmod>
+    <lastmod>2026-07-17T21:46:23.779Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/data.html</loc>
-    <lastmod>2026-07-17T21:33:38.728Z</lastmod>
+    <lastmod>2026-07-18T08:35:05.038Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/plot.html</loc>
-    <lastmod>2026-07-17T21:33:43.228Z</lastmod>
+    <lastmod>2026-07-18T08:35:09.668Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/stats.html</loc>
-    <lastmod>2026-07-17T21:33:48.637Z</lastmod>
+    <lastmod>2026-07-18T08:35:15.742Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/reference/model.selection.html</loc>
@@ -66,11 +66,11 @@
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/reference/stats.html</loc>
-    <lastmod>2026-07-17T21:30:48.809Z</lastmod>
+    <lastmod>2026-07-18T08:32:19.653Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/reference/index.html</loc>
-    <lastmod>2026-07-17T21:33:34.325Z</lastmod>
+    <lastmod>2026-07-18T08:35:00.437Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/reference/data.html</loc>
@@ -82,7 +82,7 @@
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/reference/plot.interactive.html</loc>
-    <lastmod>2026-07-17T21:30:48.847Z</lastmod>
+    <lastmod>2026-07-18T08:32:19.697Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/reference/feat.qta.html</loc>
@@ -90,7 +90,7 @@
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/reference/plot.html</loc>
-    <lastmod>2026-07-17T21:30:48.829Z</lastmod>
+    <lastmod>2026-07-17T21:49:49.471Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/reference/data.sources.duckdb.html</loc>
@@ -98,6 +98,6 @@
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/feat.html</loc>
-    <lastmod>2026-07-17T21:33:59.242Z</lastmod>
+    <lastmod>2026-07-18T08:35:26.193Z</lastmod>
   </url>
 </urlset>

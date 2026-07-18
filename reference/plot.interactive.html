@@ -383,6 +383,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#qrt.plot.interactive.monthly_heatmap" id="toc-qrt.plot.interactive.monthly_heatmap" class="nav-link" data-scroll-target="#qrt.plot.interactive.monthly_heatmap">monthly_heatmap</a></li>
   <li><a href="#qrt.plot.interactive.performance" id="toc-qrt.plot.interactive.performance" class="nav-link" data-scroll-target="#qrt.plot.interactive.performance">performance</a></li>
   <li><a href="#qrt.plot.interactive.show" id="toc-qrt.plot.interactive.show" class="nav-link" data-scroll-target="#qrt.plot.interactive.show">show</a></li>
+  <li><a href="#qrt.plot.interactive.variance_test" id="toc-qrt.plot.interactive.variance_test" class="nav-link" data-scroll-target="#qrt.plot.interactive.variance_test">variance_test</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -439,6 +440,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="even">
 <td><a href="#qrt.plot.interactive.show">show</a></td>
 <td>Display a figure, optionally saving it to <code>save_to</code> as PNG (default) and/or self-contained HTML.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.plot.interactive.variance_test">variance_test</a></td>
+<td>Create an interactive Variance Testing fan chart of forward win-rate-varied trade paths.</td>
 </tr>
 </tbody>
 </table>
@@ -1182,6 +1187,139 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>int</td>
 <td>PNG scale factor (for higher-resolution exports).</td>
 <td><code>2</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="qrt.plot.interactive.variance_test" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.plot.interactive.variance_test">variance_test</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>plot.interactive.variance_test(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    trades,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    periods,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    sims<span class="op">=</span><span class="dv">1000</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    win_rate_variance<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    ruin<span class="op">=-</span><span class="fl">0.9</span>,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    confidence<span class="op">=</span><span class="fl">0.95</span>,</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    seed<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    sample<span class="op">=</span><span class="dv">200</span>,</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">520</span>,</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create an interactive Variance Testing fan chart of forward win-rate-varied trade paths.</p>
+<p>Runs :func:<code>qrt.stats.variance_test</code> on the full <code>sims</code> simulations, so the shaded confidence band and the make-money/ruin probabilities reflect the entire sample, then renders only a <code>sample</code> of the individual simulated paths for readability, alongside the actual historical (<code>"Real"</code>) cumulative return over the most recent <code>periods</code> trades of <code>trades</code> for comparison (truncated to <code>periods</code> rather than the full history so its scale and length stay comparable to the simulated paths):</p>
+<ul>
+<li><strong>Real</strong> (actual historical) path: bold black line, drawn on top.</li>
+<li><strong>Ruined</strong> paths (Max Drawdown breached <code>ruin</code>): red.</li>
+<li><strong>Profitable</strong> paths (positive terminal return): green.</li>
+<li>Everything else: light gray.</li>
+</ul>
+<p>The simulated paths and confidence band are 0-based when computed (statistics such as <code>make_money_probability</code>/<code>ruin_probability</code> stay purely forward-looking, unaffected by history), but are rebased for display onto the last <code>"Real"</code> cumulative return so the fan chart continues smoothly from history instead of visually resetting to 0% at “Now” (the <code>ruin</code> reference line is shifted the same way).</p>
+<p>When <code>trades</code> has a <code>DatetimeIndex</code>, the x-axis shows real calendar dates — the actual dates for <code>"Real"</code> and dates extrapolated forward from the last one for the simulated paths (marked with a dotted “Now” line at the boundary) — matching the date axes used throughout :mod:<code>qrt.plot</code>. Falls back to a plain trade-count axis otherwise.</p>
+<section id="parameters-8" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-8">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 6%">
+<col style="width: 78%">
+<col style="width: 6%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>trades</td>
+<td>pd.Series</td>
+<td>Per-trade return series (simple or log, per <code>return_type</code>).</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>periods</td>
+<td>int</td>
+<td>Number of future trades to simulate per path.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="odd">
+<td>sims</td>
+<td>int</td>
+<td>Number of simulated paths to run; statistics use all of them.</td>
+<td><code>1000</code></td>
+</tr>
+<tr class="even">
+<td>return_type</td>
+<td>ReturnType</td>
+<td>Whether <code>trades</code> are <code>"simple"</code> or <code>"log"</code> returns.</td>
+<td><code>'simple'</code></td>
+</tr>
+<tr class="odd">
+<td>win_rate_variance</td>
+<td>float</td>
+<td>Amount by which each simulation’s win rate is randomly perturbed from the historical win rate. See the Args on :func:<code>qrt.stats.variance_test</code>.</td>
+<td><code>0.1</code></td>
+</tr>
+<tr class="even">
+<td>ruin</td>
+<td>float</td>
+<td>Max Drawdown threshold (e.g.&nbsp;<code>-0.9</code>); breaching paths are colored red and marked with a reference line. See the Args on :func:<code>qrt.stats.variance_test</code>.</td>
+<td><code>-0.9</code></td>
+</tr>
+<tr class="odd">
+<td>confidence</td>
+<td>float</td>
+<td>Confidence level for the shaded fan. Defaults to <code>0.95</code>.</td>
+<td><code>0.95</code></td>
+</tr>
+<tr class="even">
+<td>seed</td>
+<td>int | None</td>
+<td>Optional random seed for reproducibility.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>sample</td>
+<td>int</td>
+<td>Max number of individual simulated paths rendered (statistics still use all <code>sims</code>). Defaults to <code>200</code>.</td>
+<td><code>200</code></td>
+</tr>
+<tr class="even">
+<td>title</td>
+<td>str | None</td>
+<td>Figure title. Defaults to <code>trades.name</code>.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>height</td>
+<td>int</td>
+<td>Figure height in pixels.</td>
+<td><code>520</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-7" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-7">Returns</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>Figure</td>
+<td>A Plotly <code>Figure</code>.</td>
 </tr>
 </tbody>
 </table>

@@ -473,6 +473,7 @@ window.Quarto = {
   <li><a href="#qrt.stats.ulcer_index" id="toc-qrt.stats.ulcer_index" class="nav-link" data-scroll-target="#qrt.stats.ulcer_index">ulcer_index</a></li>
   <li><a href="#qrt.stats.ulcer_performance_index" id="toc-qrt.stats.ulcer_performance_index" class="nav-link" data-scroll-target="#qrt.stats.ulcer_performance_index">ulcer_performance_index</a></li>
   <li><a href="#qrt.stats.value_at_risk" id="toc-qrt.stats.value_at_risk" class="nav-link" data-scroll-target="#qrt.stats.value_at_risk">value_at_risk</a></li>
+  <li><a href="#qrt.stats.variance_test" id="toc-qrt.stats.variance_test" class="nav-link" data-scroll-target="#qrt.stats.variance_test">variance_test</a></li>
   <li><a href="#qrt.stats.volatility" id="toc-qrt.stats.volatility" class="nav-link" data-scroll-target="#qrt.stats.volatility">volatility</a></li>
   <li><a href="#qrt.stats.win_rate" id="toc-qrt.stats.win_rate" class="nav-link" data-scroll-target="#qrt.stats.win_rate">win_rate</a></li>
   <li><a href="#qrt.stats.worst" id="toc-qrt.stats.worst" class="nav-link" data-scroll-target="#qrt.stats.worst">worst</a></li>
@@ -948,14 +949,18 @@ window.Quarto = {
 <td>Calculate the parametric (variance-covariance) Value at Risk.</td>
 </tr>
 <tr class="even">
+<td><a href="#qrt.stats.variance_test">variance_test</a></td>
+<td>Simulate forward trades with a randomly varied win rate to stress-test a strategy’s edge.</td>
+</tr>
+<tr class="odd">
 <td><a href="#qrt.stats.volatility">volatility</a></td>
 <td>Calculate annualized <a href="https://en.wikipedia.org/wiki/Volatility_(finance)">volatility</a>.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#qrt.stats.win_rate">win_rate</a></td>
 <td>Calculate the win rate: the share of non-zero-return periods that were positive.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#qrt.stats.worst">worst</a></td>
 <td>Return the single worst (lowest) period return.</td>
 </tr>
@@ -5609,13 +5614,180 @@ window.Quarto = {
 </table>
 </section>
 </section>
-<section id="qrt.stats.volatility" class="level3">
-<h3 class="anchored" data-anchor-id="qrt.stats.volatility">volatility</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb77"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>stats.volatility(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>, periods_per_year<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Calculate annualized <a href="https://en.wikipedia.org/wiki/Volatility_(finance)">volatility</a>.</p>
-<p>The standard deviation of returns — the most common measure of risk. See :func:<code>rolling_volatility</code> for a moving-window variant.</p>
+<section id="qrt.stats.variance_test" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.stats.variance_test">variance_test</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb77"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>stats.variance_test(</span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>    trades,</span>
+<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a>    periods,</span>
+<span id="cb77-4"><a href="#cb77-4" aria-hidden="true" tabindex="-1"></a>    sims<span class="op">=</span><span class="dv">1000</span>,</span>
+<span id="cb77-5"><a href="#cb77-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb77-6"><a href="#cb77-6" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb77-7"><a href="#cb77-7" aria-hidden="true" tabindex="-1"></a>    win_rate_variance<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb77-8"><a href="#cb77-8" aria-hidden="true" tabindex="-1"></a>    ruin<span class="op">=-</span><span class="fl">0.9</span>,</span>
+<span id="cb77-9"><a href="#cb77-9" aria-hidden="true" tabindex="-1"></a>    confidence<span class="op">=</span><span class="fl">0.95</span>,</span>
+<span id="cb77-10"><a href="#cb77-10" aria-hidden="true" tabindex="-1"></a>    seed<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb77-11"><a href="#cb77-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Simulate forward trades with a randomly varied win rate to stress-test a strategy’s edge.</p>
+<p>Unlike :func:<code>montecarlo</code> (which resamples <em>periodic</em> returns to explore plausible histories), this simulates forward, trade-by-trade: each simulated path draws <code>periods</code> future trades by (1) picking a per-simulation win rate randomly perturbed by up to <code>win_rate_variance</code> from the historical win rate, then (2) for each trade, flipping a coin at that win rate and sampling a return with replacement from the historical winning or losing trades accordingly. This directly stresses whether a strategy’s edge holds up if its win rate drifts, rather than just reordering/bootstrapping the exact historical return sequence.</p>
+<section id="note-3" class="level4 doc-section doc-section-note">
+<h4 class="doc-section doc-section-note anchored" data-anchor-id="note-3">Note</h4>
+<p>Like the rest of this package, results are expressed as compounded (multiplicative) cumulative returns rather than account-currency dollar P&amp;L — pass per-trade <em>returns</em> in <code>trades</code>, not dollar amounts.</p>
+</section>
+<section id="note-4" class="level4 doc-section doc-section-note">
+<h4 class="doc-section doc-section-note anchored" data-anchor-id="note-4">Note</h4>
+<p>When <code>trades</code> has a <code>DatetimeIndex</code>, <code>paths</code> is indexed by <code>periods</code> timestamps extrapolated forward from the last historical trade date (step size inferred via :func:<code>pandas.infer_freq</code>, falling back to the median spacing for irregular series), continuing the timeline where <code>real_path</code> leaves off, rather than a bare trade count — consistent with the date axes used throughout :mod:<code>qrt.plot</code>. Falls back to a plain <code>0..periods - 1</code> trade-count index otherwise.</p>
+</section>
 <section id="parameters-66" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-66">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 5%">
+<col style="width: 3%">
+<col style="width: 87%">
+<col style="width: 3%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>trades</td>
+<td>pd.Series</td>
+<td>Per-trade return series (simple or log, per <code>return_type</code>) — one entry per historical trade, not necessarily a periodic/calendar series, though a <code>DatetimeIndex</code> is used to date the simulated horizon (see Note above) when present. Must contain at least one winning and one losing (or breakeven) trade.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>periods</td>
+<td>int</td>
+<td>Number of future trades to simulate per path. Must be at least 1.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="odd">
+<td>sims</td>
+<td>int</td>
+<td>Number of simulated paths. Must be at least 1.</td>
+<td><code>1000</code></td>
+</tr>
+<tr class="even">
+<td>return_type</td>
+<td>ReturnType</td>
+<td>Whether <code>trades</code> are <code>"simple"</code> or <code>"log"</code> returns.</td>
+<td><code>'simple'</code></td>
+</tr>
+<tr class="odd">
+<td>win_rate_variance</td>
+<td>float</td>
+<td>Amount by which each simulation’s win rate is randomly perturbed (uniformly, in both directions) from the historical win rate — e.g.&nbsp;<code>0.1</code> varies a 55% historical win rate anywhere from 45% to 65% per simulation. Clipped to <code>[0, 1]</code>. Defaults to <code>0.1</code>.</td>
+<td><code>0.1</code></td>
+</tr>
+<tr class="even">
+<td>ruin</td>
+<td>float</td>
+<td>Max Drawdown threshold (e.g.&nbsp;<code>-0.9</code> for -90%) below which a path is considered “ruined” (having lost most or all of its capital). <code>ruin_probability</code> reports the fraction of paths that breached it. Defaults to <code>-0.9</code>.</td>
+<td><code>-0.9</code></td>
+</tr>
+<tr class="odd">
+<td>confidence</td>
+<td>float</td>
+<td>Confidence level for the per-trade <code>confidence_band</code>. Defaults to <code>0.95</code>.</td>
+<td><code>0.95</code></td>
+</tr>
+<tr class="even">
+<td>seed</td>
+<td>int | None</td>
+<td>Optional random seed for reproducibility.</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-66" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-66">Returns</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 1%">
+<col style="width: 4%">
+<col style="width: 93%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>dict[str, object]</td>
+<td>Dict with keys:</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>dict[str, object]</td>
+<td>- <code>paths</code>: DataFrame of cumulative simulated returns, one column per simulation, indexed either by <code>periods</code> extrapolated future timestamps (when <code>trades</code> has a <code>DatetimeIndex</code>) or a plain <code>0..periods - 1</code> trade count otherwise — see the Note above.</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>dict[str, object]</td>
+<td>- <code>real_path</code>: Series of the actual historical cumulative compounded return over the most recent <code>min(periods, len(trades))</code> trades, for reference/comparison — not part of the simulation. Truncated to <code>periods</code> (rather than the full <code>trades</code> history) so its scale and length stay comparable to the simulated paths, and immediately precedes <code>paths</code> on the timeline when dated.</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>dict[str, object]</td>
+<td>- <code>win_rates</code>: Array of the randomly perturbed win rate used by each simulation.</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>dict[str, object]</td>
+<td>- <code>terminal_stats</code>: Summary statistics (mean, std, min/25%/50%/75%/max) of the final cumulative return across simulations.</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>dict[str, object]</td>
+<td>- <code>max_drawdown_stats</code>: Same summary statistics for each simulation’s Max Drawdown.</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>dict[str, object]</td>
+<td>- <code>confidence_band</code>: DataFrame with <code>Lower</code>/<code>Upper</code> columns holding the <code>confidence</code>-level percentile range of cumulative return at each trade.</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>dict[str, object]</td>
+<td>- <code>make_money_probability</code>: Fraction of simulations with a positive terminal return.</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>dict[str, object]</td>
+<td>- <code>ruin_probability</code>: Fraction of simulations whose Max Drawdown breached <code>ruin</code>.</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>dict[str, object]</td>
+<td>- <code>average_profit</code>/<code>average_drawdown</code>: Mean terminal return / mean Max Drawdown (signed) across simulations.</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>dict[str, object]</td>
+<td>- <code>pnldd_ratio</code>: <code>average_profit / abs(average_drawdown)</code> — average return earned per unit of average drawdown risked.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="qrt.stats.volatility" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.stats.volatility">volatility</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb78"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>stats.volatility(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>, periods_per_year<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Calculate annualized <a href="https://en.wikipedia.org/wiki/Volatility_(finance)">volatility</a>.</p>
+<p>The standard deviation of returns — the most common measure of risk. See :func:<code>rolling_volatility</code> for a moving-window variant.</p>
+<section id="parameters-67" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-67">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 16%">
@@ -5653,8 +5825,8 @@ window.Quarto = {
 </tbody>
 </table>
 </section>
-<section id="returns-66" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-66">Returns</h4>
+<section id="returns-67" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-67">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -5675,66 +5847,9 @@ window.Quarto = {
 </section>
 <section id="qrt.stats.win_rate" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.stats.win_rate">win_rate</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb78"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>stats.win_rate(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb79"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>stats.win_rate(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate the win rate: the share of non-zero-return periods that were positive.</p>
 <p>Periods with exactly zero return are excluded from both the count of wins and the total.</p>
-<section id="parameters-67" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-67">Parameters</h4>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 13%">
-<col style="width: 12%">
-<col style="width: 62%">
-<col style="width: 12%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-<th>Default</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>returns</td>
-<td>pd.Series</td>
-<td>Periodic return series (simple or log, per <code>return_type</code>).</td>
-<td><em>required</em></td>
-</tr>
-<tr class="even">
-<td>return_type</td>
-<td>ReturnType</td>
-<td>Whether <code>returns</code> are <code>"simple"</code> or <code>"log"</code> returns.</td>
-<td><code>'simple'</code></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="returns-67" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-67">Returns</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td></td>
-<td>float</td>
-<td>Win rate (0-1 scale).</td>
-</tr>
-</tbody>
-</table>
-</section>
-</section>
-<section id="qrt.stats.worst" class="level3">
-<h3 class="anchored" data-anchor-id="qrt.stats.worst">worst</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb79"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>stats.worst(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Return the single worst (lowest) period return.</p>
 <section id="parameters-68" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-68">Parameters</h4>
 <table class="caption-top table">
@@ -5770,6 +5885,63 @@ window.Quarto = {
 </section>
 <section id="returns-68" class="level4 doc-section doc-section-returns">
 <h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-68">Returns</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>float</td>
+<td>Win rate (0-1 scale).</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="qrt.stats.worst" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.stats.worst">worst</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb80"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>stats.worst(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return the single worst (lowest) period return.</p>
+<section id="parameters-69" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-69">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 12%">
+<col style="width: 62%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>returns</td>
+<td>pd.Series</td>
+<td>Periodic return series (simple or log, per <code>return_type</code>).</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>return_type</td>
+<td>ReturnType</td>
+<td>Whether <code>returns</code> are <code>"simple"</code> or <code>"log"</code> returns.</td>
+<td><code>'simple'</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-69" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-69">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
