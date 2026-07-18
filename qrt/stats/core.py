@@ -472,6 +472,57 @@ def aggregate_returns(
     return compounded.rename(series.name)
 
 
+def period_returns(
+    returns: pd.Series,
+    *,
+    return_type: ReturnType = "simple",
+    periods_per_year: int | None = None,
+) -> pd.Series:
+    """Compound returns over standard trailing and calendar windows (MTD, 3M, ..., all-time).
+
+    Windows shorter than one year report the plain compounded return; multi-year
+    windows report the annualized (CAGR) rate. Windows extending before the first
+    observation use whatever data is available.
+
+    Args:
+        returns: Periodic return series with a ``DatetimeIndex``.
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        periods_per_year: Annualization frequency for the multi-year windows.
+            Inferred from the index when not given.
+
+    Returns:
+        Series indexed by window label: ``MTD``, ``3M``, ``6M``, ``YTD``, ``1Y``,
+        ``3Y (ann.)``, ``5Y (ann.)``, ``10Y (ann.)``, and ``All-time (ann.)``.
+    """
+    series = _simple_returns(returns, return_type)
+    if not isinstance(series.index, pd.DatetimeIndex):
+        raise TypeError("returns must have a DatetimeIndex for period returns")
+    periods = _periods_per_year(periods_per_year, series.index)
+    end = series.index[-1]
+
+    def compound(window: pd.Series) -> float:
+        return float((1.0 + window).prod() - 1.0) if len(window) else float("nan")
+
+    def annualized(window: pd.Series) -> float:
+        return float(_cagr(window, periods)) if len(window) else float("nan")
+
+    return pd.Series(
+        {
+            "MTD": compound(series.loc[end.replace(day=1) :]),
+            "3M": compound(series.loc[end - pd.DateOffset(months=3) :]),
+            "6M": compound(series.loc[end - pd.DateOffset(months=6) :]),
+            "YTD": compound(series.loc[end.replace(month=1, day=1) :]),
+            "1Y": compound(series.loc[end - pd.DateOffset(years=1) :]),
+            "3Y (ann.)": annualized(series.loc[end - pd.DateOffset(years=3) :]),
+            "5Y (ann.)": annualized(series.loc[end - pd.DateOffset(years=5) :]),
+            "10Y (ann.)": annualized(series.loc[end - pd.DateOffset(years=10) :]),
+            "All-time (ann.)": annualized(series),
+        },
+        dtype=float,
+        name=series.name,
+    )
+
+
 def to_prices(returns: pd.Series, *, return_type: ReturnType = "simple", base: float = 1.0) -> pd.Series:
     """Convert a return series into a cumulative price/equity curve.
 
@@ -600,6 +651,166 @@ def benchmark_stats(
         dtype=float,
         name=f"{strategy.name} vs {reference.name}",
     )
+
+
+#: Metric names included by ``metrics(mode="basic")``; the full set is always
+#: computed and filtered down, so both modes stay consistent.
+_METRICS_BASIC_ROWS = frozenset(
+    {
+        "Risk-Free Rate", "Time in Market",
+        "Cumulative Return", "CAGR",
+        "Sharpe", "Sortino", "Calmar", "Omega",
+        "Volatility (ann.)", "Skew", "Kurtosis", "Daily Value-at-Risk", "Expected Shortfall (cVaR)",
+        "Max Drawdown", "Longest DD Days", "Recovery Factor",
+        "Payoff Ratio", "Profit Factor", "Tail Ratio",
+        "MTD", "3M", "6M", "YTD", "1Y", "3Y (ann.)", "5Y (ann.)", "10Y (ann.)", "All-time (ann.)",
+        "Best Day", "Worst Day", "Best Month", "Worst Month", "Best Year", "Worst Year",
+        "Win Days", "Win Month", "Win Year",
+        "Beta", "Alpha", "Correlation", "R²", "Information Ratio", "Tracking Error", "Treynor Ratio",
+    }
+)
+
+
+def metrics(
+    returns: pd.Series,
+    benchmark: pd.Series | None = None,
+    *,
+    mode: Literal["basic", "full"] = "full",
+    return_type: ReturnType = "simple",
+    periods_per_year: int | None = None,
+    rf: float = 0.0,
+) -> pd.DataFrame:
+    """Build the full quantstats-style metrics table for a return stream.
+
+    Composes the individual `q.stats` metric functions into one grouped
+    DataFrame — the table behind :func:`qrt.plot.metrics_table` and the
+    tearsheet's metrics panel. Values are raw (floats, ints, timestamps),
+    not formatted strings; rendering/formatting is left to the caller.
+
+    Args:
+        returns: Strategy periodic return series with a ``DatetimeIndex``.
+        benchmark: Optional benchmark periodic return series, aligned to
+            ``returns`` on shared dates. Adds a benchmark column plus a
+            ``vs. Benchmark`` section (Beta, Alpha, Correlation, R²,
+            Information Ratio, Tracking Error, Treynor Ratio) filled only
+            for the strategy column.
+        mode: ``"full"`` (default) for every metric, ``"basic"`` for a
+            compact headline subset.
+        return_type: Whether ``returns``/``benchmark`` are ``"simple"`` or
+            ``"log"`` returns.
+        periods_per_year: Annualization frequency. Inferred from the index
+            when not given.
+        rf: Annualized risk-free rate, used by excess-return metrics and
+            reported in the ``Risk-Free Rate`` row. Defaults to ``0.0``.
+
+    Returns:
+        DataFrame with a ``(Section, Metric)`` ``MultiIndex`` and one column
+        per series (benchmark first when given). Sections: ``Overview``,
+        ``Returns``, ``Risk-Adjusted``, ``Risk``, ``Drawdown``, ``Trading``,
+        ``Period Returns``, ``Best / Worst``, ``Win Rates``, and
+        ``vs. Benchmark`` (benchmark only).
+    """
+    if mode not in ("basic", "full"):
+        raise ValueError("mode must be 'basic' or 'full'")
+    if benchmark is not None:
+        strategy, reference = _aligned_returns(returns, benchmark, return_type)
+    else:
+        strategy, reference = _simple_returns(returns, return_type, "Strategy"), None
+    periods = _periods_per_year(periods_per_year, strategy.index)
+
+    def compute(series: pd.Series) -> dict[tuple[str, str], object]:
+        episodes = drawdown_details(series, sort_by="depth")
+        deepest = episodes.iloc[0] if len(episodes) else None
+        rows: dict[tuple[str, str], object] = {
+            ("Overview", "Risk-Free Rate"): rf,
+            ("Overview", "Time in Market"): exposure(series),
+            ("Returns", "Cumulative Return"): float((1.0 + series).prod() - 1.0),
+            ("Returns", "CAGR"): float(_cagr(_excess_returns(series, rf, periods), periods)),
+            ("Returns", "Expected Daily"): expected_return(series),
+            ("Returns", "Expected Monthly"): expected_return(series, aggregate="M"),
+            ("Returns", "Expected Yearly"): expected_return(series, aggregate="Y"),
+            ("Risk-Adjusted", "Sharpe"): sharpe(series, periods_per_year=periods, rf=rf),
+            ("Risk-Adjusted", "Prob. Sharpe Ratio"): probabilistic_ratio(series, base="sharpe", periods_per_year=periods, rf=rf),
+            ("Risk-Adjusted", "Smart Sharpe"): sharpe(series, periods_per_year=periods, rf=rf, smart=True),
+            ("Risk-Adjusted", "Sortino"): sortino(series, periods_per_year=periods, rf=rf),
+            ("Risk-Adjusted", "Smart Sortino"): sortino(series, periods_per_year=periods, rf=rf, smart=True),
+            ("Risk-Adjusted", "Sortino/√2"): adjusted_sortino(series, periods_per_year=periods, rf=rf),
+            ("Risk-Adjusted", "Smart Sortino/√2"): adjusted_sortino(series, periods_per_year=periods, rf=rf, smart=True),
+            ("Risk-Adjusted", "Omega"): omega(series, periods_per_year=periods, rf=rf),
+            ("Risk-Adjusted", "Calmar"): calmar(series, periods_per_year=periods, rf=rf),
+            ("Risk", "Volatility (ann.)"): volatility(series, periods_per_year=periods),
+            ("Risk", "Skew"): skew(series),
+            ("Risk", "Kurtosis"): kurtosis(series),
+            ("Risk", "Daily Value-at-Risk"): value_at_risk(series),
+            ("Risk", "Expected Shortfall (cVaR)"): conditional_value_at_risk(series),
+            ("Risk", "Kelly Criterion"): kelly_criterion(series),
+            ("Risk", "Risk of Ruin"): risk_of_ruin(series),
+            ("Drawdown", "Max Drawdown"): max_drawdown(series),
+            ("Drawdown", "Max DD Date"): deepest["Valley"] if deepest is not None else pd.NaT,
+            ("Drawdown", "Max DD Period Start"): deepest["Start"] if deepest is not None else pd.NaT,
+            ("Drawdown", "Max DD Period End"): deepest["End"] if deepest is not None else pd.NaT,
+            ("Drawdown", "Longest DD Days"): int(episodes["Days"].max()) if len(episodes) else float("nan"),
+            ("Drawdown", "Avg. Drawdown"): float(episodes["Max Drawdown"].mean()) if len(episodes) else float("nan"),
+            ("Drawdown", "Avg. Drawdown Days"): float(episodes["Days"].mean()) if len(episodes) else float("nan"),
+            ("Drawdown", "Recovery Factor"): recovery_factor(series),
+            ("Drawdown", "Ulcer Index"): ulcer_index(series),
+            ("Drawdown", "Serenity Index"): serenity_index(series),
+            ("Trading", "Max Consecutive Wins"): consecutive_wins(series),
+            ("Trading", "Max Consecutive Losses"): consecutive_losses(series),
+            ("Trading", "Gain/Pain Ratio"): gain_to_pain_ratio(series, periods_per_year=periods, rf=rf),
+            ("Trading", "Gain/Pain (1M)"): gain_to_pain_ratio(series, rf=rf, aggregate="M"),
+            ("Trading", "Payoff Ratio"): payoff_ratio(series),
+            ("Trading", "Profit Factor"): profit_factor(series),
+            ("Trading", "Common Sense Ratio"): common_sense_ratio(series),
+            ("Trading", "CPC Index"): cpc_index(series),
+            ("Trading", "Tail Ratio"): tail_ratio(series),
+            ("Trading", "Outlier Win Ratio"): outlier_win_ratio(series),
+            ("Trading", "Outlier Loss Ratio"): outlier_loss_ratio(series),
+        }
+        for label, value in period_returns(series, periods_per_year=periods).items():
+            rows[("Period Returns", label)] = value
+        rows.update(
+            {
+                ("Best / Worst", "Best Day"): best(series),
+                ("Best / Worst", "Worst Day"): worst(series),
+                ("Best / Worst", "Best Month"): best(series, aggregate="M"),
+                ("Best / Worst", "Worst Month"): worst(series, aggregate="M"),
+                ("Best / Worst", "Best Year"): best(series, aggregate="Y"),
+                ("Best / Worst", "Worst Year"): worst(series, aggregate="Y"),
+                ("Win Rates", "Win Days"): win_rate(series),
+                ("Win Rates", "Win Month"): win_rate(series, aggregate="M"),
+                ("Win Rates", "Win Quarter"): win_rate(series, aggregate="Q"),
+                ("Win Rates", "Win Year"): win_rate(series, aggregate="Y"),
+                ("Win Rates", "Avg. Up Month"): avg_win(series, aggregate="M"),
+                ("Win Rates", "Avg. Down Month"): avg_loss(series, aggregate="M"),
+            }
+        )
+        return rows
+
+    strategy_name = str(strategy.name or "Strategy")
+    strategy_rows = compute(strategy)
+    if reference is not None:
+        relative = benchmark_stats(strategy, reference, periods_per_year=periods)
+        strategy_rows.update(
+            {
+                ("vs. Benchmark", "Beta"): float(relative["Beta"]),
+                ("vs. Benchmark", "Alpha"): float(relative["Alpha"]),
+                ("vs. Benchmark", "Correlation"): float(relative["Correlation"]),
+                ("vs. Benchmark", "R²"): r_squared(strategy, reference),
+                ("vs. Benchmark", "Information Ratio"): float(relative["Information Ratio"]),
+                ("vs. Benchmark", "Tracking Error"): float(relative["Tracking Error"]),
+                ("vs. Benchmark", "Treynor Ratio"): treynor_ratio(strategy, reference, periods_per_year=periods, rf=rf),
+            }
+        )
+        benchmark_name = str(reference.name or "Benchmark")
+        frame = pd.DataFrame({benchmark_name: compute(reference), strategy_name: strategy_rows})
+    else:
+        frame = pd.DataFrame({strategy_name: strategy_rows})
+    frame = frame.reindex(list(strategy_rows))
+    frame.index = pd.MultiIndex.from_tuples(frame.index, names=["Section", "Metric"])
+    if mode == "basic":
+        frame = frame[frame.index.get_level_values("Metric").isin(_METRICS_BASIC_ROWS)]
+    return frame
 
 
 def to_drawdown_series(returns: pd.Series, *, return_type: ReturnType = "simple") -> pd.Series:
@@ -750,7 +961,12 @@ def calmar(
     return _cagr(excess, periods) / abs(drawdown) if drawdown else float("nan")
 
 
-def win_rate(returns: pd.Series, *, return_type: ReturnType = "simple") -> float:
+def win_rate(
+    returns: pd.Series,
+    *,
+    return_type: ReturnType = "simple",
+    aggregate: Literal["W", "M", "Q", "Y"] | None = None,
+) -> float:
     """Calculate the win rate: the share of non-zero-return periods that were positive.
 
     Periods with exactly zero return are excluded from both the count of wins and the total.
@@ -758,11 +974,15 @@ def win_rate(returns: pd.Series, *, return_type: ReturnType = "simple") -> float
     Args:
         returns: Periodic return series (simple or log, per ``return_type``).
         return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        aggregate: Optional calendar period to compound into first (see
+            :func:`aggregate_returns`), e.g. ``"M"`` for the share of winning months.
 
     Returns:
         Win rate (0-1 scale).
     """
     series = _simple_returns(returns, return_type)
+    if aggregate is not None:
+        series = aggregate_returns(series, aggregate)
     non_zero = series[series != 0]
     return float((non_zero > 0).mean()) if len(non_zero) else float("nan")
 
@@ -888,6 +1108,30 @@ def geometric_mean(returns: pd.Series, *, return_type: ReturnType = "simple") ->
     """
     series = _simple_returns(returns, return_type)
     return float((1.0 + series).prod() ** (1.0 / len(series)) - 1.0)
+
+
+def expected_return(
+    returns: pd.Series,
+    *,
+    aggregate: Literal["W", "M", "Q", "Y"] | None = None,
+    return_type: ReturnType = "simple",
+) -> float:
+    """Calculate the geometric-mean expected return per period, optionally per calendar period.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        aggregate: Optional calendar period to compound into first (see
+            :func:`aggregate_returns`), e.g. ``"M"`` for the expected monthly return.
+            ``None`` (default) uses the series' native frequency.
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+
+    Returns:
+        Geometric mean return per (aggregated) period.
+    """
+    series = _simple_returns(returns, return_type)
+    if aggregate is not None:
+        series = aggregate_returns(series, aggregate)
+    return geometric_mean(series)
 
 
 def outliers(returns: pd.Series, quantile: float = 0.95, *, return_type: ReturnType = "simple") -> pd.Series:
@@ -1176,6 +1420,7 @@ def gain_to_pain_ratio(
     return_type: ReturnType = "simple",
     periods_per_year: int | None = None,
     rf: float = 0.0,
+    aggregate: Literal["W", "M", "Q", "Y"] | None = None,
 ) -> float:
     """Calculate Jack Schwager's Gain-to-Pain ratio.
 
@@ -1187,14 +1432,19 @@ def gain_to_pain_ratio(
         returns: Periodic return series (simple or log, per ``return_type``).
         return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
         periods_per_year: Annualization frequency, used to deannualize ``rf``. Inferred from the
-            index when not given.
+            index (after any ``aggregate`` compounding) when not given.
         rf: Annualized risk-free rate, subtracted (after deannualizing) from returns. Defaults to
             ``0.0``.
+        aggregate: Optional calendar period to compound into first (see
+            :func:`aggregate_returns`), e.g. ``"M"`` for the monthly-resolution ratio.
 
     Returns:
         Gain-to-Pain ratio.
     """
     series = _simple_returns(returns, return_type)
+    if aggregate is not None:
+        series = aggregate_returns(series, aggregate)
+        periods_per_year = None
     periods = _periods_per_year(periods_per_year, series.index)
     excess = _excess_returns(series, rf, periods)
     losses = -excess[excess < 0].sum()
@@ -1479,32 +1729,50 @@ def avg_return(returns: pd.Series, *, return_type: ReturnType = "simple") -> flo
     return float(non_zero.mean()) if len(non_zero) else float("nan")
 
 
-def avg_win(returns: pd.Series, *, return_type: ReturnType = "simple") -> float:
+def avg_win(
+    returns: pd.Series,
+    *,
+    return_type: ReturnType = "simple",
+    aggregate: Literal["W", "M", "Q", "Y"] | None = None,
+) -> float:
     """Calculate the average return across winning (positive-return) periods.
 
     Args:
         returns: Periodic return series (simple or log, per ``return_type``).
         return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        aggregate: Optional calendar period to compound into first (see
+            :func:`aggregate_returns`), e.g. ``"M"`` for the average up month.
 
     Returns:
         Mean of positive periodic returns.
     """
     series = _simple_returns(returns, return_type)
+    if aggregate is not None:
+        series = aggregate_returns(series, aggregate)
     wins = series[series > 0]
     return float(wins.mean()) if len(wins) else float("nan")
 
 
-def avg_loss(returns: pd.Series, *, return_type: ReturnType = "simple") -> float:
+def avg_loss(
+    returns: pd.Series,
+    *,
+    return_type: ReturnType = "simple",
+    aggregate: Literal["W", "M", "Q", "Y"] | None = None,
+) -> float:
     """Calculate the average return across losing (negative-return) periods.
 
     Args:
         returns: Periodic return series (simple or log, per ``return_type``).
         return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        aggregate: Optional calendar period to compound into first (see
+            :func:`aggregate_returns`), e.g. ``"M"`` for the average down month.
 
     Returns:
         Mean of negative periodic returns.
     """
     series = _simple_returns(returns, return_type)
+    if aggregate is not None:
+        series = aggregate_returns(series, aggregate)
     losses = series[series < 0]
     return float(losses.mean()) if len(losses) else float("nan")
 
@@ -1722,31 +1990,49 @@ def kelly_criterion(returns: pd.Series, *, return_type: ReturnType = "simple") -
     return float((payoff * win_rate - (1.0 - win_rate)) / payoff)
 
 
-def best(returns: pd.Series, *, return_type: ReturnType = "simple") -> float:
+def best(
+    returns: pd.Series,
+    *,
+    return_type: ReturnType = "simple",
+    aggregate: Literal["W", "M", "Q", "Y"] | None = None,
+) -> float:
     """Return the single best (highest) period return.
 
     Args:
         returns: Periodic return series (simple or log, per ``return_type``).
         return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        aggregate: Optional calendar period to compound into first (see
+            :func:`aggregate_returns`), e.g. ``"M"`` for the best month.
 
     Returns:
         Maximum periodic return.
     """
     series = _simple_returns(returns, return_type)
+    if aggregate is not None:
+        series = aggregate_returns(series, aggregate)
     return float(series.max())
 
 
-def worst(returns: pd.Series, *, return_type: ReturnType = "simple") -> float:
+def worst(
+    returns: pd.Series,
+    *,
+    return_type: ReturnType = "simple",
+    aggregate: Literal["W", "M", "Q", "Y"] | None = None,
+) -> float:
     """Return the single worst (lowest) period return.
 
     Args:
         returns: Periodic return series (simple or log, per ``return_type``).
         return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        aggregate: Optional calendar period to compound into first (see
+            :func:`aggregate_returns`), e.g. ``"M"`` for the worst month.
 
     Returns:
         Minimum periodic return.
     """
     series = _simple_returns(returns, return_type)
+    if aggregate is not None:
+        series = aggregate_returns(series, aggregate)
     return float(series.min())
 
 
@@ -2332,6 +2618,14 @@ class Returns:
     def performance(self) -> pd.Series:
         """See :func:`performance`."""
         return performance(self.returns, periods_per_year=self.periods_per_year, rf=self.rf)
+
+    def metrics(self, mode: Literal["basic", "full"] = "full") -> pd.DataFrame:
+        """See :func:`metrics`."""
+        return metrics(self.returns, self.benchmark, mode=mode, periods_per_year=self.periods_per_year, rf=self.rf)
+
+    def period_returns(self) -> pd.Series:
+        """See :func:`period_returns`."""
+        return period_returns(self.returns, periods_per_year=self.periods_per_year)
 
     def alpha(self) -> float:
         """See :func:`alpha`."""

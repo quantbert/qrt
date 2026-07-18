@@ -174,6 +174,45 @@ def test_performance_calculates_standard_metrics_and_infers_frequency():
     assert {"Sharpe", "Sortino", "Calmar", "Max Drawdown"}.issubset(stats.index)
 
 
+def test_metrics_builds_full_quantstats_table():
+    rng = pd.date_range("2024-01-01", periods=300, freq="B")
+    returns = pd.Series([0.01, -0.005, 0.02, -0.01, 0.003] * 60, index=rng, name="strategy")
+    benchmark = (returns * 0.5).rename("SPY")
+
+    frame = q.stats.metrics(returns, benchmark)
+    assert list(frame.columns) == ["SPY", "strategy"]
+    assert frame.index.names == ["Section", "Metric"]
+    metric_names = frame.index.get_level_values("Metric")
+    assert {"Cumulative Return", "Prob. Sharpe Ratio", "Kelly Criterion", "Gain/Pain (1M)", "MTD", "Best Month", "Win Year"}.issubset(metric_names)
+    assert frame.loc[("Returns", "Cumulative Return"), "strategy"] == pytest.approx((1.0 + returns).prod() - 1.0)
+    # vs. Benchmark rows are strategy-only
+    assert pd.isna(frame.loc[("vs. Benchmark", "Beta"), "SPY"])
+    assert frame.loc[("vs. Benchmark", "Beta"), "strategy"] == pytest.approx(2.0)
+
+    basic = q.stats.metrics(returns, benchmark, mode="basic")
+    assert len(basic) < len(frame)
+    assert "Prob. Sharpe Ratio" not in basic.index.get_level_values("Metric")
+
+    no_benchmark = q.stats.metrics(returns)
+    assert list(no_benchmark.columns) == ["strategy"]
+    assert "vs. Benchmark" not in no_benchmark.index.get_level_values("Section")
+
+
+def test_period_and_expected_and_aggregate_helpers():
+    rng = pd.date_range("2024-01-01", periods=300, freq="B")
+    returns = pd.Series(np.random.default_rng(0).normal(0.0005, 0.01, 300), index=rng, name="strategy")
+
+    periods = q.stats.period_returns(returns)
+    assert list(periods.index) == ["MTD", "3M", "6M", "YTD", "1Y", "3Y (ann.)", "5Y (ann.)", "10Y (ann.)", "All-time (ann.)"]
+    monthly = q.stats.aggregate_returns(returns, "M")
+    assert q.stats.expected_return(returns, aggregate="M") == pytest.approx(q.stats.geometric_mean(monthly))
+    assert q.stats.best(returns, aggregate="M") == pytest.approx(monthly.max())
+    assert q.stats.worst(returns, aggregate="M") == pytest.approx(monthly.min())
+    assert q.stats.win_rate(returns, aggregate="M") == pytest.approx((monthly[monthly != 0] > 0).mean())
+    assert q.stats.avg_win(returns, aggregate="M") == pytest.approx(monthly[monthly > 0].mean())
+    assert q.stats.avg_loss(returns, aggregate="M") == pytest.approx(monthly[monthly < 0].mean())
+
+
 def test_rolling_diagnostics_and_benchmark_stats():
     benchmark = pd.Series([0.01, -0.01, 0.02, 0.01, -0.01], index=pd.date_range("2025-01-01", periods=5), name="SPY")
     returns = (benchmark * 2).rename("strategy")

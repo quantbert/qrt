@@ -18,9 +18,9 @@ from qrt.stats.core import (
     _periods_per_year,
     _simple_returns,
     aggregate_returns,
-    benchmark_stats as benchmark_stats_,
     distribution as distribution_stats,
     drawdown_details,
+    metrics as metrics_stats,
     monthly_returns,
     performance as performance_stats,
     rolling_beta as rolling_beta_stats,
@@ -106,7 +106,7 @@ def _log_percent_ticks(*curves: pd.Series) -> tuple[list[float], list[str]]:
     low = min(float(curve.min()) for curve in curves)
     high = max(float(curve.max()) for curve in curves)
     ticks = [value for value in candidates if low * 0.8 <= value <= high * 1.25]
-    return ticks, ["0%" if value == 1.0 else f"{value - 1.0:+,.0%}" for value in ticks]
+    return ticks, [f"{value - 1.0:,.0%}" for value in ticks]
 
 
 def line(
@@ -363,34 +363,38 @@ def monthly_heatmap(
     return figure
 
 
-_METRIC_FORMATS: dict[str, str] = {
-    "Total Return": "pct",
-    "CAGR": "pct",
-    "Volatility": "pct",
-    "Sharpe": "num",
-    "Sortino": "num",
-    "Calmar": "num",
-    "Max Drawdown": "pct",
-    "Win Rate": "pct",
-    "Periods": "int",
-    "Beta": "num",
-    "Alpha": "pct",
-    "Correlation": "num",
-    "Information Ratio": "num",
-    "Tracking Error": "pct",
-}
+#: Metrics-table rows rendered as percentages; everything else defaults to a
+#: 2-decimal number except the explicit int/date rows below.
+_METRIC_PCT_ROWS = frozenset(
+    {
+        "Risk-Free Rate", "Time in Market",
+        "Cumulative Return", "CAGR", "Expected Daily", "Expected Monthly", "Expected Yearly",
+        "Prob. Sharpe Ratio",
+        "Volatility (ann.)", "Daily Value-at-Risk", "Expected Shortfall (cVaR)", "Kelly Criterion", "Risk of Ruin",
+        "Max Drawdown", "Avg. Drawdown",
+        "MTD", "3M", "6M", "YTD", "1Y", "3Y (ann.)", "5Y (ann.)", "10Y (ann.)", "All-time (ann.)",
+        "Best Day", "Worst Day", "Best Month", "Worst Month", "Best Year", "Worst Year",
+        "Win Days", "Win Month", "Win Quarter", "Win Year", "Avg. Up Month", "Avg. Down Month",
+        "Alpha", "Tracking Error", "Treynor Ratio",
+    }
+)
+_METRIC_INT_ROWS = frozenset({"Longest DD Days", "Avg. Drawdown Days", "Max Consecutive Wins", "Max Consecutive Losses"})
 
 
-def _format_metric(name: str, value: float) -> str:
-    """Format a headline-metric value for table display based on its conventional unit."""
-    if not np.isfinite(value):
+def _format_metric(name: str, value: object) -> str:
+    """Format a metrics-table value for display based on its conventional unit."""
+    if isinstance(value, pd.Timestamp):
+        return "-" if pd.isna(value) else value.strftime("%Y-%m-%d")
+    if value is None or pd.isna(value):
         return "-"
-    kind = _METRIC_FORMATS.get(name, "num")
-    if kind == "pct":
-        return f"{value:.2%}"
-    if kind == "int":
-        return f"{value:.0f}"
-    return f"{value:.2f}"
+    number = float(value)
+    if not np.isfinite(number):
+        return "-"
+    if name in _METRIC_PCT_ROWS:
+        return f"{number:.2%}"
+    if name in _METRIC_INT_ROWS:
+        return f"{number:.0f}"
+    return f"{number:.2f}"
 
 
 def _metrics_frame(
@@ -399,24 +403,23 @@ def _metrics_frame(
     *,
     periods_per_year: int,
     rf: float,
+    mode: Literal["basic", "full"] = "full",
 ) -> pd.DataFrame:
-    """Build a formatted headline-metrics table, one column per series."""
-    strategy_name = strategy.name or "Strategy"
-    frame = pd.DataFrame(
-        {strategy_name: {name: _format_metric(name, value) for name, value in performance_stats(strategy, periods_per_year=periods_per_year, rf=rf).items()}}
-    )
-    if reference is None:
-        return frame
-
-    benchmark_name = reference.name or "Benchmark"
-    frame[benchmark_name] = {
-        name: _format_metric(name, value) for name, value in performance_stats(reference, periods_per_year=periods_per_year, rf=rf).items()
-    }
-    relative = benchmark_stats_(strategy, reference, periods_per_year=periods_per_year)
-    for name in ("Beta", "Alpha", "Correlation", "Information Ratio", "Tracking Error"):
-        frame.loc[name, strategy_name] = _format_metric(name, relative[name])
-        frame.loc[name, benchmark_name] = "-"
-    return frame[[benchmark_name, strategy_name]]
+    """Build the formatted metrics table, with blank spacer rows between sections."""
+    raw = metrics_stats(strategy, reference, mode=mode, periods_per_year=periods_per_year, rf=rf)
+    spacer = pd.DataFrame({column: [""] for column in raw.columns}, index=[""])
+    blocks: list[pd.DataFrame] = []
+    for _, section in raw.groupby(level="Section", sort=False):
+        if blocks:
+            blocks.append(spacer)
+        metric_names = section.index.get_level_values("Metric")
+        blocks.append(
+            pd.DataFrame(
+                {column: [_format_metric(name, value) for name, value in zip(metric_names, section[column])] for column in raw.columns},
+                index=metric_names,
+            )
+        )
+    return pd.concat(blocks)
 
 
 def metrics_table(
@@ -426,22 +429,26 @@ def metrics_table(
     return_type: ReturnType = "simple",
     periods_per_year: int | None = None,
     rf: float = 0.0,
+    mode: Literal["basic", "full"] = "full",
     title: str = "Key Performance Metrics",
     height: int | None = None,
 ) -> Figure:
-    """Create an interactive table of headline performance metrics.
+    """Create an interactive table of performance metrics.
 
     Args:
         returns: Strategy periodic return series.
         benchmark: Optional benchmark periodic return series, aligned to
             ``returns`` on shared dates. Adds a benchmark column plus
-            relative rows (Beta, Alpha, Correlation, Information Ratio,
-            Tracking Error) when given.
+            relative rows (Beta, Alpha, Correlation, R², Information Ratio,
+            Tracking Error, Treynor Ratio) when given.
         return_type: Whether ``returns``/``benchmark`` are ``"simple"`` or
             ``"log"`` returns.
         periods_per_year: Annualization frequency. Inferred from the index
             when not given.
         rf: Annualized risk-free rate. Defaults to ``0.0``.
+        mode: ``"full"`` (default) for the complete quantstats-style metric
+            set, ``"basic"`` for a compact headline subset. See
+            :func:`qrt.stats.metrics`.
         title: Figure title.
         height: Figure height in pixels. Defaults to a size based on the
             number of metric rows.
@@ -454,15 +461,16 @@ def metrics_table(
     else:
         strategy, reference = _simple_returns(returns, return_type, "Strategy"), None
     periods = _periods_per_year(periods_per_year, strategy.index)
-    frame = _metrics_frame(strategy, reference, periods_per_year=periods, rf=rf)
+    frame = _metrics_frame(strategy, reference, periods_per_year=periods, rf=rf, mode=mode)
 
     figure = go.Figure(
         go.Table(
             header={"values": ["Metric", *frame.columns], "align": "left", "fill_color": "#F3F4F6", "font": {"size": 12}},
             cells={"values": [frame.index, *[frame[column] for column in frame.columns]], "align": "left", "fill_color": "white"},
+            columnwidth=[2, *([1] * len(frame.columns))],
         )
     )
-    _base_layout(figure, title=title, height=height or max(320, 30 * len(frame) + 120), time_axis=False)
+    _base_layout(figure, title=title, height=height or max(320, 20 * len(frame) + 140), time_axis=False)
     return figure
 
 
@@ -901,6 +909,7 @@ def report(
     return_type: ReturnType = "simple",
     periods_per_year: int | None = None,
     rf: float = 0.0,
+    mode: Literal["basic", "full"] = "full",
     worst_drawdowns_count: int = 5,
     title: str | None = None,
 ) -> Figure:
@@ -927,6 +936,9 @@ def report(
         periods_per_year: Annualization frequency. Inferred from the index
             when not given.
         rf: Annualized risk-free rate. Defaults to ``0.0``.
+        mode: ``"full"`` (default) for the complete quantstats-style metrics
+            table, ``"basic"`` for a compact headline subset. See
+            :func:`qrt.stats.metrics`.
         worst_drawdowns_count: Number of worst drawdown episodes to shade/list.
         title: Figure title.
 
@@ -941,7 +953,7 @@ def report(
     strategy_name = strategy.name or "Strategy"
     has_benchmark = reference is not None
 
-    metrics_frame = _metrics_frame(strategy, reference, periods_per_year=periods, rf=rf)
+    metrics_frame = _metrics_frame(strategy, reference, periods_per_year=periods, rf=rf, mode=mode)
     yearly_frame = _yearly_frame(strategy, reference)
     dd_episodes = drawdown_details(strategy, sort_by="depth")
     dd_table_frame = dd_episodes.head(10).copy()
@@ -1008,7 +1020,7 @@ def report(
             "Key Performance Metrics",
             ["Metric", *metrics_frame.columns],
             [metrics_frame.index, *[metrics_frame[column] for column in metrics_frame.columns]],
-            len(metrics_frame),
+            len(metrics_frame) + 3,  # slack rows: long labels wrap to two lines in the narrow column
             [2, *([1] * len(metrics_frame.columns))],
         ),
         (
