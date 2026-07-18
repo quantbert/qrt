@@ -608,9 +608,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 3%">
-<col style="width: 13%">
-<col style="width: 80%">
+<col style="width: 2%">
+<col style="width: 12%">
+<col style="width: 82%">
 <col style="width: 2%">
 </colgroup>
 <thead>
@@ -643,7 +643,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="even">
 <td>scale</td>
 <td>Literal['linear', 'log', 'volatility_matched']</td>
-<td><code>"linear"</code> (plain growth of $1), <code>"log"</code> (log y-axis, to compare compounding regimes across very different magnitudes), or <code>"volatility_matched"</code> (rescales the benchmark’s returns to match the strategy’s volatility before compounding, isolating differences in trend from differences in risk taken). The latter requires <code>benchmark</code>.</td>
+<td><code>"linear"</code> (plain cumulative percentage returns), <code>"log"</code> (log y-axis with percent tick labels, to compare compounding regimes across very different magnitudes), or <code>"volatility_matched"</code> (rescales the benchmark’s returns to match the strategy’s volatility before compounding, isolating differences in trend from differences in risk taken). The latter requires <code>benchmark</code>.</td>
 <td><code>'linear'</code></td>
 </tr>
 <tr class="odd">
