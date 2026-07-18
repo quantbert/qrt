@@ -1009,15 +1009,23 @@ def factor_contributions(
     cumulative = contributions.cumsum()
     total = cumulative.sum(axis=1).rename("Total (Excess Return)")
 
+    # Alpha/Residual get fixed, non-cycling colors so they never collide with a factor
+    # color (or each other) -- only the factor columns cycle through _QUANT_COLORS.
+    factor_columns = [column for column in cumulative.columns if column not in ("Alpha", "Residual")]
+    trace_colors = {"Alpha": "#374151", "Residual": "#D1D5DB"}
+    trace_colors.update(
+        {column: _QUANT_COLORS[index % len(_QUANT_COLORS)] for index, column in enumerate(factor_columns)}
+    )
+
     figure = go.Figure()
-    for index, column in enumerate(cumulative.columns):
+    for column in cumulative.columns:
         figure.add_scatter(
             x=cumulative.index,
             y=cumulative[column],
             mode="lines",
             name=str(column),
             stackgroup="contributions",
-            line={"color": _QUANT_COLORS[index % len(_QUANT_COLORS)], "width": 0.5},
+            line={"color": trace_colors[column], "width": 0.5},
         )
     figure.add_scatter(
         x=total.index, y=total, mode="lines", name=total.name,
