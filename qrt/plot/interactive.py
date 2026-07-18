@@ -36,6 +36,11 @@ if TYPE_CHECKING:
 _QUANT_COLORS = ("#4C78A8", "#F58518", "#54A24B", "#E45756", "#72B7B2", "#B279A2")
 
 
+def _monthly_heatmap_row_height(n_years: int) -> int:
+    """Compact pixel height for a monthly-returns heatmap's plotting area, scaled by year count."""
+    return max(280, 28 * n_years + 110)
+
+
 def _as_frame(data: pd.Series | pd.DataFrame, columns: str | Iterable[str] | None) -> pd.DataFrame:
     """Return selected numeric columns, expanding shell-style column patterns."""
     frame = data.to_frame(name=data.name or "value") if isinstance(data, pd.Series) else data.copy()
@@ -88,6 +93,11 @@ def _base_layout(
                 ]
             },
             rangeslider_visible=False,
+            # Since _set_date_range pins the range to the exact data span, the "instant" (default)
+            # tick label mode would drop the first/last year label whenever it falls outside that
+            # pinned range (e.g. data starting mid-year). "period" instead centers each label within
+            # its (possibly partial) visible span, so edge years always get a label.
+            ticklabelmode="period",
         )
     figure.update_yaxes(showgrid=True, gridcolor="#E5E7EB", zeroline=False)
     return figure
@@ -356,7 +366,9 @@ def monthly_heatmap(
             hovertemplate="Year %{y}<br>Month %{x}<br>Return %{z:.2%}<extra></extra>",
         )
     )
-    _base_layout(figure, title=title, height=height or max(320, 80 * len(table) + 170), time_axis=False)
+    # Match the compact per-year sizing used for this same panel inside report()'s tearsheet;
+    # _base_layout's default top+bottom margins (90 + 50) sit outside that plotting area.
+    _base_layout(figure, title=title, height=height or _monthly_heatmap_row_height(len(table)) + 140, time_axis=False)
     figure.update_layout(hovermode="closest")
     figure.update_xaxes(side="top")
     figure.update_yaxes(autorange="reversed", showgrid=False, title_text="")
@@ -979,7 +991,7 @@ def report(
     rows.append(("Rolling Sortino (6-Months)", "rolling_sortino", 220))
     rows.append((f"Worst {worst_drawdowns_count} Drawdown Periods", "worst_dd", 280))
     rows.append(("Underwater Plot", "underwater", 220))
-    rows.append(("Monthly Returns", "heatmap", max(280, 28 * len(monthly_returns(strategy)) + 110)))
+    rows.append(("Monthly Returns", "heatmap", _monthly_heatmap_row_height(len(monthly_returns(strategy)))))
 
     # left column: chart subplots with real gaps between rows; right column: no
     # subplots — the three tables are content-sized and placed via explicit paper
