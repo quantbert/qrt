@@ -2,13 +2,14 @@
 title: Roadmap
 ---
 
-Ideas and planned work per submodule. Checked items are done, unchecked are planned.
+Ideas and planned work per submodule. Only open (planned) items are listed —
+once something is fully implemented it's removed from here (see the actual
+docs page or docstring for how it works).
 
 ## General
 
-- [ ] Package scaffolding (`pyproject.toml`, CI, tests)
-- [ ] Examples folder with notebooks demonstrating each submodule
-- [ ] Docs site (Quarto) with API reference per submodule
+- [ ] Package scaffolding (`pyproject.toml`, CI, tests) — `pyproject.toml` and `tests/` are in place; CI (GitHub Actions or similar) is still missing
+- [ ] Examples folder with notebooks demonstrating each submodule (`examples/` currently only has a plotting tutorial; the per-submodule docs pages under `docs/` now cover this ground, but a dedicated examples notebook per submodule is still open)
 
 ## `q.stats` — return-stream statistics
 
@@ -16,91 +17,33 @@ Stateless analytics for periodic return streams (no plotting dependency),
 plus an optional bound `q.stats.returns(...)` object for chaining stats and
 plots. Consumed by `q.plot` for rendering.
 
-- [x] `q.stats.performance(returns)` — Total Return, CAGR, Volatility, Sharpe, Sortino, Calmar, Max Drawdown, Win Rate
-- [x] `q.stats.alpha(returns, benchmark)` / `q.stats.beta(returns, benchmark)`
-- [x] `q.stats.rolling_alpha` / `q.stats.rolling_beta` / `q.stats.rolling_sharpe` / `q.stats.rolling_volatility`
-- [x] `q.stats.benchmark_stats(returns, benchmark)` — active return, beta, alpha, correlation, tracking error, information ratio
-- [x] `q.stats.monthly_returns(returns)` — year-by-month compounded return table
-- [x] `q.stats.returns(returns, benchmark=...)` — bound object exposing chained stats (`.alpha()`, `.beta()`, ...) and `.plot(kind=...)`
 - [ ] Animated rolling-beta / CAPM regression plot (`q.stats.returns(...).plot("capm")`), auto-detecting bar timestep with an overridable rolling window
 - [ ] `q.load_settings("settings.json")` — project-level defaults (rolling window, annualization, theme) that override library defaults without cluttering call sites
 - [ ] tsfresh-style automated return-stream feature extraction
-- [x] Additional risk/return ratios, gap-analyzed against [quantstats](https://github.com/ranaroussi/quantstats)'s `stats.py`:
-  - [x] Smart Sharpe / Smart Sortino (autocorrelation-penalized; `sharpe(smart=True)`, `autocorr_penalty`)
-  - [x] Probabilistic Sharpe / Sortino / Adjusted-Sortino Ratio (`probabilistic_ratio`)
-  - [x] Adjusted Sortino (÷√2, Schwager; `adjusted_sortino`)
-  - [x] Treynor Ratio (`treynor_ratio`)
-  - [x] Omega Ratio (`omega`)
-  - [x] Gain-to-Pain Ratio (`gain_to_pain_ratio`)
-  - [x] Risk-Adjusted Return, CAGR/exposure (`rar`)
-  - [x] Skew / Kurtosis (`skew`, `kurtosis`)
-  - [x] Ulcer Index / Ulcer Performance Index (`ulcer_index`, `ulcer_performance_index`)
-  - [x] Serenity Index (`serenity_index`)
-  - [x] Risk of Ruin (`risk_of_ruin`)
-  - [x] Value at Risk (VaR) / Conditional VaR (Expected Shortfall) (`value_at_risk`, `conditional_value_at_risk`)
-  - [x] Tail Ratio (`tail_ratio`)
-  - [x] Payoff/Win-Loss Ratio, Profit Ratio, Profit Factor (`payoff_ratio`, `profit_ratio`, `profit_factor`)
-  - [x] CPC Index, Common Sense Ratio (`cpc_index`, `common_sense_ratio`)
-  - [x] Outlier Win/Loss Ratio (`outlier_win_ratio`, `outlier_loss_ratio`)
-  - [x] Recovery Factor, Risk-Return Ratio (`recovery_factor`, `risk_return_ratio`)
-  - [x] Kelly Criterion (`kelly_criterion`)
-  - [x] Best/Worst period, Consecutive Wins/Losses, Exposure (time-in-market), Avg Win/Loss/Return (`best`, `worst`, `consecutive_wins`, `consecutive_losses`, `exposure`, `avg_return`, `avg_win`, `avg_loss`)
-  - [x] Return distribution analysis by period w/ IQR outlier detection (`distribution`)
-  - [x] R² vs benchmark (`r_squared`)
-  - [x] `q.stats.compare(returns, benchmark)` — side-by-side strategy-vs-benchmark aggregated table (`compare`)
-- [x] `q.stats.drawdown_details(returns)` — per-episode drawdown table (start/valley/end/days/max DD), sorted by depth or duration; prerequisite for `q.plot`'s longest-drawdown highlighting (quantstats `to_drawdown_series` + `drawdown_details`)
-- [x] Monte Carlo simulation (`q.stats.montecarlo`) — bootstrap-resampled (with replacement, not quantstats' order-invariant shuffle) return simulation with bust/goal probability and percentile confidence bands, plus an optional stationary block bootstrap (`block_size`) preserving autocorrelation/volatility clustering that i.i.d. resampling destroys, and a `periods` parameter decoupling the simulated horizon from the (long, multi-regime) resampling pool length — avoiding both single-regime sampling bias and the saturated bust/goal probabilities and unreadable terminal-value scale that result from compounding over an unrealistically long horizon (a limitation quantstats' own `_montecarlo.py` shares) (quantstats `_montecarlo.py`)
-- [x] Variance Testing (`q.stats.variance_test`) — forward, trade-by-trade simulator that stress-tests a strategy's edge by randomly perturbing its historical win rate (`win_rate_variance`) per simulation and resampling win/loss trade returns accordingly over an `periods`-trade horizon, reporting make-money/ruin probabilities, average profit/drawdown, a profit-to-drawdown (`pnldd_ratio`) ratio, and percentile confidence bands — expressed in compounded returns rather than account-currency dollars, unlike typical dollar-denominated variance-testing tools
-- [x] Noise Test (`q.stats.noise_test`) — sensitivity simulator that keeps the exact historical sequence of returns but perturbs each period's return magnitude with multiplicative Gaussian noise (`noise`, scaled to the return series' own volatility) without flipping its sign, asking whether a strategy holds up under different day-to-day noise/volatility rather than a different resampled order (`montecarlo`) or win rate (`variance_test`); reports the same bust/goal probability and percentile-confidence-band shape as `montecarlo`, expressed in compounded returns
-- [x] Return-prep utilities: `aggregate_returns` (resample to W/M/Q/Y), `make_portfolio` (combine returns into an equity curve with rebalancing modes), `to_prices`/`rebase` helpers (quantstats `utils.py`)
-- [x] Standalone metrics currently only computed inline inside `performance()`/`benchmark_stats()`, gap-analyzed against quantstats' `stats.py`:
-  - [x] `to_drawdown_series(returns)` — running drawdown series (also a prerequisite for `drawdown_details`)
-  - [x] `max_drawdown(returns)` — standalone Max Drawdown
-  - [x] `volatility(returns)` — standalone annualized volatility
-  - [x] `calmar(returns)` — standalone Calmar ratio
-  - [x] `win_rate(returns)` — standalone win rate
-  - [x] `information_ratio(returns, benchmark)` — standalone Information Ratio
-- [x] Return-transform & descriptive utilities, gap-analyzed against quantstats' `stats.py`/`utils.py`:
-  - [x] `excess_returns(returns, rf)` — public per-period excess-return series (quantstats `to_excess_returns`)
-  - [x] `to_log_returns(returns)` — convert simple returns to log returns (quantstats `to_log_returns`)
-  - [x] `exponential_volatility(returns)` — EWM-weighted volatility (quantstats `exponential_stdev`)
-  - [x] `geometric_mean(returns)` — geometric mean return per period (quantstats `expected_return`/`geometric_mean`/`ghpr`)
-  - [x] `outliers(returns)` / `remove_outliers(returns)` — quantile-based outlier filter (distinct from the IQR-based `distribution`)
-
 
 ## `q.plot` — plotting with premade quant-finance configs
 
 Opinionated plotting helpers with sensible defaults for quant research.
 
-- [ ] `q.plot.col(df, "cum_trade_log_return")` — quick single-column plot with clean defaults
-- [ ] Multi-column rendering **with wildcards**: `q.plot.col(df, "*_log_ret")` plots all columns matching the pattern (e.g. multiple return fields at once)
 - [ ] `q.plot.plot(...)` — enriched plot variant with stats and graphical extras:
-  - [ ] Underwater (drawdown) plot
-  - [ ] Longest drawdown highlighted, with dates on drawdown periods (needs `q.stats.drawdown_details`; quantstats `plot_longest_drawdowns`)
   - [ ] Annotations of notable historical events (Covid, wars, etc.)
-  - [ ] Key metrics overlaid/inset (Sharpe, CAGR, max DD, ...)
-  - [ ] Returns distribution / histogram by period, with outliers marked (quantstats `plot_distribution`, `plot_histogram`)
-  - [ ] Rolling volatility / Sharpe / Sortino / beta charts — stats already computed in `q.stats`, just need renderers (quantstats `rolling_volatility`/`rolling_sharpe`/`rolling_sortino`/`rolling_beta` plot wrappers)
-  - [ ] Yearly / daily returns bar charts (quantstats `yearly_returns`, `daily_returns`)
-  - [x] Monte Carlo fan chart / distribution plot, pairs with `q.stats.montecarlo` (quantstats `plot_montecarlo`, `plot_montecarlo_distribution`)
-  - [x] Variance Testing fan chart, pairs with `q.stats.variance_test` — colors simulated forward trade paths by ruined/profitable/neutral outcome, overlaid with the actual historical ("Real") cumulative return path
-  - [x] Noise Test fan chart, pairs with `q.stats.noise_test` — colors noise-perturbed return paths by bust/goal/neutral outcome (when given), overlaid with the actual historical ("Real") cumulative return path
-- [ ] Interactive plots (plain plotly backend)
+- [ ] Trades-format support across plots — accept a trade log alongside (or instead of) a return stream for enriched rendering:
+  - [ ] Position/exposure timeline panel (when in market, long vs short; `q.stats.trades_to_positions` provides the series, needs a renderer)
+  - [ ] Trade-aware tearsheet: trade log + `trades_to_returns` feeding `q.plot.report` with a `trade_stats` table
+  - [ ] Trade markers on **equity/returns charts** — combine a trades log with its return stream (`trades_to_returns`) so long/short entry/exit labels annotate the equity curve itself (not just the price chart, which `q.plot.trades` already covers), visually tying each bend in the curve to the trade that caused it
+  - [ ] Linked **trade list view** — an interactive table of all trades (entry/exit, direction, reason, return, duration) rendered alongside the trades chart; clicking a row "selects" that trade, highlighting it and zooming/focusing the plot on its span. Implementation options: Plotly `FigureWidget` click callbacks (notebook-only), or a self-contained HTML export with a JS-linked table + `Plotly.relayout` (works everywhere, pairs with `q.plot.show(formats=("html",))`)
 - [ ] Animated plots — play button / slider to watch values evolve over time
 - [ ] Shared style/config presets (theme, figsize, grids)
-- [ ] Tearsheets (performance reports, baked into `q.plot`):
-  - [ ] MVP report from a returns series
-  - [ ] Sharpe/Sortino/Calmar, drawdowns, rolling stats
-  - [ ] Monthly returns heatmap
-  - [ ] Benchmark comparison (e.g. vs SPY)
-  - [ ] HTML export
-  - [ ] Comprehensive metrics table — basic vs. full mode, multi-strategy columns, benchmark column (quantstats `reports.metrics`)
+- [ ] Tearsheet gaps — `q.plot.report()` covers the standard quantstats layout (cumulative returns linear/log/vol-matched, EOY bars, monthly distribution, daily returns, rolling beta/vol/Sharpe/Sortino, worst drawdown periods, underwater, monthly heatmap, metrics + EOY + worst-drawdowns tables); still missing vs. quantstats' full report:
+  - [ ] Extended metrics table rows — "full" mode: Prob./Smart Sharpe & Sortino, Omega, VaR/CVaR, Kelly criterion, payoff ratio, profit factor, tail/common-sense ratios, expected daily/monthly/yearly return, MTD/3M/6M/YTD/1Y period returns, consecutive win/loss streaks, exposure (quantstats `reports.metrics(mode="full")`)
+  - [ ] Multi-strategy support — several return columns as side-by-side metrics columns and overlaid curves
+  - [ ] Active-returns mode — plot/tabulate strategy *minus* benchmark (quantstats `active_returns=True`)
+  - [ ] KDE overlay + outlier marking on the daily-returns distribution panel
+  - [ ] Self-contained HTML report export (quantstats `reports.html`)
   - [ ] Full 3-panel "snapshot" report: cumulative return / drawdown / daily returns in one figure (quantstats `snapshot`)
 
 ## `q.feat` — feature engineering
 
-- [ ] Indicator wrappers: TA-Lib (`q.feat.talib`) and pandas-ta-classic (`q.feat.pandas_ta`)
-- [ ] Hand-rolled primitives in `q.feat.qta` (sma, lags, pct_rank, ...)
 - [ ] tsfresh wrappers for automated feature extraction
 - [ ] Feature pipelines: apply a set of features across a universe of symbols
 
@@ -125,25 +68,9 @@ Opinionated plotting helpers with sensible defaults for quant research.
 
 ## `q.model` — model utilities
 
-- [x] PyTorch model summaries via torchinfo (`q.model.torch.summary`)
 - [ ] PyTorch training loop wrappers
 - [ ] Checkpointing and inference helpers
 - [ ] Time-series-aware dataloaders
-
-## `q.data` — data access
-
-- [ ] Caching of source downloads
-- [x] Prepackaged sample datasets (AAPL, SPY, BTC-USD daily OHLCV, 2000-present) for offline use, refreshed via `make datasets` / `tools/update_datasets.py` (`q.data.datasets`)
-
-## `q.data.sources` — market data sources
-
-- [ ] yfinance source
-- [ ] Binance source
-- [ ] Each source is a plain module (`read()`, etc.) -- no shared base class, same convention as `q.feat`
-
-## `q.utils`
-
-- [ ] `set_seed` and reproducibility helpers
 
 ## Inspiration
 

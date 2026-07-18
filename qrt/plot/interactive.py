@@ -3,28 +3,59 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
+from fnmatch import fnmatch
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-from qrt.plot.core import _as_frame
 from qrt.stats.core import (
     ReturnType,
     _aligned_returns,
     _periods_per_year,
     _simple_returns,
+    aggregate_returns,
+    benchmark_stats as benchmark_stats_,
+    distribution as distribution_stats,
+    drawdown_details,
     monthly_returns,
     performance as performance_stats,
+    rolling_beta as rolling_beta_stats,
+    rolling_sharpe as rolling_sharpe_stats,
+    rolling_sortino as rolling_sortino_stats,
+    rolling_volatility as rolling_volatility_stats,
+    to_drawdown_series as to_drawdown_series_,
 )
 
 if TYPE_CHECKING:
     from plotly.graph_objects import Figure
 
 _QUANT_COLORS = ("#4C78A8", "#F58518", "#54A24B", "#E45756", "#72B7B2", "#B279A2")
+
+
+def _as_frame(data: pd.Series | pd.DataFrame, columns: str | Iterable[str] | None) -> pd.DataFrame:
+    """Return selected numeric columns, expanding shell-style column patterns."""
+    frame = data.to_frame(name=data.name or "value") if isinstance(data, pd.Series) else data.copy()
+    if not isinstance(frame, pd.DataFrame):
+        raise TypeError("data must be a pandas Series or DataFrame")
+
+    requested = list(frame.columns) if columns is None else [columns] if isinstance(columns, str) else list(columns)
+    selected: list[str] = []
+    available = [str(column) for column in frame.columns]
+    for pattern in requested:
+        matches = [column for column in available if fnmatch(column, pattern)]
+        if not matches:
+            raise KeyError(f"No columns match {pattern!r}. Available columns: {available}")
+        selected.extend(column for column in matches if column not in selected)
+
+    result = frame.loc[:, selected]
+    non_numeric = result.select_dtypes(exclude="number").columns.tolist()
+    if non_numeric:
+        raise TypeError(f"Plot columns must be numeric; got {non_numeric}")
+    return result
 
 
 def _base_layout(
@@ -67,6 +98,15 @@ def _set_date_range(figure: Figure, index: pd.Index, **kwargs: object) -> None:
     if isinstance(index, pd.DatetimeIndex) and len(index):
         date_range = [index.min().isoformat(), index.max().isoformat()]
         figure.update_xaxes(range=date_range, **kwargs)
+
+
+def _log_percent_ticks(*curves: pd.Series) -> tuple[list[float], list[str]]:
+    """Tick positions (growth multiples) and percent labels for a log-scaled cumulative-return axis."""
+    candidates = (0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0, 2.0, 5.0, 10.0, 20.0, 50.0, 100.0, 200.0, 500.0, 1000.0)
+    low = min(float(curve.min()) for curve in curves)
+    high = max(float(curve.max()) for curve in curves)
+    ticks = [value for value in candidates if low * 0.8 <= value <= high * 1.25]
+    return ticks, ["0%" if value == 1.0 else f"{value - 1.0:+,.0%}" for value in ticks]
 
 
 def line(
@@ -132,9 +172,10 @@ def equity(
         A Plotly ``Figure``.
     """
     series = _simple_returns(returns, return_type)
-    curve = (1.0 + series).cumprod().rename(label or series.name or "Equity")
-    figure = line(curve, title=title, yaxis_title="Growth of $1", height=height)
-    figure.add_hline(y=1.0, line={"color": "#6B7280", "width": 1, "dash": "dash"})
+    curve = ((1.0 + series).cumprod() - 1.0).rename(label or series.name or "Equity")
+    figure = line(curve, title=title, yaxis_title="Cumulative return", height=height)
+    figure.add_hline(y=0.0, line={"color": "#6B7280", "width": 1, "dash": "dash"})
+    figure.update_yaxes(tickformat=".0%")
     return figure
 
 
@@ -225,7 +266,7 @@ def performance(
     )
     figure.add_scatter(
         x=strategy_curve.index,
-        y=strategy_curve,
+        y=strategy_curve - 1.0,
         mode="lines",
         name=strategy.name or "Strategy",
         line={"color": _QUANT_COLORS[0], "width": 2},
@@ -236,14 +277,14 @@ def performance(
         benchmark_curve = (1.0 + reference).cumprod()
         figure.add_scatter(
             x=benchmark_curve.index,
-            y=benchmark_curve,
+            y=benchmark_curve - 1.0,
             mode="lines",
             name=reference.name or "Benchmark",
             line={"color": _QUANT_COLORS[1], "width": 2},
             row=1,
             col=1,
         )
-    figure.add_hline(y=1.0, line={"color": "#6B7280", "width": 1, "dash": "dash"}, row=1, col=1)
+    figure.add_hline(y=0.0, line={"color": "#6B7280", "width": 1, "dash": "dash"}, row=1, col=1)
     figure.add_scatter(
         x=strategy_drawdown.index,
         y=strategy_drawdown,
@@ -270,7 +311,7 @@ def performance(
     figure.update_layout(annotations=[*figure.layout.annotations, {"text": stat_text, "showarrow": False, "x": 0, "xanchor": "left", "y": 1.12, "yref": "paper"}])
     _set_date_range(figure, strategy_curve.index, row=1, col=1)
     _set_date_range(figure, strategy_curve.index, row=2, col=1)
-    figure.update_yaxes(title_text="Growth of $1", row=1, col=1)
+    figure.update_yaxes(title_text="Cumulative return", tickformat=".0%", row=1, col=1)
     figure.update_yaxes(title_text="Drawdown", tickformat=".0%", row=2, col=1)
     return figure
 
@@ -319,6 +360,839 @@ def monthly_heatmap(
     figure.update_layout(hovermode="closest")
     figure.update_xaxes(side="top")
     figure.update_yaxes(autorange="reversed", showgrid=False, title_text="")
+    return figure
+
+
+_METRIC_FORMATS: dict[str, str] = {
+    "Total Return": "pct",
+    "CAGR": "pct",
+    "Volatility": "pct",
+    "Sharpe": "num",
+    "Sortino": "num",
+    "Calmar": "num",
+    "Max Drawdown": "pct",
+    "Win Rate": "pct",
+    "Periods": "int",
+    "Beta": "num",
+    "Alpha": "pct",
+    "Correlation": "num",
+    "Information Ratio": "num",
+    "Tracking Error": "pct",
+}
+
+
+def _format_metric(name: str, value: float) -> str:
+    """Format a headline-metric value for table display based on its conventional unit."""
+    if not np.isfinite(value):
+        return "-"
+    kind = _METRIC_FORMATS.get(name, "num")
+    if kind == "pct":
+        return f"{value:.2%}"
+    if kind == "int":
+        return f"{value:.0f}"
+    return f"{value:.2f}"
+
+
+def _metrics_frame(
+    strategy: pd.Series,
+    reference: pd.Series | None,
+    *,
+    periods_per_year: int,
+    rf: float,
+) -> pd.DataFrame:
+    """Build a formatted headline-metrics table, one column per series."""
+    strategy_name = strategy.name or "Strategy"
+    frame = pd.DataFrame(
+        {strategy_name: {name: _format_metric(name, value) for name, value in performance_stats(strategy, periods_per_year=periods_per_year, rf=rf).items()}}
+    )
+    if reference is None:
+        return frame
+
+    benchmark_name = reference.name or "Benchmark"
+    frame[benchmark_name] = {
+        name: _format_metric(name, value) for name, value in performance_stats(reference, periods_per_year=periods_per_year, rf=rf).items()
+    }
+    relative = benchmark_stats_(strategy, reference, periods_per_year=periods_per_year)
+    for name in ("Beta", "Alpha", "Correlation", "Information Ratio", "Tracking Error"):
+        frame.loc[name, strategy_name] = _format_metric(name, relative[name])
+        frame.loc[name, benchmark_name] = "-"
+    return frame[[benchmark_name, strategy_name]]
+
+
+def metrics_table(
+    returns: pd.Series,
+    *,
+    benchmark: pd.Series | None = None,
+    return_type: ReturnType = "simple",
+    periods_per_year: int | None = None,
+    rf: float = 0.0,
+    title: str = "Key Performance Metrics",
+    height: int | None = None,
+) -> Figure:
+    """Create an interactive table of headline performance metrics.
+
+    Args:
+        returns: Strategy periodic return series.
+        benchmark: Optional benchmark periodic return series, aligned to
+            ``returns`` on shared dates. Adds a benchmark column plus
+            relative rows (Beta, Alpha, Correlation, Information Ratio,
+            Tracking Error) when given.
+        return_type: Whether ``returns``/``benchmark`` are ``"simple"`` or
+            ``"log"`` returns.
+        periods_per_year: Annualization frequency. Inferred from the index
+            when not given.
+        rf: Annualized risk-free rate. Defaults to ``0.0``.
+        title: Figure title.
+        height: Figure height in pixels. Defaults to a size based on the
+            number of metric rows.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
+    if benchmark is not None:
+        strategy, reference = _aligned_returns(returns, benchmark, return_type)
+    else:
+        strategy, reference = _simple_returns(returns, return_type, "Strategy"), None
+    periods = _periods_per_year(periods_per_year, strategy.index)
+    frame = _metrics_frame(strategy, reference, periods_per_year=periods, rf=rf)
+
+    figure = go.Figure(
+        go.Table(
+            header={"values": ["Metric", *frame.columns], "align": "left", "fill_color": "#F3F4F6", "font": {"size": 12}},
+            cells={"values": [frame.index, *[frame[column] for column in frame.columns]], "align": "left", "fill_color": "white"},
+        )
+    )
+    _base_layout(figure, title=title, height=height or max(320, 30 * len(frame) + 120), time_axis=False)
+    return figure
+
+
+def cumulative_returns(
+    returns: pd.Series,
+    *,
+    benchmark: pd.Series | None = None,
+    return_type: ReturnType = "simple",
+    scale: Literal["linear", "log", "volatility_matched"] = "linear",
+    title: str | None = None,
+    height: int = 400,
+) -> Figure:
+    """Create an interactive cumulative-returns chart, strategy vs an optional benchmark.
+
+    Args:
+        returns: Strategy periodic return series.
+        benchmark: Optional benchmark periodic return series, aligned to
+            ``returns`` on shared dates.
+        return_type: Whether ``returns``/``benchmark`` are ``"simple"`` or
+            ``"log"`` returns.
+        scale: ``"linear"`` (plain cumulative percentage returns), ``"log"``
+            (log y-axis with percent tick labels, to compare compounding
+            regimes across very different magnitudes), or
+            ``"volatility_matched"`` (rescales the benchmark's returns to
+            match the strategy's volatility before compounding, isolating
+            differences in trend from differences in risk taken). The latter
+            requires ``benchmark``.
+        title: Figure title.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
+    if benchmark is not None:
+        strategy, reference = _aligned_returns(returns, benchmark, return_type)
+    else:
+        strategy, reference = _simple_returns(returns, return_type, "Strategy"), None
+        if scale == "volatility_matched":
+            raise ValueError("scale='volatility_matched' requires a benchmark")
+
+    if scale == "volatility_matched" and reference is not None:
+        strategy_vol, benchmark_vol = strategy.std(ddof=1), reference.std(ddof=1)
+        if benchmark_vol:
+            reference = (reference * (strategy_vol / benchmark_vol)).rename(reference.name)
+
+    figure = go.Figure()
+    strategy_curve = (1.0 + strategy).cumprod()
+    reference_curve = (1.0 + reference).cumprod() if reference is not None else None
+    offset = 0.0 if scale == "log" else 1.0
+    if reference_curve is not None:
+        figure.add_scatter(
+            x=reference_curve.index, y=reference_curve - offset, mode="lines", name=reference.name or "Benchmark",
+            line={"color": _QUANT_COLORS[1], "width": 2},
+        )
+    figure.add_scatter(
+        x=strategy_curve.index, y=strategy_curve - offset, mode="lines", name=strategy.name or "Strategy",
+        line={"color": _QUANT_COLORS[0], "width": 2},
+    )
+    figure.add_hline(y=1.0 - offset, line={"color": "#6B7280", "width": 1, "dash": "dash"})
+
+    default_titles = {
+        "linear": "Cumulative Returns vs Benchmark" if reference is not None else "Cumulative Returns",
+        "log": "Cumulative Returns vs Benchmark (Log Scaled)" if reference is not None else "Cumulative Returns (Log Scaled)",
+        "volatility_matched": "Cumulative Returns vs Benchmark (Volatility Matched)",
+    }
+    _base_layout(figure, title=title or default_titles[scale], height=height)
+    _set_date_range(figure, strategy_curve.index)
+    if scale == "log":
+        curves = [strategy_curve] if reference_curve is None else [strategy_curve, reference_curve]
+        tickvals, ticktext = _log_percent_ticks(*curves)
+        figure.update_yaxes(title_text="Cumulative return", type="log", tickvals=tickvals, ticktext=ticktext)
+    else:
+        figure.update_yaxes(title_text="Cumulative return", tickformat=".0%")
+    return figure
+
+
+def _yearly_frame(strategy: pd.Series, reference: pd.Series | None) -> pd.DataFrame:
+    """Build a year-indexed table of compounded yearly returns, one column per series."""
+    strategy_yearly = aggregate_returns(strategy, "Y")
+    strategy_yearly.index = strategy_yearly.index.year
+    frame = pd.DataFrame({strategy.name or "Strategy": strategy_yearly})
+    if reference is not None:
+        reference_yearly = aggregate_returns(reference, "Y")
+        reference_yearly.index = reference_yearly.index.year
+        frame.insert(0, reference.name or "Benchmark", reference_yearly)
+    frame.index.name = "Year"
+    return frame
+
+
+def eoy_returns(
+    returns: pd.Series,
+    *,
+    benchmark: pd.Series | None = None,
+    return_type: ReturnType = "simple",
+    title: str | None = None,
+    height: int = 400,
+) -> Figure:
+    """Create an interactive bar chart of compounded end-of-year returns.
+
+    Args:
+        returns: Strategy periodic return series.
+        benchmark: Optional benchmark periodic return series, aligned to
+            ``returns`` on shared dates.
+        return_type: Whether ``returns``/``benchmark`` are ``"simple"`` or
+            ``"log"`` returns.
+        title: Figure title.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
+    if benchmark is not None:
+        strategy, reference = _aligned_returns(returns, benchmark, return_type)
+    else:
+        strategy, reference = _simple_returns(returns, return_type, "Strategy"), None
+    frame = _yearly_frame(strategy, reference)
+
+    figure = go.Figure()
+    for index, column in enumerate(frame.columns):
+        figure.add_bar(x=frame.index.astype(str), y=frame[column], name=str(column), marker_color=_QUANT_COLORS[index % len(_QUANT_COLORS)])
+    figure.add_hline(y=frame[strategy.name or "Strategy"].mean(), line={"color": "#6B7280", "width": 1, "dash": "dash"})
+    default_title = "EOY Returns vs Benchmark" if reference is not None else "EOY Returns"
+    _base_layout(figure, title=title or default_title, height=height, time_axis=False)
+    figure.update_xaxes(type="category", title_text="Year")
+    figure.update_yaxes(title_text="Return", tickformat=".0%")
+    return figure
+
+
+def monthly_distribution(
+    returns: pd.Series,
+    *,
+    benchmark: pd.Series | None = None,
+    return_type: ReturnType = "simple",
+    title: str = "Distribution of Monthly Returns",
+    height: int = 400,
+) -> Figure:
+    """Create an interactive histogram of compounded monthly returns.
+
+    Args:
+        returns: Strategy periodic return series.
+        benchmark: Optional benchmark periodic return series, aligned to
+            ``returns`` on shared dates, overlaid as a second histogram.
+        return_type: Whether ``returns``/``benchmark`` are ``"simple"`` or
+            ``"log"`` returns.
+        title: Figure title.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
+    if benchmark is not None:
+        strategy, reference = _aligned_returns(returns, benchmark, return_type)
+    else:
+        strategy, reference = _simple_returns(returns, return_type, "Strategy"), None
+
+    figure = go.Figure()
+    if reference is not None:
+        figure.add_histogram(x=aggregate_returns(reference, "M") * 100, name=reference.name or "Benchmark", marker_color=_QUANT_COLORS[1], opacity=0.65)
+    figure.add_histogram(x=aggregate_returns(strategy, "M") * 100, name=strategy.name or "Strategy", marker_color=_QUANT_COLORS[0], opacity=0.65)
+    figure.update_layout(barmode="overlay" if reference is None else "group")
+    _base_layout(figure, title=title, height=height, time_axis=False)
+    figure.update_xaxes(title_text="Monthly return", ticksuffix="%")
+    figure.update_yaxes(title_text="Frequency")
+    return figure
+
+
+def daily_returns(
+    returns: pd.Series,
+    *,
+    benchmark: pd.Series | None = None,
+    return_type: ReturnType = "simple",
+    active: bool = False,
+    title: str | None = None,
+    height: int = 320,
+) -> Figure:
+    """Create an interactive bar chart of periodic returns over time.
+
+    Args:
+        returns: Strategy periodic return series.
+        benchmark: Benchmark periodic return series, aligned to ``returns``
+            on shared dates. Required when ``active=True``.
+        return_type: Whether ``returns``/``benchmark`` are ``"simple"`` or
+            ``"log"`` returns.
+        active: Plot active returns (``returns - benchmark``) instead of raw
+            returns. Requires ``benchmark``.
+        title: Figure title.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
+    if active and benchmark is None:
+        raise ValueError("active=True requires a benchmark")
+    if benchmark is not None:
+        strategy, reference = _aligned_returns(returns, benchmark, return_type)
+    else:
+        strategy, reference = _simple_returns(returns, return_type, "Strategy"), None
+    series = (strategy - reference).rename(strategy.name) if active and reference is not None else strategy
+
+    figure = go.Figure(go.Bar(x=series.index, y=series, name=series.name or "Returns", marker_color=_QUANT_COLORS[0]))
+    _base_layout(figure, title=title or ("Daily Active Returns" if active else "Daily Returns"), height=height)
+    _set_date_range(figure, series.index)
+    figure.update_yaxes(title_text="Return", tickformat=".0%")
+    return figure
+
+
+def rolling_volatility(
+    returns: pd.Series,
+    *,
+    benchmark: pd.Series | None = None,
+    window: int = 126,
+    return_type: ReturnType = "simple",
+    periods_per_year: int | None = None,
+    title: str = "Rolling Volatility (6-Months)",
+    height: int = 320,
+) -> Figure:
+    """Create an interactive chart of annualized rolling volatility.
+
+    See :func:`qrt.stats.rolling_volatility` for the underlying calculation.
+
+    Args:
+        returns: Strategy periodic return series.
+        benchmark: Optional benchmark periodic return series, aligned to
+            ``returns`` on shared dates, overlaid as a second line.
+        window: Rolling window size, in periods.
+        return_type: Whether ``returns``/``benchmark`` are ``"simple"`` or
+            ``"log"`` returns.
+        periods_per_year: Annualization frequency. Inferred from the index
+            when not given.
+        title: Figure title.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
+    if benchmark is not None:
+        strategy, reference = _aligned_returns(returns, benchmark, return_type)
+    else:
+        strategy, reference = _simple_returns(returns, return_type, "Strategy"), None
+    series = rolling_volatility_stats(strategy, window, periods_per_year=periods_per_year)
+
+    figure = go.Figure(go.Scatter(x=series.index, y=series, mode="lines", name=strategy.name or "Strategy", line={"color": _QUANT_COLORS[0], "width": 1.6}))
+    if reference is not None:
+        bench_series = rolling_volatility_stats(reference, window, periods_per_year=periods_per_year)
+        figure.add_scatter(x=bench_series.index, y=bench_series, mode="lines", name=reference.name or "Benchmark", line={"color": _QUANT_COLORS[1], "width": 1.6})
+    _base_layout(figure, title=title, height=height)
+    _set_date_range(figure, series.index)
+    figure.update_yaxes(title_text="Volatility (ann.)", tickformat=".0%")
+    return figure
+
+
+def rolling_sharpe(
+    returns: pd.Series,
+    *,
+    window: int = 126,
+    return_type: ReturnType = "simple",
+    periods_per_year: int | None = None,
+    rf: float = 0.0,
+    title: str = "Rolling Sharpe (6-Months)",
+    height: int = 320,
+) -> Figure:
+    """Create an interactive chart of annualized rolling Sharpe ratio.
+
+    See :func:`qrt.stats.rolling_sharpe` for the underlying calculation.
+
+    Args:
+        returns: Periodic return series.
+        window: Rolling window size, in periods.
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        periods_per_year: Annualization frequency. Inferred from the index
+            when not given.
+        rf: Annualized risk-free rate. Defaults to ``0.0``.
+        title: Figure title.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
+    series = rolling_sharpe_stats(returns, window, return_type=return_type, periods_per_year=periods_per_year, rf=rf)
+    figure = go.Figure(go.Scatter(x=series.index, y=series, mode="lines", name="Sharpe", line={"color": _QUANT_COLORS[0], "width": 1.6}))
+    figure.add_hline(y=0.0, line={"color": "#6B7280", "width": 1, "dash": "dash"})
+    _base_layout(figure, title=title, height=height)
+    _set_date_range(figure, series.index)
+    figure.update_yaxes(title_text="Sharpe")
+    return figure
+
+
+def rolling_sortino(
+    returns: pd.Series,
+    *,
+    window: int = 126,
+    return_type: ReturnType = "simple",
+    periods_per_year: int | None = None,
+    rf: float = 0.0,
+    title: str = "Rolling Sortino (6-Months)",
+    height: int = 320,
+) -> Figure:
+    """Create an interactive chart of annualized rolling Sortino ratio.
+
+    See :func:`qrt.stats.rolling_sortino` for the underlying calculation.
+
+    Args:
+        returns: Periodic return series.
+        window: Rolling window size, in periods.
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        periods_per_year: Annualization frequency. Inferred from the index
+            when not given.
+        rf: Annualized risk-free rate. Defaults to ``0.0``.
+        title: Figure title.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
+    series = rolling_sortino_stats(returns, window, return_type=return_type, periods_per_year=periods_per_year, rf=rf)
+    figure = go.Figure(go.Scatter(x=series.index, y=series, mode="lines", name="Sortino", line={"color": _QUANT_COLORS[0], "width": 1.6}))
+    figure.add_hline(y=0.0, line={"color": "#6B7280", "width": 1, "dash": "dash"})
+    _base_layout(figure, title=title, height=height)
+    _set_date_range(figure, series.index)
+    figure.update_yaxes(title_text="Sortino")
+    return figure
+
+
+def rolling_beta(
+    returns: pd.Series,
+    benchmark: pd.Series,
+    *,
+    return_type: ReturnType = "simple",
+    windows: tuple[int, int] = (126, 252),
+    title: str = "Rolling Beta to Benchmark",
+    height: int = 320,
+) -> Figure:
+    """Create an interactive chart of rolling beta over two windows (e.g. 6- and 12-month).
+
+    See :func:`qrt.stats.rolling_beta` for the underlying calculation.
+
+    Args:
+        returns: Strategy periodic return series.
+        benchmark: Benchmark periodic return series, aligned to ``returns``
+            on shared dates.
+        return_type: Whether ``returns``/``benchmark`` are ``"simple"`` or
+            ``"log"`` returns.
+        windows: Pair of rolling window sizes, in periods (shorter first).
+        title: Figure title.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
+    labels = {windows[0]: "6-Months", windows[1]: "12-Months"}
+    figure = go.Figure()
+    first_index: pd.Index | None = None
+    for index, window in enumerate(windows):
+        series = rolling_beta_stats(returns, benchmark, window, return_type=return_type)
+        first_index = first_index if first_index is not None else series.index
+        figure.add_scatter(
+            x=series.index, y=series, mode="lines", name=labels.get(window, f"{window}-period"),
+            line={"color": _QUANT_COLORS[index % len(_QUANT_COLORS)], "width": 1.6 if index == 0 else 1.1},
+        )
+    figure.add_hline(y=1.0, line={"color": "#6B7280", "width": 1, "dash": "dash"})
+    _base_layout(figure, title=title, height=height)
+    _set_date_range(figure, first_index)
+    figure.update_yaxes(title_text="Beta")
+    return figure
+
+
+def worst_drawdowns(
+    returns: pd.Series,
+    *,
+    top: int = 5,
+    return_type: ReturnType = "simple",
+    title: str | None = None,
+    height: int = 400,
+) -> Figure:
+    """Create an equity curve with the worst drawdown periods shaded.
+
+    See :func:`qrt.stats.drawdown_details` for the underlying episode breakdown.
+
+    Args:
+        returns: Periodic return series.
+        top: Number of worst (deepest) drawdown episodes to shade.
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        title: Figure title.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
+    series = _simple_returns(returns, return_type)
+    curve = (1.0 + series).cumprod() - 1.0
+    episodes = drawdown_details(series, sort_by="depth").head(top)
+
+    figure = go.Figure(go.Scatter(x=curve.index, y=curve, mode="lines", name=series.name or "Strategy", line={"color": _QUANT_COLORS[0], "width": 2}))
+    for _, episode in episodes.iterrows():
+        figure.add_vrect(x0=episode["Start"].isoformat(), x1=episode["End"].isoformat(), layer="below", line_width=0, fillcolor="#E45756", opacity=0.15)
+    _base_layout(figure, title=title or f"Worst {top} Drawdown Periods", height=height)
+    _set_date_range(figure, curve.index)
+    figure.update_yaxes(title_text="Cumulative return", tickformat=".0%")
+    return figure
+
+
+def return_quantiles(
+    returns: pd.Series,
+    *,
+    return_type: ReturnType = "simple",
+    title: str = "Return Quantiles",
+    height: int = 400,
+) -> Figure:
+    """Create box plots comparing return distributions across compounding periods.
+
+    See :func:`qrt.stats.distribution` for the underlying period buckets.
+
+    Args:
+        returns: Periodic return series.
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        title: Figure title.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
+    buckets = distribution_stats(returns, return_type=return_type)
+    figure = go.Figure()
+    for index, (period, data) in enumerate(buckets.items()):
+        values = [value * 100 for value in (*data["values"], *data["outliers"])]
+        figure.add_box(y=values, name=period, marker={"color": _QUANT_COLORS[index % len(_QUANT_COLORS)]}, boxpoints="outliers")
+    _base_layout(figure, title=title, height=height, time_axis=False)
+    figure.update_yaxes(title_text="Return", ticksuffix="%")
+    return figure
+
+
+def report(
+    returns: pd.Series,
+    *,
+    benchmark: pd.Series | None = None,
+    return_type: ReturnType = "simple",
+    periods_per_year: int | None = None,
+    rf: float = 0.0,
+    worst_drawdowns_count: int = 5,
+    title: str | None = None,
+) -> Figure:
+    """Create a full quantstats-style multi-panel strategy tearsheet.
+
+    Lays out a chart column (cumulative-returns variants, EOY returns, return
+    distributions, rolling risk diagnostics, drawdown analysis, a monthly
+    heatmap) alongside a table column (key metrics, EOY returns, worst
+    drawdowns) in a single scrollable Plotly figure. Individual panels are
+    also available standalone (:func:`metrics_table`, :func:`cumulative_returns`,
+    :func:`eoy_returns`, :func:`monthly_distribution`, :func:`daily_returns`,
+    :func:`rolling_volatility`, :func:`rolling_sharpe`, :func:`rolling_sortino`,
+    :func:`rolling_beta`, :func:`worst_drawdowns`, :func:`drawdown`,
+    :func:`monthly_heatmap`, :func:`return_quantiles`).
+
+    Args:
+        returns: Strategy periodic return series.
+        benchmark: Optional benchmark periodic return series, aligned to
+            ``returns`` on shared dates. Adds benchmark overlays/columns and
+            benchmark-relative panels (volatility-matched returns, rolling
+            beta) throughout.
+        return_type: Whether ``returns``/``benchmark`` are ``"simple"`` or
+            ``"log"`` returns.
+        periods_per_year: Annualization frequency. Inferred from the index
+            when not given.
+        rf: Annualized risk-free rate. Defaults to ``0.0``.
+        worst_drawdowns_count: Number of worst drawdown episodes to shade/list.
+        title: Figure title.
+
+    Returns:
+        A single tall Plotly ``Figure`` stacking every tearsheet panel.
+    """
+    if benchmark is not None:
+        strategy, reference = _aligned_returns(returns, benchmark, return_type)
+    else:
+        strategy, reference = _simple_returns(returns, return_type, "Strategy"), None
+    periods = _periods_per_year(periods_per_year, strategy.index)
+    strategy_name = strategy.name or "Strategy"
+    has_benchmark = reference is not None
+
+    metrics_frame = _metrics_frame(strategy, reference, periods_per_year=periods, rf=rf)
+    yearly_frame = _yearly_frame(strategy, reference)
+    dd_episodes = drawdown_details(strategy, sort_by="depth")
+    dd_table_frame = dd_episodes.head(10).copy()
+    if not dd_table_frame.empty:
+        dd_table_frame["Start"] = dd_table_frame["Start"].dt.date.astype(str)
+        dd_table_frame["End"] = dd_table_frame["End"].dt.date.astype(str)
+        dd_table_frame["Max Drawdown"] = dd_table_frame["Max Drawdown"].map(lambda value: f"{value:.2%}")
+
+    # left column: charts, top to bottom, mirroring the quantstats layout. (subplot title, kind, pixel height)
+    rows: list[tuple[str, str, int]] = [
+        ("Cumulative Returns vs Benchmark" if has_benchmark else "Cumulative Returns", "cumulative_linear", 280),
+        ("Cumulative Returns vs Benchmark (Log Scaled)" if has_benchmark else "Cumulative Returns (Log Scaled)", "cumulative_log", 280),
+    ]
+    if has_benchmark:
+        rows.append(("Cumulative Returns vs Benchmark (Volatility Matched)", "cumulative_volmatch", 280))
+    rows.append(("EOY Returns vs Benchmark" if has_benchmark else "EOY Returns", "eoy_bar", 280))
+    rows.append(("Distribution of Monthly Returns", "monthly_dist", 280))
+    rows.append(("Daily Returns", "daily_returns", 220))
+    if has_benchmark:
+        rows.append(("Rolling Beta to Benchmark", "rolling_beta", 220))
+    rows.append(("Rolling Volatility (6-Months)", "rolling_vol", 220))
+    rows.append(("Rolling Sharpe (6-Months)", "rolling_sharpe", 220))
+    rows.append(("Rolling Sortino (6-Months)", "rolling_sortino", 220))
+    rows.append((f"Worst {worst_drawdowns_count} Drawdown Periods", "worst_dd", 280))
+    rows.append(("Underwater Plot", "underwater", 220))
+    rows.append(("Monthly Returns", "heatmap", max(280, 28 * len(monthly_returns(strategy)) + 110)))
+
+    # left column: chart subplots with real gaps between rows; right column: no
+    # subplots — the three tables are content-sized and placed via explicit paper
+    # domains anchored to the top, mirroring quantstats' dense side column.
+    n_rows = len(rows)
+    gap_px = 80
+    margin_top, margin_bottom = 100, 50
+    total_height = sum(height for _, _, height in rows) + gap_px * (n_rows - 1)
+    plot_area = total_height - margin_top - margin_bottom
+    horizontal_spacing = 0.06
+
+    figure = make_subplots(
+        rows=n_rows,
+        cols=2,
+        column_widths=[0.66, 0.34],
+        specs=[[{"type": "xy"}, None] for _ in range(n_rows)],
+        subplot_titles=[row_title for row_title, _, _ in rows],
+        horizontal_spacing=horizontal_spacing,
+        vertical_spacing=gap_px / plot_area,
+        row_heights=[height for _, _, height in rows],
+    )
+
+    eoy_table_frame = yearly_frame.reset_index()
+    for column in yearly_frame.columns:
+        eoy_table_frame[column] = eoy_table_frame[column].map(lambda value: f"{value:.2%}")
+    if has_benchmark:
+        benchmark_name = reference.name or "Benchmark"
+        multiplier = yearly_frame[strategy_name].to_numpy() / np.where(
+            yearly_frame[benchmark_name].to_numpy() == 0.0, np.nan, yearly_frame[benchmark_name].to_numpy()
+        )
+        eoy_table_frame["Multiplier"] = [f"{value:.2f}" if np.isfinite(value) else "-" for value in multiplier]
+        eoy_table_frame["Won"] = np.where(yearly_frame[strategy_name].to_numpy() >= yearly_frame[benchmark_name].to_numpy(), "✓", "✗")
+
+    header_px, cell_px = 28, 24
+    right_x0 = 0.66 * (1 - horizontal_spacing) + horizontal_spacing
+    table_blocks = [
+        (
+            "Key Performance Metrics",
+            ["Metric", *metrics_frame.columns],
+            [metrics_frame.index, *[metrics_frame[column] for column in metrics_frame.columns]],
+            len(metrics_frame),
+            [2, *([1] * len(metrics_frame.columns))],
+        ),
+        (
+            "EOY Returns vs Benchmark" if has_benchmark else "EOY Returns",
+            list(eoy_table_frame.columns),
+            [eoy_table_frame[column] for column in eoy_table_frame.columns],
+            len(eoy_table_frame),
+            None,
+        ),
+        (
+            f"Worst {len(dd_table_frame)} Drawdowns",
+            ["Started", "Recovered", "Drawdown", "Days"],
+            [dd_table_frame["Start"], dd_table_frame["End"], dd_table_frame["Max Drawdown"], dd_table_frame["Days"]]
+            if not dd_table_frame.empty
+            else [[], [], [], []],
+            len(dd_table_frame),
+            None,
+        ),
+    ]
+    y_cursor = 1.0
+    for block_title, header_values, cell_values, n_data_rows, column_widths in table_blocks:
+        table_px = header_px + cell_px * n_data_rows + 10
+        y_bottom = max(0.0, y_cursor - table_px / plot_area)
+        figure.add_annotation(
+            text=f"<b>{block_title}</b>", x=(right_x0 + 1.0) / 2, y=y_cursor, xref="paper", yref="paper",
+            xanchor="center", yanchor="bottom", showarrow=False, font={"size": 16},
+        )
+        table = go.Table(
+            header={"values": header_values, "align": "left", "fill_color": "#F3F4F6", "font": {"size": 12}, "height": header_px},
+            cells={"values": cell_values, "align": "left", "fill_color": "white", "height": cell_px},
+            domain={"x": [right_x0, 1.0], "y": [y_bottom, y_cursor]},
+        )
+        if column_widths is not None:
+            table.columnwidth = column_widths
+        figure.add_trace(table)
+        y_cursor = y_bottom - 60.0 / plot_area
+
+    for row_index, (_, kind, _height) in enumerate(rows, start=1):
+        if kind in ("cumulative_linear", "cumulative_log", "cumulative_volmatch"):
+            series_reference = reference
+            if kind == "cumulative_volmatch" and reference is not None:
+                strategy_vol, benchmark_vol = strategy.std(ddof=1), reference.std(ddof=1)
+                series_reference = (reference * (strategy_vol / benchmark_vol)).rename(reference.name) if benchmark_vol else reference
+            offset = 0.0 if kind == "cumulative_log" else 1.0
+            strategy_curve = (1.0 + strategy).cumprod()
+            reference_curve = (1.0 + series_reference).cumprod() if series_reference is not None else None
+            if reference_curve is not None:
+                figure.add_scatter(
+                    x=reference_curve.index, y=reference_curve - offset, mode="lines", name=series_reference.name or "Benchmark",
+                    line={"color": _QUANT_COLORS[1], "width": 2}, showlegend=(kind == "cumulative_linear"),
+                    legendgroup="benchmark", row=row_index, col=1,
+                )
+            figure.add_scatter(
+                x=strategy_curve.index, y=strategy_curve - offset, mode="lines", name=strategy_name,
+                line={"color": _QUANT_COLORS[0], "width": 2}, showlegend=(kind == "cumulative_linear"),
+                legendgroup="strategy", row=row_index, col=1,
+            )
+            figure.add_hline(
+                y=1.0 - offset, line={"color": "#6B7280", "width": 1, "dash": "dash"},
+                row=row_index, col=1, exclude_empty_subplots=False,
+            )
+            _set_date_range(figure, strategy_curve.index, row=row_index, col=1)
+            if kind == "cumulative_log":
+                curves = [strategy_curve] if reference_curve is None else [strategy_curve, reference_curve]
+                tickvals, ticktext = _log_percent_ticks(*curves)
+                figure.update_yaxes(title_text="Cumulative return", type="log", tickvals=tickvals, ticktext=ticktext, row=row_index, col=1)
+            else:
+                figure.update_yaxes(title_text="Cumulative return", tickformat=".0%", row=row_index, col=1)
+        elif kind == "eoy_bar":
+            for index, column in enumerate(yearly_frame.columns):
+                figure.add_bar(
+                    x=yearly_frame.index.astype(str), y=yearly_frame[column], name=str(column),
+                    marker_color=_QUANT_COLORS[index % len(_QUANT_COLORS)], showlegend=False, row=row_index, col=1,
+                )
+            figure.update_xaxes(type="category", row=row_index, col=1)
+            figure.update_yaxes(title_text="Return", tickformat=".0%", row=row_index, col=1)
+        elif kind == "monthly_dist":
+            if reference is not None:
+                figure.add_histogram(
+                    x=aggregate_returns(reference, "M") * 100, name=reference.name or "Benchmark",
+                    marker_color=_QUANT_COLORS[1], opacity=0.65, showlegend=False, row=row_index, col=1,
+                )
+            figure.add_histogram(
+                x=aggregate_returns(strategy, "M") * 100, name=strategy_name,
+                marker_color=_QUANT_COLORS[0], opacity=0.65, showlegend=False, row=row_index, col=1,
+            )
+            figure.update_xaxes(title_text="Monthly return", ticksuffix="%", row=row_index, col=1)
+            figure.update_yaxes(title_text="Frequency", row=row_index, col=1)
+        elif kind == "daily_returns":
+            figure.add_bar(x=strategy.index, y=strategy, name=strategy_name, marker_color=_QUANT_COLORS[0], showlegend=False, row=row_index, col=1)
+            _set_date_range(figure, strategy.index, row=row_index, col=1)
+            figure.update_yaxes(title_text="Return", tickformat=".0%", row=row_index, col=1)
+        elif kind == "rolling_beta":
+            windows = (126, 252)
+            labels = {windows[0]: "6-Months", windows[1]: "12-Months"}
+            for index, window in enumerate(windows):
+                series = rolling_beta_stats(strategy, reference, window)
+                figure.add_scatter(
+                    x=series.index, y=series, mode="lines", name=labels[window],
+                    line={"color": _QUANT_COLORS[index % len(_QUANT_COLORS)], "width": 1.6 if index == 0 else 1.1},
+                    showlegend=False, row=row_index, col=1,
+                )
+            figure.add_hline(
+                y=1.0, line={"color": "#6B7280", "width": 1, "dash": "dash"},
+                row=row_index, col=1, exclude_empty_subplots=False,
+            )
+            _set_date_range(figure, strategy.index, row=row_index, col=1)
+            figure.update_yaxes(title_text="Beta", row=row_index, col=1)
+        elif kind == "rolling_vol":
+            series = rolling_volatility_stats(strategy, 126, periods_per_year=periods)
+            figure.add_scatter(x=series.index, y=series, mode="lines", name=strategy_name, line={"color": _QUANT_COLORS[0], "width": 1.6}, showlegend=False, row=row_index, col=1)
+            if reference is not None:
+                bench_series = rolling_volatility_stats(reference, 126, periods_per_year=periods)
+                figure.add_scatter(
+                    x=bench_series.index, y=bench_series, mode="lines", name=reference.name or "Benchmark",
+                    line={"color": _QUANT_COLORS[1], "width": 1.6}, showlegend=False, row=row_index, col=1,
+                )
+            _set_date_range(figure, series.index, row=row_index, col=1)
+            figure.update_yaxes(title_text="Volatility (ann.)", tickformat=".0%", row=row_index, col=1)
+        elif kind == "rolling_sharpe":
+            series = rolling_sharpe_stats(strategy, 126, periods_per_year=periods, rf=rf)
+            figure.add_scatter(x=series.index, y=series, mode="lines", name="Sharpe", line={"color": _QUANT_COLORS[0], "width": 1.6}, showlegend=False, row=row_index, col=1)
+            figure.add_hline(
+                y=0.0, line={"color": "#6B7280", "width": 1, "dash": "dash"},
+                row=row_index, col=1, exclude_empty_subplots=False,
+            )
+            _set_date_range(figure, series.index, row=row_index, col=1)
+            figure.update_yaxes(title_text="Sharpe", row=row_index, col=1)
+        elif kind == "rolling_sortino":
+            series = rolling_sortino_stats(strategy, 126, periods_per_year=periods, rf=rf)
+            figure.add_scatter(x=series.index, y=series, mode="lines", name="Sortino", line={"color": _QUANT_COLORS[0], "width": 1.6}, showlegend=False, row=row_index, col=1)
+            figure.add_hline(
+                y=0.0, line={"color": "#6B7280", "width": 1, "dash": "dash"},
+                row=row_index, col=1, exclude_empty_subplots=False,
+            )
+            _set_date_range(figure, series.index, row=row_index, col=1)
+            figure.update_yaxes(title_text="Sortino", row=row_index, col=1)
+        elif kind == "worst_dd":
+            strategy_curve = (1.0 + strategy).cumprod() - 1.0
+            figure.add_scatter(
+                x=strategy_curve.index, y=strategy_curve, mode="lines", name=strategy_name,
+                line={"color": _QUANT_COLORS[0], "width": 2}, showlegend=False, row=row_index, col=1,
+            )
+            for _, episode in dd_episodes.head(worst_drawdowns_count).iterrows():
+                figure.add_vrect(
+                    x0=episode["Start"].isoformat(), x1=episode["End"].isoformat(), layer="below", line_width=0,
+                    fillcolor="#E45756", opacity=0.15, row=row_index, col=1, exclude_empty_subplots=False,
+                )
+            _set_date_range(figure, strategy_curve.index, row=row_index, col=1)
+            figure.update_yaxes(title_text="Cumulative return", tickformat=".0%", row=row_index, col=1)
+        elif kind == "underwater":
+            drawdown_curve = to_drawdown_series_(strategy)
+            figure.add_scatter(
+                x=drawdown_curve.index, y=drawdown_curve, mode="lines", name="Drawdown", fill="tozeroy",
+                fillcolor="rgba(228, 87, 86, 0.25)", line={"color": _QUANT_COLORS[3], "width": 1.5}, showlegend=False, row=row_index, col=1,
+            )
+            _set_date_range(figure, drawdown_curve.index, row=row_index, col=1)
+            figure.update_yaxes(title_text="Drawdown", tickformat=".0%", row=row_index, col=1)
+        elif kind == "heatmap":
+            table = monthly_returns(strategy)
+            values = table.to_numpy(dtype=float)
+            finite_values = values[np.isfinite(values)]
+            limit = max(abs(finite_values.min()), abs(finite_values.max())) if len(finite_values) else 0.01
+            text = np.where(np.isfinite(values), np.char.mod("%.1f%%", values * 100), "")
+            figure.add_trace(
+                go.Heatmap(
+                    z=values, x=[pd.Timestamp(2000, month, 1).strftime("%b") for month in table.columns], y=table.index.astype(str),
+                    text=text, texttemplate="%{text}", textfont={"size": 10}, colorscale="RdYlGn", zmid=0, zmin=-limit, zmax=limit,
+                    showscale=False, hovertemplate="Year %{y}<br>Month %{x}<br>Return %{z:.2%}<extra></extra>",
+                ),
+                row=row_index, col=1,
+            )
+            figure.update_yaxes(autorange="reversed", showgrid=False, title_text="", row=row_index, col=1)
+
+    figure.update_layout(
+        template="plotly_white",
+        title=title or f"{strategy_name} Tearsheet",
+        height=total_height,
+        showlegend=True,
+        legend={"orientation": "h", "y": 1.0, "x": 0, "xanchor": "left", "yanchor": "bottom"},
+        margin={"l": 60, "r": 30, "t": margin_top, "b": margin_bottom},
+    )
+    figure.update_xaxes(showgrid=False)
+    figure.update_yaxes(showgrid=True, gridcolor="#E5E7EB", zeroline=False)
     return figure
 
 
@@ -890,6 +1764,208 @@ def montecarlo_distribution(
     return figure
 
 
+def trades(
+    trades: pd.DataFrame,
+    prices: pd.Series | pd.DataFrame,
+    *,
+    features: pd.DataFrame | None = None,
+    title: str | None = None,
+    height: int = 520,
+) -> Figure:
+    """Create an interactive price chart with entry/exit markers for a trade log.
+
+    Renders the price series with one marker per trade entry (triangle up
+    for longs, down for shorts) and exit (x, green for winners, red for
+    losers), plus a translucent span shading each trade by outcome. Hovering
+    a marker shows the trade's reason, return, holding period, and any
+    feature-snapshot columns beyond the reserved trades-format set.
+
+    Args:
+        trades: Canonical trades-format DataFrame (see :mod:`qrt.data.datasets`).
+        prices: Close series (or OHLCV frame with a ``close`` column) with a
+            ``DatetimeIndex`` covering the trade span.
+        features: Optional datetime-indexed frame of indicator series (e.g.
+            moving averages recomputed via :mod:`qrt.feat`) drawn as overlay
+            lines on the price axis.
+        title: Figure title.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
+    from qrt.stats.core import TRADE_COLUMNS, _validate_trades
+
+    _validate_trades(trades, ("entry_time", "exit_time", "direction", "entry_price", "exit_price", "return"))
+    close = prices["close"] if isinstance(prices, pd.DataFrame) else prices
+    snapshots = [column for column in trades.columns if column not in TRADE_COLUMNS]
+
+    figure = go.Figure()
+    figure.add_scatter(
+        x=close.index, y=close, mode="lines", name=close.name or "Price",
+        line={"color": "#9CA3AF", "width": 1.3},
+    )
+    for index, column in enumerate(features.columns if features is not None else []):
+        figure.add_scatter(
+            x=features.index, y=features[column], mode="lines", name=str(column),
+            line={"color": _QUANT_COLORS[index % len(_QUANT_COLORS)], "width": 1.2},
+        )
+
+    wins = trades["return"] > 0
+    for start, end, win in zip(trades["entry_time"], trades["exit_time"], wins):
+        figure.add_vrect(
+            x0=start.isoformat(), x1=end.isoformat(), layer="below", line_width=0,
+            fillcolor="#54A24B" if win else "#E45756", opacity=0.10,
+        )
+
+    days = ((trades["exit_time"] - trades["entry_time"]) / pd.Timedelta(days=1)).astype(int)
+    snapshot_hover = "".join(
+        f"<br>{column}: %{{customdata[{i + 4}]:.4g}}" for i, column in enumerate(snapshots)
+    )
+    # one entry trace per direction so the legend shows the correct arrow
+    # for each (a single trace's legend icon would only show one symbol)
+    for direction, label, symbol in ((1, "long", "triangle-up"), (-1, "short", "triangle-down")):
+        subset = trades[trades["direction"] == direction]
+        if subset.empty:
+            continue
+        subset_days = ((subset["exit_time"] - subset["entry_time"]) / pd.Timedelta(days=1)).astype(int)
+        entry_custom = np.column_stack(
+            [np.full(len(subset), label), subset.get("entry_reason", ""), subset["return"], subset_days]
+            + [subset[column] for column in snapshots]
+        )
+        figure.add_scatter(
+            x=subset["entry_time"], y=subset["entry_price"], mode="markers",
+            name=f"Entry ({label})",
+            marker={"symbol": symbol, "size": 9, "color": "#374151"},
+            customdata=entry_custom,
+            hovertemplate=(
+                "Entry %{x|%Y-%m-%d} @ %{y:.2f}<br>%{customdata[0]} · %{customdata[1]}"
+                + snapshot_hover + "<extra></extra>"
+            ),
+        )
+    figure.add_scatter(
+        x=trades["exit_time"], y=trades["exit_price"], mode="markers", name="Exit",
+        marker={
+            "symbol": "x", "size": 8,
+            "color": wins.map({True: "#54A24B", False: "#E45756"}),
+        },
+        customdata=np.column_stack([trades.get("exit_reason", ""), trades["return"], days]),
+        hovertemplate=(
+            "Exit %{x|%Y-%m-%d} @ %{y:.2f}<br>%{customdata[0]}"
+            "<br>return: %{customdata[1]:.2%} · %{customdata[2]} days<extra></extra>"
+        ),
+    )
+
+    _base_layout(figure, title=title or "Trades", height=height)
+    figure.update_layout(hovermode="closest")
+    _set_date_range(figure, close.index)
+    figure.update_yaxes(title_text="Price")
+    return figure
+
+
+def mae_mfe(
+    trades: pd.DataFrame,
+    *,
+    title: str | None = None,
+    height: int = 430,
+) -> Figure:
+    """Create an interactive MAE/MFE excursion scatter from a trade log.
+
+    Two panels sharing the trade-return y-axis: max adverse excursion (how
+    far each trade went against you -- informs stop placement) and max
+    favorable excursion (how much open profit existed -- informs profit
+    taking). Dashed identity lines mark the bounds ``return >= MAE`` and
+    ``return <= MFE``; exits near the MFE line captured most of their open
+    profit, winners far below it round-tripped gains.
+
+    Args:
+        trades: Canonical trades-format DataFrame with ``mae``/``mfe`` columns.
+        title: Figure title.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
+    from qrt.stats.core import _validate_trades
+
+    _validate_trades(trades, ("entry_time", "exit_time", "direction", "return", "mae", "mfe"))
+    wins = trades["return"] > 0
+    days = ((trades["exit_time"] - trades["entry_time"]) / pd.Timedelta(days=1)).astype(int)
+    custom = np.column_stack([trades["entry_time"].dt.strftime("%Y-%m-%d"), trades.get("exit_reason", ""), days])
+    colors = wins.map({True: "#54A24B", False: "#E45756"})
+
+    figure = make_subplots(
+        rows=1, cols=2, shared_yaxes=True,
+        subplot_titles=("Max Adverse Excursion", "Max Favorable Excursion"),
+    )
+    for col_index, excursion in ((1, "mae"), (2, "mfe")):
+        figure.add_scatter(
+            x=trades[excursion], y=trades["return"], mode="markers",
+            marker={"color": colors, "size": 7, "opacity": 0.75},
+            customdata=custom, showlegend=False,
+            hovertemplate=(
+                f"{excursion.upper()}: %{{x:.2%}} · return: %{{y:.2%}}"
+                "<br>%{customdata[0]} · %{customdata[1]} · %{customdata[2]} days<extra></extra>"
+            ),
+            row=1, col=col_index,
+        )
+        bound = trades[excursion].agg(["min", "max"])
+        figure.add_scatter(
+            x=bound, y=bound, mode="lines", showlegend=False,
+            line={"color": "#6B7280", "width": 1, "dash": "dash"},
+            hoverinfo="skip", row=1, col=col_index,
+        )
+
+    _base_layout(figure, title=title or "Trade excursions", height=height, time_axis=False)
+    figure.update_layout(hovermode="closest")
+    figure.update_xaxes(tickformat=".0%")
+    figure.update_yaxes(tickformat=".0%")
+    figure.update_yaxes(title_text="Trade return", row=1, col=1)
+    return figure
+
+
+def trade_distribution(
+    trades: pd.DataFrame,
+    by: str = "exit_reason",
+    *,
+    title: str | None = None,
+    height: int = 430,
+) -> Figure:
+    """Create an interactive box plot of per-trade returns grouped by a column.
+
+    Args:
+        trades: Canonical trades-format DataFrame (see :mod:`qrt.data.datasets`).
+        by: Trades column to group by (e.g. ``"exit_reason"``,
+            ``"direction"``, or any feature-snapshot column).
+        title: Figure title.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``.
+
+    Raises:
+        ValueError: If ``by`` is not a trades column.
+    """
+    from qrt.stats.core import _validate_trades
+
+    _validate_trades(trades, ("entry_time", "exit_time", "direction", "return"))
+    if by not in trades.columns:
+        raise ValueError(f"by={by!r} is not a trades column. Available: {list(trades.columns)}")
+
+    figure = go.Figure()
+    for index, (value, group) in enumerate(trades.groupby(by, observed=True)):
+        figure.add_box(
+            y=group["return"], name=str(value),
+            boxpoints="all", jitter=0.4, pointpos=0, marker={"size": 4, "opacity": 0.6},
+            line={"width": 1.5}, marker_color=_QUANT_COLORS[index % len(_QUANT_COLORS)],
+        )
+    figure.add_hline(y=0.0, line={"color": "#6B7280", "width": 1, "dash": "dash"})
+    _base_layout(figure, title=title or f"Trade returns by {by}", height=height, time_axis=False)
+    figure.update_layout(hovermode="closest", showlegend=False)
+    figure.update_yaxes(title_text="Trade return", tickformat=".1%")
+    figure.update_xaxes(title_text=by)
+    return figure
+
+
 def show(
     figure: Figure,
     name: str | None = None,
@@ -928,14 +2004,29 @@ def show(
 
 
 __all__ = [
+    "cumulative_returns",
+    "daily_returns",
     "drawdown",
+    "eoy_returns",
     "equity",
     "line",
+    "mae_mfe",
+    "metrics_table",
     "montecarlo",
     "montecarlo_distribution",
+    "monthly_distribution",
     "monthly_heatmap",
     "noise_test",
     "performance",
+    "report",
+    "return_quantiles",
+    "rolling_beta",
+    "rolling_sharpe",
+    "rolling_sortino",
+    "rolling_volatility",
     "show",
+    "trade_distribution",
+    "trades",
     "variance_test",
+    "worst_drawdowns",
 ]

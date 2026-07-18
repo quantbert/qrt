@@ -1,0 +1,17 @@
+---
+title: Portfolio
+---
+
+`q.portfolio` is qrt's **planned** portfolio analysis module: attribution,
+exposure, turnover, and risk decomposition. It is scaffolded but empty — new
+concerns land as submodules following the same convention as `q.feat`/`q.data`.
+
+Some building blocks already live elsewhere in the meantime:
+
+- `q.stats.trades_to_positions` — a per-bar position/exposure series derived
+  from a trade log (see [Data schemas](../data/schemas.ipynb#trade-logs) for
+  the format).
+- `q.stats.trade_stats` — includes an *Exposure* row (fraction of days with an
+  open trade) per strategy or group.
+
+Follow progress on the [Roadmap](../roadmap.qmd).

@@ -1,0 +1,19 @@
+---
+title: Return Statistics
+---
+
+`q.stats` computes return-stream statistics with no Plotly dependency;
+`q.plot` renders them. See [Feature Engineering](../feat/index.qmd) for
+feature engineering and price-chart examples, and [Data](../data/index.qmd)
+for loading/saving OHLCV data. Trade-log statistics
+(`q.stats.trade_stats`, `q.stats.trades_to_returns`) are shown on the
+[Trade logs](../plot/trades.ipynb) page.
+
+Pages:
+
+- [Performance & benchmark](performance.ipynb) — headline metrics
+  (CAGR, Sharpe, Max Drawdown, ...) and benchmark-relative alpha/beta.
+- [Rolling & calendar](rolling.ipynb) — rolling diagnostics and year-by-month
+  return tables.
+- [Chained API](chained.ipynb) — `q.stats.returns(...)`, the bound
+  stats-and-plots helper for notebook exploration.

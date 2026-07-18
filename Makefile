@@ -14,8 +14,9 @@ test: ## Run the test suite
 stubs: ## Regenerate .pyi stubs for the dynamic feat wrappers
 	uv run python tools/gen_feat_stubs.py
 
-datasets: ## Refresh prepackaged sample datasets (AAPL, SPY, BTC-USD) from Yahoo Finance
+datasets: ## Refresh prepackaged sample datasets (OHLCV from Yahoo, then regenerate demo strategy trade logs)
 	uv run python tools/update_datasets.py
+	uv run python tools/gen_demo_strategies.py
 
 nb-execute: ## Re-run docs/*.ipynb in place so they carry saved cell outputs (for local editor preview)
 	uv run --group docs jupyter nbconvert --to notebook --execute --inplace docs/feat.ipynb docs/data.ipynb docs/stats.ipynb

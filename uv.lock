@@ -1550,7 +1550,7 @@ wheels = [
 
 [[package]]
 name = "pyqrt"
-version = "0.0.10"
+version = "0.0.12"
 source = { editable = "." }
 dependencies = [
     { name = "duckdb" },

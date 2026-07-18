@@ -31,6 +31,24 @@ register it in the imports and ``__all__`` below. It becomes available as
 ``q.model.<name>``.
 """
 
-from qrt.model import selection, torch
+from typing import TYPE_CHECKING
+
+from qrt.model import selection
+
+if TYPE_CHECKING:
+    from qrt.model import torch
+
+
+def __getattr__(name: str) -> object:
+    # Lazily import the PyTorch-backed submodule: an eager import here
+    # would pull in torch (~0.7s import) on every `import qrt`. Uses
+    # importlib because `from qrt.model import torch` would re-trigger
+    # this __getattr__ and recurse.
+    if name == "torch":
+        import importlib
+
+        return importlib.import_module("qrt.model.torch")
+    raise AttributeError(f"module 'qrt.model' has no attribute {name!r}")
+
 
 __all__ = ["selection", "torch"]

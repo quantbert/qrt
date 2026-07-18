@@ -21,14 +21,6 @@ website:
     left:
       - text: "Getting Started"
         href: index.ipynb
-      - text: "Feature Engineering"
-        href: feat.ipynb
-      - text: "Data Access"
-        href: data.ipynb
-      - text: "Return Statistics"
-        href: stats.ipynb
-      - text: "Plotting"
-        href: plot.ipynb
       - text: "API Reference"
         href: reference/index.qmd
       - text: "Roadmap"
@@ -36,6 +28,68 @@ website:
     tools:
       - icon: github
         href: https://github.com/quantbert/qrt
+  sidebar:
+    # Left-docked module tree: one folder per qrt submodule under docs/,
+    # each with an index landing page plus per-topic pages. Page order is
+    # defined here, so file names don't need numeric prefixes.
+    - id: docs
+      style: docked
+      collapse-level: 1
+      contents:
+        - text: "Getting Started"
+          href: index.ipynb
+        - section: "q.bt — Backtesting"
+          href: bt/index.qmd
+        - section: "q.data — Data"
+          href: data/index.qmd
+          contents:
+            - text: "Sample datasets"
+              href: data/datasets.ipynb
+            - text: "Data schemas"
+              href: data/schemas.ipynb
+            - text: "Local files"
+              href: data/local.ipynb
+            - text: "Market data sources"
+              href: data/sources.ipynb
+        - section: "q.feat — Features"
+          href: feat/index.qmd
+          contents:
+            - text: "qta — our own features"
+              href: feat/qta.ipynb
+            - text: "TA-Lib"
+              href: feat/talib.ipynb
+            - text: "pandas-ta-classic"
+              href: feat/pandas_ta.ipynb
+        - section: "q.model — Models"
+          href: model/index.ipynb
+        - section: "q.plot — Plotting"
+          href: plot/index.qmd
+          contents:
+            - text: "Return charts"
+              href: plot/returns.ipynb
+            - text: "Tearsheet report"
+              href: plot/report.ipynb
+            - text: "Simulation tests"
+              href: plot/simulation.ipynb
+            - text: "Trade logs"
+              href: plot/trades.ipynb
+            - text: "Saving figures"
+              href: plot/saving.qmd
+        - section: "q.portfolio — Portfolio"
+          href: portfolio/index.qmd
+        - section: "q.stats — Statistics"
+          href: stats/index.qmd
+          contents:
+            - text: "Performance & benchmark"
+              href: stats/performance.ipynb
+            - text: "Rolling & calendar returns"
+              href: stats/rolling.ipynb
+            - text: "Chained API"
+              href: stats/chained.ipynb
+        - section: "q.utils — Utilities"
+          href: utils/index.ipynb
+        - text: "Roadmap"
+          href: roadmap.qmd
 
 format:
   html:

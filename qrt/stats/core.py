@@ -253,6 +253,44 @@ def rolling_sharpe(
     )
 
 
+def rolling_sortino(
+    returns: pd.Series,
+    window: int = 63,
+    *,
+    return_type: ReturnType = "simple",
+    periods_per_year: int | None = None,
+    rf: float = 0.0,
+) -> pd.Series:
+    """Return annualized rolling Sortino ratios over a moving window.
+
+    The [Sortino ratio](https://en.wikipedia.org/wiki/Sortino_ratio) is like the Sharpe ratio, but
+    only penalizes downside volatility, since investors rarely mind upside swings.
+
+    Args:
+        returns: Periodic return series.
+        window: Rolling window size, in periods.
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        periods_per_year: Annualization frequency. Inferred from the index
+            when not given.
+        rf: Annualized risk-free rate, subtracted (after deannualizing) from
+            returns before computing the ratio. Defaults to ``0.0``.
+
+    Returns:
+        Series of annualized rolling Sortino ratios.
+    """
+    series = _simple_returns(returns, return_type)
+    if window < 2:
+        raise ValueError("window must be at least 2")
+    periods = _periods_per_year(periods_per_year, series.index)
+    excess = _excess_returns(series, rf, periods)
+    downside_deviation = excess.rolling(window).apply(
+        lambda values: np.sqrt(np.mean(np.minimum(values, 0.0) ** 2)), raw=True
+    )
+    return (excess.rolling(window).mean().div(downside_deviation) * periods**0.5).rename(
+        f"{series.name} rolling Sortino"
+    )
+
+
 def rolling_beta(
     returns: pd.Series,
     benchmark: pd.Series,
@@ -2315,6 +2353,10 @@ class Returns:
         """See :func:`rolling_sharpe`."""
         return rolling_sharpe(self.returns, window, periods_per_year=self.periods_per_year, rf=self.rf)
 
+    def rolling_sortino(self, window: int = 63) -> pd.Series:
+        """See :func:`rolling_sortino`."""
+        return rolling_sortino(self.returns, window, periods_per_year=self.periods_per_year, rf=self.rf)
+
     def rolling_volatility(self, window: int = 63) -> pd.Series:
         """See :func:`rolling_volatility`."""
         return rolling_volatility(self.returns, window, periods_per_year=self.periods_per_year)
@@ -2381,3 +2423,223 @@ def returns(
         ``.alpha()``, ``.beta()``, ``.rolling_beta()``, ...) and ``.plot(kind=...)``.
     """
     return Returns(data, benchmark, return_type=return_type, periods_per_year=periods_per_year, rf=rf)
+
+
+# ---------------------------------------------------------------------------
+# Trades format (one row per round-trip trade)
+# ---------------------------------------------------------------------------
+
+#: Reserved columns of the canonical trades format, in order. Any further
+#: columns on a trades frame are entry-time feature snapshots (free-form
+#: trade metadata, surfaced in plot hovers and usable as `trade_stats` groupers).
+TRADE_COLUMNS = (
+    "symbol",
+    "entry_time",
+    "exit_time",
+    "direction",
+    "entry_reason",
+    "exit_reason",
+    "entry_price",
+    "exit_price",
+    "return",
+    "mae",
+    "mfe",
+    "size",
+    "fees",
+)
+
+#: Valid ``direction`` values for the canonical trades format:
+#: ``1`` = long, ``-1`` = short.
+_DIRECTION_VALUES = frozenset({1, -1})
+
+
+def _validate_trades(trades: pd.DataFrame, required: tuple[str, ...]) -> pd.DataFrame:
+    """Check the trades frame has the required canonical columns."""
+    missing = [column for column in required if column not in trades.columns]
+    if missing:
+        raise ValueError(
+            f"trades is missing required column(s) {missing}; expected the "
+            "canonical trades format (see qrt.data.datasets.TRADE_LOGS demos)"
+        )
+    unknown = set(trades["direction"]) - _DIRECTION_VALUES
+    if "direction" in required and unknown:
+        raise ValueError(
+            f"Unknown direction value(s) {sorted(unknown)}; expected 1 (long) / -1 (short)"
+        )
+    return trades
+
+
+def trades_to_returns(trades: pd.DataFrame, prices: pd.Series | None = None) -> pd.Series:
+    """Convert a trade log into a periodic return stream.
+
+    The bridge from qrt's canonical trades format (one row per round-trip
+    trade, see :mod:`qrt.data.datasets`) to the return-stream form every
+    other :mod:`qrt.stats`/:mod:`qrt.plot` function consumes.
+
+    Without ``prices``, each trade's whole return is attributed at its
+    ``exit_time`` (compounded when several trades exit on the same bar) --
+    fine for aggregate stats, but intra-trade drawdown and volatility are
+    invisible. With ``prices`` (a close series covering the trade span),
+    trades are marked to market: each bar in a trade contributes its
+    close-to-close return (entry bar: close vs ``entry_price``; exit bar:
+    ``exit_price`` vs previous close), direction-adjusted, and bars with no
+    open trade contribute ``0.0`` -- giving honest drawdown/volatility/
+    exposure statistics.
+
+    Note:
+        For long trades, marked-to-market bar returns compound exactly to
+        the trade's stored ``return``. For shorts they model a *daily
+        rebalanced* short position, which compounds slightly differently
+        than the unrebalanced trade-level return -- both are correct, they
+        answer different questions.
+
+    Args:
+        trades: Canonical trades-format DataFrame.
+        prices: Optional close series with a ``DatetimeIndex`` covering the
+            trade span (e.g. ``q.data.datasets.load("spy")["close"]``).
+
+    Returns:
+        Periodic simple-return series named ``"return"``, indexed by
+        ``exit_time`` (without ``prices``) or by the full ``prices`` index
+        (with ``prices``).
+    """
+    _validate_trades(trades, ("entry_time", "exit_time", "direction", "return"))
+    if prices is None:
+        out = (
+            trades.groupby("exit_time")["return"]
+            .apply(lambda group: (1.0 + group).prod() - 1.0)
+            .sort_index()
+        )
+        return out.rename("return")
+
+    compounded = pd.Series(1.0, index=prices.index, name="return")
+    for trade in trades.to_dict("records"):  # not itertuples: it mangles the 'return' column (keyword)
+        sign = trade["direction"]
+        window = prices.loc[trade["entry_time"] : trade["exit_time"]]
+        if window.empty:  # trade span not covered by prices: attribute at exit
+            bar_returns = pd.Series([trade["return"]], index=[trade["exit_time"]], dtype=float)
+        else:
+            marks = window.copy()
+            marks.iloc[-1] = trade["exit_price"]
+            bar_returns = marks.pct_change()
+            bar_returns.iloc[0] = marks.iloc[0] / trade["entry_price"] - 1.0
+        compounded = compounded.mul(1.0 + sign * bar_returns, fill_value=1.0)
+    return compounded.sub(1.0).rename("return")
+
+
+def trades_to_positions(trades: pd.DataFrame, index: pd.Index) -> pd.Series:
+    """Convert a trade log into a signed position series over ``index``.
+
+    Each trade contributes ``+1`` (long) or ``-1`` (short) on every bar from
+    its ``entry_time`` through its ``exit_time`` (inclusive); overlapping
+    trades sum. Bars with no open trade are ``0`` -- the basis for exposure
+    timelines and time-in-market analysis.
+
+    Args:
+        trades: Canonical trades-format DataFrame.
+        index: Target index (e.g. ``prices.index``) to evaluate positions on.
+
+    Returns:
+        Integer position series named ``"position"`` over ``index``.
+    """
+    _validate_trades(trades, ("entry_time", "exit_time", "direction"))
+    positions = pd.Series(0, index=index, name="position")
+    for trade in trades.to_dict("records"):
+        positions.loc[trade["entry_time"] : trade["exit_time"]] += trade["direction"]
+    return positions
+
+
+def _merged_interval_days(trades: pd.DataFrame) -> float:
+    """Total days covered by the union of [entry_time, exit_time] intervals."""
+    intervals = trades[["entry_time", "exit_time"]].sort_values("entry_time")
+    total = pd.Timedelta(0)
+    current_start = current_end = None
+    for start, end in intervals.itertuples(index=False):
+        if current_end is None or start > current_end:
+            if current_end is not None:
+                total += current_end - current_start
+            current_start, current_end = start, end
+        else:
+            current_end = max(current_end, end)
+    if current_end is not None:
+        total += current_end - current_start
+    return total / pd.Timedelta(days=1)
+
+
+def _trade_group_stats(trades: pd.DataFrame) -> pd.Series:
+    """Compute the trade-level metric block for one group of trades."""
+    trade_returns = trades["return"]
+    wins = trade_returns[trade_returns > 0]
+    losses = trade_returns[trade_returns < 0]
+    durations = (trades["exit_time"] - trades["entry_time"]) / pd.Timedelta(days=1)
+    span_days = (trades["exit_time"].max() - trades["entry_time"].min()) / pd.Timedelta(days=1)
+    avg_win_value = wins.mean() if len(wins) else float("nan")
+    avg_loss_value = losses.mean() if len(losses) else float("nan")
+    gross_losses = abs(losses.sum())
+    return pd.Series(
+        {
+            "Trades": float(len(trades)),
+            "Win Rate": len(wins) / len(trade_returns[trade_returns != 0]) if (trade_returns != 0).any() else float("nan"),
+            "Total Return": (1.0 + trade_returns).prod() - 1.0,
+            "Avg Return": trade_returns.mean(),
+            "Avg Win": avg_win_value,
+            "Avg Loss": avg_loss_value,
+            "Payoff Ratio": avg_win_value / abs(avg_loss_value) if losses.any() else float("nan"),
+            "Profit Factor": wins.sum() / gross_losses if gross_losses else float("nan"),
+            "Best": trade_returns.max(),
+            "Worst": trade_returns.min(),
+            "Avg MAE": trades["mae"].mean() if "mae" in trades else float("nan"),
+            "Avg MFE": trades["mfe"].mean() if "mfe" in trades else float("nan"),
+            "Avg Days": durations.mean(),
+            "Median Days": durations.median(),
+            "Exposure": _merged_interval_days(trades) / span_days if span_days else float("nan"),
+        },
+        dtype=float,
+    )
+
+
+def trade_stats(trades: pd.DataFrame, by: str | None = None) -> pd.DataFrame:
+    """Calculate trade-level statistics from a canonical trades-format log.
+
+    Unlike the return-stream metrics (:func:`performance`, :func:`win_rate`,
+    ...), these operate on whole round-trip trades -- so ``Win Rate`` is the
+    share of winning *trades*, ``Avg Days`` the mean holding period, and
+    ``Exposure`` the fraction of calendar time (first entry to last exit)
+    with an open position, computed from the union of actual trade spans.
+
+    Args:
+        trades: Canonical trades-format DataFrame (see :mod:`qrt.data.datasets`).
+        by: Optional column to group by (e.g. ``"exit_reason"``,
+            ``"direction"``, or any feature-snapshot column). When given, the
+            result has one column per group next to the ``All`` column.
+
+    Returns:
+        DataFrame of metrics (rows) by group (columns):
+
+        - ``Trades``: Number of round-trip trades.
+        - ``Win Rate``: Share of non-zero-return trades that were profitable.
+        - ``Total Return``: Compounded return across the group's trades.
+        - ``Avg Return`` / ``Avg Win`` / ``Avg Loss``: Mean trade returns
+                (overall, winners only, losers only).
+        - ``Payoff Ratio``: Avg Win / \\|Avg Loss\\|.
+        - ``Profit Factor``: Gross wins / gross losses.
+        - ``Best`` / ``Worst``: Extreme single-trade returns.
+        - ``Avg MAE`` / ``Avg MFE``: Mean max adverse/favorable excursion
+                (``NaN`` when the columns are absent).
+        - ``Avg Days`` / ``Median Days``: Holding period in calendar days.
+        - ``Exposure``: Fraction of the group's calendar span with an open
+                position.
+
+    Raises:
+        ValueError: If ``trades`` lacks canonical columns, or ``by`` is not a column.
+    """
+    _validate_trades(trades, ("entry_time", "exit_time", "direction", "return"))
+    if len(trades) == 0:
+        raise ValueError("trades is empty")
+    result = {"All": _trade_group_stats(trades)}
+    if by is not None:
+        if by not in trades.columns:
+            raise ValueError(f"by={by!r} is not a trades column. Available: {list(trades.columns)}")
+        for value, group in trades.groupby(by, observed=True):
+            result[str(value)] = _trade_group_stats(group)
+    return pd.DataFrame(result)

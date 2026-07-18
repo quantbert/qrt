@@ -1,0 +1,11 @@
+---
+title: "Saving figures: `q.plot.show`"
+---
+
+Any figure returned by `q.plot` can be displayed and/or exported as
+self-contained HTML and/or PNG (the latter requires `kaleido`) via
+`q.plot.show`. This example writes files, so it's shown but not executed here:
+
+```python
+q.plot.show(fig, "montecarlo", save_to="exports", formats=["html", "png"])
+```

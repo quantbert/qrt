@@ -1,0 +1,21 @@
+---
+title: Data
+---
+
+`q.data` collects everything data-related under one namespace:
+
+| Submodule | What it is |
+|---|---|
+| `q.data.datasets` | prepackaged sample OHLCV data (AAPL, SPY, BTC-USD), works offline |
+| `q.data.local` (`q.data.load`/`q.data.save`) | load/save local parquet or csv files |
+| `q.data.sources` | downloadable market data vendors and generic backends, one submodule each |
+
+Pages:
+
+- [Sample datasets](datasets.ipynb) — the bundled offline OHLCV history and
+  demo strategy trade logs.
+- [Data schemas](schemas.ipynb) — the canonical OHLCV-bars and trades-format
+  layouts everything else relies on.
+- [Local files](local.ipynb) — `q.data.load`/`q.data.save` for parquet/csv.
+- [Market data sources](sources.ipynb) — Yahoo Finance, Binance, and DuckDB
+  backends.

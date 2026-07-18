@@ -14,15 +14,97 @@ def test_import():
 
 def test_datasets_load_bundled_offline():
     for name in q.data.datasets.AVAILABLE:
+        if name in q.data.datasets.TRADE_LOGS:
+            continue
         df = q.data.datasets.load(name)
         assert list(df.columns) == ["open", "high", "low", "close", "volume"]
         assert df.index.name == "datetime"
         assert len(df) > 0
 
 
+def test_datasets_load_trade_logs():
+    reserved = [
+        "symbol", "entry_time", "exit_time", "direction", "entry_reason",
+        "exit_reason", "entry_price", "exit_price", "return", "mae", "mfe",
+        "size", "fees",
+    ]
+    for name in q.data.datasets.TRADE_LOGS:
+        trades = q.data.datasets.load(name)
+        assert list(trades.columns[: len(reserved)]) == reserved
+        assert len(trades) > 0
+        assert trades["direction"].isin([1, -1]).all()
+        assert (trades["exit_time"] >= trades["entry_time"]).all()
+        # returns are decimal fractions, direction-adjusted
+        sign = trades["direction"]
+        expected = sign * (trades["exit_price"] / trades["entry_price"] - 1)
+        assert np.allclose(trades["return"], expected)
+        # MAE/MFE bracket the trade return
+        assert (trades["mae"] <= trades["return"] + 1e-12).all()
+        assert (trades["mfe"] >= trades["return"] - 1e-12).all()
+        # trades never overlap (single position at a time)
+        assert (trades["entry_time"].iloc[1:].values
+                >= trades["exit_time"].iloc[:-1].values).all()
+
+
 def test_datasets_load_unknown_raises():
     with pytest.raises(KeyError):
         q.data.datasets.load("not-a-real-dataset")
+
+
+def test_trades_to_returns():
+    trades = q.data.datasets.load("spy_rsi2")
+    spy = q.data.datasets.load("spy")
+
+    # without prices: attributed at exit_time, compounds to the trade total
+    r = q.stats.trades_to_returns(trades)
+    assert r.index.is_monotonic_increasing
+    assert np.isclose((1 + r).prod(), (1 + trades["return"]).prod())
+
+    # with prices: mark-to-market on the full prices index, flat bars are 0
+    r_mtm = q.stats.trades_to_returns(trades, prices=spy["close"])
+    assert r_mtm.index.equals(spy.index)
+    assert (r_mtm == 0).sum() > len(spy) / 2  # mostly flat strategy
+    # long-only: daily compounding reproduces the trade-level total exactly
+    assert np.isclose((1 + r_mtm).prod(), (1 + trades["return"]).prod())
+
+    with pytest.raises(ValueError):
+        q.stats.trades_to_returns(trades.drop(columns=["direction"]))
+
+
+def test_trades_to_positions():
+    spy = q.data.datasets.load("spy")
+    trades = q.data.datasets.load("spy_random")
+    pos = q.stats.trades_to_positions(trades, spy.index)
+    assert set(pos.unique()) <= {-1, 0, 1}
+    assert (pos != 0).any() and (pos == 0).any()
+    # every entry bar carries the trade's sign
+    first = trades.iloc[0]
+    assert pos.loc[first["entry_time"]] == first["direction"]
+
+
+def test_trade_stats():
+    trades = q.data.datasets.load("spy_breakout")
+    table = q.stats.trade_stats(trades, by="direction")
+    assert "All" in table.columns and "1" in table.columns
+    assert table.loc["Trades", "All"] == len(trades)
+    assert 0 <= table.loc["Win Rate", "All"] <= 1
+    assert 0 < table.loc["Exposure", "All"] <= 1
+    assert table.loc["Avg MAE", "All"] < 0 < table.loc["Avg MFE", "All"]
+    assert np.isclose(table.loc["Total Return", "All"], (1 + trades["return"]).prod() - 1)
+    with pytest.raises(ValueError):
+        q.stats.trade_stats(trades, by="not-a-column")
+
+
+def test_trade_plots():
+    spy = q.data.datasets.load("spy")
+    trades = q.data.datasets.load("spy_breakout")
+    feats = pd.DataFrame({"ema50": spy["close"].ewm(span=50, adjust=False).mean()})
+    assert isinstance(q.plot.trades(trades, spy["close"], features=feats), PlotlyFigure)
+    assert isinstance(q.plot.trades(trades, spy), PlotlyFigure)  # OHLCV frame accepted
+    assert isinstance(q.plot.mae_mfe(trades), PlotlyFigure)
+    assert isinstance(q.plot.trade_distribution(trades, by="exit_reason"), PlotlyFigure)
+    with pytest.raises(ValueError):
+        q.plot.trade_distribution(trades, by="not-a-column")
 
 
 def test_sma():
@@ -80,7 +162,7 @@ def test_plot_accepts_log_returns():
     simple_returns = pd.Series([0.01, -0.02, 0.03], name="strategy")
     log_returns = (1.0 + simple_returns).apply(math.log)
     figure = q.plot.plot(log_returns, return_type="log")
-    assert figure.data[0].y[-1] == pytest.approx((1.0 + simple_returns).prod())
+    assert figure.data[0].y[-1] == pytest.approx((1.0 + simple_returns).prod() - 1.0)
 
 
 def test_performance_calculates_standard_metrics_and_infers_frequency():

@@ -12,7 +12,6 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
-import torch
 from dotenv import load_dotenv as _load_dotenv
 from joblib import Memory
 from platformdirs import user_cache_dir
@@ -124,6 +123,10 @@ def set_seed(seed: int = 42, strict_determinism: bool = False) -> None:
         - Determinism is not guaranteed across different PyTorch versions,
           hardware, or number of threads/devices.
     """
+    # Imported lazily: torch adds ~0.7s to import time, unnecessary weight
+    # for the many qrt uses that never touch it.
+    import torch
+
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)

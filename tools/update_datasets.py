@@ -16,12 +16,6 @@ from qrt.data import datasets
 
 def main() -> None:
     names = sys.argv[1:] or None
-    if names:
-        unknown = [n for n in names if n not in datasets.AVAILABLE]
-        if unknown:
-            raise SystemExit(
-                f"Unknown dataset(s): {unknown}. Available: {list(datasets.AVAILABLE)}"
-            )
     datasets.refresh(names)
 
 
