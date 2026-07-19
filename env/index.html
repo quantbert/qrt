@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Utilities – qrt</title>
+<title>Environment – qrt</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -68,8 +68,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../utils/roadmap.html" rel="next">
-<link href="../stats/roadmap.html" rel="prev">
+<link href="../env/roadmap.html" rel="next">
+<link href="../model/roadmap.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -153,7 +153,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../utils/index.html">q.utils — Utilities</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../env/index.html">q.env — Environment</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -283,13 +283,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../env/index.html" class="sidebar-item-text sidebar-link">
+            <a href="../env/index.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">q.env — Environment</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../env/roadmap.html" class="sidebar-item-text sidebar-link">
@@ -405,13 +405,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../utils/index.html" class="sidebar-item-text sidebar-link active">
+            <a href="../utils/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">q.utils — Utilities</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../utils/roadmap.html" class="sidebar-item-text sidebar-link">
@@ -436,18 +436,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#reproducibility-q.utils.set_seed" id="toc-reproducibility-q.utils.set_seed" class="nav-link active" data-scroll-target="#reproducibility-q.utils.set_seed">Reproducibility: <code>q.utils.set_seed</code></a></li>
-  <li><a href="#caching-q.utils.cache_dir-and-q.utils.memory" id="toc-caching-q.utils.cache_dir-and-q.utils.memory" class="nav-link" data-scroll-target="#caching-q.utils.cache_dir-and-q.utils.memory">Caching: <code>q.utils.cache_dir</code> and <code>q.utils.memory</code></a></li>
-  <li><a href="#environment-and-console" id="toc-environment-and-console" class="nav-link" data-scroll-target="#environment-and-console">Environment and console</a></li>
+  <li><a href="#load-a-.env-file" id="toc-load-a-.env-file" class="nav-link active" data-scroll-target="#load-a-.env-file">Load a <code>.env</code> file</a></li>
+  <li><a href="#read-variables" id="toc-read-variables" class="nav-link" data-scroll-target="#read-variables">Read variables</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.dev/quantbert/qrt/blob/main/utils/index.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/utils/index.ipynb" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/env/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/env/index.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Utilities</h1>
+<h1 class="title">Environment</h1>
 </div>
 
 
@@ -464,48 +463,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This page’s code cells are <strong>executed live</strong> by Quarto every time the docs are built. <code>q.utils</code> holds the small shared helpers the rest of the library (and your research code) leans on.</p>
-<section id="reproducibility-q.utils.set_seed" class="level2">
-<h2 class="anchored" data-anchor-id="reproducibility-q.utils.set_seed">Reproducibility: <code>q.utils.set_seed</code></h2>
-<p>Seeds Python’s <code>random</code>, NumPy, and PyTorch (CPU + CUDA) in one call — also re-exported as <code>q.set_seed</code>. Pass <code>strict_determinism=True</code> to additionally force deterministic cuDNN kernels (slower, and some ops may raise if they have no deterministic implementation):</p>
-<div id="d3e4f223" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> qrt <span class="im">as</span> q</span>
+<p><code>q.env</code> keeps environment setup explicit. Importing qrt never reads a <code>.env</code> file or changes the process environment.</p>
+<section id="load-a-.env-file" class="level2">
+<h2 class="anchored" data-anchor-id="load-a-.env-file">Load a <code>.env</code> file</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> qrt <span class="im">as</span> q</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>q.set_seed(<span class="dv">42</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>q.env.load()                 <span class="co"># search upward for .env</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>q.env.load(<span class="st">"config/dev.env"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>q.env.load(override<span class="op">=</span><span class="va">True</span>)    <span class="co"># replace variables already in os.environ</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Existing process variables win by default, matching <code>python-dotenv</code> behavior. This is useful for keeping deployment configuration authoritative while still loading local API keys during research.</p>
 </section>
-<section id="caching-q.utils.cache_dir-and-q.utils.memory" class="level2">
-<h2 class="anchored" data-anchor-id="caching-q.utils.cache_dir-and-q.utils.memory">Caching: <code>q.utils.cache_dir</code> and <code>q.utils.memory</code></h2>
-<p><code>cache_dir</code> resolves (and creates) qrt’s OS-standard user cache directory — e.g.&nbsp;<code>~/.cache/qrt</code> on Linux — used by <code>q.data.sources</code> for downloaded data so caches don’t depend on the working directory. <code>q.utils.memory</code> is a <a href="https://joblib.readthedocs.io/">joblib</a> <code>Memory</code> rooted there, for disk-backed memoization of expensive, pure functions. <code>q.utils.clear_cache()</code> wipes either a named subdirectory or everything:</p>
-<div id="9de8643f" class="cell" data-execution_count="2">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>q.utils.cache_dir()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="2">
-<pre><code>PosixPath('/home/hi/.cache/qrt')</code></pre>
-</div>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="at">@q.utils.memory.cache</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> slow_feature(df): ...</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>q.utils.clear_cache(<span class="st">"joblib"</span>)  <span class="co"># or clear_cache() for everything</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="environment-and-console" class="level2">
-<h2 class="anchored" data-anchor-id="environment-and-console">Environment and console</h2>
-<ul>
-<li><code>q.utils.load_env()</code> — thin wrapper around <code>dotenv.load_dotenv</code>, for API keys/secrets needed by data sources (not executed here).</li>
-<li><code>q.utils.console</code> — a shared <a href="https://rich.readthedocs.io/">rich</a> <code>Console</code> for pretty CLI/notebook output.</li>
-<li><code>q.utils.log</code> — element-wise natural logarithm that preserves pandas labels; for simple returns <code>r</code>, <code>q.utils.log(1 + r)</code> gives log returns:</li>
-</ul>
-<div id="57367565" class="cell" data-execution_count="3">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>returns <span class="op">=</span> q.data.datasets.load(<span class="st">"spy"</span>)[<span class="st">"close"</span>].pct_change().dropna()</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>q.utils.log(<span class="dv">1</span> <span class="op">+</span> returns).tail(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="3">
-<pre><code>datetime
-2026-07-15    0.003956
-2026-07-16   -0.005433
-2026-07-17   -0.009946
-Name: close, dtype: float64</code></pre>
-</div>
-</div>
+<section id="read-variables" class="level2">
+<h2 class="anchored" data-anchor-id="read-variables">Read variables</h2>
+<p>Use <code>get</code> for optional configuration and <code>require</code> when execution cannot continue without a value:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>cache_host <span class="op">=</span> q.env.get(<span class="st">"CACHE_HOST"</span>, <span class="st">"localhost"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>api_key <span class="op">=</span> q.env.require(<span class="st">"MARKET_DATA_API_KEY"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>require</code> raises <code>KeyError</code> with the missing variable name. To inspect a file without changing <code>os.environ</code>, use <code>q.env.values(".env")</code>.</p>
+<p>Do not commit <code>.env</code> files containing credentials. Commit a <code>.env.example</code> with variable names and safe placeholder values instead.</p>
 
 
 </section>
@@ -913,12 +887,12 @@ Name: close, dtype: float64</code></pre>
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../stats/roadmap.html" class="pagination-link" aria-label="Roadmap">
+      <a href="../model/roadmap.html" class="pagination-link" aria-label="Roadmap">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Roadmap</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../utils/roadmap.html" class="pagination-link" aria-label="Roadmap">
+      <a href="../env/roadmap.html" class="pagination-link" aria-label="Roadmap">
         <span class="nav-page-text">Roadmap</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
@@ -928,4 +902,4 @@ Name: close, dtype: float64</code></pre>
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.dev/quantbert/qrt/blob/main/utils/index.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/utils/index.ipynb" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/env/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/env/index.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
