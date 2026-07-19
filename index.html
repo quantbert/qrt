@@ -239,8 +239,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./feature/qta.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">qta — our own features</span></a>
+  <a href="./feature/transforms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Transforms</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -489,8 +489,8 @@ Note
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>spy <span class="op">=</span> q.data.sources.yfinance.read(<span class="st">"SPY"</span>, <span class="st">"2024-01-01"</span>, <span class="st">"2025-01-01"</span>, <span class="st">"1d"</span>)</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># features</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> q.feature.qta.lags(aapl[<span class="st">"close"</span>], [<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">21</span>])</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>X[<span class="st">"sma_20"</span>] <span class="op">=</span> q.feature.qta.sma(aapl[<span class="st">"close"</span>], <span class="dv">20</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> q.feature.transforms.lags(aapl[<span class="st">"close"</span>], [<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">21</span>])</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>X[<span class="st">"sma_20"</span>] <span class="op">=</span> q.feature.transforms.sma(aapl[<span class="st">"close"</span>], <span class="dv">20</span>)</span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>X[<span class="st">"rsi_14"</span>] <span class="op">=</span> q.feature.talib.RSI(aapl)</span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># strategy vs benchmark returns</span></span>

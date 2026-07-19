@@ -298,7 +298,7 @@
     "href": "index.html#quickstart",
     "title": "Getting Started",
     "section": "Quickstart",
-    "text": "Quickstart\nuv add pyqrt\nimport qrt as q\n\n# fetch OHLCV data (cached as parquet)\naapl = q.data.sources.yfinance.read(\"AAPL\", \"2024-01-01\", \"2025-01-01\", \"1d\")\nspy = q.data.sources.yfinance.read(\"SPY\", \"2024-01-01\", \"2025-01-01\", \"1d\")\n\n# features\nX = q.feature.qta.lags(aapl[\"close\"], [1, 5, 21])\nX[\"sma_20\"] = q.feature.qta.sma(aapl[\"close\"], 20)\nX[\"rsi_14\"] = q.feature.talib.RSI(aapl)\n\n# strategy vs benchmark returns\nstrategy = aapl[\"close\"].pct_change().rename(\"AAPL\")\nbenchmark = spy[\"close\"].pct_change().rename(\"SPY\")\nq.stats.benchmark_stats(strategy, benchmark)",
+    "text": "Quickstart\nuv add pyqrt\nimport qrt as q\n\n# fetch OHLCV data (cached as parquet)\naapl = q.data.sources.yfinance.read(\"AAPL\", \"2024-01-01\", \"2025-01-01\", \"1d\")\nspy = q.data.sources.yfinance.read(\"SPY\", \"2024-01-01\", \"2025-01-01\", \"1d\")\n\n# features\nX = q.feature.transforms.lags(aapl[\"close\"], [1, 5, 21])\nX[\"sma_20\"] = q.feature.transforms.sma(aapl[\"close\"], 20)\nX[\"rsi_14\"] = q.feature.talib.RSI(aapl)\n\n# strategy vs benchmark returns\nstrategy = aapl[\"close\"].pct_change().rename(\"AAPL\")\nbenchmark = spy[\"close\"].pct_change().rename(\"SPY\")\nq.stats.benchmark_stats(strategy, benchmark)",
     "crumbs": [
       "Getting Started"
     ]
@@ -344,39 +344,27 @@
     ]
   },
   {
-    "objectID": "feature/qta.html",
-    "href": "feature/qta.html",
-    "title": "qta — our own features",
+    "objectID": "feature/talib.html",
+    "href": "feature/talib.html",
+    "title": "TA-Lib",
     "section": "",
-    "text": "Hand-rolled feature primitives, one file per feature under qrt/feature/qta/. These code cells are executed live by Quarto every time the docs are built.",
+    "text": "q.feature.talib wraps every TA-Lib indicator in a pandas-friendly signature.",
     "crumbs": [
       "Getting Started",
       "q.feature — Features",
-      "qta — our own features"
+      "TA-Lib"
     ]
   },
   {
-    "objectID": "feature/qta.html#sample-data",
-    "href": "feature/qta.html#sample-data",
-    "title": "qta — our own features",
+    "objectID": "feature/talib.html#sample-data",
+    "href": "feature/talib.html#sample-data",
+    "title": "TA-Lib",
     "section": "Sample data",
-    "text": "Sample data\nWe use qrt’s bundled AAPL sample dataset — loaded offline via q.data.datasets.load, no network dependency (see the Data tutorial for more on q.data):\n\nimport pandas as pd\n\nimport qrt as q\n\naapl = q.data.datasets.load(\"aapl\")\naapl.tail()\n\n\n\n\n\n\n\n\nopen\nhigh\nlow\nclose\nvolume\n\n\ndatetime\n\n\n\n\n\n\n\n\n\n2026-07-13\n317.019989\n323.450012\n315.779999\n317.309998\n43257800\n\n\n2026-07-14\n313.760010\n316.190002\n311.910004\n314.859985\n36336800\n\n\n2026-07-15\n317.619995\n328.730011\n317.320007\n327.500000\n60957600\n\n\n2026-07-16\n328.010010\n334.679993\n326.790009\n333.260010\n62970600\n\n\n2026-07-17\n331.980011\n334.989990\n329.000000\n333.739990\n63365300\n\n\n\n\n\n\n\nHand-rolled primitives, one file per feature under qrt/feature/qta/:\n\nsma_20 = q.feature.qta.sma(aapl[\"close\"], 20)\nsma_100 = q.feature.qta.sma(aapl[\"close\"], 100)\n\nprice_features = pd.DataFrame({\"close\": aapl[\"close\"], \"sma_20\": sma_20, \"sma_100\": sma_100})\nprice_features.tail()\n\n\n\n\n\n\n\n\nclose\nsma_20\nsma_100\n\n\ndatetime\n\n\n\n\n\n\n\n2026-07-13\n317.309998\n299.187001\n279.561089\n\n\n2026-07-14\n314.859985\n300.373500\n280.068622\n\n\n2026-07-15\n327.500000\n301.927499\n280.740221\n\n\n2026-07-16\n333.260010\n303.628500\n281.429456\n\n\n2026-07-17\n333.739990\n305.517999\n282.107506\n\n\n\n\n\n\n\n\nq.feature.qta.lags(aapl[\"close\"], [1, 5, 21]).tail()\n\n\n\n\n\n\n\n\nclose_lag1\nclose_lag5\nclose_lag21\n\n\ndatetime\n\n\n\n\n\n\n\n2026-07-13\n315.320007\n312.660004\n291.579987\n\n\n2026-07-14\n317.309998\n310.660004\n295.630005\n\n\n2026-07-15\n314.859985\n313.390015\n291.130005\n\n\n2026-07-16\n327.500000\n316.220001\n296.420013\n\n\n2026-07-17\n333.260010\n315.320007\n299.239990\n\n\n\n\n\n\n\nTo add a feature, create qrt/feature/qta/&lt;feature&gt;.py with one public function and re-export it in qrt/feature/qta/__init__.py (one import line + one __all__ entry).",
+    "text": "Sample data\nWe use qrt’s bundled AAPL sample dataset — loaded offline via q.data.datasets.load, no network dependency (see the Data tutorial for more on q.data):\n\nimport pandas as pd\n\nimport qrt as q\n\naapl = q.data.datasets.load(\"aapl\")\naapl.tail()\n\n\n\n\n\n\n\n\nopen\nhigh\nlow\nclose\nvolume\n\n\ndatetime\n\n\n\n\n\n\n\n\n\n2026-07-13\n317.019989\n323.450012\n315.779999\n317.309998\n43257800\n\n\n2026-07-14\n313.760010\n316.190002\n311.910004\n314.859985\n36336800\n\n\n2026-07-15\n317.619995\n328.730011\n317.320007\n327.500000\n60957600\n\n\n2026-07-16\n328.010010\n334.679993\n326.790009\n333.260010\n62970600\n\n\n2026-07-17\n331.980011\n334.989990\n329.000000\n333.739990\n63365300\n\n\n\n\n\n\n\nSingle-output indicators return a Series named after the indicator; multi-output indicators return a DataFrame with TA-Lib’s output names as columns:\n\nrsi = q.feature.talib.RSI(aapl)\natr = q.feature.talib.ATR(aapl, timeperiod=20)\nmacd = q.feature.talib.MACD(aapl)\n\npd.concat([rsi, atr, macd], axis=1).tail()\n\n\n\n\n\n\n\n\nrsi\natr\nmacd\nmacdsignal\nmacdhist\n\n\ndatetime\n\n\n\n\n\n\n\n\n\n2026-07-13\n64.170933\n7.852924\n5.248546\n2.576021\n2.672525\n\n\n2026-07-14\n61.464187\n7.730277\n5.482192\n3.157255\n2.324937\n\n\n2026-07-15\n68.780593\n8.037265\n6.611093\n3.848023\n2.763070\n\n\n2026-07-16\n71.441496\n8.029901\n7.879707\n4.654360\n3.225348\n\n\n2026-07-17\n71.658274\n7.927905\n8.822128\n5.487913\n3.334215",
     "crumbs": [
       "Getting Started",
       "q.feature — Features",
-      "qta — our own features"
-    ]
-  },
-  {
-    "objectID": "feature/qta.html#visualizing-features",
-    "href": "feature/qta.html#visualizing-features",
-    "title": "qta — our own features",
-    "section": "Visualizing features",
-    "text": "Visualizing features\nq.plot.col renders any feature DataFrame as an interactive Plotly chart with hover, zoom, and range-selector buttons — handy for eyeballing an indicator against price before using it in a model:\n\nfig = q.plot.col(\n    price_features,\n    title=\"AAPL close price with SMA overlays\",\n    ylabel=\"Price\",\n    height=450,\n)\nfig.show()",
-    "crumbs": [
-      "Getting Started",
-      "q.feature — Features",
-      "qta — our own features"
+      "TA-Lib"
     ]
   },
   {
@@ -523,27 +511,39 @@
     ]
   },
   {
-    "objectID": "reference/feature.talib.html",
-    "href": "reference/feature.talib.html",
-    "title": "feature.talib",
+    "objectID": "reference/feature.transforms.html",
+    "href": "reference/feature.transforms.html",
+    "title": "feature.transforms",
     "section": "",
-    "text": "feature.talib\nTA-Lib indicators exposed with a pandas-friendly interface.\nEvery TA-Lib function is available under its usual name and accepts an OHLCV DataFrame with lowercase columns (open, high, low, close, volume) – the frame layout returned by qrt.data.sources’s read() functions (e.g. qrt.data.sources.yfinance.read(...)). Indicators that only need a price series also accept a plain Series (treated as close). The datetime index is preserved on the output.\n\n\n&gt;&gt;&gt; q.feature.talib.RSI(ohlc)                    # Series named 'rsi'\n&gt;&gt;&gt; q.feature.talib.ATR(ohlc, timeperiod=20)     # uses high/low/close\n&gt;&gt;&gt; q.feature.talib.MACD(ohlc)                   # DataFrame: macd, macdsignal, macdhist\n&gt;&gt;&gt; q.feature.talib.SMA(prices, timeperiod=20)   # Series in, Series out\nUse dir(q.feature.talib) to list all indicators, or help(q.feature.talib.RSI) for a function’s inputs and parameters.",
+    "text": "feature.transforms\nGeneral-purpose feature transformations, one module per transform.\n\n\n\nCreate qrt/feature/transforms/_&lt;transform&gt;.py (leading underscore – it is a private implementation module; the function itself stays public).\nDefine one public function taking a Series/DataFrame and returning one, with the index preserved. Helpers should be prefixed with _.\nRe-export it below (one import line + one __all__ entry), so it is visible to IDEs and available as q.feature.transforms.&lt;transform&gt;.\n\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nlags\nCreate lagged copies of a Series or DataFrame.\n\n\npct_rank\nRolling percentile rank of each value within a trailing window.\n\n\nsma\nSimple moving average.\n\n\n\n\n\nfeature.transforms.lags(data, lags)\nCreate lagged copies of a Series or DataFrame.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\ndata\npd.Series | pd.DataFrame\nInput series or frame (rows ordered in time).\nrequired\n\n\nlags\nint | Iterable[int]\nNumber of lags (1..n) or an explicit iterable of lag periods.\nrequired\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\n\npd.DataFrame\nDataFrame with one column per (column, lag), named {name}_lag{k}.\n\n\n\n\n\n\n&gt;&gt;&gt; q.feature.transforms.lags(prices[\"close\"], 3)  # close_lag1..close_lag3\n&gt;&gt;&gt; q.feature.transforms.lags(df, [1, 5, 21])  # daily, weekly, monthly lags\n\n\n\n\nfeature.transforms.pct_rank(series, window=60)\nRolling percentile rank of each value within a trailing window.\nUseful for gauging whether a price or indicator value is relatively high or low compared to its own recent history, independent of absolute scale.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nseries\npd.Series\nInput series (e.g. close prices or an indicator).\nrequired\n\n\nwindow\nint\nRolling window size, in periods.\n60\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\n\npd.Series\nSeries of percentile ranks (0-100 scale), same index as series. The\n\n\n\npd.Series\nfirst window - 1 values are NaN (insufficient history).\n\n\n\n\n\n\n&gt;&gt;&gt; q.feature.transforms.pct_rank(prices[\"close\"], 60)\n\n\n\n\nfeature.transforms.sma(series, window)\nSimple moving average.\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nseries\npd.Series\nInput series (e.g. close prices).\nrequired\n\n\nwindow\nint\nRolling window size, in periods.\nrequired\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\n\npd.Series\nSeries of the rolling mean, with the same index as series.\n\n\n\n\n\n\n&gt;&gt;&gt; q.feature.transforms.sma(prices[\"close\"], 20)",
     "crumbs": [
       "API Reference",
       "q.feature",
-      "feature.talib"
+      "feature.transforms"
     ]
   },
   {
-    "objectID": "reference/feature.talib.html#examples",
-    "href": "reference/feature.talib.html#examples",
-    "title": "feature.talib",
+    "objectID": "reference/feature.transforms.html#to-add-a-transform",
+    "href": "reference/feature.transforms.html#to-add-a-transform",
+    "title": "feature.transforms",
     "section": "",
-    "text": "&gt;&gt;&gt; q.feature.talib.RSI(ohlc)                    # Series named 'rsi'\n&gt;&gt;&gt; q.feature.talib.ATR(ohlc, timeperiod=20)     # uses high/low/close\n&gt;&gt;&gt; q.feature.talib.MACD(ohlc)                   # DataFrame: macd, macdsignal, macdhist\n&gt;&gt;&gt; q.feature.talib.SMA(prices, timeperiod=20)   # Series in, Series out\nUse dir(q.feature.talib) to list all indicators, or help(q.feature.talib.RSI) for a function’s inputs and parameters.",
+    "text": "Create qrt/feature/transforms/_&lt;transform&gt;.py (leading underscore – it is a private implementation module; the function itself stays public).\nDefine one public function taking a Series/DataFrame and returning one, with the index preserved. Helpers should be prefixed with _.\nRe-export it below (one import line + one __all__ entry), so it is visible to IDEs and available as q.feature.transforms.&lt;transform&gt;.",
     "crumbs": [
       "API Reference",
       "q.feature",
-      "feature.talib"
+      "feature.transforms"
+    ]
+  },
+  {
+    "objectID": "reference/feature.transforms.html#functions",
+    "href": "reference/feature.transforms.html#functions",
+    "title": "feature.transforms",
+    "section": "",
+    "text": "Name\nDescription\n\n\n\n\nlags\nCreate lagged copies of a Series or DataFrame.\n\n\npct_rank\nRolling percentile rank of each value within a trailing window.\n\n\nsma\nSimple moving average.\n\n\n\n\n\nfeature.transforms.lags(data, lags)\nCreate lagged copies of a Series or DataFrame.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\ndata\npd.Series | pd.DataFrame\nInput series or frame (rows ordered in time).\nrequired\n\n\nlags\nint | Iterable[int]\nNumber of lags (1..n) or an explicit iterable of lag periods.\nrequired\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\n\npd.DataFrame\nDataFrame with one column per (column, lag), named {name}_lag{k}.\n\n\n\n\n\n\n&gt;&gt;&gt; q.feature.transforms.lags(prices[\"close\"], 3)  # close_lag1..close_lag3\n&gt;&gt;&gt; q.feature.transforms.lags(df, [1, 5, 21])  # daily, weekly, monthly lags\n\n\n\n\nfeature.transforms.pct_rank(series, window=60)\nRolling percentile rank of each value within a trailing window.\nUseful for gauging whether a price or indicator value is relatively high or low compared to its own recent history, independent of absolute scale.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nseries\npd.Series\nInput series (e.g. close prices or an indicator).\nrequired\n\n\nwindow\nint\nRolling window size, in periods.\n60\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\n\npd.Series\nSeries of percentile ranks (0-100 scale), same index as series. The\n\n\n\npd.Series\nfirst window - 1 values are NaN (insufficient history).\n\n\n\n\n\n\n&gt;&gt;&gt; q.feature.transforms.pct_rank(prices[\"close\"], 60)\n\n\n\n\nfeature.transforms.sma(series, window)\nSimple moving average.\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nseries\npd.Series\nInput series (e.g. close prices).\nrequired\n\n\nwindow\nint\nRolling window size, in periods.\nrequired\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\n\npd.Series\nSeries of the rolling mean, with the same index as series.\n\n\n\n\n\n\n&gt;&gt;&gt; q.feature.transforms.sma(prices[\"close\"], 20)",
+    "crumbs": [
+      "API Reference",
+      "q.feature",
+      "feature.transforms"
     ]
   },
   {
@@ -551,7 +551,7 @@
     "href": "reference/feature.html",
     "title": "feature",
     "section": "",
-    "text": "feature\nfeature\nFeature engineering: indicators and wrappers around feature libraries.\nStructured as a namespace of feature submodules:\nq.feature.qta        -- our own hand-rolled features\nq.feature.talib      -- every TA-Lib indicator, pandas-friendly\nq.feature.pandas_ta  -- every pandas-ta-classic indicator\nTo add your own feature family, create qrt/feature/&lt;name&gt;.py with functions that take a Series/DataFrame and return one, then register it in the imports and __all__ below. It becomes available as q.feature.&lt;name&gt;.*.\n\n\n\n\n Back to top",
+    "text": "feature\nfeature\nFeature engineering: transformations and wrappers around feature libraries.\nStructured as a namespace of feature submodules:\nq.feature.transforms -- general-purpose feature transformations\nq.feature.talib      -- every TA-Lib indicator, pandas-friendly\nq.feature.pandas_ta  -- every pandas-ta-classic indicator\nTo add your own feature family, create qrt/feature/&lt;name&gt;.py with functions that take a Series/DataFrame and return one, then register it in the imports and __all__ below. It becomes available as q.feature.&lt;name&gt;.*.\n\n\n\n\n Back to top",
     "crumbs": [
       "API Reference",
       "q.feature",
@@ -1033,39 +1033,27 @@
     ]
   },
   {
-    "objectID": "reference/feature.qta.html",
-    "href": "reference/feature.qta.html",
-    "title": "feature.qta",
+    "objectID": "reference/feature.talib.html",
+    "href": "reference/feature.talib.html",
+    "title": "feature.talib",
     "section": "",
-    "text": "feature.qta\nqta: our own hand-rolled features, one module per feature.\n\n\n\nCreate qrt/feature/qta/_&lt;feature&gt;.py (leading underscore – it’s a private implementation module; the function itself stays public).\nDefine one public function taking a Series/DataFrame and returning one, with the index preserved. Helpers should be prefixed with _.\nRe-export it below (one import line + one __all__ entry), so it is visible to IDEs and available as q.feature.qta.&lt;feature&gt;.\n\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nlags\nCreate lagged copies of a Series or DataFrame.\n\n\npct_rank\nRolling percentile rank of each value within a trailing window.\n\n\nsma\nSimple moving average.\n\n\n\n\n\nfeature.qta.lags(data, lags)\nCreate lagged copies of a Series or DataFrame.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\ndata\npd.Series | pd.DataFrame\nInput series or frame (rows ordered in time).\nrequired\n\n\nlags\nint | Iterable[int]\nNumber of lags (1..n) or an explicit iterable of lag periods.\nrequired\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\n\npd.DataFrame\nDataFrame with one column per (column, lag), named {name}_lag{k}.\n\n\n\n\n\n\n&gt;&gt;&gt; q.feature.qta.lags(prices[\"close\"], 3)      # close_lag1..close_lag3\n&gt;&gt;&gt; q.feature.qta.lags(df, [1, 5, 21])          # daily, weekly, monthly lags\n\n\n\n\nfeature.qta.pct_rank(series, window=60)\nRolling percentile rank of each value within a trailing window.\nUseful for gauging whether a price or indicator value is relatively high or low compared to its own recent history, independent of absolute scale.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nseries\npd.Series\nInput series (e.g. close prices or an indicator).\nrequired\n\n\nwindow\nint\nRolling window size, in periods.\n60\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\n\npd.Series\nSeries of percentile ranks (0-100 scale), same index as series. The\n\n\n\npd.Series\nfirst window - 1 values are NaN (insufficient history).\n\n\n\n\n\n\n&gt;&gt;&gt; q.feature.qta.pct_rank(prices[\"close\"], 60)   # rank vs trailing 60 periods\n\n\n\n\nfeature.qta.sma(series, window)\nSimple moving average.\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nseries\npd.Series\nInput series (e.g. close prices).\nrequired\n\n\nwindow\nint\nRolling window size, in periods.\nrequired\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\n\npd.Series\nSeries of the rolling mean, with the same index as series.\n\n\n\n\n\n\n&gt;&gt;&gt; q.feature.qta.sma(prices[\"close\"], 20)      # 20-period SMA",
+    "text": "feature.talib\nTA-Lib indicators exposed with a pandas-friendly interface.\nEvery TA-Lib function is available under its usual name and accepts an OHLCV DataFrame with lowercase columns (open, high, low, close, volume) – the frame layout returned by qrt.data.sources’s read() functions (e.g. qrt.data.sources.yfinance.read(...)). Indicators that only need a price series also accept a plain Series (treated as close). The datetime index is preserved on the output.\n\n\n&gt;&gt;&gt; q.feature.talib.RSI(ohlc)                    # Series named 'rsi'\n&gt;&gt;&gt; q.feature.talib.ATR(ohlc, timeperiod=20)     # uses high/low/close\n&gt;&gt;&gt; q.feature.talib.MACD(ohlc)                   # DataFrame: macd, macdsignal, macdhist\n&gt;&gt;&gt; q.feature.talib.SMA(prices, timeperiod=20)   # Series in, Series out\nUse dir(q.feature.talib) to list all indicators, or help(q.feature.talib.RSI) for a function’s inputs and parameters.",
     "crumbs": [
       "API Reference",
       "q.feature",
-      "feature.qta"
+      "feature.talib"
     ]
   },
   {
-    "objectID": "reference/feature.qta.html#to-add-a-feature",
-    "href": "reference/feature.qta.html#to-add-a-feature",
-    "title": "feature.qta",
+    "objectID": "reference/feature.talib.html#examples",
+    "href": "reference/feature.talib.html#examples",
+    "title": "feature.talib",
     "section": "",
-    "text": "Create qrt/feature/qta/_&lt;feature&gt;.py (leading underscore – it’s a private implementation module; the function itself stays public).\nDefine one public function taking a Series/DataFrame and returning one, with the index preserved. Helpers should be prefixed with _.\nRe-export it below (one import line + one __all__ entry), so it is visible to IDEs and available as q.feature.qta.&lt;feature&gt;.",
+    "text": "&gt;&gt;&gt; q.feature.talib.RSI(ohlc)                    # Series named 'rsi'\n&gt;&gt;&gt; q.feature.talib.ATR(ohlc, timeperiod=20)     # uses high/low/close\n&gt;&gt;&gt; q.feature.talib.MACD(ohlc)                   # DataFrame: macd, macdsignal, macdhist\n&gt;&gt;&gt; q.feature.talib.SMA(prices, timeperiod=20)   # Series in, Series out\nUse dir(q.feature.talib) to list all indicators, or help(q.feature.talib.RSI) for a function’s inputs and parameters.",
     "crumbs": [
       "API Reference",
       "q.feature",
-      "feature.qta"
-    ]
-  },
-  {
-    "objectID": "reference/feature.qta.html#functions",
-    "href": "reference/feature.qta.html#functions",
-    "title": "feature.qta",
-    "section": "",
-    "text": "Name\nDescription\n\n\n\n\nlags\nCreate lagged copies of a Series or DataFrame.\n\n\npct_rank\nRolling percentile rank of each value within a trailing window.\n\n\nsma\nSimple moving average.\n\n\n\n\n\nfeature.qta.lags(data, lags)\nCreate lagged copies of a Series or DataFrame.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\ndata\npd.Series | pd.DataFrame\nInput series or frame (rows ordered in time).\nrequired\n\n\nlags\nint | Iterable[int]\nNumber of lags (1..n) or an explicit iterable of lag periods.\nrequired\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\n\npd.DataFrame\nDataFrame with one column per (column, lag), named {name}_lag{k}.\n\n\n\n\n\n\n&gt;&gt;&gt; q.feature.qta.lags(prices[\"close\"], 3)      # close_lag1..close_lag3\n&gt;&gt;&gt; q.feature.qta.lags(df, [1, 5, 21])          # daily, weekly, monthly lags\n\n\n\n\nfeature.qta.pct_rank(series, window=60)\nRolling percentile rank of each value within a trailing window.\nUseful for gauging whether a price or indicator value is relatively high or low compared to its own recent history, independent of absolute scale.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nseries\npd.Series\nInput series (e.g. close prices or an indicator).\nrequired\n\n\nwindow\nint\nRolling window size, in periods.\n60\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\n\npd.Series\nSeries of percentile ranks (0-100 scale), same index as series. The\n\n\n\npd.Series\nfirst window - 1 values are NaN (insufficient history).\n\n\n\n\n\n\n&gt;&gt;&gt; q.feature.qta.pct_rank(prices[\"close\"], 60)   # rank vs trailing 60 periods\n\n\n\n\nfeature.qta.sma(series, window)\nSimple moving average.\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nseries\npd.Series\nInput series (e.g. close prices).\nrequired\n\n\nwindow\nint\nRolling window size, in periods.\nrequired\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\n\npd.Series\nSeries of the rolling mean, with the same index as series.\n\n\n\n\n\n\n&gt;&gt;&gt; q.feature.qta.sma(prices[\"close\"], 20)      # 20-period SMA",
-    "crumbs": [
-      "API Reference",
-      "q.feature",
-      "feature.qta"
+      "feature.talib"
     ]
   },
   {
@@ -1073,7 +1061,7 @@
     "href": "reference/index.html",
     "title": "Function reference",
     "section": "",
-    "text": "Feature engineering — own indicators, TA-Lib, pandas-ta-classic.\n\n\n\nfeature\nFeature engineering: indicators and wrappers around feature libraries.\n\n\nfeature.qta\nqta: our own hand-rolled features, one module per feature.\n\n\nfeature.talib\nTA-Lib indicators exposed with a pandas-friendly interface.\n\n\nfeature.pandas_ta\npandas-ta-classic indicators exposed under the qrt feature namespace.\n\n\n\n\n\n\nReturn-stream statistics: performance, alpha/beta, rolling diagnostics, and the chained Returns helper (no plotting dependency).\n\n\n\nstats\nStatistical analytics for return streams: performance, risk, and benchmark-relative metrics.\n\n\n\n\n\n\nPlotting + performance reports (tearsheets).\n\n\n\nplot\nOpinionated static and interactive plots for quantitative research.\n\n\nplot.interactive\nInteractive Plotly charts for quantitative research return streams.\n\n\n\n\n\n\nLoading/saving local files, market data sources (Yahoo Finance, Binance, DuckDB) each exposed as their own submodule, prepackaged sample datasets, and the master securities database.\n\n\n\ndata\nData access: loading/saving local files, downloading from market data\n\n\ndata.local\nLocal file loading and saving (parquet, csv, …) plus raw trade\n\n\ndata.datasets\nPrepackaged sample datasets shipped with qrt for offline use – handy\n\n\ndata.sources\nData sources: network vendors, databases, and other backends – each\n\n\ndata.sources.yfinance\nYahoo Finance market data source (stocks, ETFs, indices).\n\n\ndata.sources.binance\nBinance futures market data source.\n\n\ndata.sources.duckdb\nGeneric DuckDB-backed data source.\n\n\n\n\n\n\nML model utilities: PyTorch helpers (model summaries via torchinfo) and leakage-aware CV splitters named after scikit-learn’s model_selection.\n\n\n\nmodel\nML model utilities: helpers for building, inspecting, and training models.\n\n\nmodel.torch\nPyTorch model helpers.\n\n\nmodel.selection\nModel selection: leakage-aware CV splitters for time-series data.\n\n\n\n\n\n\nEnvironment variables, runtime inspection, hardware reports, and declarative requirements.\n\n\n\nenv\nEnvironment variable and .env file helpers.\n\n\n\n\n\n\nShared utilities.\n\n\n\nutils\nGeneral-purpose helper functions.",
+    "text": "Feature engineering — general-purpose transforms, TA-Lib, pandas-ta-classic.\n\n\n\nfeature\nFeature engineering: transformations and wrappers around feature libraries.\n\n\nfeature.transforms\nGeneral-purpose feature transformations, one module per transform.\n\n\nfeature.talib\nTA-Lib indicators exposed with a pandas-friendly interface.\n\n\nfeature.pandas_ta\npandas-ta-classic indicators exposed under the qrt feature namespace.\n\n\n\n\n\n\nReturn-stream statistics: performance, alpha/beta, rolling diagnostics, and the chained Returns helper (no plotting dependency).\n\n\n\nstats\nStatistical analytics for return streams: performance, risk, and benchmark-relative metrics.\n\n\n\n\n\n\nPlotting + performance reports (tearsheets).\n\n\n\nplot\nOpinionated static and interactive plots for quantitative research.\n\n\nplot.interactive\nInteractive Plotly charts for quantitative research return streams.\n\n\n\n\n\n\nLoading/saving local files, market data sources (Yahoo Finance, Binance, DuckDB) each exposed as their own submodule, prepackaged sample datasets, and the master securities database.\n\n\n\ndata\nData access: loading/saving local files, downloading from market data\n\n\ndata.local\nLocal file loading and saving (parquet, csv, …) plus raw trade\n\n\ndata.datasets\nPrepackaged sample datasets shipped with qrt for offline use – handy\n\n\ndata.sources\nData sources: network vendors, databases, and other backends – each\n\n\ndata.sources.yfinance\nYahoo Finance market data source (stocks, ETFs, indices).\n\n\ndata.sources.binance\nBinance futures market data source.\n\n\ndata.sources.duckdb\nGeneric DuckDB-backed data source.\n\n\n\n\n\n\nML model utilities: PyTorch helpers (model summaries via torchinfo) and leakage-aware CV splitters named after scikit-learn’s model_selection.\n\n\n\nmodel\nML model utilities: helpers for building, inspecting, and training models.\n\n\nmodel.torch\nPyTorch model helpers.\n\n\nmodel.selection\nModel selection: leakage-aware CV splitters for time-series data.\n\n\n\n\n\n\nEnvironment variables, runtime inspection, hardware reports, and declarative requirements.\n\n\n\nenv\nEnvironment variable and .env file helpers.\n\n\n\n\n\n\nShared utilities.\n\n\n\nutils\nGeneral-purpose helper functions.",
     "crumbs": [
       "API Reference",
       "Function reference"
@@ -1084,7 +1072,7 @@
     "href": "reference/index.html#q.feature",
     "title": "Function reference",
     "section": "",
-    "text": "Feature engineering — own indicators, TA-Lib, pandas-ta-classic.\n\n\n\nfeature\nFeature engineering: indicators and wrappers around feature libraries.\n\n\nfeature.qta\nqta: our own hand-rolled features, one module per feature.\n\n\nfeature.talib\nTA-Lib indicators exposed with a pandas-friendly interface.\n\n\nfeature.pandas_ta\npandas-ta-classic indicators exposed under the qrt feature namespace.",
+    "text": "Feature engineering — general-purpose transforms, TA-Lib, pandas-ta-classic.\n\n\n\nfeature\nFeature engineering: transformations and wrappers around feature libraries.\n\n\nfeature.transforms\nGeneral-purpose feature transformations, one module per transform.\n\n\nfeature.talib\nTA-Lib indicators exposed with a pandas-friendly interface.\n\n\nfeature.pandas_ta\npandas-ta-classic indicators exposed under the qrt feature namespace.",
     "crumbs": [
       "API Reference",
       "Function reference"
@@ -1416,27 +1404,39 @@
     ]
   },
   {
-    "objectID": "feature/talib.html",
-    "href": "feature/talib.html",
-    "title": "TA-Lib",
+    "objectID": "feature/transforms.html",
+    "href": "feature/transforms.html",
+    "title": "Transforms",
     "section": "",
-    "text": "q.feature.talib wraps every TA-Lib indicator in a pandas-friendly signature.",
+    "text": "General-purpose feature transformations, one file per transform under qrt/feature/transforms/. These code cells are executed live by Quarto every time the docs are built.",
     "crumbs": [
       "Getting Started",
       "q.feature — Features",
-      "TA-Lib"
+      "Transforms"
     ]
   },
   {
-    "objectID": "feature/talib.html#sample-data",
-    "href": "feature/talib.html#sample-data",
-    "title": "TA-Lib",
+    "objectID": "feature/transforms.html#sample-data",
+    "href": "feature/transforms.html#sample-data",
+    "title": "Transforms",
     "section": "Sample data",
-    "text": "Sample data\nWe use qrt’s bundled AAPL sample dataset — loaded offline via q.data.datasets.load, no network dependency (see the Data tutorial for more on q.data):\n\nimport pandas as pd\n\nimport qrt as q\n\naapl = q.data.datasets.load(\"aapl\")\naapl.tail()\n\n\n\n\n\n\n\n\nopen\nhigh\nlow\nclose\nvolume\n\n\ndatetime\n\n\n\n\n\n\n\n\n\n2026-07-13\n317.019989\n323.450012\n315.779999\n317.309998\n43257800\n\n\n2026-07-14\n313.760010\n316.190002\n311.910004\n314.859985\n36336800\n\n\n2026-07-15\n317.619995\n328.730011\n317.320007\n327.500000\n60957600\n\n\n2026-07-16\n328.010010\n334.679993\n326.790009\n333.260010\n62970600\n\n\n2026-07-17\n331.980011\n334.989990\n329.000000\n333.739990\n63365300\n\n\n\n\n\n\n\nSingle-output indicators return a Series named after the indicator; multi-output indicators return a DataFrame with TA-Lib’s output names as columns:\n\nrsi = q.feature.talib.RSI(aapl)\natr = q.feature.talib.ATR(aapl, timeperiod=20)\nmacd = q.feature.talib.MACD(aapl)\n\npd.concat([rsi, atr, macd], axis=1).tail()\n\n\n\n\n\n\n\n\nrsi\natr\nmacd\nmacdsignal\nmacdhist\n\n\ndatetime\n\n\n\n\n\n\n\n\n\n2026-07-13\n64.170933\n7.852924\n5.248546\n2.576021\n2.672525\n\n\n2026-07-14\n61.464187\n7.730277\n5.482192\n3.157255\n2.324937\n\n\n2026-07-15\n68.780593\n8.037265\n6.611093\n3.848023\n2.763070\n\n\n2026-07-16\n71.441496\n8.029901\n7.879707\n4.654360\n3.225348\n\n\n2026-07-17\n71.658274\n7.927905\n8.822128\n5.487913\n3.334215",
+    "text": "Sample data\nWe use qrt’s bundled AAPL sample dataset — loaded offline via q.data.datasets.load, no network dependency (see the Data tutorial for more on q.data):\n\nimport pandas as pd\n\nimport qrt as q\n\naapl = q.data.datasets.load(\"aapl\")\naapl.tail()\n\n\n\n\n\n\n\n\nopen\nhigh\nlow\nclose\nvolume\n\n\ndatetime\n\n\n\n\n\n\n\n\n\n2026-07-13\n317.019989\n323.450012\n315.779999\n317.309998\n43257800\n\n\n2026-07-14\n313.760010\n316.190002\n311.910004\n314.859985\n36336800\n\n\n2026-07-15\n317.619995\n328.730011\n317.320007\n327.500000\n60957600\n\n\n2026-07-16\n328.010010\n334.679993\n326.790009\n333.260010\n62970600\n\n\n2026-07-17\n331.980011\n334.989990\n329.000000\n333.739990\n63365300\n\n\n\n\n\n\n\nBuild model-ready columns with the transforms provided by q.feature.transforms:\n\nsma_20 = q.feature.transforms.sma(aapl[\"close\"], 20)\nsma_100 = q.feature.transforms.sma(aapl[\"close\"], 100)\n\nprice_features = pd.DataFrame({\"close\": aapl[\"close\"], \"sma_20\": sma_20, \"sma_100\": sma_100})\nprice_features.tail()\n\n\n\n\n\n\n\n\nclose\nsma_20\nsma_100\n\n\ndatetime\n\n\n\n\n\n\n\n2026-07-13\n317.309998\n299.187001\n279.561089\n\n\n2026-07-14\n314.859985\n300.373500\n280.068622\n\n\n2026-07-15\n327.500000\n301.927499\n280.740221\n\n\n2026-07-16\n333.260010\n303.628500\n281.429456\n\n\n2026-07-17\n333.739990\n305.517999\n282.107506\n\n\n\n\n\n\n\n\nq.feature.transforms.lags(aapl[\"close\"], [1, 5, 21]).tail()\n\n\n\n\n\n\n\n\nclose_lag1\nclose_lag5\nclose_lag21\n\n\ndatetime\n\n\n\n\n\n\n\n2026-07-13\n315.320007\n312.660004\n291.579987\n\n\n2026-07-14\n317.309998\n310.660004\n295.630005\n\n\n2026-07-15\n314.859985\n313.390015\n291.130005\n\n\n2026-07-16\n327.500000\n316.220001\n296.420013\n\n\n2026-07-17\n333.260010\n315.320007\n299.239990\n\n\n\n\n\n\n\nTo add a transform, create qrt/feature/transforms/_&lt;transform&gt;.py with one public function and re-export it in qrt/feature/transforms/__init__.py (one import line + one __all__ entry).",
     "crumbs": [
       "Getting Started",
       "q.feature — Features",
-      "TA-Lib"
+      "Transforms"
+    ]
+  },
+  {
+    "objectID": "feature/transforms.html#visualizing-features",
+    "href": "feature/transforms.html#visualizing-features",
+    "title": "Transforms",
+    "section": "Visualizing features",
+    "text": "Visualizing features\nq.plot.col renders any feature DataFrame as an interactive Plotly chart with hover, zoom, and range-selector buttons — handy for eyeballing a feature against price before using it in a model:\n\nfig = q.plot.col(\n    price_features,\n    title=\"AAPL close price with SMA overlays\",\n    ylabel=\"Price\",\n    height=450,\n)\nfig.show()",
+    "crumbs": [
+      "Getting Started",
+      "q.feature — Features",
+      "Transforms"
     ]
   },
   {
@@ -1774,7 +1774,7 @@
     "href": "env/index.html#inspect-the-runtime",
     "title": "Environment",
     "section": "Inspect the runtime",
-    "text": "Inspect the runtime\nThe other half of q.env describes the current machine: operating system, filesystem capacity, usable PyTorch accelerators, and preferred device. info combines those details into an immutable, JSON-friendly snapshot.\n\nenvironment = q.env.info()\nenvironment.as_dict()\n\n{'operating_system': {'name': 'Linux',\n  'release': '7.0.0-27-generic',\n  'version': '#27-Ubuntu SMP PREEMPT_DYNAMIC Thu Jun 18 19:13:49 UTC 2026',\n  'machine': 'x86_64'},\n 'disk': {'path': '/home/hi/qrt/docs/env',\n  'total': 2011838955520,\n  'used': 127573811200,\n  'free': 1781993754624},\n 'accelerators': (),\n 'device': 'cpu',\n 'cpu_count': 24}\n\n\n\nEnvironment report\nreport presents the same snapshot as a compact Rich table and returns it for programmatic use.\n\n_ = q.env.report()\n\n                            qrt environment                            \n┌──────────────────┬──────────────────────────────────────────────────┐\n│ OS               │ Linux 7.0.0-27-generic (x86_64)                  │\n│ CPU cores        │ 24                                               │\n│ Disk             │ 1.6 TiB free of 1.8 TiB at /home/hi/qrt/docs/env │\n│ Accelerator      │ None detected                                    │\n│ Preferred device │ cpu                                              │\n└──────────────────┴──────────────────────────────────────────────────┘",
+    "text": "Inspect the runtime\nThe other half of q.env describes the current machine: operating system, filesystem capacity, usable PyTorch accelerators, and preferred device. info combines those details into an immutable, JSON-friendly snapshot.\n\nenvironment = q.env.info()\nenvironment.as_dict()\n\n{'operating_system': {'name': 'Linux',\n  'release': '7.0.0-27-generic',\n  'version': '#27-Ubuntu SMP PREEMPT_DYNAMIC Thu Jun 18 19:13:49 UTC 2026',\n  'machine': 'x86_64'},\n 'disk': {'path': '/home/hi/qrt/docs/env',\n  'total': 2011838955520,\n  'used': 127534735360,\n  'free': 1782032830464},\n 'accelerators': (),\n 'device': 'cpu',\n 'cpu_count': 24}\n\n\n\nEnvironment report\nreport presents the same snapshot as a compact Rich table and returns it for programmatic use.\n\n_ = q.env.report()\n\n                            qrt environment                            \n┌──────────────────┬──────────────────────────────────────────────────┐\n│ OS               │ Linux 7.0.0-27-generic (x86_64)                  │\n│ CPU cores        │ 24                                               │\n│ Disk             │ 1.6 TiB free of 1.8 TiB at /home/hi/qrt/docs/env │\n│ Accelerator      │ None detected                                    │\n│ Preferred device │ cpu                                              │\n└──────────────────┴──────────────────────────────────────────────────┘",
     "crumbs": [
       "Getting Started",
       "q.env — Environment"
