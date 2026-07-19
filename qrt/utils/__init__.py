@@ -2,7 +2,7 @@
 
 Add new concerns (config loading, caching, retry helpers, ...) as
 additional modules in this package as they land, same convention as
-``q.feat``/``q.data``.
+``q.feature``/``q.data``.
 """
 
 import os

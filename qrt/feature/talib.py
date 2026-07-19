@@ -8,13 +8,13 @@ only need a price series also accept a plain Series (treated as
 ``close``). The datetime index is preserved on the output.
 
 Examples:
-    >>> q.feat.talib.RSI(ohlc)                    # Series named 'rsi'
-    >>> q.feat.talib.ATR(ohlc, timeperiod=20)     # uses high/low/close
-    >>> q.feat.talib.MACD(ohlc)                   # DataFrame: macd, macdsignal, macdhist
-    >>> q.feat.talib.SMA(prices, timeperiod=20)   # Series in, Series out
+    >>> q.feature.talib.RSI(ohlc)                    # Series named 'rsi'
+    >>> q.feature.talib.ATR(ohlc, timeperiod=20)     # uses high/low/close
+    >>> q.feature.talib.MACD(ohlc)                   # DataFrame: macd, macdsignal, macdhist
+    >>> q.feature.talib.SMA(prices, timeperiod=20)   # Series in, Series out
 
-Use ``dir(q.feat.talib)`` to list all indicators, or
-``help(q.feat.talib.RSI)`` for a function's inputs and parameters.
+Use ``dir(q.feature.talib)`` to list all indicators, or
+``help(q.feature.talib.RSI)`` for a function's inputs and parameters.
 """
 
 from __future__ import annotations

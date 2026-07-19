@@ -19,7 +19,7 @@ trades = q.bt.run(signal, prices)
   `q.plot.mae_mfe`, and `q.plot.trade_distribution` — see
   [Trade logs](../plot/trades.ipynb).
 - Additional concerns (transaction cost models, slippage, ...) land as further
-  submodules, following the same convention as `q.feat`/`q.data`.
+  submodules, following the same convention as `q.feature`/`q.data`.
 
 Until `q.bt.run` lands, the bundled demo trade logs let you exercise the entire
 trades workflow end to end. Follow progress on the [Roadmap](../roadmap.qmd).

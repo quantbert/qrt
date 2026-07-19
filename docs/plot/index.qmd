@@ -10,7 +10,7 @@ per-trade return distributions), with sensible defaults for quant research.
 Return-stream *statistics* (performance, alpha/beta, rolling diagnostics,
 `q.stats.montecarlo`, ...) live in `q.stats`; see
 [Return Statistics](../stats/index.qmd). For feature engineering and
-price-chart examples, see [Feature Engineering](../feat/index.qmd).
+price-chart examples, see [Feature Engineering](../feature/index.qmd).
 
 Pages:
 

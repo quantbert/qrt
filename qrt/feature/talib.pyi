@@ -2,7 +2,7 @@
 
 Do not edit by hand. Regenerate with:
 
-    uv run python tools/gen_feat_stubs.py
+    uv run python tools/gen_feature_stubs.py
 """
 
 from typing import Any

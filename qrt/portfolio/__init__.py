@@ -2,7 +2,7 @@
 
 Add new concerns (attribution, exposure/turnover, optimization, ...) as
 additional modules in this package as they land, same convention as
-``q.feat``/``q.data``.
+``q.feature``/``q.data``.
 """
 
 __all__ = []

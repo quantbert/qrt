@@ -20,7 +20,7 @@ q.plot.plot(strategy, benchmark=benchmark)      # interactive equity + drawdown 
 ## Why qrt
 
 - **No more juggling five libraries with five conventions.** TA-Lib and
-  pandas-ta-classic indicators (`q.feat.talib`, `q.feat.pandas_ta`), Yahoo
+  pandas-ta-classic indicators (`q.feature.talib`, `q.feature.pandas_ta`), Yahoo
   Finance/Binance/DuckDB market data (`q.data.sources`), and 30+ risk/return
   metrics inspired by quantstats (`q.stats`) all speak the same plain
   pandas `DataFrame`/`Series` OHLCV and return-stream layout — chain them
@@ -47,7 +47,7 @@ q.plot.plot(strategy, benchmark=benchmark)      # interactive equity + drawdown 
 | Module | Purpose |
 |---|---|
 | `q.data` | local parquet/csv I/O, market data sources (Yahoo Finance, Binance, DuckDB), bundled sample datasets |
-| `q.feat` | feature engineering: own indicators + TA-Lib + pandas-ta-classic |
+| `q.feature` | feature engineering: own indicators + TA-Lib + pandas-ta-classic |
 | `q.stats` | return-stream & trade-level statistics: performance, alpha/beta, Monte Carlo, variance/noise testing |
 | `q.plot` | interactive Plotly charts and performance reports, for both return streams and trade logs |
 | `q.model` | ML model utilities (PyTorch helpers via torchinfo) |

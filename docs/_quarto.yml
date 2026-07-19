@@ -51,15 +51,15 @@ website:
               href: data/local.ipynb
             - text: "Market data sources"
               href: data/sources.ipynb
-        - section: "q.feat — Features"
-          href: feat/index.qmd
+        - section: "q.feature — Features"
+          href: feature/index.qmd
           contents:
             - text: "qta — our own features"
-              href: feat/qta.ipynb
+              href: feature/qta.ipynb
             - text: "TA-Lib"
-              href: feat/talib.ipynb
+              href: feature/talib.ipynb
             - text: "pandas-ta-classic"
-              href: feat/pandas_ta.ipynb
+              href: feature/pandas_ta.ipynb
         - section: "q.model — Models"
           href: model/index.ipynb
         - section: "q.plot — Plotting"
@@ -110,15 +110,15 @@ quartodoc:
   css: reference/_styles-quartodoc.css
   parser: google
   sections:
-    - title: q.feat
+    - title: q.feature
       desc: "Feature engineering — own indicators, TA-Lib, pandas-ta-classic."
       contents:
-        - feat
-        - name: feat.qta
+        - feature
+        - name: feature.qta
           include_imports: true
-        - name: feat.talib
+        - name: feature.talib
           members: []
-        - name: feat.pandas_ta
+        - name: feature.pandas_ta
           members: []
     - title: q.stats
       desc: "Return-stream statistics: performance, alpha/beta, rolling diagnostics, and the chained `Returns` helper (no plotting dependency)."

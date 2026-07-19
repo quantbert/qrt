@@ -109,13 +109,13 @@ def test_trade_plots():
 
 def test_sma():
     s = pd.Series([1.0, 2.0, 3.0, 4.0])
-    out = q.feat.qta.sma(s, 2)
+    out = q.feature.qta.sma(s, 2)
     assert out.iloc[-1] == 3.5
 
 
 def test_lags_series():
     s = pd.Series([1.0, 2.0, 3.0, 4.0], name="close")
-    out = q.feat.qta.lags(s, 2)
+    out = q.feature.qta.lags(s, 2)
     assert list(out.columns) == ["close_lag1", "close_lag2"]
     assert out["close_lag1"].iloc[-1] == 3.0
     assert out["close_lag2"].iloc[-1] == 2.0
@@ -123,14 +123,14 @@ def test_lags_series():
 
 def test_lags_dataframe_explicit_periods():
     df = pd.DataFrame({"a": [1.0, 2.0, 3.0], "b": [10.0, 20.0, 30.0]})
-    out = q.feat.qta.lags(df, [1, 2])
+    out = q.feature.qta.lags(df, [1, 2])
     assert list(out.columns) == ["a_lag1", "a_lag2", "b_lag1", "b_lag2"]
     assert out["b_lag2"].iloc[-1] == 10.0
 
 
 def test_pct_rank():
     s = pd.Series([1.0, 2.0, 3.0, 4.0, 2.0])
-    out = q.feat.qta.pct_rank(s, 3)
+    out = q.feature.qta.pct_rank(s, 3)
     assert out.iloc[:2].isna().all()
     assert out.iloc[2] == pytest.approx(100.0)
     assert out.iloc[-1] == pytest.approx(100 / 3)
@@ -402,6 +402,21 @@ def test_factor_regression_rf_column_not_subtracted_twice():
 
     with pytest.raises(ValueError):
         q.stats.factor_regression(returns, factors, rf="NotAColumn")
+
+
+def test_factor_regression_sorts_dates_and_rejects_duplicates():
+    returns, factors, _, _ = _synthetic_factor_data(n=150)
+
+    shuffle = np.random.default_rng(1).permutation(len(returns))
+    rolling_sorted = q.stats.rolling_factor_regression(returns, factors, window=63)
+    rolling_shuffled = q.stats.rolling_factor_regression(returns.iloc[shuffle], factors.iloc[shuffle], window=63)
+    pd.testing.assert_frame_equal(rolling_sorted, rolling_shuffled, check_freq=False)
+
+    duplicated = factors.index.to_numpy().copy()
+    duplicated[1] = duplicated[0]
+    factors_duplicated = factors.set_axis(pd.DatetimeIndex(duplicated))
+    with pytest.raises(ValueError, match="duplicate dates"):
+        q.stats.factor_regression(returns, factors_duplicated)
 
 
 def test_rolling_factor_regression_window_alignment():
@@ -829,18 +844,18 @@ def _ohlc(n: int = 60) -> pd.DataFrame:
 
 def test_talib_single_output():
     ohlc = _ohlc()
-    out = q.feat.talib.RSI(ohlc, timeperiod=14)
+    out = q.feature.talib.RSI(ohlc, timeperiod=14)
     assert out.name == "rsi"
     assert out.index.equals(ohlc.index)
     assert out.iloc[-1] == 100.0  # strictly rising close
 
     # a plain Series is treated as close
-    from_series = q.feat.talib.RSI(ohlc["close"], timeperiod=14)
+    from_series = q.feature.talib.RSI(ohlc["close"], timeperiod=14)
     assert from_series.equals(out)
 
 
 def test_talib_multi_output():
-    out = q.feat.talib.MACD(_ohlc())
+    out = q.feature.talib.MACD(_ohlc())
     assert list(out.columns) == ["macd", "macdsignal", "macdhist"]
 
 
@@ -848,22 +863,22 @@ def test_talib_unknown_indicator():
     import pytest
 
     with pytest.raises(AttributeError):
-        q.feat.talib.NOT_AN_INDICATOR
+        q.feature.talib.NOT_AN_INDICATOR
 
 
 def test_pandas_ta_single_output():
     ohlc = _ohlc()
-    out = q.feat.pandas_ta.rsi(ohlc, length=14)
+    out = q.feature.pandas_ta.rsi(ohlc, length=14)
     assert out.name == "RSI_14"
     assert out.index.equals(ohlc.index)
 
     # a plain Series is treated as close
-    from_series = q.feat.pandas_ta.rsi(ohlc["close"], length=14)
+    from_series = q.feature.pandas_ta.rsi(ohlc["close"], length=14)
     assert from_series.equals(out)
 
 
 def test_pandas_ta_multi_output():
-    out = q.feat.pandas_ta.macd(_ohlc())
+    out = q.feature.pandas_ta.macd(_ohlc())
     assert list(out.columns) == ["MACD_12_26_9", "MACDh_12_26_9", "MACDs_12_26_9"]
 
 
@@ -871,7 +886,7 @@ def test_pandas_ta_unknown_indicator():
     import pytest
 
     with pytest.raises(AttributeError):
-        q.feat.pandas_ta.not_an_indicator
+        q.feature.pandas_ta.not_an_indicator
 
 
 def test_load_ohlc_timeseries_range(tmp_path):

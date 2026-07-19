@@ -9,13 +9,13 @@ Indicators that only need a price series also accept a plain Series
 pandas-ta's parameterised names (e.g. ``RSI_14``, ``MACD_12_26_9``).
 
 Examples:
-    >>> q.feat.pandas_ta.rsi(ohlc)                  # Series 'RSI_14'
-    >>> q.feat.pandas_ta.bbands(ohlc, length=20)    # DataFrame BBL/BBM/BBU...
-    >>> q.feat.pandas_ta.cdl_pattern(ohlc, name="doji")
-    >>> q.feat.pandas_ta.rsi(prices)                # Series in, Series out
+    >>> q.feature.pandas_ta.rsi(ohlc)                  # Series 'RSI_14'
+    >>> q.feature.pandas_ta.bbands(ohlc, length=20)    # DataFrame BBL/BBM/BBU...
+    >>> q.feature.pandas_ta.cdl_pattern(ohlc, name="doji")
+    >>> q.feature.pandas_ta.rsi(prices)                # Series in, Series out
 
-Use ``dir(q.feat.pandas_ta)`` to list all indicators, or
-``help(q.feat.pandas_ta.rsi)`` for a function's parameters.
+Use ``dir(q.feature.pandas_ta)`` to list all indicators, or
+``help(q.feature.pandas_ta.rsi)`` for a function's parameters.
 """
 
 from __future__ import annotations

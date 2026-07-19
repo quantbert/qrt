@@ -14,6 +14,6 @@ def sma(series: pd.Series, window: int) -> pd.Series:
         Series of the rolling mean, with the same index as ``series``.
 
     Examples:
-        >>> q.feat.qta.sma(prices["close"], 20)      # 20-period SMA
+        >>> q.feature.qta.sma(prices["close"], 20)      # 20-period SMA
     """
     return series.rolling(window).mean()

@@ -1,13 +1,13 @@
-"""Regenerate .pyi stubs for the dynamic feat wrappers (IDE support).
+"""Regenerate .pyi stubs for the dynamic feature wrappers (IDE support).
 
-``qrt.feat.talib`` and ``qrt.feat.pandas_ta`` create their indicator
+``qrt.feature.talib`` and ``qrt.feature.pandas_ta`` create their indicator
 functions at runtime via module-level ``__getattr__``, which static
 analyzers (Pylance, mypy) cannot see. This script writes type stubs with
 real signatures and docstrings next to those modules so IDEs can offer
 autocomplete and hover docs.
 
 Usage:
-    uv run python tools/gen_feat_stubs.py
+    uv run python tools/gen_feature_stubs.py
 
 Rerun after upgrading ta-lib or pandas-ta-classic.
 
@@ -28,13 +28,13 @@ import pandas_ta_classic as pta
 import talib
 from talib import abstract
 
-FEAT_DIR = Path(__file__).resolve().parents[1] / "qrt" / "feat"
+FEATURE_DIR = Path(__file__).resolve().parents[1] / "qrt" / "feature"
 
 HEADER = '''"""Auto-generated stubs for the dynamic indicator wrappers (IDE support).
 
 Do not edit by hand. Regenerate with:
 
-    uv run python tools/gen_feat_stubs.py
+    uv run python tools/gen_feature_stubs.py
 """
 
 from typing import Any
@@ -106,7 +106,7 @@ def main() -> None:
         ("talib.pyi", gen_talib_stub()),
         ("pandas_ta.pyi", gen_pandas_ta_stub()),
     ]:
-        path = FEAT_DIR / filename
+        path = FEATURE_DIR / filename
         path.write_text(content)
         print(f"wrote {path} ({content.count('def ')} functions)")
 

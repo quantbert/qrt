@@ -2,14 +2,14 @@
 title: Feature Engineering
 ---
 
-`q.feat` collects feature engineering tools under one namespace, organized as
+`q.feature` collects feature engineering tools under one namespace, organized as
 submodules:
 
 | Submodule | What it is |
 |---|---|
-| `q.feat.qta` | our own hand-rolled features, one file per feature |
-| `q.feat.talib` | every [TA-Lib](https://ta-lib.github.io/ta-lib-python/) indicator, pandas-friendly |
-| `q.feat.pandas_ta` | every [pandas-ta-classic](https://xgboosted.github.io/pandas-ta-classic/) indicator |
+| `q.feature.qta` | our own hand-rolled features, one file per feature |
+| `q.feature.talib` | every [TA-Lib](https://ta-lib.github.io/ta-lib-python/) indicator, pandas-friendly |
+| `q.feature.pandas_ta` | every [pandas-ta-classic](https://xgboosted.github.io/pandas-ta-classic/) indicator |
 
 All indicator functions share the same convention: they accept an **OHLCV DataFrame**
 with lowercase columns (`open, high, low, close, volume`) — the frame layout returned
@@ -21,8 +21,8 @@ Pages:
 
 - [qta — our own features](qta.ipynb) — hand-rolled primitives, plus
   visualizing features with `q.plot.col`.
-- [TA-Lib](talib.ipynb) — the `q.feat.talib` wrapper.
-- [pandas-ta-classic](pandas_ta.ipynb) — the `q.feat.pandas_ta` wrapper.
+- [TA-Lib](talib.ipynb) — the `q.feature.talib` wrapper.
+- [pandas-ta-classic](pandas_ta.ipynb) — the `q.feature.pandas_ta` wrapper.
 
 ## IDE support
 

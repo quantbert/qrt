@@ -4,7 +4,7 @@ title: Portfolio
 
 `q.portfolio` is qrt's **planned** portfolio analysis module: attribution,
 exposure, turnover, and risk decomposition. It is scaffolded but empty — new
-concerns land as submodules following the same convention as `q.feat`/`q.data`.
+concerns land as submodules following the same convention as `q.feature`/`q.data`.
 
 Some building blocks already live elsewhere in the meantime:
 

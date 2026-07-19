@@ -385,9 +385,13 @@ def _factor_design_matrix(
     if not isinstance(factors, pd.DataFrame) or factors.empty:
         raise TypeError("factors must be a non-empty pandas DataFrame of factor return columns")
     strategy = _simple_returns(returns, return_type, "Strategy")
+    if not strategy.index.is_unique or not factors.index.is_unique:
+        raise ValueError("returns and factors must not contain duplicate dates")
     # Concat under a private sentinel name (not `strategy.name`) so a strategy series that
     # happens to share a name with one of the factor columns (e.g. "RF") doesn't collide.
-    frame = pd.concat([strategy.rename("__strategy__"), factors], axis=1, join="inner").dropna()
+    # sort_index() guarantees chronological order, which the rolling window and cumulative
+    # contributions depend on.
+    frame = pd.concat([strategy.rename("__strategy__"), factors], axis=1, join="inner").dropna().sort_index()
     if frame.empty:
         raise ValueError("returns and factors must share at least one non-null observation")
 

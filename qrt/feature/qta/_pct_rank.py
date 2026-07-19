@@ -18,6 +18,6 @@ def pct_rank(series: pd.Series, window: int = 60) -> pd.Series:
         first ``window - 1`` values are ``NaN`` (insufficient history).
 
     Examples:
-        >>> q.feat.qta.pct_rank(prices["close"], 60)   # rank vs trailing 60 periods
+        >>> q.feature.qta.pct_rank(prices["close"], 60)   # rank vs trailing 60 periods
     """
     return series.rolling(window).rank(pct=True) * 100.0

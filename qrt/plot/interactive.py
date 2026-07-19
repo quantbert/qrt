@@ -1997,7 +1997,7 @@ def trades(
         prices: Close series (or OHLCV frame with a ``close`` column) with a
             ``DatetimeIndex`` covering the trade span.
         features: Optional datetime-indexed frame of indicator series (e.g.
-            moving averages recomputed via :mod:`qrt.feat`) drawn as overlay
+            moving averages recomputed via :mod:`qrt.feature`) drawn as overlay
             lines on the price axis.
         title: Figure title.
         height: Figure height in pixels.

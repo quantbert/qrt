@@ -11,15 +11,15 @@ install: ## Create/sync the environment (incl. dev deps)
 test: ## Run the test suite
 	uv run pytest tests/ -q
 
-stubs: ## Regenerate .pyi stubs for the dynamic feat wrappers
-	uv run python tools/gen_feat_stubs.py
+stubs: ## Regenerate .pyi stubs for the dynamic feature wrappers
+	uv run python tools/gen_feature_stubs.py
 
 datasets: ## Refresh prepackaged sample datasets (OHLCV from Yahoo, then regenerate demo strategy trade logs)
 	uv run python tools/update_datasets.py
 	uv run python tools/gen_demo_strategies.py
 
 nb-execute: ## Re-run docs/*.ipynb in place so they carry saved cell outputs (for local editor preview)
-	uv run --group docs jupyter nbconvert --to notebook --execute --inplace docs/feat.ipynb docs/data.ipynb docs/stats.ipynb
+	uv run --group docs jupyter nbconvert --to notebook --execute --inplace docs/feature.ipynb docs/data.ipynb docs/stats.ipynb
 
 docs: ## Build the API reference and serve the docs locally with live reload. Must run in active venv!
 	uv run --group docs quartodoc build --config docs/_quarto.yml
