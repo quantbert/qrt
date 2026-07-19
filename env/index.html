@@ -61,7 +61,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -107,6 +107,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
 <link rel="stylesheet" href="../reference/_styles-quartodoc.css">
@@ -436,12 +439,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#load-a-.env-file" id="toc-load-a-.env-file" class="nav-link active" data-scroll-target="#load-a-.env-file">Load a <code>.env</code> file</a></li>
-  <li><a href="#read-variables" id="toc-read-variables" class="nav-link" data-scroll-target="#read-variables">Read variables</a></li>
-  <li><a href="#inspect-the-runtime" id="toc-inspect-the-runtime" class="nav-link" data-scroll-target="#inspect-the-runtime">Inspect the runtime</a></li>
+  <li><a href="#import-the-env-module" id="toc-import-the-env-module" class="nav-link active" data-scroll-target="#import-the-env-module">Import the <code>env</code> module</a></li>
+  <li><a href="#inspect-the-environment-api" id="toc-inspect-the-environment-api" class="nav-link" data-scroll-target="#inspect-the-environment-api">Inspect the environment API</a></li>
+  <li><a href="#read-environment-variables" id="toc-read-environment-variables" class="nav-link" data-scroll-target="#read-environment-variables">Read environment variables</a></li>
+  <li><a href="#define-default-values" id="toc-define-default-values" class="nav-link" data-scroll-target="#define-default-values">Define default values</a></li>
+  <li><a href="#parse-typed-configuration" id="toc-parse-typed-configuration" class="nav-link" data-scroll-target="#parse-typed-configuration">Parse typed configuration</a></li>
+  <li><a href="#handle-missing-or-invalid-values" id="toc-handle-missing-or-invalid-values" class="nav-link" data-scroll-target="#handle-missing-or-invalid-values">Handle missing or invalid values</a></li>
+  <li><a href="#override-values-for-development" id="toc-override-values-for-development" class="nav-link" data-scroll-target="#override-values-for-development">Override values for development</a></li>
+  <li><a href="#manage-secrets-safely" id="toc-manage-secrets-safely" class="nav-link" data-scroll-target="#manage-secrets-safely">Manage secrets safely</a></li>
+  <li><a href="#inspect-the-current-runtime" id="toc-inspect-the-current-runtime" class="nav-link" data-scroll-target="#inspect-the-current-runtime">Inspect the current runtime</a>
+  <ul class="collapse">
+  <li><a href="#render-an-environment-report" id="toc-render-an-environment-report" class="nav-link" data-scroll-target="#render-an-environment-report">Render an environment report</a></li>
+  </ul></li>
   <li><a href="#require-a-runtime-environment" id="toc-require-a-runtime-environment" class="nav-link" data-scroll-target="#require-a-runtime-environment">Require a runtime environment</a></li>
+  <li><a href="#test-environment-dependent-behavior" id="toc-test-environment-dependent-behavior" class="nav-link" data-scroll-target="#test-environment-dependent-behavior">Test environment-dependent behavior</a></li>
+  <li><a href="#build-a-complete-configuration-example" id="toc-build-a-complete-configuration-example" class="nav-link" data-scroll-target="#build-a-complete-configuration-example">Build a complete configuration example</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/env/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/env/index.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.dev/quantbert/qrt/blob/main/env/index.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/env/index.ipynb" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -465,61 +479,389 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><code>q.env</code> keeps environment setup explicit. Importing qrt never reads a <code>.env</code> file or changes the process environment.</p>
-<section id="load-a-.env-file" class="level2">
-<h2 class="anchored" data-anchor-id="load-a-.env-file">Load a <code>.env</code> file</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> qrt <span class="im">as</span> q</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>q.env.load()                 <span class="co"># search upward for .env</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>q.env.load(<span class="st">"config/dev.env"</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>q.env.load(override<span class="op">=</span><span class="va">True</span>)    <span class="co"># replace variables already in os.environ</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Existing process variables win by default, matching <code>python-dotenv</code> behavior. This is useful for keeping deployment configuration authoritative while still loading local API keys during research.</p>
+<p><code>q.env</code> covers both configuration from environment variables and inspection of the runtime where qrt is executing. This tutorial uses temporary files and temporary variable names, so it does not modify your project configuration or reveal real secrets.</p>
+<section id="import-the-env-module" class="level2">
+<h2 class="anchored" data-anchor-id="import-the-env-module">Import the <code>env</code> module</h2>
+<p>Import qrt and a few standard-library utilities used to isolate the examples. The context manager restores every variable to its original state, including variables that were initially absent.</p>
+<div id="c7517469" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> inspect</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tempfile</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> contextlib <span class="im">import</span> contextmanager</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataclasses <span class="im">import</span> dataclass</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> qrt <span class="im">as</span> q</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="at">@contextmanager</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> temporary_env(<span class="op">**</span>updates):</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    previous <span class="op">=</span> {name: os.environ.get(name) <span class="cf">for</span> name <span class="kw">in</span> updates}</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> name, value <span class="kw">in</span> updates.items():</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> value <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>                os.environ.pop(name, <span class="va">None</span>)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>            <span class="cf">else</span>:</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>                os.environ[name] <span class="op">=</span> value</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">yield</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">finally</span>:</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> name, value <span class="kw">in</span> previous.items():</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> value <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>                os.environ.pop(name, <span class="va">None</span>)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>            <span class="cf">else</span>:</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>                os.environ[name] <span class="op">=</span> value</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>q.env.<span class="va">__name__</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>'qrt.env'</code></pre>
+</div>
+</div>
 </section>
-<section id="read-variables" class="level2">
-<h2 class="anchored" data-anchor-id="read-variables">Read variables</h2>
-<p>Use <code>get</code> for optional configuration and <code>require</code> when execution cannot continue without a value:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>cache_host <span class="op">=</span> q.env.get(<span class="st">"CACHE_HOST"</span>, <span class="st">"localhost"</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>api_key <span class="op">=</span> q.env.require(<span class="st">"MARKET_DATA_API_KEY"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>require</code> raises <code>KeyError</code> with the missing variable name. To inspect a file without changing <code>os.environ</code>, use <code>q.env.values(".env")</code>.</p>
-<p>Do not commit <code>.env</code> files containing credentials. Commit a <code>.env.example</code> with variable names and safe placeholder values instead.</p>
+<section id="inspect-the-environment-api" class="level2">
+<h2 class="anchored" data-anchor-id="inspect-the-environment-api">Inspect the environment API</h2>
+<p>The public API includes environment-variable helpers, runtime inspectors, typed snapshots, and the requirements validator. Signatures make the two roles visible without importing private implementation details.</p>
+<div id="daa31b26" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>public_objects <span class="op">=</span> <span class="bu">sorted</span>(q.env.<span class="va">__all__</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>signatures <span class="op">=</span> {</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    name: <span class="bu">str</span>(inspect.signature(<span class="bu">getattr</span>(q.env, name)))</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> name <span class="kw">in</span> public_objects</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> inspect.isfunction(<span class="bu">getattr</span>(q.env, name))</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>public_objects, signatures</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<pre><code>(['AcceleratorInfo',
+  'DiskInfo',
+  'EnvironmentInfo',
+  'EnvironmentRequirementError',
+  'OSInfo',
+  'accelerators',
+  'device',
+  'disk',
+  'get',
+  'info',
+  'load',
+  'operating_system',
+  'report',
+  'require',
+  'values'],
+ {'accelerators': "() -&gt; 'tuple[AcceleratorInfo, ...]'",
+  'device': "() -&gt; 'str'",
+  'disk': "(path: 'str | Path' = '.') -&gt; 'DiskInfo'",
+  'get': "(name: 'str', default: 'str | None' = None) -&gt; 'str | None'",
+  'info': "(path: 'str | Path' = '.') -&gt; 'EnvironmentInfo'",
+  'load': "(path: 'str | Path | None' = None, *, override: 'bool' = False, **kwargs: 'Any') -&gt; 'bool'",
+  'operating_system': "() -&gt; 'OSInfo'",
+  'report': "(path: 'str | Path' = '.') -&gt; 'EnvironmentInfo'",
+  'require': "(name: 'str | Path') -&gt; 'str | EnvironmentInfo'",
+  'values': "(path: 'str | Path | None' = None, **kwargs: 'Any') -&gt; 'dict[str, str | None]'"})</code></pre>
+</div>
+</div>
 </section>
-<section id="inspect-the-runtime" class="level2">
-<h2 class="anchored" data-anchor-id="inspect-the-runtime">Inspect the runtime</h2>
-<p><code>q.env</code> can inspect the operating system, filesystem capacity, and compute accelerators available to qrt through PyTorch:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>system <span class="op">=</span> q.env.operating_system()</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>storage <span class="op">=</span> q.env.disk(q.utils.cache_dir(<span class="st">"data"</span>))</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>gpus <span class="op">=</span> q.env.accelerators()</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>device <span class="op">=</span> q.env.device()  <span class="co"># cuda, mps, xpu, or cpu</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Use <code>info</code> for one immutable snapshot, or <code>report</code> to print the same information as a Rich table:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>environment <span class="op">=</span> q.env.info(q.utils.cache_dir(<span class="st">"data"</span>))</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>environment.as_dict()  <span class="co"># JSON-serializable</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>q.env.report(q.utils.cache_dir(<span class="st">"data"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>AMD ROCm accelerators use PyTorch’s <code>cuda</code> device name. Their accelerator records identify the backend as <code>rocm</code>, while <code>q.env.device()</code> returns <code>cuda</code> so its result can be passed directly to PyTorch.</p>
+<section id="read-environment-variables" class="level2">
+<h2 class="anchored" data-anchor-id="read-environment-variables">Read environment variables</h2>
+<p><code>get</code> reads optional configuration. The plain-string form of <code>require</code> reads mandatory configuration and raises when it is absent. Both return strings because process environment variables are strings.</p>
+<div id="ce4a57d6" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> temporary_env(QRT_TUTORIAL_REGION<span class="op">=</span><span class="st">"us-east-1"</span>):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    optional_region <span class="op">=</span> q.env.get(<span class="st">"QRT_TUTORIAL_REGION"</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    required_region <span class="op">=</span> q.env.require(<span class="st">"QRT_TUTORIAL_REGION"</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>{<span class="st">"optional"</span>: optional_region, <span class="st">"required"</span>: required_region}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>{'optional': 'us-east-1', 'required': 'us-east-1'}</code></pre>
+</div>
+</div>
+</section>
+<section id="define-default-values" class="level2">
+<h2 class="anchored" data-anchor-id="define-default-values">Define default values</h2>
+<p>Pass a default to <code>get</code> for optional configuration. Use <code>require</code> when continuing with a fallback would be unsafe.</p>
+<div id="6348a790" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> temporary_env(QRT_TUTORIAL_WORKERS<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    workers_text <span class="op">=</span> q.env.get(<span class="st">"QRT_TUTORIAL_WORKERS"</span>, <span class="st">"4"</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        q.env.require(<span class="st">"QRT_TUTORIAL_WORKERS"</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">KeyError</span> <span class="im">as</span> error:</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        missing_message <span class="op">=</span> <span class="bu">str</span>(error)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>{<span class="st">"optional_default"</span>: workers_text, <span class="st">"required_error"</span>: missing_message}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<pre><code>{'optional_default': '4',
+ 'required_error': "'Required environment variable is not set: QRT_TUTORIAL_WORKERS'"}</code></pre>
+</div>
+</div>
+</section>
+<section id="parse-typed-configuration" class="level2">
+<h2 class="anchored" data-anchor-id="parse-typed-configuration">Parse typed configuration</h2>
+<p><code>q.env</code> deliberately returns strings; it does not guess application types. Parse values explicitly so accepted formats remain visible. This example converts an integer, float, boolean, list, and path.</p>
+<div id="272c8528" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> parse_bool(value: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    normalized <span class="op">=</span> value.casefold()</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> normalized <span class="kw">in</span> {<span class="st">"1"</span>, <span class="st">"true"</span>, <span class="st">"yes"</span>, <span class="st">"on"</span>}:</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">True</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> normalized <span class="kw">in</span> {<span class="st">"0"</span>, <span class="st">"false"</span>, <span class="st">"no"</span>, <span class="st">"off"</span>}:</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">False</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="ss">f"Invalid boolean value: </span><span class="sc">{</span>value<span class="sc">!r}</span><span class="ss">"</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> temporary_env(</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    QRT_TUTORIAL_WORKERS<span class="op">=</span><span class="st">"8"</span>,</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    QRT_TUTORIAL_THRESHOLD<span class="op">=</span><span class="st">"0.25"</span>,</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    QRT_TUTORIAL_DEBUG<span class="op">=</span><span class="st">"false"</span>,</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    QRT_TUTORIAL_SYMBOLS<span class="op">=</span><span class="st">"AAPL,MSFT,SPY"</span>,</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    QRT_TUTORIAL_DATA_DIR<span class="op">=</span><span class="st">"~/qrt-data"</span>,</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    typed <span class="op">=</span> {</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>        <span class="st">"workers"</span>: <span class="bu">int</span>(q.env.require(<span class="st">"QRT_TUTORIAL_WORKERS"</span>)),</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>        <span class="st">"threshold"</span>: <span class="bu">float</span>(q.env.require(<span class="st">"QRT_TUTORIAL_THRESHOLD"</span>)),</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>        <span class="st">"debug"</span>: parse_bool(q.env.require(<span class="st">"QRT_TUTORIAL_DEBUG"</span>)),</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>        <span class="st">"symbols"</span>: q.env.require(<span class="st">"QRT_TUTORIAL_SYMBOLS"</span>).split(<span class="st">","</span>),</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>        <span class="st">"data_dir"</span>: Path(q.env.require(<span class="st">"QRT_TUTORIAL_DATA_DIR"</span>)).expanduser(),</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>typed</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<pre><code>{'workers': 8,
+ 'threshold': 0.25,
+ 'debug': False,
+ 'symbols': ['AAPL', 'MSFT', 'SPY'],
+ 'data_dir': PosixPath('/home/hi/qrt-data')}</code></pre>
+</div>
+</div>
+</section>
+<section id="handle-missing-or-invalid-values" class="level2">
+<h2 class="anchored" data-anchor-id="handle-missing-or-invalid-values">Handle missing or invalid values</h2>
+<p>Catch <code>KeyError</code> for missing required variables. Explicit conversions raise their own documented errors, such as <code>ValueError</code> from <code>int</code> or from the boolean parser above.</p>
+<div id="09b0af9a" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>errors <span class="op">=</span> []</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> temporary_env(QRT_TUTORIAL_REQUIRED<span class="op">=</span><span class="va">None</span>, QRT_TUTORIAL_WORKERS<span class="op">=</span><span class="st">"many"</span>):</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>        q.env.require(<span class="st">"QRT_TUTORIAL_REQUIRED"</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">KeyError</span> <span class="im">as</span> error:</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>        errors.append({<span class="st">"type"</span>: <span class="bu">type</span>(error).<span class="va">__name__</span>, <span class="st">"message"</span>: <span class="bu">str</span>(error)})</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">int</span>(q.env.require(<span class="st">"QRT_TUTORIAL_WORKERS"</span>))</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">ValueError</span> <span class="im">as</span> error:</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>        errors.append({<span class="st">"type"</span>: <span class="bu">type</span>(error).<span class="va">__name__</span>, <span class="st">"message"</span>: <span class="bu">str</span>(error)})</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>errors</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<pre><code>[{'type': 'KeyError',
+  'message': "'Required environment variable is not set: QRT_TUTORIAL_REQUIRED'"},
+ {'type': 'ValueError',
+  'message': "invalid literal for int() with base 10: 'many'"}]</code></pre>
+</div>
+</div>
+</section>
+<section id="override-values-for-development" class="level2">
+<h2 class="anchored" data-anchor-id="override-values-for-development">Override values for development</h2>
+<p><code>values</code> parses a dotenv file without changing the process environment. <code>load</code> does modify <code>os.environ</code>: existing values win by default, while <code>override=True</code> lets the file replace them. The temporary file and variables below are isolated from your real configuration.</p>
+<div id="3b99f058" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tempfile.TemporaryDirectory() <span class="im">as</span> tmp:</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    dotenv_path <span class="op">=</span> Path(tmp) <span class="op">/</span> <span class="st">".env"</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    dotenv_path.write_text(</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"QRT_TUTORIAL_HOST=from-file</span><span class="ch">\n</span><span class="st">QRT_TUTORIAL_CACHE=true</span><span class="ch">\n</span><span class="st">"</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> temporary_env(QRT_TUTORIAL_HOST<span class="op">=</span><span class="st">"from-process"</span>, QRT_TUTORIAL_CACHE<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>        parsed <span class="op">=</span> q.env.values(dotenv_path)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>        unchanged <span class="op">=</span> q.env.get(<span class="st">"QRT_TUTORIAL_HOST"</span>)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>        q.env.load(dotenv_path)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>        preserved <span class="op">=</span> q.env.get(<span class="st">"QRT_TUTORIAL_HOST"</span>)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>        q.env.load(dotenv_path, override<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>        overridden <span class="op">=</span> q.env.get(<span class="st">"QRT_TUTORIAL_HOST"</span>)</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"parsed"</span>: parsed,</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"before_load"</span>: unchanged,</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">"without_override"</span>: preserved,</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"with_override"</span>: overridden,</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<pre><code>{'parsed': {'QRT_TUTORIAL_HOST': 'from-file', 'QRT_TUTORIAL_CACHE': 'true'},
+ 'before_load': 'from-process',
+ 'without_override': 'from-process',
+ 'with_override': 'from-file'}</code></pre>
+</div>
+</div>
+</section>
+<section id="manage-secrets-safely" class="level2">
+<h2 class="anchored" data-anchor-id="manage-secrets-safely">Manage secrets safely</h2>
+<p>Never print secret values or include them in reports. Check whether a required secret exists and display only a redacted status. Commit a <code>.env.example</code> containing names and safe placeholders, never a populated <code>.env</code>.</p>
+<div id="6d6d5ea7" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> temporary_env(QRT_TUTORIAL_API_KEY<span class="op">=</span><span class="st">"placeholder-not-a-real-secret"</span>):</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    api_key <span class="op">=</span> q.env.require(<span class="st">"QRT_TUTORIAL_API_KEY"</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    secret_status <span class="op">=</span> {</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"configured"</span>: <span class="bu">bool</span>(api_key),</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"display"</span>: <span class="st">"&lt;redacted&gt;"</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>secret_status</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<pre><code>{'configured': True, 'display': '&lt;redacted&gt;'}</code></pre>
+</div>
+</div>
+</section>
+<section id="inspect-the-current-runtime" class="level2">
+<h2 class="anchored" data-anchor-id="inspect-the-current-runtime">Inspect the current runtime</h2>
+<p>The runtime helpers describe the operating system, storage filesystem, usable PyTorch accelerators, and preferred device. <code>info</code> returns one immutable snapshot; <code>as_dict</code> converts it to JSON-friendly data. AMD ROCm devices are recorded with backend <code>rocm</code>, while <code>device()</code> returns PyTorch’s compatible <code>cuda</code> device name.</p>
+<div id="98e5d7a4" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>system <span class="op">=</span> q.env.operating_system()</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>storage <span class="op">=</span> q.env.disk(q.utils.cache_dir(<span class="st">"data"</span>))</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>gpus <span class="op">=</span> q.env.accelerators()</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>preferred_device <span class="op">=</span> q.env.device()</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>environment <span class="op">=</span> q.env.info(q.utils.cache_dir(<span class="st">"data"</span>))</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"operating_system"</span>: system,</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"disk"</span>: storage,</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"accelerators"</span>: gpus,</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"preferred_device"</span>: preferred_device,</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"snapshot"</span>: environment.as_dict(),</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<pre><code>{'operating_system': OSInfo(name='Linux', release='7.0.0-27-generic', version='#27-Ubuntu SMP PREEMPT_DYNAMIC Thu Jun 18 19:13:49 UTC 2026', machine='x86_64'),
+ 'disk': DiskInfo(path=PosixPath('/home/hi/.cache/qrt/data'), total=2011838955520, used=127487479808, free=1782080086016),
+ 'accelerators': (),
+ 'preferred_device': 'cpu',
+ 'snapshot': {'operating_system': {'name': 'Linux',
+   'release': '7.0.0-27-generic',
+   'version': '#27-Ubuntu SMP PREEMPT_DYNAMIC Thu Jun 18 19:13:49 UTC 2026',
+   'machine': 'x86_64'},
+  'disk': {'path': '/home/hi/.cache/qrt/data',
+   'total': 2011838955520,
+   'used': 127487479808,
+   'free': 1782080086016},
+  'accelerators': (),
+  'device': 'cpu'}}</code></pre>
+</div>
+</div>
+<section id="render-an-environment-report" class="level3">
+<h3 class="anchored" data-anchor-id="render-an-environment-report">Render an environment report</h3>
+<p><code>report</code> prints the same snapshot as a compact Rich table and returns it for continued programmatic use. Pass the path whose filesystem matters to the workload.</p>
+<div id="ab3ada20" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>reported <span class="op">=</span> q.env.report(q.utils.cache_dir(<span class="st">"data"</span>))</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> reported.disk.path <span class="op">==</span> q.utils.cache_dir(<span class="st">"data"</span>).resolve()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-style: italic">                             qrt environment                              </span>
+┌──────────────────┬─────────────────────────────────────────────────────┐
+│<span style="font-weight: bold"> OS               </span>│ Linux 7.0.0-27-generic (x86_64)                     │
+│<span style="font-weight: bold"> Disk             </span>│ 1.6 TiB free of 1.8 TiB at /home/hi/.cache/qrt/data │
+│<span style="font-weight: bold"> Accelerator      </span>│ None detected                                       │
+│<span style="font-weight: bold"> Preferred device </span>│ cpu                                                 │
+└──────────────────┴─────────────────────────────────────────────────────┘
+</pre>
+</div>
+</div>
+</section>
 </section>
 <section id="require-a-runtime-environment" class="level2">
 <h2 class="anchored" data-anchor-id="require-a-runtime-environment">Require a runtime environment</h2>
-<p>A YAML requirements file provides a declarative preflight check for programs that need particular hardware, storage, or credentials:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># env_requirements.yml</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">os</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">Linux</span><span class="kw">,</span><span class="at"> Darwin</span><span class="kw">]</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">machine</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">x86_</span><span class="dv">64</span><span class="kw">,</span><span class="at"> arm64</span><span class="kw">]</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">disk</span><span class="kw">:</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">path</span><span class="kw">:</span><span class="at"> .cache/data</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">free</span><span class="kw">:</span><span class="at"> 20 GiB</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">accelerator</span><span class="kw">:</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">backends</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">cuda</span><span class="kw">,</span><span class="at"> rocm</span><span class="kw">]</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">vendors</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">NVIDIA</span><span class="kw">,</span><span class="at"> AMD</span><span class="kw">]</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">count</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">memory</span><span class="kw">:</span><span class="at"> 8 GiB</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="fu">env</span><span class="kw">:</span></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> MARKET_DATA_API_KEY</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Validate it before starting expensive work:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>environment <span class="op">=</span> q.env.require(<span class="st">"env_requirements.yml"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Relative disk paths are resolved from the requirements file. Sizes accept decimal units such as <code>GB</code>, binary units such as <code>GiB</code>, or an integer number of bytes. Accelerator constraints select devices matching all specified fields. Omit the <code>accelerator</code> section for CPU-only workloads.</p>
-<p>When requirements are not met, <code>q.env.EnvironmentRequirementError</code> reports all failures at once. Required environment variable names may appear in the message, but their values are never included. Calling <code>q.env.require("NAME")</code> continues to return a single required environment variable; <code>.yml</code> and <code>.yaml</code> arguments select requirements-file validation.</p>
+<p><code>require</code> dispatches according to its input: a plain string reads one required environment variable, while a <code>Path</code> or a string ending in <code>.yml</code>/<code>.yaml</code> validates a machine requirements file. File validation returns an <code>EnvironmentInfo</code> snapshot or raises <code>EnvironmentRequirementError</code> containing every unmet condition.</p>
+<p>The passing profile below derives its OS and architecture from the current machine and asks only for one byte of free disk space. The failing profile requests an intentionally impossible amount of storage.</p>
+<div id="0ca76db6" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tempfile.TemporaryDirectory() <span class="im">as</span> tmp:</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    requirements_path <span class="op">=</span> Path(tmp) <span class="op">/</span> <span class="st">"env_requirements.yml"</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    requirements_path.write_text(</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"""os: </span><span class="sc">{</span>system<span class="sc">.</span>name<span class="sc">}</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="ss">machine: </span><span class="sc">{</span>system<span class="sc">.</span>machine<span class="sc">}</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="ss">disk:</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="ss">  path: .</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="ss">  free: 1 B</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="ss">env:</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="ss">  - QRT_TUTORIAL_RUN_ID</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="ss">"""</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> temporary_env(QRT_TUTORIAL_RUN_ID<span class="op">=</span><span class="st">"tutorial-run"</span>):</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>        validated <span class="op">=</span> q.env.require(requirements_path)</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>    impossible_path <span class="op">=</span> Path(tmp) <span class="op">/</span> <span class="st">"impossible.yml"</span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>    impossible_path.write_text(<span class="st">"disk:</span><span class="ch">\n</span><span class="st">  free: 999999 TiB</span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>        q.env.require(impossible_path)</span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> q.env.EnvironmentRequirementError <span class="im">as</span> error:</span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>        requirement_failures <span class="op">=</span> error.failures</span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">"validated_device"</span>: validated.device,</span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">"validated_os"</span>: validated.operating_system.name,</span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">"expected_failures"</span>: requirement_failures,</span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<pre><code>{'validated_device': 'cpu',
+ 'validated_os': 'Linux',
+ 'expected_failures': ('disk at /tmp/tmpzap8tc9c has 43.6 GiB free; requires 999999.0 TiB',)}</code></pre>
+</div>
+</div>
+</section>
+<section id="test-environment-dependent-behavior" class="level2">
+<h2 class="anchored" data-anchor-id="test-environment-dependent-behavior">Test environment-dependent behavior</h2>
+<p>The same temporary-variable pattern works in tests. Assertions can cover lookup, defaults, conversion, validation failures, and restoration without leaking state into later tests or notebook cells.</p>
+<div id="a6038c8d" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>name <span class="op">=</span> <span class="st">"QRT_TUTORIAL_TEST_VALUE"</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>original <span class="op">=</span> os.environ.get(name)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> temporary_env(<span class="op">**</span>{name: <span class="st">"12"</span>}):</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> q.env.get(name) <span class="op">==</span> <span class="st">"12"</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> q.env.require(name) <span class="op">==</span> <span class="st">"12"</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="bu">int</span>(q.env.require(name)) <span class="op">==</span> <span class="dv">12</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> os.environ.get(name) <span class="op">==</span> original</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> temporary_env(<span class="op">**</span>{name: <span class="va">None</span>}):</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> q.env.get(name, <span class="st">"fallback"</span>) <span class="op">==</span> <span class="st">"fallback"</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>        q.env.require(name)</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">KeyError</span>:</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>        missing_was_rejected <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> missing_was_rejected</span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a><span class="co">"environment behavior verified"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<pre><code>'environment behavior verified'</code></pre>
+</div>
+</div>
+</section>
+<section id="build-a-complete-configuration-example" class="level2">
+<h2 class="anchored" data-anchor-id="build-a-complete-configuration-example">Build a complete configuration example</h2>
+<p>A small application can keep <code>q.env</code> responsible for reading and inspecting the environment while making parsing and application defaults explicit in one configuration constructor. The secret itself is not retained here; only whether it was configured.</p>
+<div id="2045a5e3" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span>(frozen<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> AppConfig:</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    workers: <span class="bu">int</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    debug: <span class="bu">bool</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    symbols: <span class="bu">tuple</span>[<span class="bu">str</span>, ...]</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    cache_dir: Path</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    device: <span class="bu">str</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    market_data_configured: <span class="bu">bool</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_app_config() <span class="op">-&gt;</span> AppConfig:</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>    market_data_key <span class="op">=</span> q.env.require(<span class="st">"QRT_TUTORIAL_MARKET_DATA_KEY"</span>)</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> AppConfig(</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>        workers<span class="op">=</span><span class="bu">int</span>(q.env.get(<span class="st">"QRT_TUTORIAL_WORKERS"</span>, <span class="st">"4"</span>)),</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>        debug<span class="op">=</span>parse_bool(q.env.get(<span class="st">"QRT_TUTORIAL_DEBUG"</span>, <span class="st">"false"</span>)),</span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>        symbols<span class="op">=</span><span class="bu">tuple</span>(q.env.get(<span class="st">"QRT_TUTORIAL_SYMBOLS"</span>, <span class="st">"SPY"</span>).split(<span class="st">","</span>)),</span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>        cache_dir<span class="op">=</span>q.utils.cache_dir(<span class="st">"data"</span>),</span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>        device<span class="op">=</span>q.env.device(),</span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>        market_data_configured<span class="op">=</span><span class="bu">bool</span>(market_data_key),</span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> temporary_env(</span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a>    QRT_TUTORIAL_MARKET_DATA_KEY<span class="op">=</span><span class="st">"placeholder"</span>,</span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a>    QRT_TUTORIAL_WORKERS<span class="op">=</span><span class="st">"2"</span>,</span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a>    QRT_TUTORIAL_DEBUG<span class="op">=</span><span class="st">"true"</span>,</span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a>    QRT_TUTORIAL_SYMBOLS<span class="op">=</span><span class="st">"SPY,QQQ"</span>,</span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a>    config <span class="op">=</span> load_app_config()</span>
+<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> config.workers <span class="op">==</span> <span class="dv">2</span></span>
+<span id="cb24-30"><a href="#cb24-30" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> config.debug <span class="kw">is</span> <span class="va">True</span></span>
+<span id="cb24-31"><a href="#cb24-31" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> config.symbols <span class="op">==</span> (<span class="st">"SPY"</span>, <span class="st">"QQQ"</span>)</span>
+<span id="cb24-32"><a href="#cb24-32" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> config.market_data_configured <span class="kw">is</span> <span class="va">True</span></span>
+<span id="cb24-33"><a href="#cb24-33" aria-hidden="true" tabindex="-1"></a>config</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<pre><code>AppConfig(workers=2, debug=True, symbols=('SPY', 'QQQ'), cache_dir=PosixPath('/home/hi/.cache/qrt/data'), device='cpu', market_data_configured=True)</code></pre>
+</div>
+</div>
 
 
 </section>
@@ -942,4 +1284,4 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/env/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/env/index.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.dev/quantbert/qrt/blob/main/env/index.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/env/index.ipynb" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
