@@ -47,6 +47,7 @@ q.plot.plot(strategy, benchmark=benchmark)      # interactive equity + drawdown 
 | Module | Purpose |
 |---|---|
 | `q.data` | local parquet/csv I/O, market data sources (Yahoo Finance, Binance, DuckDB), bundled sample datasets |
+| `q.env` | explicit `.env` loading and environment-variable access |
 | `q.feature` | feature engineering: own indicators + TA-Lib + pandas-ta-classic |
 | `q.stats` | return-stream & trade-level statistics: performance, alpha/beta, Monte Carlo, variance/noise testing |
 | `q.plot` | interactive Plotly charts and performance reports, for both return streams and trade logs |

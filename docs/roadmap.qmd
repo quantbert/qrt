@@ -255,6 +255,32 @@ Opinionated plotting helpers with sensible defaults for quant research.
 - [ ] Checkpointing and inference helpers
 - [ ] Time-series-aware dataloaders
 
+## Ideas
+
+Exploratory candidates that fit qrt's unified quant-research API. These are
+not yet committed roadmap items.
+
+- [ ] `q.config` — layer defaults, JSON/TOML files, `.env` values, and explicit
+  overrides with validation
+- [ ] `q.calendar` — exchange calendars, sessions, holidays, market hours, and
+  timestamp alignment using `exchange-calendars`
+- [ ] `q.risk` — VaR/CVaR, volatility targeting, drawdown limits, risk budgets,
+  and position sizing
+- [ ] `q.optimize` — mean-variance, risk-parity, minimum-variance, and constrained
+  portfolio optimization
+- [ ] `q.experiment` — record parameters, dataset fingerprints, random seeds,
+  metrics, and artifacts for reproducible research
+- [ ] `q.validate` — validate OHLCV/trade schemas, timestamps, missing sessions,
+  suspicious returns, and look-ahead risks
+- [ ] `q.data.sources.fred` — macroeconomic series with release-date and
+  vintage-aware handling
+- [ ] `q.data.sources.fama_french` — normalized factor datasets with explicit
+  units and source metadata
+- [ ] `q.execution` — shared fee, slippage, spread, order-sizing, and fill models
+  for backtests
+- [ ] `q.signal` — signal normalization, ranking, neutralization, decay,
+  turnover, and information-coefficient analysis
+
 ## Inspiration
 
 Libraries we take inspiration from (and in some cases wrap):

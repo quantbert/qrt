@@ -62,6 +62,8 @@ website:
               href: feature/pandas_ta.ipynb
         - section: "q.model — Models"
           href: model/index.ipynb
+        - section: "q.env — Environment"
+          href: env/index.qmd
         - section: "q.plot — Plotting"
           href: plot/index.qmd
           contents:
@@ -150,6 +152,10 @@ quartodoc:
           include_imports: true
         - model.torch
         - model.selection
+    - title: q.env
+      desc: "Explicit .env loading and environment-variable access."
+      contents:
+        - env
     - title: q.utils
       desc: "Shared utilities."
       contents:

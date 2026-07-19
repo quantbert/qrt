@@ -9,12 +9,11 @@ import os
 import random
 import shutil
 from pathlib import Path
-from typing import Any
 
 import numpy as np
-from dotenv import load_dotenv as _load_dotenv
 from joblib import Memory
 from platformdirs import user_cache_dir
+from qrt.env import load as load_env
 from rich.console import Console
 
 __all__ = [
@@ -70,25 +69,6 @@ def clear_cache(name: str = "") -> None:
     target = cache_dir(name)
     shutil.rmtree(target, ignore_errors=True)
     target.mkdir(parents=True, exist_ok=True)
-
-
-def load_env(path: str | Path | None = None, **kwargs: Any) -> bool:
-    """Load environment variables from a ``.env`` file into ``os.environ``.
-
-    Thin wrapper around :func:`dotenv.load_dotenv`, useful for API keys/
-    secrets needed by data sources (e.g. a paid vendor or an
-    authenticated Binance endpoint). Call explicitly where needed --
-    qrt does not load a ``.env`` file automatically on import.
-
-    Args:
-        path: Path to the ``.env`` file. If ``None``, searches upward from
-            the current working directory (dotenv's default behavior).
-        **kwargs: Passed through to :func:`dotenv.load_dotenv`.
-
-    Returns:
-        ``True`` if a file was found and loaded, ``False`` otherwise.
-    """
-    return _load_dotenv(dotenv_path=path, **kwargs)
 
 
 def log(values):
