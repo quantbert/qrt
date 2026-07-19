@@ -1741,106 +1741,40 @@
     "href": "env/index.html",
     "title": "Environment",
     "section": "",
-    "text": "q.env covers both configuration from environment variables and inspection of the runtime where qrt is executing. This tutorial uses temporary files and temporary variable names, so it does not modify your project configuration or reveal real secrets.",
+    "text": "q.env reads environment variables and describes the machine where qrt is running. This tutorial uses demo.env and demo-requirements.yml from the repository root.",
     "crumbs": [
       "Getting Started",
       "q.env — Environment"
     ]
   },
   {
-    "objectID": "env/index.html#import-the-env-module",
-    "href": "env/index.html#import-the-env-module",
+    "objectID": "env/index.html#load-and-read-a-.env-file",
+    "href": "env/index.html#load-and-read-a-.env-file",
     "title": "Environment",
-    "section": "Import the env module",
-    "text": "Import the env module\nImport qrt and a few standard-library utilities used to isolate the examples. The context manager restores every variable to its original state, including variables that were initially absent.\n\nimport inspect\nimport os\nimport tempfile\nfrom contextlib import contextmanager\nfrom dataclasses import dataclass\nfrom pathlib import Path\n\nimport qrt as q\n\n@contextmanager\ndef temporary_env(**updates):\n    previous = {name: os.environ.get(name) for name in updates}\n    try:\n        for name, value in updates.items():\n            if value is None:\n                os.environ.pop(name, None)\n            else:\n                os.environ[name] = value\n        yield\n    finally:\n        for name, value in previous.items():\n            if value is None:\n                os.environ.pop(name, None)\n            else:\n                os.environ[name] = value\n\nq.env.__name__\n\n'qrt.env'",
+    "section": "Load and read a .env file",
+    "text": "Load and read a .env file\nload() searches upward for a file named .env. Pass a path to load a specific file, and use override=True when file values should replace variables already present in the process environment.\nvalues() parses a specific dotenv file and returns its contents without making any further changes to os.environ. The checked-in demo.env contains only a safe demonstration token, so its parsed value is shown here. Do not display values() output for files containing real credentials.\n\nfrom pathlib import Path\n\nimport qrt as q\n\ndemo_env = Path(\"../../demo.env\")\ndemo_requirements = Path(\"../../demo-requirements.yml\")\n\nq.env.load()  # Search upward for a file named .env\nq.env.load(demo_env)  # Load a specific dotenv file\nq.env.load(demo_env, override=True)  # Replace existing process values\n\nfile_values = q.env.values(demo_env)  # Parse without modifying os.environ\nfile_values\n\n{'MY_TOKEN': 'ABC123', 'ANOTHER_TOKEN': 'XYZ789'}",
     "crumbs": [
       "Getting Started",
       "q.env — Environment"
     ]
   },
   {
-    "objectID": "env/index.html#inspect-the-environment-api",
-    "href": "env/index.html#inspect-the-environment-api",
+    "objectID": "env/index.html#access-loaded-variables",
+    "href": "env/index.html#access-loaded-variables",
     "title": "Environment",
-    "section": "Inspect the environment API",
-    "text": "Inspect the environment API\nThe public API includes environment-variable helpers, runtime inspectors, typed snapshots, and the requirements validator. Signatures make the two roles visible without importing private implementation details.\n\npublic_objects = sorted(q.env.__all__)\nsignatures = {\n    name: str(inspect.signature(getattr(q.env, name)))\n    for name in public_objects\n    if inspect.isfunction(getattr(q.env, name))\n}\n\npublic_objects, signatures\n\n(['AcceleratorInfo',\n  'DiskInfo',\n  'EnvironmentInfo',\n  'EnvironmentRequirementError',\n  'OSInfo',\n  'accelerators',\n  'device',\n  'disk',\n  'get',\n  'info',\n  'load',\n  'operating_system',\n  'report',\n  'require',\n  'values'],\n {'accelerators': \"() -&gt; 'tuple[AcceleratorInfo, ...]'\",\n  'device': \"() -&gt; 'str'\",\n  'disk': \"(path: 'str | Path' = '.') -&gt; 'DiskInfo'\",\n  'get': \"(name: 'str', default: 'str | None' = None) -&gt; 'str | None'\",\n  'info': \"(path: 'str | Path' = '.') -&gt; 'EnvironmentInfo'\",\n  'load': \"(path: 'str | Path | None' = None, *, override: 'bool' = False, **kwargs: 'Any') -&gt; 'bool'\",\n  'operating_system': \"() -&gt; 'OSInfo'\",\n  'report': \"(path: 'str | Path' = '.') -&gt; 'EnvironmentInfo'\",\n  'require': \"(name: 'str | Path') -&gt; 'str | EnvironmentInfo'\",\n  'values': \"(path: 'str | Path | None' = None, **kwargs: 'Any') -&gt; 'dict[str, str | None]'\"})",
+    "section": "Access loaded variables",
+    "text": "Access loaded variables\nAfter demo.env is loaded, get returns MY_TOKEN as an optional value. The plain-string form of require returns the same variable when it must be configured and raises KeyError when it is absent.\nThese cells display the safe token from demo.env and then confirm that the required lookup succeeded. Avoid printing real credentials in application code or documentation.\n\ntoken = q.env.get(\"MY_TOKEN\")\ntoken\n\n'ABC123'\n\n\n\nrequired_token = q.env.require(\"MY_TOKEN\")\n\"MY_TOKEN is configured\" if required_token else \"MY_TOKEN is empty\"\n\n'MY_TOKEN is configured'\n\n\n\nMissing values\nget returns a fallback for optional configuration. require raises KeyError when a required variable is absent. The next cell catches only to keep the tutorial executable; the displayed object is the real exception raised by q.env.\n\noptional_value = q.env.get(\"MISSING_SETTING\", \"fallback\")\nmissing_error = None\n\ntry:\n    q.env.require(\"MISSING_SETTING\")\nexcept KeyError as error:\n    missing_error = error\n\noptional_value, missing_error\n\n('fallback',\n KeyError('Required environment variable is not set: MISSING_SETTING'))",
     "crumbs": [
       "Getting Started",
       "q.env — Environment"
     ]
   },
   {
-    "objectID": "env/index.html#read-environment-variables",
-    "href": "env/index.html#read-environment-variables",
+    "objectID": "env/index.html#inspect-the-runtime",
+    "href": "env/index.html#inspect-the-runtime",
     "title": "Environment",
-    "section": "Read environment variables",
-    "text": "Read environment variables\nget reads optional configuration. The plain-string form of require reads mandatory configuration and raises when it is absent. Both return strings because process environment variables are strings.\n\nwith temporary_env(QRT_TUTORIAL_REGION=\"us-east-1\"):\n    optional_region = q.env.get(\"QRT_TUTORIAL_REGION\")\n    required_region = q.env.require(\"QRT_TUTORIAL_REGION\")\n\n{\"optional\": optional_region, \"required\": required_region}\n\n{'optional': 'us-east-1', 'required': 'us-east-1'}",
-    "crumbs": [
-      "Getting Started",
-      "q.env — Environment"
-    ]
-  },
-  {
-    "objectID": "env/index.html#define-default-values",
-    "href": "env/index.html#define-default-values",
-    "title": "Environment",
-    "section": "Define default values",
-    "text": "Define default values\nPass a default to get for optional configuration. Use require when continuing with a fallback would be unsafe.\n\nwith temporary_env(QRT_TUTORIAL_WORKERS=None):\n    workers_text = q.env.get(\"QRT_TUTORIAL_WORKERS\", \"4\")\n    try:\n        q.env.require(\"QRT_TUTORIAL_WORKERS\")\n    except KeyError as error:\n        missing_message = str(error)\n\n{\"optional_default\": workers_text, \"required_error\": missing_message}\n\n{'optional_default': '4',\n 'required_error': \"'Required environment variable is not set: QRT_TUTORIAL_WORKERS'\"}",
-    "crumbs": [
-      "Getting Started",
-      "q.env — Environment"
-    ]
-  },
-  {
-    "objectID": "env/index.html#parse-typed-configuration",
-    "href": "env/index.html#parse-typed-configuration",
-    "title": "Environment",
-    "section": "Parse typed configuration",
-    "text": "Parse typed configuration\nq.env deliberately returns strings; it does not guess application types. Parse values explicitly so accepted formats remain visible. This example converts an integer, float, boolean, list, and path.\n\ndef parse_bool(value: str) -&gt; bool:\n    normalized = value.casefold()\n    if normalized in {\"1\", \"true\", \"yes\", \"on\"}:\n        return True\n    if normalized in {\"0\", \"false\", \"no\", \"off\"}:\n        return False\n    raise ValueError(f\"Invalid boolean value: {value!r}\")\n\nwith temporary_env(\n    QRT_TUTORIAL_WORKERS=\"8\",\n    QRT_TUTORIAL_THRESHOLD=\"0.25\",\n    QRT_TUTORIAL_DEBUG=\"false\",\n    QRT_TUTORIAL_SYMBOLS=\"AAPL,MSFT,SPY\",\n    QRT_TUTORIAL_DATA_DIR=\"~/qrt-data\",\n):\n    typed = {\n        \"workers\": int(q.env.require(\"QRT_TUTORIAL_WORKERS\")),\n        \"threshold\": float(q.env.require(\"QRT_TUTORIAL_THRESHOLD\")),\n        \"debug\": parse_bool(q.env.require(\"QRT_TUTORIAL_DEBUG\")),\n        \"symbols\": q.env.require(\"QRT_TUTORIAL_SYMBOLS\").split(\",\"),\n        \"data_dir\": Path(q.env.require(\"QRT_TUTORIAL_DATA_DIR\")).expanduser(),\n    }\n\ntyped\n\n{'workers': 8,\n 'threshold': 0.25,\n 'debug': False,\n 'symbols': ['AAPL', 'MSFT', 'SPY'],\n 'data_dir': PosixPath('/home/hi/qrt-data')}",
-    "crumbs": [
-      "Getting Started",
-      "q.env — Environment"
-    ]
-  },
-  {
-    "objectID": "env/index.html#handle-missing-or-invalid-values",
-    "href": "env/index.html#handle-missing-or-invalid-values",
-    "title": "Environment",
-    "section": "Handle missing or invalid values",
-    "text": "Handle missing or invalid values\nCatch KeyError for missing required variables. Explicit conversions raise their own documented errors, such as ValueError from int or from the boolean parser above.\n\nerrors = []\nwith temporary_env(QRT_TUTORIAL_REQUIRED=None, QRT_TUTORIAL_WORKERS=\"many\"):\n    try:\n        q.env.require(\"QRT_TUTORIAL_REQUIRED\")\n    except KeyError as error:\n        errors.append({\"type\": type(error).__name__, \"message\": str(error)})\n\n    try:\n        int(q.env.require(\"QRT_TUTORIAL_WORKERS\"))\n    except ValueError as error:\n        errors.append({\"type\": type(error).__name__, \"message\": str(error)})\n\nerrors\n\n[{'type': 'KeyError',\n  'message': \"'Required environment variable is not set: QRT_TUTORIAL_REQUIRED'\"},\n {'type': 'ValueError',\n  'message': \"invalid literal for int() with base 10: 'many'\"}]",
-    "crumbs": [
-      "Getting Started",
-      "q.env — Environment"
-    ]
-  },
-  {
-    "objectID": "env/index.html#override-values-for-development",
-    "href": "env/index.html#override-values-for-development",
-    "title": "Environment",
-    "section": "Override values for development",
-    "text": "Override values for development\nvalues parses a dotenv file without changing the process environment. load does modify os.environ: existing values win by default, while override=True lets the file replace them. The temporary file and variables below are isolated from your real configuration.\n\nwith tempfile.TemporaryDirectory() as tmp:\n    dotenv_path = Path(tmp) / \".env\"\n    dotenv_path.write_text(\n        \"QRT_TUTORIAL_HOST=from-file\\nQRT_TUTORIAL_CACHE=true\\n\"\n    )\n\n    with temporary_env(QRT_TUTORIAL_HOST=\"from-process\", QRT_TUTORIAL_CACHE=None):\n        parsed = q.env.values(dotenv_path)\n        unchanged = q.env.get(\"QRT_TUTORIAL_HOST\")\n        q.env.load(dotenv_path)\n        preserved = q.env.get(\"QRT_TUTORIAL_HOST\")\n        q.env.load(dotenv_path, override=True)\n        overridden = q.env.get(\"QRT_TUTORIAL_HOST\")\n\n{\n    \"parsed\": parsed,\n    \"before_load\": unchanged,\n    \"without_override\": preserved,\n    \"with_override\": overridden,\n}\n\n{'parsed': {'QRT_TUTORIAL_HOST': 'from-file', 'QRT_TUTORIAL_CACHE': 'true'},\n 'before_load': 'from-process',\n 'without_override': 'from-process',\n 'with_override': 'from-file'}",
-    "crumbs": [
-      "Getting Started",
-      "q.env — Environment"
-    ]
-  },
-  {
-    "objectID": "env/index.html#manage-secrets-safely",
-    "href": "env/index.html#manage-secrets-safely",
-    "title": "Environment",
-    "section": "Manage secrets safely",
-    "text": "Manage secrets safely\nNever print secret values or include them in reports. Check whether a required secret exists and display only a redacted status. Commit a .env.example containing names and safe placeholders, never a populated .env.\n\nwith temporary_env(QRT_TUTORIAL_API_KEY=\"placeholder-not-a-real-secret\"):\n    api_key = q.env.require(\"QRT_TUTORIAL_API_KEY\")\n    secret_status = {\n        \"configured\": bool(api_key),\n        \"display\": \"&lt;redacted&gt;\",\n    }\n\nsecret_status\n\n{'configured': True, 'display': '&lt;redacted&gt;'}",
-    "crumbs": [
-      "Getting Started",
-      "q.env — Environment"
-    ]
-  },
-  {
-    "objectID": "env/index.html#inspect-the-current-runtime",
-    "href": "env/index.html#inspect-the-current-runtime",
-    "title": "Environment",
-    "section": "Inspect the current runtime",
-    "text": "Inspect the current runtime\nThe runtime helpers describe the operating system, storage filesystem, usable PyTorch accelerators, and preferred device. info returns one immutable snapshot; as_dict converts it to JSON-friendly data. AMD ROCm devices are recorded with backend rocm, while device() returns PyTorch’s compatible cuda device name.\n\nsystem = q.env.operating_system()\nstorage = q.env.disk(q.utils.cache_dir(\"data\"))\ngpus = q.env.accelerators()\npreferred_device = q.env.device()\nenvironment = q.env.info(q.utils.cache_dir(\"data\"))\n\n{\n    \"operating_system\": system,\n    \"disk\": storage,\n    \"accelerators\": gpus,\n    \"preferred_device\": preferred_device,\n    \"snapshot\": environment.as_dict(),\n}\n\n{'operating_system': OSInfo(name='Linux', release='7.0.0-27-generic', version='#27-Ubuntu SMP PREEMPT_DYNAMIC Thu Jun 18 19:13:49 UTC 2026', machine='x86_64'),\n 'disk': DiskInfo(path=PosixPath('/home/hi/.cache/qrt/data'), total=2011838955520, used=127487479808, free=1782080086016),\n 'accelerators': (),\n 'preferred_device': 'cpu',\n 'snapshot': {'operating_system': {'name': 'Linux',\n   'release': '7.0.0-27-generic',\n   'version': '#27-Ubuntu SMP PREEMPT_DYNAMIC Thu Jun 18 19:13:49 UTC 2026',\n   'machine': 'x86_64'},\n  'disk': {'path': '/home/hi/.cache/qrt/data',\n   'total': 2011838955520,\n   'used': 127487479808,\n   'free': 1782080086016},\n  'accelerators': (),\n  'device': 'cpu'}}\n\n\n\nRender an environment report\nreport prints the same snapshot as a compact Rich table and returns it for continued programmatic use. Pass the path whose filesystem matters to the workload.\n\nreported = q.env.report(q.utils.cache_dir(\"data\"))\nassert reported.disk.path == q.utils.cache_dir(\"data\").resolve()\n\n                             qrt environment                              \n┌──────────────────┬─────────────────────────────────────────────────────┐\n│ OS               │ Linux 7.0.0-27-generic (x86_64)                     │\n│ Disk             │ 1.6 TiB free of 1.8 TiB at /home/hi/.cache/qrt/data │\n│ Accelerator      │ None detected                                       │\n│ Preferred device │ cpu                                                 │\n└──────────────────┴─────────────────────────────────────────────────────┘",
+    "section": "Inspect the runtime",
+    "text": "Inspect the runtime\nThe other half of q.env describes the current machine: operating system, filesystem capacity, usable PyTorch accelerators, and preferred device. info combines those details into an immutable, JSON-friendly snapshot.\n\nenvironment = q.env.info()\nenvironment.as_dict()\n\n{'operating_system': {'name': 'Linux',\n  'release': '7.0.0-27-generic',\n  'version': '#27-Ubuntu SMP PREEMPT_DYNAMIC Thu Jun 18 19:13:49 UTC 2026',\n  'machine': 'x86_64'},\n 'disk': {'path': '/home/hi/qrt/docs/env',\n  'total': 2011838955520,\n  'used': 127521759232,\n  'free': 1782045806592},\n 'accelerators': (),\n 'device': 'cpu'}\n\n\n\nEnvironment report\nreport presents the same snapshot as a compact Rich table and returns it for programmatic use.\n\n_ = q.env.report()\n\n                            qrt environment                            \n┌──────────────────┬──────────────────────────────────────────────────┐\n│ OS               │ Linux 7.0.0-27-generic (x86_64)                  │\n│ Disk             │ 1.6 TiB free of 1.8 TiB at /home/hi/qrt/docs/env │\n│ Accelerator      │ None detected                                    │\n│ Preferred device │ cpu                                              │\n└──────────────────┴──────────────────────────────────────────────────┘",
     "crumbs": [
       "Getting Started",
       "q.env — Environment"
@@ -1851,29 +1785,7 @@
     "href": "env/index.html#require-a-runtime-environment",
     "title": "Environment",
     "section": "Require a runtime environment",
-    "text": "Require a runtime environment\nrequire dispatches according to its input: a plain string reads one required environment variable, while a Path or a string ending in .yml/.yaml validates a machine requirements file. File validation returns an EnvironmentInfo snapshot or raises EnvironmentRequirementError containing every unmet condition.\nThe passing profile below derives its OS and architecture from the current machine and asks only for one byte of free disk space. The failing profile requests an intentionally impossible amount of storage.\n\nwith tempfile.TemporaryDirectory() as tmp:\n    requirements_path = Path(tmp) / \"env_requirements.yml\"\n    requirements_path.write_text(\n        f\"\"\"os: {system.name}\nmachine: {system.machine}\ndisk:\n  path: .\n  free: 1 B\nenv:\n  - QRT_TUTORIAL_RUN_ID\n\"\"\"\n    )\n\n    with temporary_env(QRT_TUTORIAL_RUN_ID=\"tutorial-run\"):\n        validated = q.env.require(requirements_path)\n\n    impossible_path = Path(tmp) / \"impossible.yml\"\n    impossible_path.write_text(\"disk:\\n  free: 999999 TiB\\n\")\n    try:\n        q.env.require(impossible_path)\n    except q.env.EnvironmentRequirementError as error:\n        requirement_failures = error.failures\n\n{\n    \"validated_device\": validated.device,\n    \"validated_os\": validated.operating_system.name,\n    \"expected_failures\": requirement_failures,\n}\n\n{'validated_device': 'cpu',\n 'validated_os': 'Linux',\n 'expected_failures': ('disk at /tmp/tmpzap8tc9c has 43.6 GiB free; requires 999999.0 TiB',)}",
-    "crumbs": [
-      "Getting Started",
-      "q.env — Environment"
-    ]
-  },
-  {
-    "objectID": "env/index.html#test-environment-dependent-behavior",
-    "href": "env/index.html#test-environment-dependent-behavior",
-    "title": "Environment",
-    "section": "Test environment-dependent behavior",
-    "text": "Test environment-dependent behavior\nThe same temporary-variable pattern works in tests. Assertions can cover lookup, defaults, conversion, validation failures, and restoration without leaking state into later tests or notebook cells.\n\nname = \"QRT_TUTORIAL_TEST_VALUE\"\noriginal = os.environ.get(name)\n\nwith temporary_env(**{name: \"12\"}):\n    assert q.env.get(name) == \"12\"\n    assert q.env.require(name) == \"12\"\n    assert int(q.env.require(name)) == 12\n\nassert os.environ.get(name) == original\n\nwith temporary_env(**{name: None}):\n    assert q.env.get(name, \"fallback\") == \"fallback\"\n    try:\n        q.env.require(name)\n    except KeyError:\n        missing_was_rejected = True\n\nassert missing_was_rejected\n\"environment behavior verified\"\n\n'environment behavior verified'",
-    "crumbs": [
-      "Getting Started",
-      "q.env — Environment"
-    ]
-  },
-  {
-    "objectID": "env/index.html#build-a-complete-configuration-example",
-    "href": "env/index.html#build-a-complete-configuration-example",
-    "title": "Environment",
-    "section": "Build a complete configuration example",
-    "text": "Build a complete configuration example\nA small application can keep q.env responsible for reading and inspecting the environment while making parsing and application defaults explicit in one configuration constructor. The secret itself is not retained here; only whether it was configured.\n\n@dataclass(frozen=True)\nclass AppConfig:\n    workers: int\n    debug: bool\n    symbols: tuple[str, ...]\n    cache_dir: Path\n    device: str\n    market_data_configured: bool\n\ndef load_app_config() -&gt; AppConfig:\n    market_data_key = q.env.require(\"QRT_TUTORIAL_MARKET_DATA_KEY\")\n    return AppConfig(\n        workers=int(q.env.get(\"QRT_TUTORIAL_WORKERS\", \"4\")),\n        debug=parse_bool(q.env.get(\"QRT_TUTORIAL_DEBUG\", \"false\")),\n        symbols=tuple(q.env.get(\"QRT_TUTORIAL_SYMBOLS\", \"SPY\").split(\",\")),\n        cache_dir=q.utils.cache_dir(\"data\"),\n        device=q.env.device(),\n        market_data_configured=bool(market_data_key),\n    )\n\nwith temporary_env(\n    QRT_TUTORIAL_MARKET_DATA_KEY=\"placeholder\",\n    QRT_TUTORIAL_WORKERS=\"2\",\n    QRT_TUTORIAL_DEBUG=\"true\",\n    QRT_TUTORIAL_SYMBOLS=\"SPY,QQQ\",\n):\n    config = load_app_config()\n\nassert config.workers == 2\nassert config.debug is True\nassert config.symbols == (\"SPY\", \"QQQ\")\nassert config.market_data_configured is True\nconfig\n\nAppConfig(workers=2, debug=True, symbols=('SPY', 'QQQ'), cache_dir=PosixPath('/home/hi/.cache/qrt/data'), device='cpu', market_data_configured=True)",
+    "text": "Require a runtime environment\nrequire behaves according to its input:\n\n\n\n\n\n\n\nInput\nBehavior\n\n\n\n\nA plain string such as \"MY_TOKEN\"\nReturn that required environment variable\n\n\nA Path, or a string ending in .yml/.yaml\nValidate the machine against that requirements file\n\n\n\nThe checked-in requirements file contains:\ndisk:\n  path: .\n  free: 1 B\n\nenv:\n  - MY_TOKEN\nThe disk path is resolved relative to the YAML file. Validation succeeds because demo.env has already loaded MY_TOKEN; unmet conditions would be collected in EnvironmentRequirementError.failures.\n\nvalidated = q.env.require(demo_requirements)\n{\n    \"requirements_met\": True,\n    \"device\": validated.device,\n    \"disk\": str(validated.disk.path),\n}\n\n{'requirements_met': True, 'device': 'cpu', 'disk': '/home/hi/qrt'}",
     "crumbs": [
       "Getting Started",
       "q.env — Environment"
