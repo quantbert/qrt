@@ -152,8 +152,74 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/feature.transforms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">feature.transforms</span></a>
+  <a href="../reference/feature.transform.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">feature.transform</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/feature.timeseries.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">feature.timeseries</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/feature.impute.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">feature.impute</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/feature.datetime.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">feature.datetime</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/feature.scale.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">feature.scale</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/feature.outlier.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">feature.outlier</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/feature.encode.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">feature.encode</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/feature.reduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">feature.reduction</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/feature.selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">feature.selection</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/feature.text.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">feature.text</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/feature.cross_sectional.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">feature.cross_sectional</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/feature.pipeline.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">feature.pipeline</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -359,22 +425,66 @@ ul.task-list li input[type="checkbox"] {
 <h1 class="doc doc-index">Function reference</h1>
 <section id="q.feature" class="level2">
 <h2 class="anchored" data-anchor-id="q.feature">q.feature</h2>
-<p>Feature engineering — general-purpose transforms, TA-Lib, pandas-ta-classic.</p>
+<p>Feature engineering — transform, time-series, datetime, preprocessing, text, and provider-specific features.</p>
 <table class="caption-top table">
 <tbody>
 <tr class="odd">
 <td><a href="../reference/feature.html#qrt.feature">feature</a></td>
-<td>Feature engineering: transformations and wrappers around feature libraries.</td>
+<td>Feature engineering organized by operation and execution contract.</td>
 </tr>
 <tr class="even">
-<td><a href="../reference/feature.transforms.html#qrt.feature.transforms">feature.transforms</a></td>
-<td>General-purpose feature transformations, one module per transform.</td>
+<td><a href="../reference/feature.transform.html#qrt.feature.transform">feature.transform</a></td>
+<td>Order-independent mathematical feature transformations.</td>
 </tr>
 <tr class="odd">
+<td><a href="../reference/feature.timeseries.html#qrt.feature.timeseries">feature.timeseries</a></td>
+<td>Ordering-dependent and rolling feature transformations.</td>
+</tr>
+<tr class="even">
+<td><a href="../reference/feature.impute.html#qrt.feature.impute">feature.impute</a></td>
+<td>Missing-data indicators and imputation.</td>
+</tr>
+<tr class="odd">
+<td><a href="../reference/feature.datetime.html#qrt.feature.datetime">feature.datetime</a></td>
+<td>Temporal and exchange-session feature extraction.</td>
+</tr>
+<tr class="even">
+<td><a href="../reference/feature.scale.html#qrt.feature.scale">feature.scale</a></td>
+<td>Numeric feature normalization.</td>
+</tr>
+<tr class="odd">
+<td><a href="../reference/feature.outlier.html#qrt.feature.outlier">feature.outlier</a></td>
+<td>Outlier detection and treatment.</td>
+</tr>
+<tr class="even">
+<td><a href="../reference/feature.encode.html#qrt.feature.encode">feature.encode</a></td>
+<td>Categorical feature encoding.</td>
+</tr>
+<tr class="odd">
+<td><a href="../reference/feature.reduction.html#qrt.feature.reduction">feature.reduction</a></td>
+<td>Dimensionality reduction for feature matrices.</td>
+</tr>
+<tr class="even">
+<td><a href="../reference/feature.selection.html#qrt.feature.selection">feature.selection</a></td>
+<td>Feature selection methods.</td>
+</tr>
+<tr class="odd">
+<td><a href="../reference/feature.text.html#qrt.feature.text">feature.text</a></td>
+<td>Text, sentiment, embedding, and language-model features.</td>
+</tr>
+<tr class="even">
+<td><a href="../reference/feature.cross_sectional.html#qrt.feature.cross_sectional">feature.cross_sectional</a></td>
+<td>Features computed across a universe of symbols.</td>
+</tr>
+<tr class="odd">
+<td><a href="../reference/feature.pipeline.html#qrt.feature.pipeline">feature.pipeline</a></td>
+<td>Feature composition, fitting, and per-symbol application.</td>
+</tr>
+<tr class="even">
 <td><a href="../reference/feature.talib.html#qrt.feature.talib">feature.talib</a></td>
 <td>TA-Lib indicators exposed with a pandas-friendly interface.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="../reference/feature.pandas_ta.html#qrt.feature.pandas_ta">feature.pandas_ta</a></td>
 <td>pandas-ta-classic indicators exposed under the qrt feature namespace.</td>
 </tr>

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>feature.transforms – qrt</title>
+<title>feature.selection – qrt</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,41 +23,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -68,8 +33,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../reference/feature.talib.html" rel="next">
-<link href="../reference/feature.html" rel="prev">
+<link href="../reference/feature.text.html" rel="next">
+<link href="../reference/feature.reduction.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -153,7 +118,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/feature.html">q.feature</a></li><li class="breadcrumb-item"><a href="../reference/feature.transforms.html">feature.transforms</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/feature.html">q.feature</a></li><li class="breadcrumb-item"><a href="../reference/feature.selection.html">feature.selection</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -188,8 +153,74 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/feature.transforms.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">feature.transforms</span></a>
+  <a href="../reference/feature.transform.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">feature.transform</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/feature.timeseries.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">feature.timeseries</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/feature.impute.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">feature.impute</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/feature.datetime.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">feature.datetime</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/feature.scale.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">feature.scale</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/feature.outlier.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">feature.outlier</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/feature.encode.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">feature.encode</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/feature.reduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">feature.reduction</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/feature.selection.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">feature.selection</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/feature.text.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">feature.text</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/feature.cross_sectional.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">feature.cross_sectional</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/feature.pipeline.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">feature.pipeline</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -372,263 +403,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#qrt.feature.transforms" id="toc-qrt.feature.transforms" class="nav-link active" data-scroll-target="#qrt.feature.transforms">feature.transforms</a>
-  <ul class="collapse">
-  <li><a href="#to-add-a-transform" id="toc-to-add-a-transform" class="nav-link" data-scroll-target="#to-add-a-transform">To add a transform</a></li>
-  <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions">Functions</a>
-  <ul class="collapse">
-  <li><a href="#qrt.feature.transforms.lags" id="toc-qrt.feature.transforms.lags" class="nav-link" data-scroll-target="#qrt.feature.transforms.lags">lags</a></li>
-  <li><a href="#qrt.feature.transforms.pct_rank" id="toc-qrt.feature.transforms.pct_rank" class="nav-link" data-scroll-target="#qrt.feature.transforms.pct_rank">pct_rank</a></li>
-  <li><a href="#qrt.feature.transforms.sma" id="toc-qrt.feature.transforms.sma" class="nav-link" data-scroll-target="#qrt.feature.transforms.sma">sma</a></li>
-  </ul></li>
-  </ul></li>
+  <li><a href="#qrt.feature.selection" id="toc-qrt.feature.selection" class="nav-link active" data-scroll-target="#qrt.feature.selection">feature.selection</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/feature.transforms.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/feature.transforms.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/feature.selection.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/feature.selection.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/feature.html">q.feature</a></li><li class="breadcrumb-item"><a href="../reference/feature.transforms.html">feature.transforms</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/feature.html">q.feature</a></li><li class="breadcrumb-item"><a href="../reference/feature.selection.html">feature.selection</a></li></ol></nav></header>
 
 
 
 
-<section id="qrt.feature.transforms" class="level1">
-<h1>feature.transforms</h1>
-<p><code>feature.transforms</code></p>
-<p>General-purpose feature transformations, one module per transform.</p>
-<section id="to-add-a-transform" class="level2 doc-section doc-section-to-add-a-transform">
-<h2 class="doc-section doc-section-to-add-a-transform anchored" data-anchor-id="to-add-a-transform">To add a transform</h2>
-<ol type="1">
-<li>Create <code>qrt/feature/transforms/_&lt;transform&gt;.py</code> (leading underscore – it is a private implementation module; the function itself stays public).</li>
-<li>Define one public function taking a Series/DataFrame and returning one, with the index preserved. Helpers should be prefixed with <code>_</code>.</li>
-<li>Re-export it below (one import line + one <code>__all__</code> entry), so it is visible to IDEs and available as <code>q.feature.transforms.&lt;transform&gt;</code>.</li>
-</ol>
-</section>
-<section id="functions" class="level2">
-<h2 class="anchored" data-anchor-id="functions">Functions</h2>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="#qrt.feature.transforms.lags">lags</a></td>
-<td>Create lagged copies of a Series or DataFrame.</td>
-</tr>
-<tr class="even">
-<td><a href="#qrt.feature.transforms.pct_rank">pct_rank</a></td>
-<td>Rolling percentile rank of each value within a trailing window.</td>
-</tr>
-<tr class="odd">
-<td><a href="#qrt.feature.transforms.sma">sma</a></td>
-<td>Simple moving average.</td>
-</tr>
-</tbody>
-</table>
-<section id="qrt.feature.transforms.lags" class="level3">
-<h3 class="anchored" data-anchor-id="qrt.feature.transforms.lags">lags</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>feature.transforms.lags(data, lags)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Create lagged copies of a Series or DataFrame.</p>
-<section id="parameters" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h4>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 7%">
-<col style="width: 24%">
-<col style="width: 57%">
-<col style="width: 10%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-<th>Default</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>data</td>
-<td>pd.Series | pd.DataFrame</td>
-<td>Input series or frame (rows ordered in time).</td>
-<td><em>required</em></td>
-</tr>
-<tr class="even">
-<td>lags</td>
-<td>int | Iterable[int]</td>
-<td>Number of lags (1..n) or an explicit iterable of lag periods.</td>
-<td><em>required</em></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="returns" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns">Returns</h4>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 8%">
-<col style="width: 15%">
-<col style="width: 76%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td></td>
-<td>pd.DataFrame</td>
-<td>DataFrame with one column per (column, lag), named <code>{name}_lag{k}</code>.</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="examples" class="level4 doc-section doc-section-examples">
-<h4 class="doc-section doc-section-examples anchored" data-anchor-id="examples">Examples</h4>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> q.feature.transforms.lags(prices[<span class="st">"close"</span>], <span class="dv">3</span>)  <span class="co"># close_lag1..close_lag3</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> q.feature.transforms.lags(df, [<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">21</span>])  <span class="co"># daily, weekly, monthly lags</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-</section>
-<section id="qrt.feature.transforms.pct_rank" class="level3">
-<h3 class="anchored" data-anchor-id="qrt.feature.transforms.pct_rank">pct_rank</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>feature.transforms.pct_rank(series, window<span class="op">=</span><span class="dv">60</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Rolling percentile rank of each value within a trailing window.</p>
-<p>Useful for gauging whether a price or indicator value is relatively high or low compared to its own recent history, independent of absolute scale.</p>
-<section id="parameters-1" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 9%">
-<col style="width: 13%">
-<col style="width: 62%">
-<col style="width: 14%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-<th>Default</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>series</td>
-<td>pd.Series</td>
-<td>Input series (e.g.&nbsp;close prices or an indicator).</td>
-<td><em>required</em></td>
-</tr>
-<tr class="even">
-<td>window</td>
-<td>int</td>
-<td>Rolling window size, in periods.</td>
-<td><code>60</code></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="returns-1" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-1">Returns</h4>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 8%">
-<col style="width: 11%">
-<col style="width: 79%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td></td>
-<td>pd.Series</td>
-<td>Series of percentile ranks (0-100 scale), same index as <code>series</code>. The</td>
-</tr>
-<tr class="even">
-<td></td>
-<td>pd.Series</td>
-<td>first <code>window - 1</code> values are <code>NaN</code> (insufficient history).</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="examples-1" class="level4 doc-section doc-section-examples">
-<h4 class="doc-section doc-section-examples anchored" data-anchor-id="examples-1">Examples</h4>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> q.feature.transforms.pct_rank(prices[<span class="st">"close"</span>], <span class="dv">60</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-</section>
-<section id="qrt.feature.transforms.sma" class="level3">
-<h3 class="anchored" data-anchor-id="qrt.feature.transforms.sma">sma</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>feature.transforms.sma(series, window)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Simple moving average.</p>
-<section id="parameters-2" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-2">Parameters</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-<th>Default</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>series</td>
-<td>pd.Series</td>
-<td>Input series (e.g.&nbsp;close prices).</td>
-<td><em>required</em></td>
-</tr>
-<tr class="even">
-<td>window</td>
-<td>int</td>
-<td>Rolling window size, in periods.</td>
-<td><em>required</em></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="returns-2" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-2">Returns</h4>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 9%">
-<col style="width: 13%">
-<col style="width: 77%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td></td>
-<td>pd.Series</td>
-<td>Series of the rolling mean, with the same index as <code>series</code>.</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="examples-2" class="level4 doc-section doc-section-examples">
-<h4 class="doc-section doc-section-examples anchored" data-anchor-id="examples-2">Examples</h4>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> q.feature.transforms.sma(prices[<span class="st">"close"</span>], <span class="dv">20</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="qrt.feature.selection" class="level1">
+<h1>feature.selection</h1>
+<p><code>feature.selection</code></p>
+<p>Feature selection methods.</p>
 
 
-</section>
-</section>
-</section>
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
@@ -1034,13 +824,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../reference/feature.html" class="pagination-link" aria-label="feature">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">feature</span>
+      <a href="../reference/feature.reduction.html" class="pagination-link" aria-label="feature.reduction">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">feature.reduction</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../reference/feature.talib.html" class="pagination-link" aria-label="feature.talib">
-        <span class="nav-page-text">feature.talib</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../reference/feature.text.html" class="pagination-link" aria-label="feature.text">
+        <span class="nav-page-text">feature.text</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -1049,4 +839,4 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/feature.transforms.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/feature.transforms.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/feature.selection.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/feature.selection.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

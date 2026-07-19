@@ -68,7 +68,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../feature/transforms.html" rel="next">
+<link href="../feature/timeseries.html" rel="next">
 <link href="../data/roadmap.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -240,8 +240,74 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../feature/transforms.html" class="sidebar-item-text sidebar-link">
+  <a href="../feature/timeseries.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Time series</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../feature/transform.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Transforms</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../feature/impute.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Missing data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../feature/datetime.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Datetime</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../feature/scale.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Scaling</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../feature/outlier.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Outliers</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../feature/encode.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Encoding</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../feature/reduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Reduction</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../feature/selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Selection</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../feature/text.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Text</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../feature/cross_sectional.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Cross-sectional</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../feature/pipeline.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Pipelines</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -462,7 +528,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><code>q.feature</code> collects feature engineering tools under one namespace, organized as submodules:</p>
+<p><code>q.feature</code> organizes feature engineering by operation. Every public namespace is a package so its implementation can grow without changing public import paths.</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -472,8 +538,48 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>q.feature.transforms</code></td>
-<td>General-purpose feature transformations</td>
+<td><code>q.feature.transform</code></td>
+<td>Order-independent mathematical transforms</td>
+</tr>
+<tr class="even">
+<td><code>q.feature.timeseries</code></td>
+<td>Ordering-dependent and rolling features</td>
+</tr>
+<tr class="odd">
+<td><code>q.feature.impute</code></td>
+<td>Missing-data handling</td>
+</tr>
+<tr class="even">
+<td><code>q.feature.datetime</code></td>
+<td>Temporal and exchange-session extraction</td>
+</tr>
+<tr class="odd">
+<td><code>q.feature.scale</code></td>
+<td>Numeric normalization</td>
+</tr>
+<tr class="even">
+<td><code>q.feature.outlier</code></td>
+<td>Outlier detection and treatment</td>
+</tr>
+<tr class="odd">
+<td><code>q.feature.encode</code></td>
+<td>Categorical encoding</td>
+</tr>
+<tr class="even">
+<td><code>q.feature.reduction</code></td>
+<td>Dimensionality reduction</td>
+</tr>
+<tr class="odd">
+<td><code>q.feature.selection</code></td>
+<td>Feature selection</td>
+</tr>
+<tr class="even">
+<td><code>q.feature.text</code></td>
+<td>Text, sentiment, embeddings, and language-model features</td>
+</tr>
+<tr class="odd">
+<td><code>q.feature.cross_sectional</code></td>
+<td>Features computed across a universe</td>
 </tr>
 <tr class="even">
 <td><code>q.feature.talib</code></td>
@@ -483,12 +589,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>q.feature.pandas_ta</code></td>
 <td>every <a href="https://xgboosted.github.io/pandas-ta-classic/">pandas-ta-classic</a> indicator</td>
 </tr>
+<tr class="even">
+<td><code>q.feature.pipeline</code></td>
+<td>Feature composition and per-symbol application</td>
+</tr>
 </tbody>
 </table>
 <p>All indicator functions share the same convention: they accept an <strong>OHLCV DataFrame</strong> with lowercase columns (<code>open, high, low, close, volume</code>) — the frame layout returned by <code>q.data.sources</code>’s <code>read()</code> functions (e.g.&nbsp;<code>q.data.sources.yfinance.read(...)</code>) — and preserve the datetime index on the output. Indicators that only need a price series also accept a plain <code>Series</code> (treated as <code>close</code>).</p>
 <p>Pages:</p>
 <ul>
-<li><a href="../feature/transforms.html">Transforms</a> — general-purpose feature transformations, plus visualizing features with <code>q.plot.col</code>.</li>
+<li><a href="../feature/timeseries.html">Time-series features</a> — native rolling features, usage examples, and visualization with <code>q.plot.col</code>.</li>
 <li><a href="../feature/talib.html">TA-Lib</a> — the <code>q.feature.talib</code> wrapper.</li>
 <li><a href="../feature/pandas_ta.html">pandas-ta-classic</a> — the <code>q.feature.pandas_ta</code> wrapper.</li>
 </ul>
@@ -908,8 +1018,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../feature/transforms.html" class="pagination-link" aria-label="Transforms">
-        <span class="nav-page-text">Transforms</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../feature/timeseries.html" class="pagination-link" aria-label="Time series">
+        <span class="nav-page-text">Time series</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
