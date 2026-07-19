@@ -438,6 +438,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#load-a-.env-file" id="toc-load-a-.env-file" class="nav-link active" data-scroll-target="#load-a-.env-file">Load a <code>.env</code> file</a></li>
   <li><a href="#read-variables" id="toc-read-variables" class="nav-link" data-scroll-target="#read-variables">Read variables</a></li>
+  <li><a href="#inspect-the-runtime" id="toc-inspect-the-runtime" class="nav-link" data-scroll-target="#inspect-the-runtime">Inspect the runtime</a></li>
+  <li><a href="#require-a-runtime-environment" id="toc-require-a-runtime-environment" class="nav-link" data-scroll-target="#require-a-runtime-environment">Require a runtime environment</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/env/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/env/index.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -480,6 +482,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>api_key <span class="op">=</span> q.env.require(<span class="st">"MARKET_DATA_API_KEY"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>require</code> raises <code>KeyError</code> with the missing variable name. To inspect a file without changing <code>os.environ</code>, use <code>q.env.values(".env")</code>.</p>
 <p>Do not commit <code>.env</code> files containing credentials. Commit a <code>.env.example</code> with variable names and safe placeholder values instead.</p>
+</section>
+<section id="inspect-the-runtime" class="level2">
+<h2 class="anchored" data-anchor-id="inspect-the-runtime">Inspect the runtime</h2>
+<p><code>q.env</code> can inspect the operating system, filesystem capacity, and compute accelerators available to qrt through PyTorch:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>system <span class="op">=</span> q.env.operating_system()</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>storage <span class="op">=</span> q.env.disk(q.utils.cache_dir(<span class="st">"data"</span>))</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>gpus <span class="op">=</span> q.env.accelerators()</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>device <span class="op">=</span> q.env.device()  <span class="co"># cuda, mps, xpu, or cpu</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Use <code>info</code> for one immutable snapshot, or <code>report</code> to print the same information as a Rich table:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>environment <span class="op">=</span> q.env.info(q.utils.cache_dir(<span class="st">"data"</span>))</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>environment.as_dict()  <span class="co"># JSON-serializable</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>q.env.report(q.utils.cache_dir(<span class="st">"data"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>AMD ROCm accelerators use PyTorch’s <code>cuda</code> device name. Their accelerator records identify the backend as <code>rocm</code>, while <code>q.env.device()</code> returns <code>cuda</code> so its result can be passed directly to PyTorch.</p>
+</section>
+<section id="require-a-runtime-environment" class="level2">
+<h2 class="anchored" data-anchor-id="require-a-runtime-environment">Require a runtime environment</h2>
+<p>A YAML requirements file provides a declarative preflight check for programs that need particular hardware, storage, or credentials:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># env_requirements.yml</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">os</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">Linux</span><span class="kw">,</span><span class="at"> Darwin</span><span class="kw">]</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">machine</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">x86_</span><span class="dv">64</span><span class="kw">,</span><span class="at"> arm64</span><span class="kw">]</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">disk</span><span class="kw">:</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">path</span><span class="kw">:</span><span class="at"> .cache/data</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">free</span><span class="kw">:</span><span class="at"> 20 GiB</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">accelerator</span><span class="kw">:</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">backends</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">cuda</span><span class="kw">,</span><span class="at"> rocm</span><span class="kw">]</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">vendors</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">NVIDIA</span><span class="kw">,</span><span class="at"> AMD</span><span class="kw">]</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">count</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">memory</span><span class="kw">:</span><span class="at"> 8 GiB</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="fu">env</span><span class="kw">:</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> MARKET_DATA_API_KEY</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Validate it before starting expensive work:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>environment <span class="op">=</span> q.env.require(<span class="st">"env_requirements.yml"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Relative disk paths are resolved from the requirements file. Sizes accept decimal units such as <code>GB</code>, binary units such as <code>GiB</code>, or an integer number of bytes. Accelerator constraints select devices matching all specified fields. Omit the <code>accelerator</code> section for CPU-only workloads.</p>
+<p>When requirements are not met, <code>q.env.EnvironmentRequirementError</code> reports all failures at once. Required environment variable names may appear in the message, but their values are never included. Calling <code>q.env.require("NAME")</code> continues to return a single required environment variable; <code>.yml</code> and <code>.yaml</code> arguments select requirements-file validation.</p>
 
 
 </section>
