@@ -211,8 +211,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="./feat/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">q.feat — Features</span></a>
+            <a href="./feature/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.feature — Features</span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -220,19 +220,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./feat/qta.html" class="sidebar-item-text sidebar-link">
+  <a href="./feature/qta.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">qta — our own features</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./feat/talib.html" class="sidebar-item-text sidebar-link">
+  <a href="./feature/talib.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">TA-Lib</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./feat/pandas_ta.html" class="sidebar-item-text sidebar-link">
+  <a href="./feature/pandas_ta.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">pandas-ta-classic</span></a>
   </div>
 </li>
@@ -396,9 +396,9 @@ Note
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>spy <span class="op">=</span> q.data.sources.yfinance.read(<span class="st">"SPY"</span>, <span class="st">"2024-01-01"</span>, <span class="st">"2025-01-01"</span>, <span class="st">"1d"</span>)</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># features</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> q.feat.qta.lags(aapl[<span class="st">"close"</span>], [<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">21</span>])</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>X[<span class="st">"sma_20"</span>] <span class="op">=</span> q.feat.qta.sma(aapl[<span class="st">"close"</span>], <span class="dv">20</span>)</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>X[<span class="st">"rsi_14"</span>] <span class="op">=</span> q.feat.talib.RSI(aapl)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> q.feature.qta.lags(aapl[<span class="st">"close"</span>], [<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">21</span>])</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>X[<span class="st">"sma_20"</span>] <span class="op">=</span> q.feature.qta.sma(aapl[<span class="st">"close"</span>], <span class="dv">20</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>X[<span class="st">"rsi_14"</span>] <span class="op">=</span> q.feature.talib.RSI(aapl)</span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># strategy vs benchmark returns</span></span>
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>strategy <span class="op">=</span> aapl[<span class="st">"close"</span>].pct_change().rename(<span class="st">"AAPL"</span>)</span>
@@ -420,7 +420,7 @@ Note
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>q.feat</code></td>
+<td><code>q.feature</code></td>
 <td>feature engineering: own indicators + TA-Lib + pandas-ta-classic</td>
 </tr>
 <tr class="even">
@@ -473,12 +473,12 @@ Note
 </tr>
 <tr class="even">
 <td><a href="https://github.com/ta-lib/ta-lib-python">TA-Lib</a></td>
-<td>technical indicators, wrapped in <code>q.feat.talib</code></td>
+<td>technical indicators, wrapped in <code>q.feature.talib</code></td>
 <td><a href="https://ta-lib.github.io/ta-lib-python/">docs</a></td>
 </tr>
 <tr class="odd">
 <td><a href="https://github.com/xgboosted/pandas-ta-classic">pandas-ta-classic</a></td>
-<td>technical indicators &amp; candlestick patterns, wrapped in <code>q.feat.pandas_ta</code></td>
+<td>technical indicators &amp; candlestick patterns, wrapped in <code>q.feature.pandas_ta</code></td>
 <td><a href="https://xgboosted.github.io/pandas-ta-classic/">docs</a></td>
 </tr>
 <tr class="even">
@@ -542,7 +542,7 @@ Note
 │   ├── plot/        # plotting + performance reports
 │   ├── portfolio/   # portfolio analysis
 │   ├── bt/          # backtesting engine
-│   ├── feat/        # feature engineering
+│   ├── feature/        # feature engineering
 │   └── data/        # loading/saving local files, market data sources, prepackaged datasets
 ├── tests/
 ├── examples/        # notebooks
@@ -553,7 +553,7 @@ Note
 <h2 class="anchored" data-anchor-id="development">Development</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> install   <span class="co"># sync the environment</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> test      <span class="co"># run the test suite</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> stubs     <span class="co"># regenerate .pyi stubs for the dynamic feat wrappers</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> stubs     <span class="co"># regenerate .pyi stubs for the dynamic feature wrappers</span></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> datasets  <span class="co"># refresh the prepackaged sample datasets (AAPL, SPY, BTC-USD)</span></span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> docs      <span class="co"># serve these docs locally</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 

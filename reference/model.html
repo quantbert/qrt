@@ -139,7 +139,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
- <span class="menu-text">q.feat</span></a>
+ <span class="menu-text">q.feature</span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -147,26 +147,26 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/feat.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">feat</span></a>
+  <a href="../reference/feature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">feature</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/feat.qta.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">feat.qta</span></a>
+  <a href="../reference/feature.qta.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">feature.qta</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/feat.talib.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">feat.talib</span></a>
+  <a href="../reference/feature.talib.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">feature.talib</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/feat.pandas_ta.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">feat.pandas_ta</span></a>
+  <a href="../reference/feature.pandas_ta.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">feature.pandas_ta</span></a>
   </div>
 </li>
       </ul>
@@ -338,7 +338,7 @@ ul.task-list li input[type="checkbox"] {
 <ul>
 <li><p>Framework-agnostic helpers – no import of a specific ML framework, work on plain arrays/indices/callables. Flat siblings at this level, e.g.:</p>
 <p>q.model.selection – leakage-aware CV splitters (walk-forward, purged K-fold, embargo), named after scikit-learn’s <code>model_selection</code></p></li>
-<li><p>Framework-specific adapters – thin wrappers around one library’s actual model objects/training API. Each framework gets its own submodule, which may grow into its own subpackage as it picks up multiple concerns (e.g. training loops, checkpointing, dataloaders alongside model summaries) – same convention as <code>qrt.feat</code>/<code>qrt.data</code>:</p>
+<li><p>Framework-specific adapters – thin wrappers around one library’s actual model objects/training API. Each framework gets its own submodule, which may grow into its own subpackage as it picks up multiple concerns (e.g. training loops, checkpointing, dataloaders alongside model summaries) – same convention as <code>qrt.feature</code>/<code>qrt.data</code>:</p>
 <p>q.model.torch – PyTorch helpers (model summaries via torchinfo today; training/checkpointing/dataloaders as they land, per the roadmap)</p></li>
 </ul>
 <p>Don’t add a generic dispatching helper (e.g.&nbsp;a framework-agnostic <code>train()</code> that inspects the model type and picks a backend) – signatures don’t unify across frameworks, and it’s the same registry/ABC ceremony already rejected elsewhere in this codebase (see <code>qrt.data.sources</code>). Add a new framework submodule only once it’s actually used, not speculatively.</p>

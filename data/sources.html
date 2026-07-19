@@ -68,7 +68,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../feat/index.html" rel="next">
+<link href="../feature/index.html" rel="next">
 <link href="../data/local.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -215,8 +215,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../feat/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">q.feat — Features</span></a>
+            <a href="../feature/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.feature — Features</span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -224,19 +224,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../feat/qta.html" class="sidebar-item-text sidebar-link">
+  <a href="../feature/qta.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">qta — our own features</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../feat/talib.html" class="sidebar-item-text sidebar-link">
+  <a href="../feature/talib.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">TA-Lib</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../feat/pandas_ta.html" class="sidebar-item-text sidebar-link">
+  <a href="../feature/pandas_ta.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">pandas-ta-classic</span></a>
   </div>
 </li>
@@ -366,7 +366,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Each vendor/backend is its own submodule under <code>q.data.sources</code>, all returning the same lowercase-column OHLCV <code>DataFrame</code> layout consumed by <code>q.feat</code> and <code>q.stats</code>. These examples hit the network, so they’re shown but not executed here:</p>
+<p>Each vendor/backend is its own submodule under <code>q.data.sources</code>, all returning the same lowercase-column OHLCV <code>DataFrame</code> layout consumed by <code>q.feature</code> and <code>q.stats</code>. These examples hit the network, so they’re shown but not executed here:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Yahoo Finance — cached locally as parquet after the first call</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>ohlc <span class="op">=</span> q.data.sources.yfinance.read(<span class="st">"AAPL"</span>, <span class="st">"2024-01-01"</span>, <span class="st">"2025-01-01"</span>, <span class="st">"1d"</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -870,8 +870,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../feat/index.html" class="pagination-link" aria-label="q.feat — Features">
-        <span class="nav-page-text">q.feat — Features</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../feature/index.html" class="pagination-link" aria-label="q.feature — Features">
+        <span class="nav-page-text">q.feature — Features</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

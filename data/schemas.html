@@ -215,8 +215,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../feat/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">q.feat — Features</span></a>
+            <a href="../feature/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.feature — Features</span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -224,19 +224,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../feat/qta.html" class="sidebar-item-text sidebar-link">
+  <a href="../feature/qta.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">qta — our own features</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../feat/talib.html" class="sidebar-item-text sidebar-link">
+  <a href="../feature/talib.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">TA-Lib</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../feat/pandas_ta.html" class="sidebar-item-text sidebar-link">
+  <a href="../feature/pandas_ta.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">pandas-ta-classic</span></a>
   </div>
 </li>
@@ -373,7 +373,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Every storage format qrt reads or writes — the bundled parquet datasets, local <code>.parquet</code>/<code>.csv</code> files, DuckDB tables — carries one of two canonical in-memory schemas, so the rest of the library (<code>q.feat</code>, <code>q.stats</code>, <code>q.plot</code>, and eventually <code>q.bt</code>) can rely on a single layout per kind of data.</p>
+<p>Every storage format qrt reads or writes — the bundled parquet datasets, local <code>.parquet</code>/<code>.csv</code> files, DuckDB tables — carries one of two canonical in-memory schemas, so the rest of the library (<code>q.feature</code>, <code>q.stats</code>, <code>q.plot</code>, and eventually <code>q.bt</code>) can rely on a single layout per kind of data.</p>
 <section id="ohlcv-bars" class="level2">
 <h2 class="anchored" data-anchor-id="ohlcv-bars">OHLCV bars</h2>
 <p>One row per bar, indexed by a <code>DatetimeIndex</code> named <code>datetime</code>, with lowercase columns <code>open</code>, <code>high</code>, <code>low</code>, <code>close</code>, <code>volume</code>. This is what <code>q.data.datasets.load</code>, <code>q.data.sources.yfinance.read</code>, and <code>q.data.sources.binance.read</code> all return. (<code>q.data.sources.duckdb</code> stores the <em>long</em> variant of the same layout — a leading <code>symbol</code> column and <code>datetime</code> as a regular column — so one table can hold many symbols.)</p>

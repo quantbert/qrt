@@ -212,8 +212,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../feat/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">q.feat — Features</span></a>
+            <a href="../feature/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.feature — Features</span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -221,19 +221,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../feat/qta.html" class="sidebar-item-text sidebar-link">
+  <a href="../feature/qta.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">qta — our own features</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../feat/talib.html" class="sidebar-item-text sidebar-link">
+  <a href="../feature/talib.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">TA-Lib</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../feat/pandas_ta.html" class="sidebar-item-text sidebar-link">
+  <a href="../feature/pandas_ta.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">pandas-ta-classic</span></a>
   </div>
 </li>
@@ -368,7 +368,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li><strong>Input</strong> — a model/rule signal plus OHLCV bars in qrt’s canonical layout (see <a href="../data/schemas.html">Data schemas</a>).</li>
 <li><strong>Output</strong> — a trade log in the canonical <strong>trades format</strong>: the same schema the bundled demo logs (<code>q.data.datasets.TRADE_LOGS</code>) use today. That means everything downstream of a backtest already works: <code>q.stats.trade_stats</code>, <code>q.stats.trades_to_returns</code>, <code>q.plot.trades</code>, <code>q.plot.mae_mfe</code>, and <code>q.plot.trade_distribution</code> — see <a href="../plot/trades.html">Trade logs</a>.</li>
-<li>Additional concerns (transaction cost models, slippage, …) land as further submodules, following the same convention as <code>q.feat</code>/<code>q.data</code>.</li>
+<li>Additional concerns (transaction cost models, slippage, …) land as further submodules, following the same convention as <code>q.feature</code>/<code>q.data</code>.</li>
 </ul>
 <p>Until <code>q.bt.run</code> lands, the bundled demo trade logs let you exercise the entire trades workflow end to end. Follow progress on the <a href="../roadmap.html">Roadmap</a>.</p>
 
