@@ -6,5 +6,9 @@ Only open work is listed here. Completed items are removed.
 
 ## Planned
 
-No module-specific work is currently planned. Cross-project configuration
-candidates are tracked in the [project roadmap](../roadmap.qmd#ideas).
+- [ ] Add CPU and system-memory information to runtime snapshots
+- [ ] Detect notebook, CI, container, and WSL execution contexts
+- [ ] Add Python and key package versions for reproducibility reports
+
+Cross-project configuration candidates are tracked in the
+[project roadmap](../roadmap.qmd#ideas).

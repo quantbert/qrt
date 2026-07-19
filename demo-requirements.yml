@@ -1,0 +1,6 @@
+disk:
+  path: .
+  free: 1 B
+
+env:
+  - MY_TOKEN
