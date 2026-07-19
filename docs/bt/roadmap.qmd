@@ -1,0 +1,11 @@
+---
+title: q.bt Roadmap
+---
+
+Only open work is listed here. Completed items are removed.
+
+## Planned
+
+- [ ] Event-driven backtester for model signals
+- [ ] Transaction costs / slippage models
+- [ ] Trade log output compatible with `q.plot` (tearsheets)

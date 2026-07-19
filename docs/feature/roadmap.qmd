@@ -1,0 +1,14 @@
+---
+title: q.feature Roadmap
+---
+
+Only open work is listed here. Completed items are removed.
+
+## Planned
+
+- [ ] tsfresh wrappers for automated feature extraction
+- [ ] Feature pipelines: apply a set of features across a universe of symbols
+
+- [ ] https://github.com/blue-yonder/tsfresh (library for Time Series Feature extraction)
+- [ ] https://github.com/Quantreo/quantreo (might be some things here we can use)
+- [ ] https://oryonlib.dev/getting-started/installation/ (has replaces quantreo)

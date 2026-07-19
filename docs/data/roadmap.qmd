@@ -1,0 +1,18 @@
+---
+title: q.data Roadmap
+---
+
+Only open work is listed here. Completed items are removed.
+
+## Planned
+
+No module-specific work is currently committed.
+
+## Ideas
+
+These candidates fit `q.data`, but are not yet committed roadmap items.
+
+- [ ] `q.data.sources.fred` — macroeconomic series with release-date and
+  vintage-aware handling
+- [ ] `q.data.sources.fama_french` — normalized factor datasets with explicit
+  units and source metadata

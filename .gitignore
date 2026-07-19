@@ -1,5 +1,5 @@
 .temp/*
-examples/plot_tutorial_assets/
+docs/_site/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -1,0 +1,25 @@
+---
+title: q.plot Roadmap
+---
+
+Only open work is listed here. Completed items are removed.
+
+## Planned
+
+Opinionated plotting helpers with sensible defaults for quant research.
+
+- [ ] `q.plot.plot(...)` — enriched plot variant with stats and graphical extras:
+  - [ ] Annotations of notable historical events (Covid, wars, etc.)
+- [ ] Trades-format support across plots — accept a trade log alongside (or instead of) a return stream for enriched rendering:
+  - [ ] Position/exposure timeline panel (when in market, long vs short; `q.stats.trades_to_positions` provides the series, needs a renderer)
+  - [ ] Trade-aware tearsheet: trade log + `trades_to_returns` feeding `q.plot.report` with a `trade_stats` table
+  - [ ] Trade markers on **equity/returns charts** — combine a trades log with its return stream (`trades_to_returns`) so long/short entry/exit labels annotate the equity curve itself (not just the price chart, which `q.plot.trades` already covers), visually tying each bend in the curve to the trade that caused it
+  - [ ] Linked **trade list view** — an interactive table of all trades (entry/exit, direction, reason, return, duration) rendered alongside the trades chart; clicking a row "selects" that trade, highlighting it and zooming/focusing the plot on its span. Implementation options: Plotly `FigureWidget` click callbacks (notebook-only), or a self-contained HTML export with a JS-linked table + `Plotly.relayout` (works everywhere, pairs with `q.plot.show(formats=("html",))`)
+- [ ] Animated plots — play button / slider to watch values evolve over time
+- [ ] Shared style/config presets (theme, figsize, grids)
+- [ ] Tearsheet gaps — `q.plot.report()` covers the standard quantstats layout (cumulative returns linear/log/vol-matched, EOY bars, monthly distribution, daily returns, rolling beta/vol/Sharpe/Sortino, worst drawdown periods, underwater, monthly heatmap, full grouped metrics table with `mode="basic"|"full"` + EOY + worst-drawdowns tables); still missing vs. quantstats' full report:
+  - [ ] Multi-strategy support — several return columns as side-by-side metrics columns and overlaid curves
+  - [ ] Active-returns mode — plot/tabulate strategy *minus* benchmark (quantstats `active_returns=True`)
+  - [ ] KDE overlay + outlier marking on the daily-returns distribution panel
+  - [ ] Self-contained HTML report export (quantstats `reports.html`)
+  - [ ] Full 3-panel "snapshot" report: cumulative return / drawdown / daily returns in one figure (quantstats `snapshot`)

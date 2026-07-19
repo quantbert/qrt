@@ -1,0 +1,11 @@
+---
+title: q.portfolio Roadmap
+---
+
+Only open work is listed here. Completed items are removed.
+
+## Planned
+
+- [ ] Attribution and risk decomposition
+- [ ] Exposure and turnover analysis
+- [ ] Portfolio optimization (skfolio/Riskfolio-style)

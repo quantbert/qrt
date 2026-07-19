@@ -1,0 +1,194 @@
+---
+title: q.stats Roadmap
+---
+
+Only open work is listed here. Completed items are removed.
+
+## Return-stream statistics
+
+Stateless analytics for periodic return streams (no plotting dependency),
+plus an optional bound `q.stats.returns(...)` object for chaining stats and
+plots. Consumed by `q.plot` for rendering.
+
+- [ ] Animated rolling-beta / CAPM regression plot (`q.stats.returns(...).plot("capm")`), auto-detecting bar timestep with an overridable rolling window
+- [ ] tsfresh-style automated return-stream feature extraction
+
+## Fama–French factor analytics
+
+The current implementation provides full-period OLS loadings with inference,
+rolling factor betas, static additive factor contributions, and Plotly charts.
+The core equations, `RF`/`Mkt-RF` treatment, date alignment, default rolling
+window alignment, and arithmetic contribution reconciliation are covered by
+tests. The following open work would make the feature production-grade and
+complete the broader factor-analytics specification.
+
+### Regression correctness and numerical robustness
+
+- [ ] Replace the normal-equation coefficient solve with a rank-aware numerical
+  solver. `_ols_fit` currently calculates `(X'X)^-1 X'y`; exact or near factor
+  collinearity can therefore produce unstable coefficients and enormous standard
+  errors instead of a clear failure. Use QR/SVD-backed `numpy.linalg.lstsq` (or an
+  equivalent stable solver), expose matrix rank and condition number internally,
+  and reject rank-deficient designs with an actionable `ValueError` naming the
+  affected factors. Keep coefficient covariance mathematically consistent with
+  the selected solver.
+  - Acceptance: an exact duplicate factor is rejected; a near-collinear design
+    either emits a configurable warning or reports its condition number; ordinary
+    well-conditioned results remain numerically consistent with `statsmodels.OLS`.
+- [ ] Validate all aligned regression values as finite before fitting. `NaN` rows
+  are removed intentionally, but `inf`/`-inf` in asset returns, factors, or a
+  separately supplied `rf` series currently propagate into `NaN` coefficients and
+  partial contribution tables. Raise a clear error that identifies the offending
+  input/column and observation count.
+  - Acceptance: static regression, regression diagnostics, rolling regression,
+    and contributions all reject non-finite values before entering linear algebra.
+- [ ] Validate inference parameters. Require `0 < confidence_level < 1`; invalid
+  values currently allow reversed, infinite, or `NaN` confidence intervals.
+  Validate covariance-specific settings such as non-negative HAC lags at the same
+  boundary.
+- [ ] Tighten rolling-window validation to require
+  `n_parameters < min_observations <= window`. A `min_observations` value larger
+  than `window` cannot be honored: the current implementation delays output but
+  still fits only `window` observations. Error messages should report the factor
+  count, intercept, minimum, and window values.
+- [ ] Add explicit input checks for numeric factor columns, duplicate factor column
+  names, empty post-alignment samples, and samples too short for stable inference.
+  Consider a warning (rather than a hard failure) for rolling windows below 40
+  observations, extreme daily returns, unusually large daily `RF`, or when more
+  than 5% of asset dates are lost during alignment.
+
+### Covariance and inference
+
+- [ ] Reconsider the static-regression covariance default. HC3 is already
+  supported and is a stronger default for heteroskedastic cross-sectional return
+  errors, while `nonrobust` is currently the default. Decide and document the
+  default explicitly, including that covariance choice changes uncertainty but not
+  fitted coefficients.
+- [ ] Add HC0 and HAC/Newey–West covariance estimators. HAC should accept an
+  explicit `max_lags` (for example 5 for daily returns) and must not be described as
+  universally superior. Return or attach enough method metadata for users to know
+  which estimator and lag setting produced each interval and p-value.
+  - Acceptance: coefficient estimates are identical across covariance estimators;
+    standard errors and confidence intervals match statsmodels reference fits on
+    deterministic fixtures.
+- [ ] Add rolling inference fields as an opt-in output: per-factor standard errors,
+  t-statistics, and confidence intervals. Do not render all confidence bands by
+  default; allow selecting one factor and confidence level to avoid an unreadable
+  chart.
+
+### Regression diagnostics and result semantics
+
+- [ ] Resolve the meaning of `Residual Volatility`. The current metric is the
+  regression residual standard error `sqrt(RSS / (n - k))`, while conventional
+  residual volatility in the factor specification is
+  `residuals.std(ddof=1) * sqrt(periods_per_year)`. Either implement the latter or
+  rename the current value to `Residual Standard Error`; if both are useful, expose
+  both with unambiguous labels and formulas in the docs.
+- [ ] Include annualized residual volatility (and optionally residual standard
+  error) in every rolling record. `_ols_fit` already calculates the underlying
+  residual statistic, so rolling tables should report it alongside `R²` and
+  `N Obs`.
+- [ ] Add factor correlation, variance inflation factors, matrix rank, and condition
+  number diagnostics. Emit a warning when correlation or conditioning crosses a
+  configurable threshold, explaining that coefficients may be unstable and should
+  be interpreted jointly rather than independently.
+- [ ] Add complete analysis metadata in a pandas-native form consistent with qrt:
+  aligned start/end dates, inferred/configured frequency, observation count,
+  return unit, factor names, target name, covariance method, annualization factor,
+  contribution method, and rolling window/minimum. This need not introduce the
+  dataclass/service architecture from the original specification.
+- [ ] Add consistency checks ensuring static and rolling analyses use the same
+  target, input date range, frequency, units, and factor columns. Plot titles and
+  metadata must state whether values are full-period coefficients or the latest
+  rolling-window coefficients.
+
+### Units, factor data, and alignment
+
+- [ ] Support explicit input units (`"decimal"` and `"percent"`) for asset, factor,
+  and risk-free returns, normalizing once to decimals before alignment. Official
+  Kenneth French files commonly encode `1.25%` as `1.25`; passing those values to
+  the current decimal-only API produces coefficients off by a factor of 100.
+  - Acceptance: equivalent decimal and percent fixtures produce identical fitted
+    coefficients after declared normalization; no unit is inferred and silently
+    converted.
+- [ ] Add a suspicious-unit warning heuristic (for example, a 99th-percentile
+  absolute daily factor return above 0.5). It must remain a warning: automatic
+  inference must never modify financial data without an explicit unit setting.
+- [ ] Add a supported Kenneth French factor-data loader/normalizer or a documented
+  adapter example that parses dates, converts percentages, validates required
+  columns, and caches source metadata. Preserve `Mkt-RF` as published and subtract
+  `RF` only from the asset return.
+- [ ] Normalize timezone-aware timestamps to unambiguous session dates before the
+  inner join, with duplicate-date detection after normalization. Document how
+  intraday timestamps and mixed vendor timezones are handled; never merge by row
+  position, forward-fill returns, or replace missing returns with zero.
+
+### Point-in-time and contribution methods
+
+- [ ] Add `contribution_method="lagged_rolling_beta"` alongside the existing
+  retrospective `"static_beta"` attribution. Rolling coefficients must be shifted
+  by one aligned observation before multiplication by the current factor return;
+  using the coefficient estimated through date `t` to explain date `t` is
+  look-ahead for a live or signal-building workflow.
+  - Acceptance: changing the return at `t + 1` cannot alter any coefficient or
+    contribution available for trading at `t`; static full-period regression is
+    documented as retrospective and is never exposed as a historical feature.
+- [ ] Add a general `point_in_time` mode for rolling outputs. When enabled,
+  coefficients become available on the next aligned timestamp and metadata records
+  the shift. Keep the unshifted end-of-window estimates available for retrospective
+  charting, with distinct names or metadata to prevent accidental misuse.
+- [ ] Define behavior before the first lagged rolling estimate: retain `NaN` by
+  default rather than silently substituting static loadings, zero, or an expanding
+  fit. Report actual observations used for every contribution row.
+- [ ] Add a period factor-contribution waterfall that reconciles portfolio excess
+  return to market, size, value, profitability, investment, alpha, and residual.
+  Keep arithmetic additive attribution as the default; any compounded contribution
+  view must be explicitly labelled non-additive because compounding creates
+  interaction terms.
+
+### Plots and interpretability
+
+- [ ] Use a stable factor-to-color mapping across loading bars, rolling-beta lines,
+  contribution areas, and future diagnostics. The loading chart currently colors
+  bars by coefficient sign while the other charts color by factor identity. Preserve
+  positive/negative semantics through labels or styling without losing factor color
+  identity.
+- [ ] Add a dedicated alpha summary view showing daily alpha, arithmetic annualized
+  alpha, standard error, t-statistic, p-value, confidence interval, covariance
+  estimator, and a plain-language significance status. Avoid presenting a positive
+  intercept alone as evidence of skill.
+- [ ] Add a separate rolling R²/explanatory-power chart with a fixed `[0, 1]` range.
+  This helps distinguish genuinely changing exposure from unstable coefficients in
+  weak/noisy rolling fits; retain rolling R² in beta hover data as well.
+- [ ] Improve rolling-beta hover to show one consolidated date tooltip containing
+  all factor betas, observation count, rolling R², and window length. Add optional
+  21/63/126/252-observation controls without changing observation windows into
+  calendar-day windows.
+
+### Documentation and verification
+
+- [ ] Replace the docs notebook's random `SMB`/`HML`/`RMW`/`CMA` series with real
+  Fama–French factor data. Until then, retitle all examples and plots as a
+  `Synthetic factor demonstration`; random factors do not support economic claims
+  about AAPL's size, value, profitability, investment exposure, or alpha.
+- [ ] Add a focused interpretation guide for `Mkt-RF`, `SMB`, `HML`, `RMW`, `CMA`,
+  alpha, R², residual volatility, confidence intervals, and the distinction between
+  loading and contribution. Include checks for suspiciously tiny market betas,
+  mixed units, mismatched frequency/date ranges, and single-stock alpha over long
+  samples.
+- [ ] Add regression parity tests against `statsmodels.OLS` and `RollingOLS` for
+  coefficients, end-of-window alignment, nonrobust inference, HC3 inference, and
+  relaxed `min_observations` behavior. Keep statsmodels in a test-only dependency
+  group if avoiding it at runtime remains a project goal.
+- [ ] Expand validation tests to cover singular/near-singular designs, `inf` values,
+  nonnumeric/duplicate factor columns, invalid confidence levels, invalid rolling
+  bounds, percent/decimal unit equivalence, timezone normalization, missing-date
+  observation loss, and exact date sorting.
+- [ ] Add explicit no-look-ahead tests for point-in-time rolling coefficients and
+  lagged contributions. Mutating observation `t + 1` must leave every output
+  available at or before `t` unchanged, while the retrospective full-period fit is
+  expected to change.
+- [ ] Add plot-contract tests for stable factor colors, alpha/residual color
+  separation with arbitrary factor counts, confidence-error bars, zero reference
+  lines, rolling hover metadata, and exact contribution reconciliation in the
+  displayed period.

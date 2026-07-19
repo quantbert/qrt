@@ -1,0 +1,9 @@
+---
+title: q.utils Roadmap
+---
+
+Only open work is listed here. Completed items are removed.
+
+## Planned
+
+No module-specific work is currently planned.
