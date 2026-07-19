@@ -42,6 +42,7 @@ def test_utils_load_env_remains_compatible():
 
 def test_disk_and_info_are_serializable(tmp_path, monkeypatch):
     monkeypatch.setattr(q.env, "accelerators", lambda: ())
+    monkeypatch.setattr(q.env.os, "process_cpu_count", lambda: 6)
 
     snapshot = q.env.info(tmp_path)
 
@@ -49,6 +50,7 @@ def test_disk_and_info_are_serializable(tmp_path, monkeypatch):
     assert snapshot.disk.total > 0
     assert snapshot.disk.free >= 0
     assert snapshot.device == "cpu"
+    assert snapshot.cpu_count == 6
     assert snapshot.operating_system.name
     assert json.loads(json.dumps(snapshot.as_dict()))["disk"]["path"] == str(
         tmp_path.resolve()
@@ -62,6 +64,18 @@ def test_disk_accepts_a_path_that_does_not_exist(tmp_path):
 
     assert storage.path == destination.resolve()
     assert storage.total > 0
+
+
+def test_report_displays_available_cpu_count(tmp_path, monkeypatch, capsys):
+    monkeypatch.setattr(q.env, "accelerators", lambda: ())
+    monkeypatch.setattr(q.env.os, "process_cpu_count", lambda: 6)
+
+    snapshot = q.env.report(tmp_path)
+
+    output = capsys.readouterr().out
+    assert snapshot.cpu_count == 6
+    assert "CPU cores" in output
+    assert "6" in output
 
 
 def test_accelerators_detect_nvidia_and_mps(monkeypatch):

@@ -64,8 +64,8 @@ website:
         - section: "q.feature — Features"
           href: feature/index.qmd
           contents:
-            - text: "qta — our own features"
-              href: feature/qta.ipynb
+            - text: "Transforms"
+              href: feature/transforms.ipynb
             - text: "TA-Lib"
               href: feature/talib.ipynb
             - text: "pandas-ta-classic"
@@ -141,10 +141,10 @@ quartodoc:
   parser: google
   sections:
     - title: q.feature
-      desc: "Feature engineering — own indicators, TA-Lib, pandas-ta-classic."
+      desc: "Feature engineering — general-purpose transforms, TA-Lib, pandas-ta-classic."
       contents:
         - feature
-        - name: feature.qta
+        - name: feature.transforms
           include_imports: true
         - name: feature.talib
           members: []

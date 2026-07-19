@@ -7,7 +7,7 @@ submodules:
 
 | Submodule | What it is |
 |---|---|
-| `q.feature.qta` | our own hand-rolled features, one file per feature |
+| `q.feature.transforms` | General-purpose feature transformations |
 | `q.feature.talib` | every [TA-Lib](https://ta-lib.github.io/ta-lib-python/) indicator, pandas-friendly |
 | `q.feature.pandas_ta` | every [pandas-ta-classic](https://xgboosted.github.io/pandas-ta-classic/) indicator |
 
@@ -19,7 +19,7 @@ also accept a plain `Series` (treated as `close`).
 
 Pages:
 
-- [qta — our own features](qta.ipynb) — hand-rolled primitives, plus
+- [Transforms](transforms.ipynb) — general-purpose feature transformations, plus
   visualizing features with `q.plot.col`.
 - [TA-Lib](talib.ipynb) — the `q.feature.talib` wrapper.
 - [pandas-ta-classic](pandas_ta.ipynb) — the `q.feature.pandas_ta` wrapper.

@@ -6,7 +6,7 @@ Only open work is listed here. Completed items are removed.
 
 ## Planned
 
-- [ ] Add CPU and system-memory information to runtime snapshots
+- [ ] Add system-memory information to runtime snapshots
 - [ ] Detect notebook, CI, container, and WSL execution contexts
 - [ ] Add Python and key package versions for reproducibility reports
 

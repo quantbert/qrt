@@ -25,6 +25,7 @@ __all__ = [
     "EnvironmentRequirementError",
     "OSInfo",
     "accelerators",
+    "cpu_count",
     "device",
     "disk",
     "get",
@@ -76,6 +77,7 @@ class EnvironmentInfo:
     disk: DiskInfo
     accelerators: tuple[AcceleratorInfo, ...]
     device: str
+    cpu_count: int | None = None
 
     def as_dict(self) -> dict[str, Any]:
         """Return a JSON-serializable representation of the snapshot."""
@@ -330,6 +332,11 @@ def disk(path: str | Path = ".") -> DiskInfo:
     )
 
 
+def cpu_count() -> int | None:
+    """Return the number of logical CPUs available to the current process."""
+    return os.process_cpu_count()
+
+
 def accelerators() -> tuple[AcceleratorInfo, ...]:
     """Return compute accelerators usable by the installed PyTorch runtime.
 
@@ -401,6 +408,7 @@ def info(path: str | Path = ".") -> EnvironmentInfo:
         disk=disk(path),
         accelerators=available,
         device=preferred,
+        cpu_count=cpu_count(),
     )
 
 
@@ -426,6 +434,10 @@ def report(path: str | Path = ".") -> EnvironmentInfo:
     table.add_column("Value")
     system = snapshot.operating_system
     table.add_row("OS", f"{system.name} {system.release} ({system.machine})")
+    table.add_row(
+        "CPU cores",
+        str(snapshot.cpu_count) if snapshot.cpu_count is not None else "Unknown",
+    )
     table.add_row(
         "Disk",
         f"{_format_bytes(snapshot.disk.free)} free of "

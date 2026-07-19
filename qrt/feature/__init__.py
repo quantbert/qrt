@@ -1,8 +1,8 @@
-"""Feature engineering: indicators and wrappers around feature libraries.
+"""Feature engineering: transformations and wrappers around feature libraries.
 
 Structured as a namespace of feature submodules:
 
-    q.feature.qta        -- our own hand-rolled features
+    q.feature.transforms -- general-purpose feature transformations
     q.feature.talib      -- every TA-Lib indicator, pandas-friendly
     q.feature.pandas_ta  -- every pandas-ta-classic indicator
 
@@ -12,10 +12,10 @@ in the imports and ``__all__`` below. It becomes available as
 ``q.feature.<name>.*``.
 """
 
-from qrt.feature import pandas_ta, qta, talib
+from qrt.feature import pandas_ta, talib, transforms
 
 __all__ = [
     "pandas_ta",
-    "qta",
     "talib",
+    "transforms",
 ]
