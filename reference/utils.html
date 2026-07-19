@@ -68,7 +68,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../reference/model.selection.html" rel="prev">
+<link href="../reference/env.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -329,13 +329,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">q.utils</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
+ <span class="menu-text">q.env</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/env.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">env</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">q.utils</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../reference/utils.html" class="sidebar-item-text sidebar-link active">
@@ -360,7 +377,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#qrt.utils.cache_dir" id="toc-qrt.utils.cache_dir" class="nav-link" data-scroll-target="#qrt.utils.cache_dir">cache_dir</a></li>
   <li><a href="#qrt.utils.clear_cache" id="toc-qrt.utils.clear_cache" class="nav-link" data-scroll-target="#qrt.utils.clear_cache">clear_cache</a></li>
-  <li><a href="#qrt.utils.load_env" id="toc-qrt.utils.load_env" class="nav-link" data-scroll-target="#qrt.utils.load_env">load_env</a></li>
   <li><a href="#qrt.utils.log" id="toc-qrt.utils.log" class="nav-link" data-scroll-target="#qrt.utils.log">log</a></li>
   <li><a href="#qrt.utils.set_seed" id="toc-qrt.utils.set_seed" class="nav-link" data-scroll-target="#qrt.utils.set_seed">set_seed</a></li>
   </ul></li>
@@ -398,14 +414,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Delete qrt’s cached files, e.g.&nbsp;for a clean re-fetch or freeing disk space.</td>
 </tr>
 <tr class="odd">
-<td><a href="#qrt.utils.load_env">load_env</a></td>
-<td>Load environment variables from a <code>.env</code> file into <code>os.environ</code>.</td>
-</tr>
-<tr class="even">
 <td><a href="#qrt.utils.log">log</a></td>
 <td>Return the element-wise natural logarithm of scalar or array-like values.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#qrt.utils.set_seed">set_seed</a></td>
 <td>Set random seed for reproducibility across various libraries. If none is given, default is 42.</td>
 </tr>
@@ -477,81 +489,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </section>
 </section>
-<section id="qrt.utils.load_env" class="level3">
-<h3 class="anchored" data-anchor-id="qrt.utils.load_env">load_env</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>utils.load_env(path<span class="op">=</span><span class="va">None</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Load environment variables from a <code>.env</code> file into <code>os.environ</code>.</p>
-<p>Thin wrapper around :func:<code>dotenv.load_dotenv</code>, useful for API keys/ secrets needed by data sources (e.g.&nbsp;a paid vendor or an authenticated Binance endpoint). Call explicitly where needed – qrt does not load a <code>.env</code> file automatically on import.</p>
-<section id="parameters-2" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-2">Parameters</h4>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 6%">
-<col style="width: 12%">
-<col style="width: 74%">
-<col style="width: 6%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-<th>Default</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>path</td>
-<td>str | Path | None</td>
-<td>Path to the <code>.env</code> file. If <code>None</code>, searches upward from the current working directory (dotenv’s default behavior).</td>
-<td><code>None</code></td>
-</tr>
-<tr class="even">
-<td>**kwargs</td>
-<td>Any</td>
-<td>Passed through to :func:<code>dotenv.load_dotenv</code>.</td>
-<td><code>{}</code></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="returns" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns">Returns</h4>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 10%">
-<col style="width: 10%">
-<col style="width: 79%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td></td>
-<td>bool</td>
-<td><code>True</code> if a file was found and loaded, <code>False</code> otherwise.</td>
-</tr>
-</tbody>
-</table>
-</section>
-</section>
 <section id="qrt.utils.log" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.utils.log">log</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>utils.log(values)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>utils.log(values)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Return the element-wise natural logarithm of scalar or array-like values.</p>
 <p>This delegates to :func:<code>numpy.log</code>, preserving pandas Series and DataFrame labels. For simple returns <code>r</code>, use <code>log(1 + r)</code> to obtain log returns.</p>
 </section>
 <section id="qrt.utils.set_seed" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.utils.set_seed">set_seed</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>utils.set_seed(seed<span class="op">=</span><span class="dv">42</span>, strict_determinism<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>utils.set_seed(seed<span class="op">=</span><span class="dv">42</span>, strict_determinism<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Set random seed for reproducibility across various libraries. If none is given, default is 42.</p>
-<section id="parameters-3" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-3">Parameters</h4>
+<section id="parameters-2" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-2">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 6%">
@@ -1000,8 +949,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../reference/model.selection.html" class="pagination-link" aria-label="model.selection">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">model.selection</span>
+      <a href="../reference/env.html" class="pagination-link" aria-label="env">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">env</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

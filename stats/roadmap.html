@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>q.stats Roadmap – qrt</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../utils/index.html" rel="next">
+<link href="../stats/chained.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-a79b256da9955a746df7047a3fd5f361.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../reference/_styles-quartodoc.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">qrt — Quant Research Tools</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Getting Started</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../reference/index.html"> 
+<span class="menu-text">API Reference</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../roadmap.html"> 
+<span class="menu-text">Roadmap</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+    <a href="https://github.com/quantbert/qrt" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../stats/index.html">q.stats — Statistics</a></li><li class="breadcrumb-item"><a href="../stats/roadmap.html">Roadmap</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Getting Started</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../bt/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.bt — Backtesting</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../bt/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../data/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.data — Data</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data/datasets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sample datasets</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data/schemas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data schemas</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data/local.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Local files</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data/sources.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Market data sources</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../feature/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.feature — Features</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../feature/qta.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">qta — our own features</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../feature/talib.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TA-Lib</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../feature/pandas_ta.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">pandas-ta-classic</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../feature/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../model/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.model — Models</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../model/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../env/index.qmd" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.env — Environment</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../env/roadmap.qmd" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../plot/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.plot — Plotting</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/returns.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Return charts</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/report.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tearsheet report</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/simulation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simulation tests</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/trades.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Trade logs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/saving.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Saving figures</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../portfolio/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.portfolio — Portfolio</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../portfolio/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../stats/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.stats — Statistics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats/performance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Performance &amp; benchmark</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats/rolling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Rolling &amp; calendar returns</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats/factors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Factor analytics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats/chained.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chained API</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats/roadmap.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../utils/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.utils — Utilities</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../utils/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#return-stream-statistics" id="toc-return-stream-statistics" class="nav-link active" data-scroll-target="#return-stream-statistics">Return-stream statistics</a></li>
+  <li><a href="#famafrench-factor-analytics" id="toc-famafrench-factor-analytics" class="nav-link" data-scroll-target="#famafrench-factor-analytics">Fama–French factor analytics</a>
+  <ul class="collapse">
+  <li><a href="#regression-correctness-and-numerical-robustness" id="toc-regression-correctness-and-numerical-robustness" class="nav-link" data-scroll-target="#regression-correctness-and-numerical-robustness">Regression correctness and numerical robustness</a></li>
+  <li><a href="#covariance-and-inference" id="toc-covariance-and-inference" class="nav-link" data-scroll-target="#covariance-and-inference">Covariance and inference</a></li>
+  <li><a href="#regression-diagnostics-and-result-semantics" id="toc-regression-diagnostics-and-result-semantics" class="nav-link" data-scroll-target="#regression-diagnostics-and-result-semantics">Regression diagnostics and result semantics</a></li>
+  <li><a href="#units-factor-data-and-alignment" id="toc-units-factor-data-and-alignment" class="nav-link" data-scroll-target="#units-factor-data-and-alignment">Units, factor data, and alignment</a></li>
+  <li><a href="#point-in-time-and-contribution-methods" id="toc-point-in-time-and-contribution-methods" class="nav-link" data-scroll-target="#point-in-time-and-contribution-methods">Point-in-time and contribution methods</a></li>
+  <li><a href="#plots-and-interpretability" id="toc-plots-and-interpretability" class="nav-link" data-scroll-target="#plots-and-interpretability">Plots and interpretability</a></li>
+  <li><a href="#documentation-and-verification" id="toc-documentation-and-verification" class="nav-link" data-scroll-target="#documentation-and-verification">Documentation and verification</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/stats/roadmap.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/stats/roadmap.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../stats/index.html">q.stats — Statistics</a></li><li class="breadcrumb-item"><a href="../stats/roadmap.html">Roadmap</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">q.stats Roadmap</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Only open work is listed here. Completed items are removed.</p>
+<section id="return-stream-statistics" class="level2">
+<h2 class="anchored" data-anchor-id="return-stream-statistics">Return-stream statistics</h2>
+<p>Stateless analytics for periodic return streams (no plotting dependency), plus an optional bound <code>q.stats.returns(...)</code> object for chaining stats and plots. Consumed by <code>q.plot</code> for rendering.</p>
+<ul class="task-list">
+<li><label><input type="checkbox">Animated rolling-beta / CAPM regression plot (<code>q.stats.returns(...).plot("capm")</code>), auto-detecting bar timestep with an overridable rolling window</label></li>
+<li><label><input type="checkbox">tsfresh-style automated return-stream feature extraction</label></li>
+</ul>
+</section>
+<section id="famafrench-factor-analytics" class="level2">
+<h2 class="anchored" data-anchor-id="famafrench-factor-analytics">Fama–French factor analytics</h2>
+<p>The current implementation provides full-period OLS loadings with inference, rolling factor betas, static additive factor contributions, and Plotly charts. The core equations, <code>RF</code>/<code>Mkt-RF</code> treatment, date alignment, default rolling window alignment, and arithmetic contribution reconciliation are covered by tests. The following open work would make the feature production-grade and complete the broader factor-analytics specification.</p>
+<section id="regression-correctness-and-numerical-robustness" class="level3">
+<h3 class="anchored" data-anchor-id="regression-correctness-and-numerical-robustness">Regression correctness and numerical robustness</h3>
+<ul class="task-list">
+<li><label><input type="checkbox">Replace the normal-equation coefficient solve with a rank-aware numerical solver. <code>_ols_fit</code> currently calculates <code>(X'X)^-1 X'y</code>; exact or near factor collinearity can therefore produce unstable coefficients and enormous standard errors instead of a clear failure. Use QR/SVD-backed <code>numpy.linalg.lstsq</code> (or an equivalent stable solver), expose matrix rank and condition number internally, and reject rank-deficient designs with an actionable <code>ValueError</code> naming the affected factors. Keep coefficient covariance mathematically consistent with the selected solver.</label>
+<ul>
+<li>Acceptance: an exact duplicate factor is rejected; a near-collinear design either emits a configurable warning or reports its condition number; ordinary well-conditioned results remain numerically consistent with <code>statsmodels.OLS</code>.</li>
+</ul></li>
+<li><label><input type="checkbox">Validate all aligned regression values as finite before fitting. <code>NaN</code> rows are removed intentionally, but <code>inf</code>/<code>-inf</code> in asset returns, factors, or a separately supplied <code>rf</code> series currently propagate into <code>NaN</code> coefficients and partial contribution tables. Raise a clear error that identifies the offending input/column and observation count.</label>
+<ul>
+<li>Acceptance: static regression, regression diagnostics, rolling regression, and contributions all reject non-finite values before entering linear algebra.</li>
+</ul></li>
+<li><label><input type="checkbox">Validate inference parameters. Require <code>0 &lt; confidence_level &lt; 1</code>; invalid values currently allow reversed, infinite, or <code>NaN</code> confidence intervals. Validate covariance-specific settings such as non-negative HAC lags at the same boundary.</label></li>
+<li><label><input type="checkbox">Tighten rolling-window validation to require <code>n_parameters &lt; min_observations &lt;= window</code>. A <code>min_observations</code> value larger than <code>window</code> cannot be honored: the current implementation delays output but still fits only <code>window</code> observations. Error messages should report the factor count, intercept, minimum, and window values.</label></li>
+<li><label><input type="checkbox">Add explicit input checks for numeric factor columns, duplicate factor column names, empty post-alignment samples, and samples too short for stable inference. Consider a warning (rather than a hard failure) for rolling windows below 40 observations, extreme daily returns, unusually large daily <code>RF</code>, or when more than 5% of asset dates are lost during alignment.</label></li>
+</ul>
+</section>
+<section id="covariance-and-inference" class="level3">
+<h3 class="anchored" data-anchor-id="covariance-and-inference">Covariance and inference</h3>
+<ul class="task-list">
+<li><label><input type="checkbox">Reconsider the static-regression covariance default. HC3 is already supported and is a stronger default for heteroskedastic cross-sectional return errors, while <code>nonrobust</code> is currently the default. Decide and document the default explicitly, including that covariance choice changes uncertainty but not fitted coefficients.</label></li>
+<li><label><input type="checkbox">Add HC0 and HAC/Newey–West covariance estimators. HAC should accept an explicit <code>max_lags</code> (for example 5 for daily returns) and must not be described as universally superior. Return or attach enough method metadata for users to know which estimator and lag setting produced each interval and p-value.</label>
+<ul>
+<li>Acceptance: coefficient estimates are identical across covariance estimators; standard errors and confidence intervals match statsmodels reference fits on deterministic fixtures.</li>
+</ul></li>
+<li><label><input type="checkbox">Add rolling inference fields as an opt-in output: per-factor standard errors, t-statistics, and confidence intervals. Do not render all confidence bands by default; allow selecting one factor and confidence level to avoid an unreadable chart.</label></li>
+</ul>
+</section>
+<section id="regression-diagnostics-and-result-semantics" class="level3">
+<h3 class="anchored" data-anchor-id="regression-diagnostics-and-result-semantics">Regression diagnostics and result semantics</h3>
+<ul class="task-list">
+<li><label><input type="checkbox">Resolve the meaning of <code>Residual Volatility</code>. The current metric is the regression residual standard error <code>sqrt(RSS / (n - k))</code>, while conventional residual volatility in the factor specification is <code>residuals.std(ddof=1) * sqrt(periods_per_year)</code>. Either implement the latter or rename the current value to <code>Residual Standard Error</code>; if both are useful, expose both with unambiguous labels and formulas in the docs.</label></li>
+<li><label><input type="checkbox">Include annualized residual volatility (and optionally residual standard error) in every rolling record. <code>_ols_fit</code> already calculates the underlying residual statistic, so rolling tables should report it alongside <code>R²</code> and <code>N Obs</code>.</label></li>
+<li><label><input type="checkbox">Add factor correlation, variance inflation factors, matrix rank, and condition number diagnostics. Emit a warning when correlation or conditioning crosses a configurable threshold, explaining that coefficients may be unstable and should be interpreted jointly rather than independently.</label></li>
+<li><label><input type="checkbox">Add complete analysis metadata in a pandas-native form consistent with qrt: aligned start/end dates, inferred/configured frequency, observation count, return unit, factor names, target name, covariance method, annualization factor, contribution method, and rolling window/minimum. This need not introduce the dataclass/service architecture from the original specification.</label></li>
+<li><label><input type="checkbox">Add consistency checks ensuring static and rolling analyses use the same target, input date range, frequency, units, and factor columns. Plot titles and metadata must state whether values are full-period coefficients or the latest rolling-window coefficients.</label></li>
+</ul>
+</section>
+<section id="units-factor-data-and-alignment" class="level3">
+<h3 class="anchored" data-anchor-id="units-factor-data-and-alignment">Units, factor data, and alignment</h3>
+<ul class="task-list">
+<li><label><input type="checkbox">Support explicit input units (<code>"decimal"</code> and <code>"percent"</code>) for asset, factor, and risk-free returns, normalizing once to decimals before alignment. Official Kenneth French files commonly encode <code>1.25%</code> as <code>1.25</code>; passing those values to the current decimal-only API produces coefficients off by a factor of 100.</label>
+<ul>
+<li>Acceptance: equivalent decimal and percent fixtures produce identical fitted coefficients after declared normalization; no unit is inferred and silently converted.</li>
+</ul></li>
+<li><label><input type="checkbox">Add a suspicious-unit warning heuristic (for example, a 99th-percentile absolute daily factor return above 0.5). It must remain a warning: automatic inference must never modify financial data without an explicit unit setting.</label></li>
+<li><label><input type="checkbox">Add a supported Kenneth French factor-data loader/normalizer or a documented adapter example that parses dates, converts percentages, validates required columns, and caches source metadata. Preserve <code>Mkt-RF</code> as published and subtract <code>RF</code> only from the asset return.</label></li>
+<li><label><input type="checkbox">Normalize timezone-aware timestamps to unambiguous session dates before the inner join, with duplicate-date detection after normalization. Document how intraday timestamps and mixed vendor timezones are handled; never merge by row position, forward-fill returns, or replace missing returns with zero.</label></li>
+</ul>
+</section>
+<section id="point-in-time-and-contribution-methods" class="level3">
+<h3 class="anchored" data-anchor-id="point-in-time-and-contribution-methods">Point-in-time and contribution methods</h3>
+<ul class="task-list">
+<li><label><input type="checkbox">Add <code>contribution_method="lagged_rolling_beta"</code> alongside the existing retrospective <code>"static_beta"</code> attribution. Rolling coefficients must be shifted by one aligned observation before multiplication by the current factor return; using the coefficient estimated through date <code>t</code> to explain date <code>t</code> is look-ahead for a live or signal-building workflow.</label>
+<ul>
+<li>Acceptance: changing the return at <code>t + 1</code> cannot alter any coefficient or contribution available for trading at <code>t</code>; static full-period regression is documented as retrospective and is never exposed as a historical feature.</li>
+</ul></li>
+<li><label><input type="checkbox">Add a general <code>point_in_time</code> mode for rolling outputs. When enabled, coefficients become available on the next aligned timestamp and metadata records the shift. Keep the unshifted end-of-window estimates available for retrospective charting, with distinct names or metadata to prevent accidental misuse.</label></li>
+<li><label><input type="checkbox">Define behavior before the first lagged rolling estimate: retain <code>NaN</code> by default rather than silently substituting static loadings, zero, or an expanding fit. Report actual observations used for every contribution row.</label></li>
+<li><label><input type="checkbox">Add a period factor-contribution waterfall that reconciles portfolio excess return to market, size, value, profitability, investment, alpha, and residual. Keep arithmetic additive attribution as the default; any compounded contribution view must be explicitly labelled non-additive because compounding creates interaction terms.</label></li>
+</ul>
+</section>
+<section id="plots-and-interpretability" class="level3">
+<h3 class="anchored" data-anchor-id="plots-and-interpretability">Plots and interpretability</h3>
+<ul class="task-list">
+<li><label><input type="checkbox">Use a stable factor-to-color mapping across loading bars, rolling-beta lines, contribution areas, and future diagnostics. The loading chart currently colors bars by coefficient sign while the other charts color by factor identity. Preserve positive/negative semantics through labels or styling without losing factor color identity.</label></li>
+<li><label><input type="checkbox">Add a dedicated alpha summary view showing daily alpha, arithmetic annualized alpha, standard error, t-statistic, p-value, confidence interval, covariance estimator, and a plain-language significance status. Avoid presenting a positive intercept alone as evidence of skill.</label></li>
+<li><label><input type="checkbox">Add a separate rolling R²/explanatory-power chart with a fixed <code>[0, 1]</code> range. This helps distinguish genuinely changing exposure from unstable coefficients in weak/noisy rolling fits; retain rolling R² in beta hover data as well.</label></li>
+<li><label><input type="checkbox">Improve rolling-beta hover to show one consolidated date tooltip containing all factor betas, observation count, rolling R², and window length. Add optional 21/63/126/252-observation controls without changing observation windows into calendar-day windows.</label></li>
+</ul>
+</section>
+<section id="documentation-and-verification" class="level3">
+<h3 class="anchored" data-anchor-id="documentation-and-verification">Documentation and verification</h3>
+<ul class="task-list">
+<li><label><input type="checkbox">Replace the docs notebook’s random <code>SMB</code>/<code>HML</code>/<code>RMW</code>/<code>CMA</code> series with real Fama–French factor data. Until then, retitle all examples and plots as a <code>Synthetic factor demonstration</code>; random factors do not support economic claims about AAPL’s size, value, profitability, investment exposure, or alpha.</label></li>
+<li><label><input type="checkbox">Add a focused interpretation guide for <code>Mkt-RF</code>, <code>SMB</code>, <code>HML</code>, <code>RMW</code>, <code>CMA</code>, alpha, R², residual volatility, confidence intervals, and the distinction between loading and contribution. Include checks for suspiciously tiny market betas, mixed units, mismatched frequency/date ranges, and single-stock alpha over long samples.</label></li>
+<li><label><input type="checkbox">Add regression parity tests against <code>statsmodels.OLS</code> and <code>RollingOLS</code> for coefficients, end-of-window alignment, nonrobust inference, HC3 inference, and relaxed <code>min_observations</code> behavior. Keep statsmodels in a test-only dependency group if avoiding it at runtime remains a project goal.</label></li>
+<li><label><input type="checkbox">Expand validation tests to cover singular/near-singular designs, <code>inf</code> values, nonnumeric/duplicate factor columns, invalid confidence levels, invalid rolling bounds, percent/decimal unit equivalence, timezone normalization, missing-date observation loss, and exact date sorting.</label></li>
+<li><label><input type="checkbox">Add explicit no-look-ahead tests for point-in-time rolling coefficients and lagged contributions. Mutating observation <code>t + 1</code> must leave every output available at or before <code>t</code> unchanged, while the retrospective full-period fit is expected to change.</label></li>
+<li><label><input type="checkbox">Add plot-contract tests for stable factor colors, alpha/residual color separation with arbitrary factor counts, confidence-error bars, zero reference lines, rolling hover metadata, and exact contribution reconciliation in the displayed period.</label></li>
+</ul>
+
+
+</section>
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/quantbert\.github\.io\/qrt\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../stats/chained.html" class="pagination-link" aria-label="Chained API">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Chained API</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../utils/index.html" class="pagination-link" aria-label="q.utils — Utilities">
+        <span class="nav-page-text">q.utils — Utilities</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/stats/roadmap.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/stats/roadmap.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
