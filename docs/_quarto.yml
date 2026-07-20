@@ -70,6 +70,12 @@ website:
                   href: indicator/qrt/sma.ipynb
                 - text: "Exponential moving average (EMA)"
                   href: indicator/qrt/ema.ipynb
+                - text: "Mean absolute deviation (MADEV)"
+                  href: indicator/qrt/madev.ipynb
+                - text: "Volume spike ratio"
+                  href: indicator/qrt/volume_spike_ratio.ipynb
+                - text: "Price spikes"
+                  href: indicator/qrt/price_spikes.ipynb
                 - text: "Log returns"
                   href: indicator/qrt/log_returns.ipynb
                 - text: "Realized variance"

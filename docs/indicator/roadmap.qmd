@@ -6,9 +6,6 @@ Only open work is listed here.
 
 ## Native indicators
 
-- [ ] Confirm the legacy MADEV formula and choose an explicit public name
-- [ ] Review the legacy volume-spike ratio and event classification
-- [ ] Review the legacy price-spike definition and ATR dependency
 - [ ] Add causal-window and batch/online equivalence tests to native indicators
 
 ## Providers

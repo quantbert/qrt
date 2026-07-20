@@ -2,10 +2,10 @@
 
 Tracker for migrating `.temp/quantfeatures` into qrt's public architecture.
 
-Status: the feature-domain migration is mostly complete, but the entire legacy
-package is not. Of 44 root exports, 16 have native qrt migrations, 6 have
-explicit provider replacements, 3 are review-blocked, 1 is explicitly rejected,
-and 18 data/benchmark/utility exports still need migrate-or-reject decisions.
+Status: the reviewed feature-domain formulas are migrated, but the entire
+legacy package is not. Of 44 root exports, 19 have native qrt migrations, 6
+have explicit provider replacements, 1 is explicitly rejected, and 18
+data/benchmark/utility exports still need migrate-or-reject decisions.
 
 ## Whole-package audit
 
@@ -14,13 +14,17 @@ helpers, 6 example notebooks, and the bundled `assets/omxn40.csv` file.
 
 ### Accounted root exports
 
-- [x] 16 native migrations: 14 indicators, one calendar operation, and Elo.
+- [x] 19 native migrations: 17 indicators, one calendar operation, and Elo.
 - [x] 6 explicit provider replacements: RSI, MACD, stochastic oscillator,
   Bollinger Bands, ATR, and OBV. The legacy pure-pandas formulas are not
   preserved and the replacements require an explicit `talib` or `pandas_ta`
   namespace.
-- [ ] 3 review-blocked formulas: `calculate_madev`, `volume_spike_ratio`, and
-  `price_spikes`.
+- [x] `calculate_madev` -> `q.indicator.madev` using the reviewed two-stage
+  rolling formula.
+- [x] `volume_spike_ratio` -> `q.indicator.volume_spike_ratio` with the reviewed
+  trend and event classifications.
+- [x] `price_spikes` -> `q.indicator.price_spikes` with explicit OHLCV inputs
+  and the reviewed simple rolling ATR dependency.
 - [x] 1 explicit rejection: `process_and_merge_fundamentals`.
 
 ### Data exports awaiting a decision
@@ -196,37 +200,6 @@ the legacy pure-pandas formulas, smoothing, warm-up behavior, or output names.
   - A future fundamentals API must be designed independently under `q.data`
     and `q.feature` contracts.
 
-## Review-gated formulas
-
-These functions are intentionally absent until their semantics are approved.
-
-### MADEV
-
-- [ ] Decide whether the legacy two-stage rolling mean of deviations from a
-  rolling SMA is intentional.
-- [ ] If retained, choose an explicit name such as `madev_from_sma`; it needs
-  `2n - 1` observations and is not the usual mean absolute deviation.
-
-Destination after review: `q.indicator`.
-
-### Volume spike
-
-- [ ] Confirm trend-slope units, thresholds, zero-volume behavior, warm-up
-  behavior, and event labels.
-- [ ] Decide whether ratio computation and event classification are separate
-  functions.
-
-Destination after review: `q.indicator`.
-
-### Price spike
-
-- [ ] Decide whether a spike uses absolute close-to-close movement or intraday
-  high/low range.
-- [ ] Choose the ATR provider/formula explicitly and avoid temporary-column
-  mutation.
-
-Destination after review: `q.indicator`.
-
 ## Remaining completion work
 
 - [x] Migrate approved feature-scope source packages and remove old feature
@@ -239,12 +212,11 @@ Destination after review: `q.indicator`.
 - [x] Render the complete Quarto site.
 - [x] Run the full test suite after documentation/dependency regeneration
   (102 tests passing).
-- [ ] Review and implement the three blocked indicator formula families above.
+- [x] Review and implement MADEV, volume-spike ratio, and price-spike formulas.
 - [ ] Resolve the migrated Elo issues on the factor roadmap.
 - [ ] Resolve the 18 whole-package data, benchmark, utility, and asset decisions
   in the audit above.
 
-The feature-domain migration is complete when each blocked formula has an
-approved implementation contract or explicit rejection. The whole-package
-migration is complete only after every item in the audit above has a migrated
+The feature-domain formula migration is complete. The whole-package migration
+is complete only after every remaining item in the audit above has a migrated
 replacement or recorded rejection.
