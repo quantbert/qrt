@@ -1,21 +1,11 @@
-"""Feature engineering: transformations and wrappers around feature libraries.
+"""Named, versioned feature definitions and materialization.
 
-Structured as a namespace of feature submodules:
-
-    q.feature.transforms -- general-purpose feature transformations
-    q.feature.talib      -- every TA-Lib indicator, pandas-friendly
-    q.feature.pandas_ta  -- every pandas-ta-classic indicator
-
-To add your own feature family, create ``qrt/feature/<name>.py`` with
-functions that take a Series/DataFrame and return one, then register it
-in the imports and ``__all__`` below. It becomes available as
-``q.feature.<name>.*``.
+``q.feature`` owns the lifecycle of model inputs: metadata, point-in-time
+computation, feature sets, and persistence. Market measurements live in
+``q.indicator``; fitted training transformations live in ``q.preprocess``.
 """
 
-from qrt.feature import pandas_ta, talib, transforms
+from qrt.feature import ops
+from qrt.feature._core import Feature, FeatureSet, compute, materialize
 
-__all__ = [
-    "pandas_ta",
-    "talib",
-    "transforms",
-]
+__all__ = ["Feature", "FeatureSet", "compute", "materialize", "ops"]

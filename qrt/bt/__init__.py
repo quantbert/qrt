@@ -3,7 +3,7 @@
     q.bt.run(signal, prices)
 
 Add new concerns (transaction cost models, trade logs, ...) as additional
-modules in this package as they land, same convention as ``q.feature``/``q.data``.
+modules in this package as they land.
 """
 
 __all__ = ["run"]

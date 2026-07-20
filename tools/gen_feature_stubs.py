@@ -1,9 +1,9 @@
-"""Regenerate .pyi stubs for the dynamic feature wrappers (IDE support).
+"""Regenerate .pyi stubs for the dynamic indicator wrappers (IDE support).
 
-``qrt.feature.talib`` and ``qrt.feature.pandas_ta`` create their indicator
-functions at runtime via module-level ``__getattr__``, which static
-analyzers (Pylance, mypy) cannot see. This script writes type stubs with
-real signatures and docstrings next to those modules so IDEs can offer
+``qrt.indicator.talib`` and ``qrt.indicator.pandas_ta`` create their indicator
+functions at runtime via package-level ``__getattr__``, which static
+analyzers (Pylance, mypy) cannot see. This script writes package type stubs with
+real signatures and docstrings so IDEs can offer
 autocomplete and hover docs.
 
 Usage:
@@ -28,7 +28,7 @@ import pandas_ta_classic as pta
 import talib
 from talib import abstract
 
-FEATURE_DIR = Path(__file__).resolve().parents[1] / "qrt" / "feature"
+INDICATOR_DIR = Path(__file__).resolve().parents[1] / "qrt" / "indicator"
 
 HEADER = '''"""Auto-generated stubs for the dynamic indicator wrappers (IDE support).
 
@@ -102,11 +102,11 @@ def gen_pandas_ta_stub() -> str:
 
 
 def main() -> None:
-    for filename, content in [
-        ("talib.pyi", gen_talib_stub()),
-        ("pandas_ta.pyi", gen_pandas_ta_stub()),
+    for package, content in [
+        ("talib", gen_talib_stub()),
+        ("pandas_ta", gen_pandas_ta_stub()),
     ]:
-        path = FEATURE_DIR / filename
+        path = INDICATOR_DIR / package / "__init__.pyi"
         path.write_text(content)
         print(f"wrote {path} ({content.count('def ')} functions)")
 

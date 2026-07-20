@@ -1,0 +1,9 @@
+---
+title: q.signal Roadmap
+---
+
+- [ ] Directional and continuous signal schemas
+- [ ] Threshold and hysteresis rules
+- [ ] Cross-sectional normalization and combination
+- [ ] Signal decay, delay, and availability semantics
+- [ ] Turnover-aware signal shaping

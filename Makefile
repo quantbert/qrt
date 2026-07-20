@@ -11,7 +11,7 @@ install: ## Create/sync the environment (incl. dev deps)
 test: ## Run the test suite
 	uv run pytest tests/ -q
 
-stubs: ## Regenerate .pyi stubs for the dynamic feature wrappers
+stubs: ## Regenerate .pyi stubs for the dynamic indicator wrappers
 	uv run python tools/gen_feature_stubs.py
 
 datasets: ## Refresh prepackaged sample datasets (OHLCV from Yahoo, then regenerate demo strategy trade logs)

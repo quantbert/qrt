@@ -1,0 +1,12 @@
+---
+title: q.preprocess Roadmap
+---
+
+- [ ] Define the shared pandas-friendly `fit`/`transform` protocol
+- [ ] Add deterministic and fitted imputers
+- [ ] Add standard, robust, min-max, and max-absolute scalers
+- [ ] Add clipping, winsorization, and fitted outlier detectors
+- [ ] Add categorical encoders with unseen-category policies
+- [ ] Add PCA and related reduction adapters
+- [ ] Add variance, mutual-information, and recursive feature selection
+- [ ] Serialize fitted state and validate training-boundary provenance

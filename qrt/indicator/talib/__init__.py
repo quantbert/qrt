@@ -8,20 +8,29 @@ only need a price series also accept a plain Series (treated as
 ``close``). The datetime index is preserved on the output.
 
 Examples:
-    >>> q.feature.talib.RSI(ohlc)                    # Series named 'rsi'
-    >>> q.feature.talib.ATR(ohlc, timeperiod=20)     # uses high/low/close
-    >>> q.feature.talib.MACD(ohlc)                   # DataFrame: macd, macdsignal, macdhist
-    >>> q.feature.talib.SMA(prices, timeperiod=20)   # Series in, Series out
+    >>> q.indicator.talib.RSI(ohlc)                    # Series named 'rsi'
+    >>> q.indicator.talib.ATR(ohlc, timeperiod=20)     # uses high/low/close
+    >>> q.indicator.talib.MACD(ohlc)                   # DataFrame: macd, macdsignal, macdhist
+    >>> q.indicator.talib.SMA(prices, timeperiod=20)   # Series in, Series out
 
-Use ``dir(q.feature.talib)`` to list all indicators, or
-``help(q.feature.talib.RSI)`` for a function's inputs and parameters.
+Use ``dir(q.indicator.talib)`` to list all indicators, or
+``help(q.indicator.talib.RSI)`` for a function's inputs and parameters.
 """
 
 from __future__ import annotations
 
 import pandas as pd
-import talib as _talib
-from talib import abstract as _abstract
+
+try:
+    import talib as _talib
+    from talib import abstract as _abstract
+except ModuleNotFoundError as exc:
+    if exc.name == "talib":
+        raise ModuleNotFoundError(
+            "q.indicator.talib requires the 'indicators' extra; "
+            "install it with `uv add 'pyqrt[indicators]'`"
+        ) from None
+    raise
 
 _FUNCTIONS = frozenset(_talib.get_functions())
 

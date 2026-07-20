@@ -20,7 +20,7 @@ q.plot.plot(strategy, benchmark=benchmark)      # interactive equity + drawdown 
 ## Why qrt
 
 - **No more juggling five libraries with five conventions.** TA-Lib and
-  pandas-ta-classic indicators (`q.feature.talib`, `q.feature.pandas_ta`), Yahoo
+  pandas-ta-classic indicators (`q.indicator.talib`, `q.indicator.pandas_ta`), Yahoo
   Finance/Binance/DuckDB market data (`q.data.sources`), and 30+ risk/return
   metrics inspired by quantstats (`q.stats`) all speak the same plain
   pandas `DataFrame`/`Series` OHLCV and return-stream layout — chain them
@@ -48,13 +48,17 @@ q.plot.plot(strategy, benchmark=benchmark)      # interactive equity + drawdown 
 |---|---|
 | `q.data` | local parquet/csv I/O, market data sources (Yahoo Finance, Binance, DuckDB), bundled sample datasets |
 | `q.env` | explicit `.env` loading and environment-variable access |
-| `q.feature` | feature engineering: own indicators + TA-Lib + pandas-ta-classic |
+| `q.calendar` | exchange sessions, closures, and market-time semantics |
+| `q.indicator` | native single-instrument measurements plus explicit TA-Lib and pandas-ta-classic providers |
+| `q.factor` | cross-sectional characteristics and rankings *(planned)* |
+| `q.feature` | named, versioned model inputs, computation, and materialization |
+| `q.preprocess` | fitted model-input transformations *(planned)* |
+| `q.signal` | investment intent derived from measurements, factors, models, and rules *(planned)* |
 | `q.stats` | return-stream & trade-level statistics: performance, alpha/beta, Monte Carlo, variance/noise testing |
 | `q.plot` | interactive Plotly charts and performance reports, for both return streams and trade logs |
-| `q.model` | ML model utilities (PyTorch helpers via torchinfo) |
-| `q.model.selection` | leakage-aware CV splits (walk-forward, purged K-fold, embargo) *(planned)* |
+| `q.model` | leakage-aware validation and optional PyTorch helpers |
 | `q.bt` | event-driven backtesting *(planned)* |
-| `q.portfolio` | portfolio analysis *(planned)* |
+| `q.portfolio` | portfolio construction and analysis *(planned)* |
 
 ## Warning ⚠️
 

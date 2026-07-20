@@ -4,16 +4,16 @@ import pandas as pd
 
 
 def sma(series: pd.Series, window: int) -> pd.Series:
-    """Simple moving average.
+    """Calculate a simple moving average.
 
     Args:
-        series: Input series (e.g. close prices).
+        series: Input series.
         window: Rolling window size, in periods.
 
     Returns:
-        Series of the rolling mean, with the same index as ``series``.
+        Rolling mean with the input index preserved.
 
     Examples:
-        >>> q.feature.transforms.sma(prices["close"], 20)
+        >>> q.indicator.sma(prices["close"], 20)
     """
     return series.rolling(window).mean()

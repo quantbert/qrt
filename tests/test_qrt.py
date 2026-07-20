@@ -109,13 +109,13 @@ def test_trade_plots():
 
 def test_sma():
     s = pd.Series([1.0, 2.0, 3.0, 4.0])
-    out = q.feature.transforms.sma(s, 2)
+    out = q.indicator.sma(s, 2)
     assert out.iloc[-1] == 3.5
 
 
 def test_lags_series():
     s = pd.Series([1.0, 2.0, 3.0, 4.0], name="close")
-    out = q.feature.transforms.lags(s, 2)
+    out = q.feature.ops.lags(s, 2)
     assert list(out.columns) == ["close_lag1", "close_lag2"]
     assert out["close_lag1"].iloc[-1] == 3.0
     assert out["close_lag2"].iloc[-1] == 2.0
@@ -123,14 +123,14 @@ def test_lags_series():
 
 def test_lags_dataframe_explicit_periods():
     df = pd.DataFrame({"a": [1.0, 2.0, 3.0], "b": [10.0, 20.0, 30.0]})
-    out = q.feature.transforms.lags(df, [1, 2])
+    out = q.feature.ops.lags(df, [1, 2])
     assert list(out.columns) == ["a_lag1", "a_lag2", "b_lag1", "b_lag2"]
     assert out["b_lag2"].iloc[-1] == 10.0
 
 
 def test_pct_rank():
     s = pd.Series([1.0, 2.0, 3.0, 4.0, 2.0])
-    out = q.feature.transforms.pct_rank(s, 3)
+    out = q.feature.ops.pct_rank(s, 3)
     assert out.iloc[:2].isna().all()
     assert out.iloc[2] == pytest.approx(100.0)
     assert out.iloc[-1] == pytest.approx(100 / 3)
@@ -844,18 +844,18 @@ def _ohlc(n: int = 60) -> pd.DataFrame:
 
 def test_talib_single_output():
     ohlc = _ohlc()
-    out = q.feature.talib.RSI(ohlc, timeperiod=14)
+    out = q.indicator.talib.RSI(ohlc, timeperiod=14)
     assert out.name == "rsi"
     assert out.index.equals(ohlc.index)
     assert out.iloc[-1] == 100.0  # strictly rising close
 
     # a plain Series is treated as close
-    from_series = q.feature.talib.RSI(ohlc["close"], timeperiod=14)
+    from_series = q.indicator.talib.RSI(ohlc["close"], timeperiod=14)
     assert from_series.equals(out)
 
 
 def test_talib_multi_output():
-    out = q.feature.talib.MACD(_ohlc())
+    out = q.indicator.talib.MACD(_ohlc())
     assert list(out.columns) == ["macd", "macdsignal", "macdhist"]
 
 
@@ -863,22 +863,22 @@ def test_talib_unknown_indicator():
     import pytest
 
     with pytest.raises(AttributeError):
-        q.feature.talib.NOT_AN_INDICATOR
+        q.indicator.talib.NOT_AN_INDICATOR
 
 
 def test_pandas_ta_single_output():
     ohlc = _ohlc()
-    out = q.feature.pandas_ta.rsi(ohlc, length=14)
+    out = q.indicator.pandas_ta.rsi(ohlc, length=14)
     assert out.name == "RSI_14"
     assert out.index.equals(ohlc.index)
 
     # a plain Series is treated as close
-    from_series = q.feature.pandas_ta.rsi(ohlc["close"], length=14)
+    from_series = q.indicator.pandas_ta.rsi(ohlc["close"], length=14)
     assert from_series.equals(out)
 
 
 def test_pandas_ta_multi_output():
-    out = q.feature.pandas_ta.macd(_ohlc())
+    out = q.indicator.pandas_ta.macd(_ohlc())
     assert list(out.columns) == ["MACD_12_26_9", "MACDh_12_26_9", "MACDs_12_26_9"]
 
 
@@ -886,7 +886,7 @@ def test_pandas_ta_unknown_indicator():
     import pytest
 
     with pytest.raises(AttributeError):
-        q.feature.pandas_ta.not_an_indicator
+        q.indicator.pandas_ta.not_an_indicator
 
 
 def test_load_ohlc_timeseries_range(tmp_path):

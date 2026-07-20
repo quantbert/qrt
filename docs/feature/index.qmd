@@ -2,34 +2,57 @@
 title: Feature Engineering
 ---
 
-`q.feature` collects feature engineering tools under one namespace, organized as
-submodules:
+`q.feature` defines reproducible columns intended for model training, batch
+materialization, and equivalent online computation. It does not own every
+calculation that might eventually become a feature.
 
-| Submodule | What it is |
-|---|---|
-| `q.feature.transforms` | General-purpose feature transformations |
-| `q.feature.talib` | every [TA-Lib](https://ta-lib.github.io/ta-lib-python/) indicator, pandas-friendly |
-| `q.feature.pandas_ta` | every [pandas-ta-classic](https://xgboosted.github.io/pandas-ta-classic/) indicator |
+Use [`q.indicator`](../indicator/index.ipynb) for single-instrument market
+measurements, [`q.factor`](../factor/index.qmd) for cross-sectional values, and
+[`q.preprocess`](../preprocess/index.qmd) for transformations fitted on training
+data.
 
-All indicator functions share the same convention: they accept an **OHLCV DataFrame**
-with lowercase columns (`open, high, low, close, volume`) — the frame layout returned
-by `q.data.sources`'s `read()` functions (e.g. `q.data.sources.yfinance.read(...)`) — and
-preserve the datetime index on the output. Indicators that only need a price series
-also accept a plain `Series` (treated as `close`).
+## Definitions
 
-Pages:
+```python
+sma_20 = q.feature.Feature(
+    name="sma_20",
+    version="1",
+    function=q.indicator.sma,
+    inputs={"series": "close"},
+    params={"window": 20},
+    entity_keys=("symbol",),
+    timestamp="datetime",
+    lookback=20,
+    available_at="bar_close",
+)
 
-- [Transforms](transforms.ipynb) — general-purpose feature transformations, plus
-  visualizing features with `q.plot.col`.
-- [TA-Lib](talib.ipynb) — the `q.feature.talib` wrapper.
-- [pandas-ta-classic](pandas_ta.ipynb) — the `q.feature.pandas_ta` wrapper.
-
-## IDE support
-
-The `talib` and `pandas_ta` wrappers create their functions dynamically at runtime.
-Autocomplete and hover docs are provided by generated type stubs — regenerate them
-after upgrading either library:
-
-```bash
-make stubs
+daily = q.feature.FeatureSet([sma_20], name="daily_prices", version="1")
 ```
+
+A feature definition maps callable arguments to source columns. It carries the
+metadata needed to reproduce and audit the output but does not fetch data or
+schedule execution.
+
+## Compute and materialize
+
+```python
+frame = q.feature.compute(daily, source)
+q.feature.materialize(daily, source, duckdb_connection, table="daily_features")
+```
+
+Computation is isolated by `entity_keys`, retains keys and timestamps, requires
+ordered history, and never silently sorts the source. Materialization accepts a
+sink with `write(data, table=...)`, including qrt's DuckDB connection.
+
+## Generic operations
+
+`q.feature.ops` provides column-building primitives that do not have market
+semantics or fitted state:
+
+```python
+lags = q.feature.ops.lags(prices["close"], [1, 5, 21])
+rank = q.feature.ops.pct_rank(prices["close"], window=60)
+```
+
+Calling an operation directly does not register or persist a feature. Wrap a
+scalar operation in `Feature` when it needs a stable model-input identity.

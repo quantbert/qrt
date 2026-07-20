@@ -1,8 +1,7 @@
 """General-purpose helper functions.
 
 Add new concerns (config loading, caching, retry helpers, ...) as
-additional modules in this package as they land, same convention as
-``q.feature``/``q.data``.
+additional modules in this package as they land.
 """
 
 import os

@@ -25,7 +25,7 @@ website:
     search: true
     left:
       - text: "Getting Started"
-        href: index.ipynb
+        href: index.qmd
       - text: "API Reference"
         href: reference/index.qmd
       - text: "Roadmap"
@@ -42,7 +42,7 @@ website:
       collapse-level: 1
       contents:
         - text: "Getting Started"
-          href: index.ipynb
+          href: index.qmd
         - section: "q.bt — Backtesting"
           href: bt/index.qmd
           contents:
@@ -61,17 +61,82 @@ website:
               href: data/sources.ipynb
             - text: "Roadmap"
               href: data/roadmap.qmd
-        - section: "q.feature — Features"
+        - section: "q.indicator — Indicators"
+          href: indicator/index.ipynb
+          contents:
+            - section: "QRT indicators"
+              contents:
+                - text: "Simple moving average (SMA)"
+                  href: indicator/qrt/sma.ipynb
+                - text: "Exponential moving average (EMA)"
+                  href: indicator/qrt/ema.ipynb
+                - text: "Log returns"
+                  href: indicator/qrt/log_returns.ipynb
+                - text: "Realized variance"
+                  href: indicator/qrt/realized_variance.ipynb
+                - text: "Realized quarticity"
+                  href: indicator/qrt/realized_quarticity.ipynb
+                - text: "Bipower variation"
+                  href: indicator/qrt/bipower_variation.ipynb
+                - text: "Median realized volatility"
+                  href: indicator/qrt/med_rv.ipynb
+                - text: "Minimum realized volatility"
+                  href: indicator/qrt/min_rv.ipynb
+                - text: "Realized volatility by session"
+                  href: indicator/qrt/realized_volatility.ipynb
+                - text: "Relative strength"
+                  href: indicator/qrt/relative_strength.ipynb
+                - text: "Relative-strength moving average"
+                  href: indicator/qrt/rsma.ipynb
+                - text: "Relative-strength days"
+                  href: indicator/qrt/rs_days.ipynb
+                - text: "Relative-strength phase"
+                  href: indicator/qrt/rs_phase.ipynb
+                - text: "RS new high before price"
+                  href: indicator/qrt/rsnhbp.ipynb
+            - text: "TA-Lib"
+              href: indicator/talib.ipynb
+            - text: "pandas-ta-classic"
+              href: indicator/pandas_ta.ipynb
+            - text: "Roadmap"
+              href: indicator/roadmap.qmd
+        - section: "q.factor — Factors"
+          href: factor/index.qmd
+          contents:
+            - text: "Roadmap"
+              href: factor/roadmap.qmd
+        - section: "q.feature — Feature lifecycle"
           href: feature/index.qmd
           contents:
-            - text: "Transforms"
-              href: feature/transforms.ipynb
-            - text: "TA-Lib"
-              href: feature/talib.ipynb
-            - text: "pandas-ta-classic"
-              href: feature/pandas_ta.ipynb
             - text: "Roadmap"
               href: feature/roadmap.qmd
+        - section: "q.preprocess — Preprocessing"
+          href: preprocess/index.qmd
+          contents:
+            - text: "Missing data"
+              href: preprocess/impute.qmd
+            - text: "Scaling"
+              href: preprocess/scale.qmd
+            - text: "Outliers"
+              href: preprocess/outlier.qmd
+            - text: "Encoding"
+              href: preprocess/encode.qmd
+            - text: "Reduction"
+              href: preprocess/reduction.qmd
+            - text: "Selection"
+              href: preprocess/selection.qmd
+            - text: "Roadmap"
+              href: preprocess/roadmap.qmd
+        - section: "q.calendar — Market time"
+          href: calendar/index.qmd
+          contents:
+            - text: "Roadmap"
+              href: calendar/roadmap.qmd
+        - section: "q.signal — Signals"
+          href: signal/index.qmd
+          contents:
+            - text: "Roadmap"
+              href: signal/roadmap.qmd
         - section: "q.model — Models"
           href: model/index.ipynb
           contents:
@@ -140,16 +205,46 @@ quartodoc:
   css: reference/_styles-quartodoc.css
   parser: google
   sections:
-    - title: q.feature
-      desc: "Feature engineering — general-purpose transforms, TA-Lib, pandas-ta-classic."
+    - title: q.indicator
+      desc: "Single-instrument market measurements and explicit provider catalogs."
       contents:
-        - feature
-        - name: feature.transforms
+        - name: indicator
           include_imports: true
-        - name: feature.talib
+        - name: indicator.talib
           members: []
-        - name: feature.pandas_ta
+        - name: indicator.pandas_ta
           members: []
+    - title: q.factor
+      desc: "Cross-sectional characteristics, rankings, and neutralization."
+      contents:
+        - name: factor
+          include_imports: true
+    - title: q.feature
+      desc: "Named, versioned feature definitions, computation, and materialization."
+      contents:
+        - name: feature
+          include_imports: true
+        - name: feature.ops
+          include_imports: true
+    - title: q.preprocess
+      desc: "Fitted transformations applied at the model-training boundary."
+      contents:
+        - preprocess
+        - preprocess.impute
+        - preprocess.scale
+        - preprocess.outlier
+        - preprocess.encode
+        - preprocess.reduction
+        - preprocess.selection
+    - title: q.calendar
+      desc: "Exchange sessions, closures, and market-time operations."
+      contents:
+        - name: calendar
+          include_imports: true
+    - title: q.signal
+      desc: "Investment intent derived from indicators, factors, models, and rules."
+      contents:
+        - signal
     - title: q.stats
       desc: "Return-stream statistics: performance, alpha/beta, rolling diagnostics, and the chained `Returns` helper (no plotting dependency)."
       contents:

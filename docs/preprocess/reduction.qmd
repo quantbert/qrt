@@ -1,0 +1,8 @@
+---
+title: Dimensionality reduction
+---
+
+`q.preprocess.reduction` is reserved for learned lower-dimensional representations
+such as PCA, ICA, and factor analysis.
+
+The namespace is currently empty.

@@ -1,0 +1,219 @@
+---
+title: Getting Started
+---
+
+QRT is a collection of quantitative-research tools with explicit boundaries
+between market data, measurements, stored model inputs, training transforms,
+investment intent, portfolio construction, simulation, and evaluation.
+
+::: {.callout-warning}
+QRT is in alpha. Public APIs can still change while the architecture settles.
+:::
+
+## The research flow
+
+```text
+q.data -> q.indicator / q.factor -> q.feature -> q.preprocess -> q.model
+                           \-> q.signal -> q.portfolio -> q.bt -> q.stats / q.plot
+             q.calendar supplies exchange-time semantics across the flow
+```
+
+Each block describes what an operation *is*, not every way its output might be
+used. An SMA can become a stored model feature, a chart overlay, or an online
+rule input; it remains an indicator in all three cases.
+
+## Quickstart
+
+```bash
+uv add pyqrt
+
+# Optional provider catalogs and PyTorch helpers
+uv add "pyqrt[indicators]"
+uv add "pyqrt[torch]"
+```
+
+```python
+import qrt as q
+
+aapl = q.data.sources.yfinance.read(
+    "AAPL", "2024-01-01", "2025-01-01", "1d"
+)
+source = aapl.rename_axis("datetime").reset_index().assign(symbol="AAPL")
+
+# A reusable market measurement
+sma_20 = q.indicator.sma(aapl["close"], 20)
+
+# A versioned model input computed independently per symbol
+sma_feature = q.feature.Feature(
+    name="sma_20",
+    function=q.indicator.sma,
+    inputs={"series": "close"},
+    params={"window": 20},
+    entity_keys=("symbol",),
+    timestamp="datetime",
+    lookback=20,
+    available_at="bar_close",
+)
+features = q.feature.FeatureSet([sma_feature], name="daily_prices")
+feature_frame = q.feature.compute(features, source)
+```
+
+## Namespace roles
+
+### `q.data`: acquire and persist observations
+
+`q.data` owns data access, local file formats, vendor adapters, bundled sample
+datasets, and database connections. It should return canonical pandas objects
+without embedding trading logic or fitting model transformations.
+
+Use it to read raw OHLCV, trades, fundamentals, labels, and already materialized
+features. Vendor credentials, retries, caching, and storage belong here.
+
+Boundary: `q.data` does not decide what a market value means, whether it is a
+feature, or how a model should transform it.
+
+### `q.calendar`: define market time
+
+`q.calendar` owns exchange sessions, closures, holidays, market hours, and
+timestamp alignment. It uses explicit exchange identifiers such as `XNYS` and
+never assumes one default market.
+
+Use it whenever a calculation depends on trading sessions rather than generic
+wall-clock dates.
+
+Boundary: generic timestamp parsing belongs in data preparation; exchange-aware
+semantics belong here.
+
+### `q.indicator`: measure one market series
+
+`q.indicator` owns deterministic, normally stateless measurements such as moving
+averages, relative strength, and realized volatility. Native formulas are flat;
+provider formulas remain explicit under `q.indicator.talib` and
+`q.indicator.pandas_ta`.
+
+Use indicators in notebooks, monitoring, rules, backtests, or as compute
+functions inside `q.feature.Feature`.
+
+Boundary: indicators do not register metadata, persist themselves, compare a
+whole asset universe, or express a buy/sell decision. Functions accept one
+instrument at a time and must not silently cross symbol boundaries.
+
+### `q.factor`: compare assets cross-sectionally
+
+`q.factor` owns characteristics that require a universe snapshot or interactions
+between assets: ranks, sector neutralization, and relative rating models such as
+Elo.
+
+Use factors when the value of one symbol depends on other symbols at the same
+point in time. Factor output can be stored through `q.feature` or interpreted by
+`q.signal`.
+
+Boundary: a factor scores or transforms assets; it does not choose portfolio
+weights. Feature-column selection is also not factor work.
+
+### `q.feature`: define and materialize model inputs
+
+`q.feature` owns the lifecycle of reproducible feature columns. `Feature`
+records a stable name, version, compute callable, source-column mapping,
+parameters, entity keys, timestamp, lookback, and availability boundary.
+`FeatureSet` groups definitions with one entity/time contract.
+
+`q.feature.compute` validates required columns, preserves entity/time keys, and
+applies each feature independently per entity. It rejects unsorted histories
+instead of silently changing database order. `q.feature.materialize` writes the
+computed frame to a sink exposing `write(data, table=...)`.
+
+`q.feature.ops` contains generic column-building operations such as lags and
+rolling percentile rank. These are building blocks, not registered features by
+themselves.
+
+Boundary: indicators and factors provide calculations; `q.feature` gives their
+outputs identity, point-in-time metadata, repeatable computation, and storage.
+Fitted scalers and selectors do not belong here because their state is tied to a
+training sample.
+
+### `q.preprocess`: fit the training boundary
+
+`q.preprocess` is reserved for imputation, scaling, outlier treatment, encoding,
+dimensionality reduction, and feature-column selection. Learned operations must
+follow `fit`/`transform`: fit only on training data, retain fitted state, and
+reuse that state for validation, testing, and inference.
+
+Boundary: globally fitting these operations before a train/test split leaks
+future information. Deterministic raw feature computation belongs before this
+boundary; learned preprocessing belongs after the split.
+
+### `q.model`: train and inspect models
+
+`q.model` owns model lifecycle helpers and leakage-aware validation. Today it
+provides walk-forward and purged cross-validation under `q.model.selection` and
+lazy PyTorch helpers under `q.model.torch`.
+
+Boundary: `q.model.selection` selects rows/splits for evaluation;
+`q.preprocess.selection` selects feature columns. Model code consumes prepared
+features but does not fetch market data or define trading intent.
+
+### `q.signal`: express investment intent
+
+`q.signal` is reserved for turning indicators, factors, model predictions, or
+rules into directional or sizing intent. Thresholds, normalization, decay,
+combination, and turnover-aware signal shaping belong here.
+
+Boundary: an indicator measures and a factor compares; a signal interprets.
+Signals still do not decide final portfolio weights or simulate fills.
+
+### `q.portfolio`: convert intent into positions
+
+`q.portfolio` owns portfolio construction, constraints, weighting, exposure,
+attribution, and rebalance decisions.
+
+Boundary: signals state preferences; portfolio logic resolves those preferences
+against capital, risk, and constraints to produce target positions.
+
+### `q.bt`: simulate decisions
+
+`q.bt` owns event progression, order handling, fills, fees, slippage, and the
+historical state required to simulate a strategy without look-ahead.
+
+Boundary: backtesting consumes data, signals, and portfolio decisions. It should
+not become the canonical implementation of indicators, features, or statistics.
+
+### `q.stats` and `q.plot`: evaluate results
+
+`q.stats` computes return-stream, benchmark, risk, rolling, trade, and factor
+analytics. `q.plot` renders those results and market/trade visualizations.
+
+Boundary: these modules analyze or present outcomes. They do not mutate the
+strategy, refit its model, or create a new feature store as a side effect.
+
+### `q.env` and `q.utils`: support explicit execution
+
+`q.env` handles environment files and runtime inspection. `q.utils` contains
+small shared facilities such as logging, reproducibility, caching, and console
+output.
+
+Boundary: neither namespace is a dumping ground for domain logic. A helper with
+a stable financial or lifecycle meaning belongs in its owning domain module.
+
+## Batch and online parity
+
+The same indicator or factor callable should be usable in historical batch
+computation and online inference. `q.feature` adds batch identity and persistence;
+an online service may call the underlying computation directly, provided it
+supplies the same ordered history and availability rules.
+
+Fitted preprocessing is different: online inference must load the exact artifact
+fitted on training data. It must never refit on a live window silently.
+
+## Development
+
+```bash
+make install   # sync core and development dependencies
+make test      # run the full test suite
+make stubs     # regenerate provider-wrapper type stubs
+make datasets  # refresh bundled sample datasets and demo trades
+make docs      # build references and serve docs locally
+```
+
+See the [Roadmap](roadmap.qmd) for planned work and each namespace's page for
+its current API.

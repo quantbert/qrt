@@ -1,5 +1,5 @@
 """Data sources: network vendors, databases, and other backends -- each
-exposed as its own submodule, exactly like :mod:`qrt.feature`'s convention.
+exposed as its own explicit submodule.
 
     import qrt as q
 

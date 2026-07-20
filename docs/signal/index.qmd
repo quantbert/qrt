@@ -1,0 +1,10 @@
+---
+title: Signals
+---
+
+`q.signal` is reserved for operations that interpret indicators, factors, model
+predictions, or rules as investment intent. It will own thresholding,
+normalization, combination, decay, and turnover-aware shaping.
+
+Signals do not measure markets (`q.indicator`), compare a universe (`q.factor`),
+or choose final positions (`q.portfolio`). The namespace is currently empty.

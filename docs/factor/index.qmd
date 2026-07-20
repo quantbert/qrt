@@ -1,0 +1,38 @@
+---
+title: Factors
+---
+
+`q.factor` is reserved for characteristics calculated across a universe,
+including ranks, neutralization, and relative rating models such as Elo.
+
+## Elo ratings
+
+`q.factor.compute_elo` compares each symbol with nearby-rated symbols in the
+same sector on each date. Call it once with the complete long-form universe;
+do not group by symbol before calling it.
+
+The input requires `date`, `symbol`, `close`, and `sectorid`. The sector column
+is not optional because matches are constrained to peers in the same sector.
+Missing sector values are placed in one `"UnknownSector"` bucket.
+
+```python
+rated = q.factor.compute_elo(
+	daily_prices,  # date, symbol, close, sectorid
+	daily_vol_window=20,
+	matches_per_stock=1,
+	initial_elo=1500,
+	rf_data=daily_risk_free_rates,  # optional: date, rate
+)
+```
+
+The result includes prepared return/volatility columns, the current `elo`, the
+day's `elo_change`, and cumulative `matches_played`. If `rf_data` is supplied
+and `use_excess_returns=True`, matches use log return minus the aligned daily
+risk-free rate; otherwise they use log returns.
+
+This is a migration of the legacy model, not a claim that every modeling choice
+has been settled. See the [factor roadmap](roadmap.qmd) for the known match
+scheduling, K-factor, sample-data, and missing-price issues.
+
+A factor measures relative characteristics; portfolio selection and weighting
+belong in `q.signal` and `q.portfolio`.

@@ -1,0 +1,17 @@
+---
+title: Market calendars
+---
+
+`q.calendar` contains exchange-session and market-time operations. Functions
+require an explicit ISO 10383 market identifier; qrt never assumes one market.
+
+```python
+closed_days = q.calendar.non_trading_days_after(
+    prices.index.to_series(),
+    exchange="XNYS",
+)
+```
+
+An early close remains a trading session. The function counts only closed
+calendar dates between consecutive sessions and validates every input date
+against the selected exchange calendar.

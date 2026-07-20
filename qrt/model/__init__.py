@@ -12,8 +12,7 @@ Two kinds of submodules live here:
 - Framework-specific adapters -- thin wrappers around one library's actual
   model objects/training API. Each framework gets its own submodule, which
   may grow into its own subpackage as it picks up multiple concerns (e.g.
-  training loops, checkpointing, dataloaders alongside model summaries) --
-  same convention as ``qrt.feature``/``qrt.data``:
+  training loops, checkpointing, dataloaders alongside model summaries):
 
     q.model.torch       -- PyTorch helpers (model summaries via torchinfo
                            today; training/checkpointing/dataloaders as

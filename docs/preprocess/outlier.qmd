@@ -1,0 +1,8 @@
+---
+title: Outliers
+---
+
+`q.preprocess.outlier` is reserved for outlier scoring, detection, clipping, and
+replacement methods such as IQR rules, winsorization, and Isolation Forest.
+
+The namespace is currently empty.

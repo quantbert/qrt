@@ -1,4 +1,4 @@
-"""pandas-ta-classic indicators exposed under the qrt feature namespace.
+"""pandas-ta-classic indicators exposed under the qrt indicator namespace.
 
 Every pandas-ta-classic indicator is available under its usual (lowercase)
 name and accepts an OHLCV DataFrame with lowercase columns (``open, high,
@@ -9,19 +9,28 @@ Indicators that only need a price series also accept a plain Series
 pandas-ta's parameterised names (e.g. ``RSI_14``, ``MACD_12_26_9``).
 
 Examples:
-    >>> q.feature.pandas_ta.rsi(ohlc)                  # Series 'RSI_14'
-    >>> q.feature.pandas_ta.bbands(ohlc, length=20)    # DataFrame BBL/BBM/BBU...
-    >>> q.feature.pandas_ta.cdl_pattern(ohlc, name="doji")
-    >>> q.feature.pandas_ta.rsi(prices)                # Series in, Series out
+    >>> q.indicator.pandas_ta.rsi(ohlc)                  # Series 'RSI_14'
+    >>> q.indicator.pandas_ta.bbands(ohlc, length=20)    # DataFrame BBL/BBM/BBU...
+    >>> q.indicator.pandas_ta.cdl_pattern(ohlc, name="doji")
+    >>> q.indicator.pandas_ta.rsi(prices)                # Series in, Series out
 
-Use ``dir(q.feature.pandas_ta)`` to list all indicators, or
-``help(q.feature.pandas_ta.rsi)`` for a function's parameters.
+Use ``dir(q.indicator.pandas_ta)`` to list all indicators, or
+``help(q.indicator.pandas_ta.rsi)`` for a function's parameters.
 """
 
 from __future__ import annotations
 
 import pandas as pd
-import pandas_ta_classic as _pta
+
+try:
+    import pandas_ta_classic as _pta
+except ModuleNotFoundError as exc:
+    if exc.name == "pandas_ta_classic":
+        raise ModuleNotFoundError(
+            "q.indicator.pandas_ta requires the 'indicators' extra; "
+            "install it with `uv add 'pyqrt[indicators]'`"
+        ) from None
+    raise
 
 _FUNCTIONS = frozenset(
     name for names in _pta.Category.values() for name in names

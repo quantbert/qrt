@@ -1,0 +1,8 @@
+---
+title: q.calendar Roadmap
+---
+
+- [ ] Session and trading-minute ranges
+- [ ] Market-open, early-close, and holiday flags
+- [ ] Timestamp-to-session alignment with explicit timezone policy
+- [ ] Calendar-distance features for multiple exchanges
