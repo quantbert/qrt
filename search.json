@@ -997,7 +997,19 @@
     "href": "reference/factor.html",
     "title": "factor",
     "section": "",
-    "text": "factor\nfactor\nCross-sectional characteristics and relative asset measurements.\nRanks, neutralization, and the reviewed Elo model will live here. Factor calculations compare assets; they do not choose portfolio positions.\n\n\n\n\n Back to top",
+    "text": "factor\nCross-sectional characteristics and relative asset measurements.\nFactor calculations compare assets; they do not choose portfolio positions.\n\n\n\n\n\nName\nDescription\n\n\n\n\ncompute_elo\nCompute daily cross-sectional Elo ratings within sectors.\n\n\n\n\n\nfactor.compute_elo(\n    data,\n    daily_vol_window=20,\n    matches_per_stock=1,\n    initial_elo=1500,\n    epsilon=0.001,\n    rf_data=None,\n    low_qt=0.2,\n    high_qt=0.8,\n    use_excess_returns=True,\n)\nCompute daily cross-sectional Elo ratings within sectors.\nCall this function once for a complete long-form universe. It calculates each symbol’s daily return, pairs symbols with nearby Elo ratings inside the same sectorid, and carries ratings forward through time.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\ndata\npd.DataFrame\nDaily observations with required date, symbol, close, and sectorid columns. Missing sector values are grouped into an \"UnknownSector\" bucket.\nrequired\n\n\ndaily_vol_window\nint\nRolling return-volatility window.\n20\n\n\nmatches_per_stock\nint\nMaximum opponents selected per symbol and date.\n1\n\n\ninitial_elo\nint\nStarting rating for every symbol.\n1500\n\n\nepsilon\nfloat\nAbsolute return difference treated as a draw.\n0.001\n\n\nrf_data\npd.DataFrame | None\nOptional frame with date and decimal daily rate.\nNone\n\n\nlow_qt\nfloat\nLegacy lower K-factor threshold. Its semantics require review; see the factor roadmap.\n0.2\n\n\nhigh_qt\nfloat\nLegacy upper K-factor threshold. Its semantics require review; see the factor roadmap.\n0.8\n\n\nuse_excess_returns\nbool\nUse returns minus rf_data when both are supplied. If no risk-free frame is supplied, use log returns.\nTrue\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\n\npd.DataFrame\nA new DataFrame containing the prepared return columns plus elo,\n\n\n\npd.DataFrame\ndaily elo_change, and cumulative matches_played.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\n\nTypeError\nIf data is not a DataFrame.\n\n\n\nValueError\nIf required columns are absent or parameters are invalid.\n\n\n\n\n\n\nThis is a migration of the legacy algorithm. Match scheduling, K-factor thresholds, and missing-price semantics remain under review and are tracked in the q.factor roadmap.",
+    "crumbs": [
+      "API Reference",
+      "q.factor",
+      "factor"
+    ]
+  },
+  {
+    "objectID": "reference/factor.html#functions",
+    "href": "reference/factor.html#functions",
+    "title": "factor",
+    "section": "",
+    "text": "Name\nDescription\n\n\n\n\ncompute_elo\nCompute daily cross-sectional Elo ratings within sectors.\n\n\n\n\n\nfactor.compute_elo(\n    data,\n    daily_vol_window=20,\n    matches_per_stock=1,\n    initial_elo=1500,\n    epsilon=0.001,\n    rf_data=None,\n    low_qt=0.2,\n    high_qt=0.8,\n    use_excess_returns=True,\n)\nCompute daily cross-sectional Elo ratings within sectors.\nCall this function once for a complete long-form universe. It calculates each symbol’s daily return, pairs symbols with nearby Elo ratings inside the same sectorid, and carries ratings forward through time.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\ndata\npd.DataFrame\nDaily observations with required date, symbol, close, and sectorid columns. Missing sector values are grouped into an \"UnknownSector\" bucket.\nrequired\n\n\ndaily_vol_window\nint\nRolling return-volatility window.\n20\n\n\nmatches_per_stock\nint\nMaximum opponents selected per symbol and date.\n1\n\n\ninitial_elo\nint\nStarting rating for every symbol.\n1500\n\n\nepsilon\nfloat\nAbsolute return difference treated as a draw.\n0.001\n\n\nrf_data\npd.DataFrame | None\nOptional frame with date and decimal daily rate.\nNone\n\n\nlow_qt\nfloat\nLegacy lower K-factor threshold. Its semantics require review; see the factor roadmap.\n0.2\n\n\nhigh_qt\nfloat\nLegacy upper K-factor threshold. Its semantics require review; see the factor roadmap.\n0.8\n\n\nuse_excess_returns\nbool\nUse returns minus rf_data when both are supplied. If no risk-free frame is supplied, use log returns.\nTrue\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\n\npd.DataFrame\nA new DataFrame containing the prepared return columns plus elo,\n\n\n\npd.DataFrame\ndaily elo_change, and cumulative matches_played.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\n\nTypeError\nIf data is not a DataFrame.\n\n\n\nValueError\nIf required columns are absent or parameters are invalid.\n\n\n\n\n\n\nThis is a migration of the legacy algorithm. Match scheduling, K-factor thresholds, and missing-price semantics remain under review and are tracked in the q.factor roadmap.",
     "crumbs": [
       "API Reference",
       "q.factor",
@@ -1272,7 +1284,19 @@
     "href": "factor/roadmap.html",
     "title": "q.factor Roadmap",
     "section": "",
-    "text": "Cross-sectional ranks with explicit date and symbol columns\nGroup and sector neutralization\nCross-sectional z-scores and winsorization\nRedesign Elo around symbol, explicit sectors, deterministic simultaneous matches, and reviewed K-factor semantics\n\n\n\n\n Back to top",
+    "text": "Cross-sectional ranks with explicit date and symbol columns\nGroup and sector neutralization\nCross-sectional z-scores and winsorization",
+    "crumbs": [
+      "Getting Started",
+      "q.factor — Factors",
+      "Roadmap"
+    ]
+  },
+  {
+    "objectID": "factor/roadmap.html#elo-follow-up-issues",
+    "href": "factor/roadmap.html#elo-follow-up-issues",
+    "title": "q.factor Roadmap",
+    "section": "Elo follow-up issues",
+    "text": "Elo follow-up issues\nq.factor.compute_elo is migrated with symbol replacing insref. sectorid remains a required input because the current algorithm only matches symbols inside the same sector.\n\nAdd sector classifications to a multi-symbol demo dataset before adding an Elo tutorial. The bundled AAPL/SPY/BTC-USD datasets contain OHLCV only and do not have sectorid; inventing sectors in an example would conceal a real required input and produce a misleading demonstration.\nRedesign match scheduling as deterministic simultaneous matches. The migrated algorithm independently selects each symbol’s nearest-rated peers, resolves equal-distance candidates in snapshot order, and updates only the current symbol during that pass. A pair can therefore be selected in both directions or only one direction, and multiple opponents are applied sequentially. This is not a conventional paired simultaneous Elo update and need not conserve total rating, especially when K-factors differ.\nResolve the K-factor threshold conflict. The active legacy _assign_k compares the current Elo rating directly with low_qt and high_qt, using K=40 for the first 60 days, K=10 above the high threshold, K=30 below the low threshold, and K=20 otherwise. The public defaults are 0.2 and 0.8, which look like quantiles and came from an alternate volatility-quantile design left commented out in the legacy source. Ratings start near 1500, so almost every non-IPO symbol is above 0.8 and receives K=10. This can suppress rating responsiveness and makes the lower threshold effectively unreachable. Preserve it for migration compatibility until research determines whether the API should use rating levels such as 1300/1800 or actual volatility quantiles.\nDefine missing-close and calendar semantics. The migrated code forward-fills at most three observed rows per symbol before computing returns. Those are rows, not calendar or exchange sessions, so an irregular dataset can bridge a much longer elapsed period and assign its eventual move to the wrong date. Decide whether gaps should be rejected, aligned to an explicit exchange calendar, or filled under a documented session-based policy.",
     "crumbs": [
       "Getting Started",
       "q.factor — Factors",
@@ -1389,7 +1413,18 @@
     "href": "factor/index.html",
     "title": "Factors",
     "section": "",
-    "text": "q.factor is reserved for characteristics calculated across a universe, including ranks, neutralization, and relative rating models such as Elo.\nThe namespace is currently empty. Factor APIs may accept long-form multi-symbol data and will expose configurable symbol, timestamp, and grouping columns. A factor measures relative characteristics; portfolio selection and weighting belong in q.signal and q.portfolio.\n\n\n\n Back to top",
+    "text": "q.factor is reserved for characteristics calculated across a universe, including ranks, neutralization, and relative rating models such as Elo.",
+    "crumbs": [
+      "Getting Started",
+      "q.factor — Factors"
+    ]
+  },
+  {
+    "objectID": "factor/index.html#elo-ratings",
+    "href": "factor/index.html#elo-ratings",
+    "title": "Factors",
+    "section": "Elo ratings",
+    "text": "Elo ratings\nq.factor.compute_elo compares each symbol with nearby-rated symbols in the same sector on each date. Call it once with the complete long-form universe; do not group by symbol before calling it.\nThe input requires date, symbol, close, and sectorid. The sector column is not optional because matches are constrained to peers in the same sector. Missing sector values are placed in one \"UnknownSector\" bucket.\nrated = q.factor.compute_elo(\n    daily_prices,  # date, symbol, close, sectorid\n    daily_vol_window=20,\n    matches_per_stock=1,\n    initial_elo=1500,\n    rf_data=daily_risk_free_rates,  # optional: date, rate\n)\nThe result includes prepared return/volatility columns, the current elo, the day’s elo_change, and cumulative matches_played. If rf_data is supplied and use_excess_returns=True, matches use log return minus the aligned daily risk-free rate; otherwise they use log returns.\nThis is a migration of the legacy model, not a claim that every modeling choice has been settled. See the factor roadmap for the known match scheduling, K-factor, sample-data, and missing-price issues.\nA factor measures relative characteristics; portfolio selection and weighting belong in q.signal and q.portfolio.",
     "crumbs": [
       "Getting Started",
       "q.factor — Factors"
@@ -2762,7 +2797,7 @@
     "href": "env/index.html#inspect-the-runtime",
     "title": "Environment",
     "section": "Inspect the runtime",
-    "text": "Inspect the runtime\nThe other half of q.env describes the current machine: operating system, filesystem capacity, usable PyTorch accelerators, and preferred device. info combines those details into an immutable, JSON-friendly snapshot.\n\nenvironment = q.env.info()\nenvironment.as_dict()\n\n{'operating_system': {'name': 'Linux',\n  'release': '7.0.0-27-generic',\n  'version': '#27-Ubuntu SMP PREEMPT_DYNAMIC Thu Jun 18 19:13:49 UTC 2026',\n  'machine': 'x86_64'},\n 'disk': {'path': '/home/hi/qrt/docs/env',\n  'total': 2011838955520,\n  'used': 127719673856,\n  'free': 1781847891968},\n 'accelerators': (),\n 'device': 'cpu',\n 'cpu_count': 24}\n\n\n\nEnvironment report\nreport presents the same snapshot as a compact Rich table and returns it for programmatic use.\n\n_ = q.env.report()\n\n                            qrt environment                            \n┌──────────────────┬──────────────────────────────────────────────────┐\n│ OS               │ Linux 7.0.0-27-generic (x86_64)                  │\n│ CPU cores        │ 24                                               │\n│ Disk             │ 1.6 TiB free of 1.8 TiB at /home/hi/qrt/docs/env │\n│ Accelerator      │ None detected                                    │\n│ Preferred device │ cpu                                              │\n└──────────────────┴──────────────────────────────────────────────────┘",
+    "text": "Inspect the runtime\nThe other half of q.env describes the current machine: operating system, filesystem capacity, usable PyTorch accelerators, and preferred device. info combines those details into an immutable, JSON-friendly snapshot.\n\nenvironment = q.env.info()\nenvironment.as_dict()\n\n{'operating_system': {'name': 'Linux',\n  'release': '7.0.0-27-generic',\n  'version': '#27-Ubuntu SMP PREEMPT_DYNAMIC Thu Jun 18 19:13:49 UTC 2026',\n  'machine': 'x86_64'},\n 'disk': {'path': '/home/hi/qrt/docs/env',\n  'total': 2011838955520,\n  'used': 127739265024,\n  'free': 1781828300800},\n 'accelerators': (),\n 'device': 'cpu',\n 'cpu_count': 24}\n\n\n\nEnvironment report\nreport presents the same snapshot as a compact Rich table and returns it for programmatic use.\n\n_ = q.env.report()\n\n                            qrt environment                            \n┌──────────────────┬──────────────────────────────────────────────────┐\n│ OS               │ Linux 7.0.0-27-generic (x86_64)                  │\n│ CPU cores        │ 24                                               │\n│ Disk             │ 1.6 TiB free of 1.8 TiB at /home/hi/qrt/docs/env │\n│ Accelerator      │ None detected                                    │\n│ Preferred device │ cpu                                              │\n└──────────────────┴──────────────────────────────────────────────────┘",
     "crumbs": [
       "Getting Started",
       "q.env — Environment"

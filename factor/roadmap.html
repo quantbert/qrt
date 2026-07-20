@@ -606,8 +606,14 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#elo-follow-up-issues" id="toc-elo-follow-up-issues" class="nav-link active" data-scroll-target="#elo-follow-up-issues">Elo follow-up issues</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/factor/roadmap.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/factor/roadmap.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -635,10 +641,19 @@ ul.task-list li input[type="checkbox"] {
 <li><label><input type="checkbox">Cross-sectional ranks with explicit date and symbol columns</label></li>
 <li><label><input type="checkbox">Group and sector neutralization</label></li>
 <li><label><input type="checkbox">Cross-sectional z-scores and winsorization</label></li>
-<li><label><input type="checkbox">Redesign Elo around <code>symbol</code>, explicit sectors, deterministic simultaneous matches, and reviewed K-factor semantics</label></li>
+</ul>
+<section id="elo-follow-up-issues" class="level2">
+<h2 class="anchored" data-anchor-id="elo-follow-up-issues">Elo follow-up issues</h2>
+<p><code>q.factor.compute_elo</code> is migrated with <code>symbol</code> replacing <code>insref</code>. <code>sectorid</code> remains a required input because the current algorithm only matches symbols inside the same sector.</p>
+<ul class="task-list">
+<li><p><label><input type="checkbox">Add sector classifications to a multi-symbol demo dataset before adding an Elo tutorial. The bundled AAPL/SPY/BTC-USD datasets contain OHLCV only and do not have <code>sectorid</code>; inventing sectors in an example would conceal a real required input and produce a misleading demonstration.</label></p></li>
+<li><p><label><input type="checkbox">Redesign match scheduling as deterministic simultaneous matches. The migrated algorithm independently selects each symbol’s nearest-rated peers, resolves equal-distance candidates in snapshot order, and updates only the current symbol during that pass. A pair can therefore be selected in both directions or only one direction, and multiple opponents are applied sequentially. This is not a conventional paired simultaneous Elo update and need not conserve total rating, especially when K-factors differ.</label></p></li>
+<li><p><label><input type="checkbox">Resolve the K-factor threshold conflict. The active legacy <code>_assign_k</code> compares the current Elo rating directly with <code>low_qt</code> and <code>high_qt</code>, using K=40 for the first 60 days, K=10 above the high threshold, K=30 below the low threshold, and K=20 otherwise. The public defaults are <code>0.2</code> and <code>0.8</code>, which look like quantiles and came from an alternate volatility-quantile design left commented out in the legacy source. Ratings start near 1500, so almost every non-IPO symbol is above <code>0.8</code> and receives K=10. This can suppress rating responsiveness and makes the lower threshold effectively unreachable. Preserve it for migration compatibility until research determines whether the API should use rating levels such as 1300/1800 or actual volatility quantiles.</label></p></li>
+<li><p><label><input type="checkbox">Define missing-close and calendar semantics. The migrated code forward-fills at most three observed rows per symbol before computing returns. Those are rows, not calendar or exchange sessions, so an irregular dataset can bridge a much longer elapsed period and assign its eventual move to the wrong date. Decide whether gaps should be rejected, aligned to an explicit exchange calendar, or filled under a documented session-based policy.</label></p></li>
 </ul>
 
 
+</section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -1058,4 +1073,4 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/factor/roadmap.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/factor/roadmap.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/factor/roadmap.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/factor/roadmap.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
