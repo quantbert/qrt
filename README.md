@@ -50,7 +50,7 @@ q.plot.plot(strategy, benchmark=benchmark)      # interactive equity + drawdown 
 | `q.env` | explicit `.env` loading and environment-variable access |
 | `q.calendar` | exchange sessions, closures, and market-time semantics |
 | `q.indicator` | native single-instrument measurements plus explicit TA-Lib and pandas-ta-classic providers |
-| `q.factor` | cross-sectional characteristics and rankings *(planned)* |
+| `q.cross_section` | cross-sectional characteristics and rankings *(planned)* |
 | `q.feature` | named, versioned model inputs, computation, and materialization |
 | `q.preprocess` | fitted model-input transformations *(planned)* |
 | `q.signal` | investment intent derived from measurements, factors, models, and rules *(planned)* |

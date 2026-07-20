@@ -6,5 +6,5 @@ title: Signals
 predictions, or rules as investment intent. It will own thresholding,
 normalization, combination, decay, and turnover-aware shaping.
 
-Signals do not measure markets (`q.indicator`), compare a universe (`q.factor`),
+Signals do not measure markets (`q.indicator`), compare a universe (`q.cross_section`),
 or choose final positions (`q.portfolio`). The namespace is currently empty.

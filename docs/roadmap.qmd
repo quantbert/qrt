@@ -14,7 +14,7 @@ items are removed from these pages.
 | `q.env` | Environment configuration | [View roadmap](env/roadmap.qmd) |
 | `q.calendar` | Exchange sessions and market time | [View roadmap](calendar/roadmap.qmd) |
 | `q.indicator` | Single-instrument market measurements | [View roadmap](indicator/roadmap.qmd) |
-| `q.factor` | Cross-sectional characteristics | [View roadmap](factor/roadmap.qmd) |
+| `q.cross_section` | Cross-sectional characteristics | [View roadmap](cross_section/roadmap.qmd) |
 | `q.feature` | Feature definitions and materialization | [View roadmap](feature/roadmap.qmd) |
 | `q.preprocess` | Fitted model-input transformations | [View roadmap](preprocess/roadmap.qmd) |
 | `q.signal` | Investment intent and rule outputs | [View roadmap](signal/roadmap.qmd) |

@@ -7,9 +7,9 @@ Usage:
 from qrt import (
     bt,
     calendar,
+    cross_section,
     data,
     env,
-    factor,
     feature,
     indicator,
     model,
@@ -27,9 +27,9 @@ __version__ = "0.0.1"
 __all__ = [
     "bt",
     "calendar",
+    "cross_section",
     "data",
     "env",
-    "factor",
     "feature",
     "indicator",
     "model",

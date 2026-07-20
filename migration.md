@@ -47,7 +47,7 @@ legacy database assumptions.
 
 ### Benchmark exports awaiting a decision
 
-The calculation-only parts are candidates for `q.factor`; the `get_*` and
+The calculation-only parts are candidates for `q.cross_section`; the `get_*` and
 cache-clear functions mix calculation with proprietary fetching and process-wide
 pickle caches and should not be copied intact.
 
@@ -93,7 +93,7 @@ output:
 | `q.data` | Acquire and persist observations |
 | `q.calendar` | Exchange sessions and market-time semantics |
 | `q.indicator` | Stateless, single-instrument market measurements |
-| `q.factor` | Cross-sectional characteristics and rankings |
+| `q.cross_section` | Cross-sectional characteristics and rankings |
 | `q.feature` | Named/versioned feature definitions, computation, and materialization |
 | `q.preprocess` | Transformations fitted at the model-training boundary |
 | `q.model` | Validation and model lifecycle |
@@ -185,12 +185,12 @@ the legacy pure-pandas formulas, smoothing, warm-up behavior, or output names.
 
 ### Cross-sectional Elo
 
-- [x] Move `compute_elo` to `q.factor.compute_elo`.
+- [x] Move `compute_elo` to `q.cross_section.compute_elo`.
 - [x] Replace the legacy `insref` identifier with required `symbol` input.
 - [x] Keep `sectorid` required because matches occur within sectors.
 - [x] Accept aligned risk-free-rate data explicitly and perform no fetching.
 - [ ] Resolve match scheduling, K-factor, demo-sector, and missing-price
-  semantics tracked in `docs/factor/roadmap.qmd`.
+  semantics tracked in `docs/cross_section/roadmap.qmd`.
 
 ### Explicit non-goal
 

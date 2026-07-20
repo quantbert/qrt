@@ -1,0 +1,56 @@
+---
+title: Cross-Sectional Analysis
+---
+
+`q.cross_section` owns characteristics calculated across a universe,
+including ranks, neutralization, and relative rating models such as Elo.
+
+## Group-weighted returns
+
+`q.cross_section.group_weighted_return` aggregates long-form asset returns by
+date and a required group column, which defaults to `sectorid`. It uses a
+`return` column when available, otherwise calculates simple returns from
+`close`. Other price or return columns must be supplied with an explicit
+`field_type`.
+
+Equal, market-cap, volume, inverse-volatility, and custom-column weights are
+supported. Non-equal weights are lagged by one symbol observation by default
+so the return ending at time $t$ does not use information first observed at
+$t$. Missing returns or non-positive weights are excluded, and valid weights
+are renormalized within each date and group.
+
+The result contains one row per date and group with `weighted_return`,
+`asset_count`, and the raw `weight_sum`. A tutorial will be added when a
+multi-symbol dataset with real sector classifications is available.
+
+## Elo ratings
+
+`q.cross_section.compute_elo` compares each symbol with nearby-rated symbols in the
+same sector on each date. Call it once with the complete long-form universe;
+do not group by symbol before calling it.
+
+The input requires `date`, `symbol`, `close`, and `sectorid`. The sector column
+is not optional because matches are constrained to peers in the same sector.
+Missing sector values are placed in one `"UnknownSector"` bucket.
+
+```python
+rated = q.cross_section.compute_elo(
+	daily_prices,  # date, symbol, close, sectorid
+	daily_vol_window=20,
+	matches_per_stock=1,
+	initial_elo=1500,
+	rf_data=daily_risk_free_rates,  # optional: date, rate
+)
+```
+
+The result includes prepared return/volatility columns, the current `elo`, the
+day's `elo_change`, and cumulative `matches_played`. If `rf_data` is supplied
+and `use_excess_returns=True`, matches use log return minus the aligned daily
+risk-free rate; otherwise they use log returns.
+
+This is a migration of the legacy model, not a claim that every modeling choice
+has been settled. See the [cross-section roadmap](roadmap.qmd) for the known match
+scheduling, K-factor, sample-data, and missing-price issues.
+
+A factor or group return measures cross-sectional characteristics; portfolio
+selection and position sizing belong in `q.signal` and `q.portfolio`.

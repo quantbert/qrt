@@ -7,7 +7,8 @@ materialization, and equivalent online computation. It does not own every
 calculation that might eventually become a feature.
 
 Use [`q.indicator`](../indicator/index.ipynb) for single-instrument market
-measurements, [`q.factor`](../factor/index.qmd) for cross-sectional values, and
+measurements, [`q.cross_section`](../cross_section/index.qmd) for cross-sectional
+values, and
 [`q.preprocess`](../preprocess/index.qmd) for transformations fitted on training
 data.
 

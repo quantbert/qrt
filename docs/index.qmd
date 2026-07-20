@@ -13,7 +13,7 @@ QRT is in alpha. Public APIs can still change while the architecture settles.
 ## The research flow
 
 ```text
-q.data -> q.indicator / q.factor -> q.feature -> q.preprocess -> q.model
+q.data -> q.indicator / q.cross_section -> q.feature -> q.preprocess -> q.model
                            \-> q.signal -> q.portfolio -> q.bt -> q.stats / q.plot
              q.calendar supplies exchange-time semantics across the flow
 ```
@@ -98,9 +98,9 @@ Boundary: indicators do not register metadata, persist themselves, compare a
 whole asset universe, or express a buy/sell decision. Functions accept one
 instrument at a time and must not silently cross symbol boundaries.
 
-### `q.factor`: compare assets cross-sectionally
+### `q.cross_section`: compare assets cross-sectionally
 
-`q.factor` owns characteristics that require a universe snapshot or interactions
+`q.cross_section` owns characteristics that require a universe snapshot or interactions
 between assets: ranks, sector neutralization, and relative rating models such as
 Elo.
 

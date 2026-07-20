@@ -1,0 +1,47 @@
+---
+title: q.cross_section Roadmap
+---
+
+- [ ] Cross-sectional ranks with explicit date and symbol columns
+- [ ] Group and sector neutralization
+- [ ] Cross-sectional z-scores and winsorization
+- [ ] Add a group-weighted-return tutorial when a multi-symbol demo dataset
+  with real sector classifications is available
+
+## Elo follow-up issues
+
+`q.cross_section.compute_elo` is migrated with `symbol` replacing `insref`.
+`sectorid` remains a required input because the current algorithm only matches
+symbols inside the same sector.
+
+- [ ] Add sector classifications to a multi-symbol demo dataset before adding
+  an Elo tutorial. The bundled AAPL/SPY/BTC-USD datasets contain OHLCV only and
+  do not have `sectorid`; inventing sectors in an example would conceal a real
+  required input and produce a misleading demonstration.
+
+- [ ] Redesign match scheduling as deterministic simultaneous matches. The
+  migrated algorithm independently selects each symbol's nearest-rated peers,
+  resolves equal-distance candidates in snapshot order, and updates only the
+  current symbol during that pass. A pair can therefore be selected in both
+  directions or only one direction, and multiple opponents are applied
+  sequentially. This is not a conventional paired simultaneous Elo update and
+  need not conserve total rating, especially when K-factors differ.
+
+- [ ] Resolve the K-factor threshold conflict. The active legacy `_assign_k`
+  compares the current Elo rating directly with `low_qt` and `high_qt`, using
+  K=40 for the first 60 days, K=10 above the high threshold, K=30 below the low
+  threshold, and K=20 otherwise. The public defaults are `0.2` and `0.8`, which
+  look like quantiles and came from an alternate volatility-quantile design
+  left commented out in the legacy source. Ratings start near 1500, so almost
+  every non-IPO symbol is above `0.8` and receives K=10. This can suppress
+  rating responsiveness and makes the lower threshold effectively unreachable.
+  Preserve it for migration compatibility until research determines whether
+  the API should use rating levels such as 1300/1800 or actual volatility
+  quantiles.
+
+- [ ] Define missing-close and calendar semantics. The migrated code
+  forward-fills at most three observed rows per symbol before computing returns.
+  Those are rows, not calendar or exchange sessions, so an irregular dataset
+  can bridge a much longer elapsed period and assign its eventual move to the
+  wrong date. Decide whether gaps should be rejected, aligned to an explicit
+  exchange calendar, or filled under a documented session-based policy.

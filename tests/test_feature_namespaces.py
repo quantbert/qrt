@@ -44,7 +44,10 @@ def test_indicator_and_feature_operation_boundaries():
     assert q.indicator.sma(series, 2).iloc[-1] == 3.5
     assert q.feature.ops.lags(series, 1).iloc[-1, 0] == 3.0
     assert q.feature.ops.pct_rank(series, 2).iloc[-1] == 100.0
-    assert q.factor.__all__ == ["compute_elo"]
+    assert q.cross_section.__all__ == [
+        "compute_elo",
+        "group_weighted_return",
+    ]
     assert q.signal.__all__ == []
 
 
