@@ -500,8 +500,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#qrt.indicator.bipower_variation" id="toc-qrt.indicator.bipower_variation" class="nav-link" data-scroll-target="#qrt.indicator.bipower_variation">bipower_variation</a></li>
   <li><a href="#qrt.indicator.ema" id="toc-qrt.indicator.ema" class="nav-link" data-scroll-target="#qrt.indicator.ema">ema</a></li>
   <li><a href="#qrt.indicator.log_returns" id="toc-qrt.indicator.log_returns" class="nav-link" data-scroll-target="#qrt.indicator.log_returns">log_returns</a></li>
+  <li><a href="#qrt.indicator.madev" id="toc-qrt.indicator.madev" class="nav-link" data-scroll-target="#qrt.indicator.madev">madev</a></li>
   <li><a href="#qrt.indicator.med_rv" id="toc-qrt.indicator.med_rv" class="nav-link" data-scroll-target="#qrt.indicator.med_rv">med_rv</a></li>
   <li><a href="#qrt.indicator.min_rv" id="toc-qrt.indicator.min_rv" class="nav-link" data-scroll-target="#qrt.indicator.min_rv">min_rv</a></li>
+  <li><a href="#qrt.indicator.price_spikes" id="toc-qrt.indicator.price_spikes" class="nav-link" data-scroll-target="#qrt.indicator.price_spikes">price_spikes</a></li>
   <li><a href="#qrt.indicator.realized_quarticity" id="toc-qrt.indicator.realized_quarticity" class="nav-link" data-scroll-target="#qrt.indicator.realized_quarticity">realized_quarticity</a></li>
   <li><a href="#qrt.indicator.realized_variance" id="toc-qrt.indicator.realized_variance" class="nav-link" data-scroll-target="#qrt.indicator.realized_variance">realized_variance</a></li>
   <li><a href="#qrt.indicator.realized_volatility" id="toc-qrt.indicator.realized_volatility" class="nav-link" data-scroll-target="#qrt.indicator.realized_volatility">realized_volatility</a></li>
@@ -511,6 +513,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#qrt.indicator.rsma" id="toc-qrt.indicator.rsma" class="nav-link" data-scroll-target="#qrt.indicator.rsma">rsma</a></li>
   <li><a href="#qrt.indicator.rsnhbp" id="toc-qrt.indicator.rsnhbp" class="nav-link" data-scroll-target="#qrt.indicator.rsnhbp">rsnhbp</a></li>
   <li><a href="#qrt.indicator.sma" id="toc-qrt.indicator.sma" class="nav-link" data-scroll-target="#qrt.indicator.sma">sma</a></li>
+  <li><a href="#qrt.indicator.volume_spike_ratio" id="toc-qrt.indicator.volume_spike_ratio" class="nav-link" data-scroll-target="#qrt.indicator.volume_spike_ratio">volume_spike_ratio</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -550,12 +553,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Calculate consecutive logarithmic returns from positive prices.</td>
 </tr>
 <tr class="even">
+<td><a href="#qrt.indicator.madev">madev</a></td>
+<td>Calculate rolling mean absolute deviation from a rolling SMA.</td>
+</tr>
+<tr class="odd">
 <td><a href="#qrt.indicator.med_rv">med_rv</a></td>
 <td>Calculate the median realized-volatility estimator.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#qrt.indicator.min_rv">min_rv</a></td>
 <td>Calculate the minimum realized-volatility estimator.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.indicator.price_spikes">price_spikes</a></td>
+<td>Classify close-to-close price spikes by volume confirmation.</td>
 </tr>
 <tr class="even">
 <td><a href="#qrt.indicator.realized_quarticity">realized_quarticity</a></td>
@@ -592,6 +603,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="even">
 <td><a href="#qrt.indicator.sma">sma</a></td>
 <td>Calculate a simple moving average.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.indicator.volume_spike_ratio">volume_spike_ratio</a></td>
+<td>Classify volume spikes as trend continuations or reversals.</td>
 </tr>
 </tbody>
 </table>
@@ -661,38 +676,205 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>indicator.log_returns(prices)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate consecutive logarithmic returns from positive prices.</p>
 </section>
+<section id="qrt.indicator.madev" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.indicator.madev">madev</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>indicator.madev(prices, window<span class="op">=</span><span class="dv">20</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Calculate rolling mean absolute deviation from a rolling SMA.</p>
+<p>The absolute deviation from the <code>window</code>-period simple moving average is itself averaged over <code>window</code> periods. The first defined result therefore requires <code>2 * window - 1</code> observations.</p>
+<section id="parameters-1" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 14%">
+<col style="width: 58%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>prices</td>
+<td>pd.Series</td>
+<td>Prices for one instrument.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>window</td>
+<td>int</td>
+<td>Window used for both rolling calculations.</td>
+<td><code>20</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-1" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-1">Returns</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>pd.Series</td>
+<td>MADEV Series preserving the input index.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
 <section id="qrt.indicator.med_rv" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.indicator.med_rv">med_rv</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>indicator.med_rv(returns)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>indicator.med_rv(returns)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate the median realized-volatility estimator.</p>
 </section>
 <section id="qrt.indicator.min_rv" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.indicator.min_rv">min_rv</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>indicator.min_rv(returns)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>indicator.min_rv(returns)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate the minimum realized-volatility estimator.</p>
+</section>
+<section id="qrt.indicator.price_spikes" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.indicator.price_spikes">price_spikes</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>indicator.price_spikes(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    high,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    low,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    close,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    volume,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    atr_window<span class="op">=</span><span class="dv">20</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    volume_window<span class="op">=</span><span class="dv">20</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    atr_multiplier<span class="op">=</span><span class="fl">1.7</span>,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    volume_threshold<span class="op">=</span><span class="fl">1.5</span>,</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Classify close-to-close price spikes by volume confirmation.</p>
+<p>A price spike is an absolute close-to-close move greater than a multiple of simple rolling average true range. Event code 1 is a spike with high volume, event code 2 is a spike without high volume, and 0 means no spike.</p>
+<section id="parameters-2" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-2">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 19%">
+<col style="width: 12%">
+<col style="width: 54%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>high</td>
+<td>pd.Series</td>
+<td>High prices for one instrument.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>low</td>
+<td>pd.Series</td>
+<td>Low prices aligned exactly to <code>high</code>.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="odd">
+<td>close</td>
+<td>pd.Series</td>
+<td>Close prices aligned exactly to <code>high</code>.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>volume</td>
+<td>pd.Series</td>
+<td>Volume observations aligned exactly to <code>high</code>.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="odd">
+<td>atr_window</td>
+<td>int</td>
+<td>Window for simple rolling average true range.</td>
+<td><code>20</code></td>
+</tr>
+<tr class="even">
+<td>volume_window</td>
+<td>int</td>
+<td>Window for average volume.</td>
+<td><code>20</code></td>
+</tr>
+<tr class="odd">
+<td>atr_multiplier</td>
+<td>float</td>
+<td>ATR multiple required for a price spike.</td>
+<td><code>1.7</code></td>
+</tr>
+<tr class="even">
+<td>volume_threshold</td>
+<td>float</td>
+<td>Relative-volume boundary for confirmation.</td>
+<td><code>1.5</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-2" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-2">Returns</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 15%">
+<col style="width: 75%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>pd.DataFrame</td>
+<td>DataFrame containing <code>price_spike_event</code> and <code>relative_volume</code>.</td>
+</tr>
+</tbody>
+</table>
+</section>
 </section>
 <section id="qrt.indicator.realized_quarticity" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.indicator.realized_quarticity">realized_quarticity</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>indicator.realized_quarticity(returns)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>indicator.realized_quarticity(returns)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate realized quarticity.</p>
 </section>
 <section id="qrt.indicator.realized_variance" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.indicator.realized_variance">realized_variance</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>indicator.realized_variance(returns)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>indicator.realized_variance(returns)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate realized variance as the sum of squared returns.</p>
 </section>
 <section id="qrt.indicator.realized_volatility" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.indicator.realized_volatility">realized_volatility</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>indicator.realized_volatility(</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    data,</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    time_col<span class="op">=</span><span class="st">'time'</span>,</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    price_col<span class="op">=</span><span class="st">'price'</span>,</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    session_col<span class="op">=</span><span class="st">'session'</span>,</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>indicator.realized_volatility(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    data,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    time_col<span class="op">=</span><span class="st">'time'</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    price_col<span class="op">=</span><span class="st">'price'</span>,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    session_col<span class="op">=</span><span class="st">'session'</span>,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate realized-volatility measures for each intraday session.</p>
-<section id="parameters-1" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
+<section id="parameters-3" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-3">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 15%">
@@ -736,8 +918,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="returns-1" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-1">Returns</h4>
+<section id="returns-3" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-3">Returns</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 9%">
@@ -787,11 +969,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="qrt.indicator.relative_strength" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.indicator.relative_strength">relative_strength</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>indicator.relative_strength(prices, benchmark, lookback<span class="op">=</span><span class="dv">21</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>indicator.relative_strength(prices, benchmark, lookback<span class="op">=</span><span class="dv">21</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate asset return minus benchmark return over a lookback.</p>
 <p>The benchmark is aligned to the asset index without filling missing dates.</p>
-<section id="parameters-2" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-2">Parameters</h4>
+<section id="parameters-4" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-4">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -823,8 +1005,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="returns-2" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-2">Returns</h4>
+<section id="returns-4" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-4">Returns</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 10%">
@@ -850,36 +1032,36 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="qrt.indicator.rs_days" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.indicator.rs_days">rs_days</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>indicator.rs_days(</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    relative_strength,</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    benchmark,</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    window<span class="op">=</span><span class="dv">60</span>,</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    correction_threshold<span class="op">=</span><span class="fl">0.95</span>,</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>indicator.rs_days(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    relative_strength,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    benchmark,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    window<span class="op">=</span><span class="dv">60</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    correction_threshold<span class="op">=</span><span class="fl">0.95</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Count recent positive relative-strength periods during a correction.</p>
 <p>A correction is a benchmark price below <code>correction_threshold</code> times its rolling high.</p>
 </section>
 <section id="qrt.indicator.rs_phase" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.indicator.rs_phase">rs_phase</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>indicator.rs_phase(relative_strength, moving_average)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>indicator.rs_phase(relative_strength, moving_average)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Flag and count consecutive periods above a relative-strength average.</p>
 </section>
 <section id="qrt.indicator.rsma" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.indicator.rsma">rsma</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>indicator.rsma(relative_strength, window<span class="op">=</span><span class="dv">21</span>, method<span class="op">=</span><span class="st">'exponential'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>indicator.rsma(relative_strength, window<span class="op">=</span><span class="dv">21</span>, method<span class="op">=</span><span class="st">'exponential'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Smooth a relative-strength Series.</p>
 </section>
 <section id="qrt.indicator.rsnhbp" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.indicator.rsnhbp">rsnhbp</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>indicator.rsnhbp(prices, relative_strength, window<span class="op">=</span><span class="dv">60</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>indicator.rsnhbp(prices, relative_strength, window<span class="op">=</span><span class="dv">60</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Flag a relative-strength high that precedes a price high.</p>
 </section>
 <section id="qrt.indicator.sma" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.indicator.sma">sma</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>indicator.sma(series, window)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>indicator.sma(series, window)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate a simple moving average.</p>
-<section id="parameters-3" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-3">Parameters</h4>
+<section id="parameters-5" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-5">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -905,8 +1087,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="returns-3" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-3">Returns</h4>
+<section id="returns-5" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-5">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -926,7 +1108,117 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="examples" class="level4 doc-section doc-section-examples">
 <h4 class="doc-section doc-section-examples anchored" data-anchor-id="examples">Examples</h4>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> q.indicator.sma(prices[<span class="st">"close"</span>], <span class="dv">20</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> q.indicator.sma(prices[<span class="st">"close"</span>], <span class="dv">20</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+<section id="qrt.indicator.volume_spike_ratio" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.indicator.volume_spike_ratio">volume_spike_ratio</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>indicator.volume_spike_ratio(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    prices,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    volume,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    vol_window<span class="op">=</span><span class="dv">20</span>,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    price_window<span class="op">=</span><span class="dv">20</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    spike_threshold<span class="op">=</span><span class="fl">1.5</span>,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    reversal_threshold<span class="op">=</span><span class="fl">2.5</span>,</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    trend_slope_threshold<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    consecutive_days<span class="op">=</span><span class="dv">3</span>,</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Classify volume spikes as trend continuations or reversals.</p>
+<p>A continuation is moderate relative volume in the established trend direction. A reversal is extreme relative volume with price moving against the established trend.</p>
+<p>Event codes in <code>vsr_spike_type</code> are 0 for no spike, 1 for continuation, and 2 for reversal. Trend codes in <code>vsr_trending</code> are 0 for no trend, 1 for uptrend, and 2 for downtrend.</p>
+<section id="parameters-6" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-6">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 23%">
+<col style="width: 11%">
+<col style="width: 54%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>prices</td>
+<td>pd.Series</td>
+<td>Close prices for one instrument.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>volume</td>
+<td>pd.Series</td>
+<td>Volume observations aligned exactly to <code>prices</code>.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="odd">
+<td>vol_window</td>
+<td>int</td>
+<td>Window used for average volume.</td>
+<td><code>20</code></td>
+</tr>
+<tr class="even">
+<td>price_window</td>
+<td>int</td>
+<td>Window used for the price SMA.</td>
+<td><code>20</code></td>
+</tr>
+<tr class="odd">
+<td>spike_threshold</td>
+<td>float</td>
+<td>Lower exclusive relative-volume continuation bound.</td>
+<td><code>1.5</code></td>
+</tr>
+<tr class="even">
+<td>reversal_threshold</td>
+<td>float</td>
+<td>Lower inclusive relative-volume reversal bound.</td>
+<td><code>2.5</code></td>
+</tr>
+<tr class="odd">
+<td>trend_slope_threshold</td>
+<td>float</td>
+<td>Minimum absolute SMA percentage change.</td>
+<td><code>0.1</code></td>
+</tr>
+<tr class="even">
+<td>consecutive_days</td>
+<td>int</td>
+<td>Consecutive slope observations required for a trend.</td>
+<td><code>3</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-6" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-6">Returns</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 14%">
+<col style="width: 76%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>pd.DataFrame</td>
+<td>DataFrame containing <code>vsr</code>, <code>vsr_spike_type</code>, and <code>vsr_trending</code>.</td>
+</tr>
+</tbody>
+</table>
 
 
 </section>

@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Mean absolute deviation from SMA (MADEV) – qrt</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../indicator/qrt/volume_spike_ratio.html" rel="next">
+<link href="../../indicator/qrt/ema.html" rel="prev">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-a79b256da9955a746df7047a3fd5f361.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+<script>
+window.PlotlyConfig = {MathJaxConfig: 'local'};
+if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}
+</script>
+<script type="module">import "https://cdn.plot.ly/plotly-3.7.0.min"</script>
+
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../reference/_styles-quartodoc.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">qrt — Quant Research Tools</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../../index.html" aria-current="page"> 
+<span class="menu-text">Getting Started</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../reference/index.html"> 
+<span class="menu-text">API Reference</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../roadmap.html"> 
+<span class="menu-text">Roadmap</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+    <a href="https://github.com/quantbert/qrt" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../indicator/index.html">q.indicator — Indicators</a></li><li class="breadcrumb-item"><a href="../../indicator/qrt/sma.html">QRT indicators</a></li><li class="breadcrumb-item"><a href="../../indicator/qrt/madev.html">Mean absolute deviation (MADEV)</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Getting Started</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../bt/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.bt — Backtesting</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../bt/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../data/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.data — Data</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../data/datasets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sample datasets</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../data/schemas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data schemas</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../data/local.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Local files</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../data/sources.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Market data sources</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../data/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../indicator/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.indicator — Indicators</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">QRT indicators</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/sma.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simple moving average (SMA)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/ema.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Exponential moving average (EMA)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/madev.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Mean absolute deviation (MADEV)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/volume_spike_ratio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Volume spike ratio</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/price_spikes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Price spikes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/log_returns.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Log returns</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/realized_variance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Realized variance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/realized_quarticity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Realized quarticity</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/bipower_variation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bipower variation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/med_rv.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Median realized volatility</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/min_rv.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Minimum realized volatility</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/realized_volatility.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Realized volatility by session</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/relative_strength.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Relative strength</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/rsma.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Relative-strength moving average</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/rs_days.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Relative-strength days</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/rs_phase.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Relative-strength phase</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/rsnhbp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">RS new high before price</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/talib.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TA-Lib</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/pandas_ta.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">pandas-ta-classic</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../factor/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.factor — Factors</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../factor/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../feature/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.feature — Feature lifecycle</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../feature/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../preprocess/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.preprocess — Preprocessing</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../preprocess/impute.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Missing data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../preprocess/scale.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Scaling</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../preprocess/outlier.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Outliers</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../preprocess/encode.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Encoding</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../preprocess/reduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Reduction</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../preprocess/selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Selection</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../preprocess/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../calendar/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.calendar — Market time</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../calendar/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../signal/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.signal — Signals</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../signal/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../model/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.model — Models</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../model/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../env/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.env — Environment</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../env/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../plot/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.plot — Plotting</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../plot/returns.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Return charts</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../plot/report.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tearsheet report</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../plot/simulation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simulation tests</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../plot/trades.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Trade logs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../plot/saving.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Saving figures</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../plot/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../portfolio/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.portfolio — Portfolio</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-13" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../portfolio/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../stats/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.stats — Statistics</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-14" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-14" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stats/performance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Performance &amp; benchmark</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stats/rolling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Rolling &amp; calendar returns</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stats/factors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Factor analytics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stats/chained.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chained API</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stats/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../utils/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.utils — Utilities</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-15" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-15" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../utils/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../indicator/index.html">q.indicator — Indicators</a></li><li class="breadcrumb-item"><a href="../../indicator/qrt/sma.html">QRT indicators</a></li><li class="breadcrumb-item"><a href="../../indicator/qrt/madev.html">Mean absolute deviation (MADEV)</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Mean absolute deviation from SMA (MADEV)</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><code>q.indicator.madev</code> measures the trailing mean absolute distance between one instrument’s close and its simple moving average. The reviewed formula uses the same window twice, so the first defined value requires <span class="math inline">\(2n - 1\)</span> observations.</p>
+<p>The function accepts one ordered <code>Series</code>, preserves its index, and does not mutate the input.</p>
+<div id="a7eb6008" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-20T13:14:01.662874Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-20T13:14:01.662686Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-20T13:14:02.259965Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-20T13:14:02.259130Z&quot;}}" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> qrt <span class="im">as</span> q</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> q.data.datasets.load(<span class="st">"aapl"</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>end <span class="op">=</span> data.index.<span class="bu">max</span>()</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> data.loc[end <span class="op">-</span> pd.DateOffset(years<span class="op">=</span><span class="dv">5</span>) :].copy()</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>window <span class="op">=</span> <span class="dv">20</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>data[<span class="st">"madev"</span>] <span class="op">=</span> q.indicator.madev(data[<span class="st">"close"</span>], window<span class="op">=</span>window)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>data[[<span class="st">"close"</span>, <span class="st">"madev"</span>]].tail()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">close</th>
+<th data-quarto-table-cell-role="th">madev</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">datetime</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2026-07-13</th>
+<td>317.309998</td>
+<td>12.040003</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">2026-07-14</th>
+<td>314.859985</td>
+<td>12.126778</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2026-07-15</th>
+<td>327.500000</td>
+<td>13.041878</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">2026-07-16</th>
+<td>333.260010</td>
+<td>14.297428</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2026-07-17</th>
+<td>333.739990</td>
+<td>15.325553</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="eacfd124" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-20T13:14:02.261436Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-20T13:14:02.261362Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-20T13:14:02.353997Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-20T13:14:02.353236Z&quot;}}" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.graph_objects <span class="im">as</span> go</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plotly.subplots <span class="im">import</span> make_subplots</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>figure <span class="op">=</span> make_subplots(specs<span class="op">=</span>[[{<span class="st">"secondary_y"</span>: <span class="va">True</span>}]])</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>figure.add_trace(</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    go.Scatter(x<span class="op">=</span>data.index, y<span class="op">=</span>data[<span class="st">"close"</span>], name<span class="op">=</span><span class="st">"AAPL close"</span>, line<span class="op">=</span>{<span class="st">"color"</span>: <span class="st">"#2457a7"</span>}),</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    secondary_y<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>figure.add_trace(</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    go.Scatter(x<span class="op">=</span>data.index, y<span class="op">=</span>data[<span class="st">"madev"</span>], name<span class="op">=</span><span class="ss">f"MADEV (</span><span class="sc">{</span>window<span class="sc">}</span><span class="ss">)"</span>, line<span class="op">=</span>{<span class="st">"color"</span>: <span class="st">"#d04a35"</span>}),</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    secondary_y<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>figure.update_layout(title<span class="op">=</span><span class="st">"AAPL close and deviation from its rolling SMA"</span>, hovermode<span class="op">=</span><span class="st">"x unified"</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>figure.update_yaxes(title_text<span class="op">=</span><span class="st">"Close"</span>, secondary_y<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>figure.update_yaxes(title_text<span class="op">=</span><span class="st">"MADEV"</span>, secondary_y<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>figure.show(renderer<span class="op">=</span><span class="st">"notebook_connected"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div style="height:525px; width:100%;">            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script>if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script>window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.7.0.min.js" integrity="sha256-jvTGqxNp8AGWEcvNLVuKr+8j5dGe9Yw51LQkmDH+IYA=" crossorigin="anonymous"></script>                <div id="1379c24d-91f2-4c9c-963b-49e3a923eca6" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("1379c24d-91f2-4c9c-963b-49e3a923eca6")) {                    Plotly.newPlot(                        "1379c24d-91f2-4c9c-963b-49e3a923eca6",                        [{"line":{"color":"#2457a7"},"name":"AAPL close","x":["2021-07-19T00:00:00","2021-07-20T00:00:00","2021-07-21T00:00:00","2021-07-22T00:00:00","2021-07-23T00:00:00","2021-07-26T00:00:00","2021-07-27T00:00:00","2021-07-28T00:00:00","2021-07-29T00:00:00","2021-07-30T00:00:00","2021-08-02T00:00:00","2021-08-03T00:00:00","2021-08-04T00:00:00","2021-08-05T00:00:00","2021-08-06T00:00:00","2021-08-09T00:00:00","2021-08-10T00:00:00","2021-08-11T00:00:00","2021-08-12T00:00:00","2021-08-13T00:00:00","2021-08-16T00:00:00","2021-08-17T00:00:00","2021-08-18T00:00:00","2021-08-19T00:00:00","2021-08-20T00:00:00","2021-08-23T00:00:00","2021-08-24T00:00:00","2021-08-25T00:00:00","2021-08-26T00:00:00","2021-08-27T00:00:00","2021-08-30T00:00:00","2021-08-31T00:00:00","2021-09-01T00:00:00","2021-09-02T00:00:00","2021-09-03T00:00:00","2021-09-07T00:00:00","2021-09-08T00:00:00","2021-09-09T00:00:00","2021-09-10T00:00:00","2021-09-13T00:00:00","2021-09-14T00:00:00","2021-09-15T00:00:00","2021-09-16T00:00:00","2021-09-17T00:00:00","2021-09-20T00:00:00","2021-09-21T00:00:00","2021-09-22T00:00:00","2021-09-23T00:00:00","2021-09-24T00:00:00","2021-09-27T00:00:00","2021-09-28T00:00:00","2021-09-29T00:00:00","2021-09-30T00:00:00","2021-10-01T00:00:00","2021-10-04T00:00:00","2021-10-05T00:00:00","2021-10-06T00:00:00","2021-10-07T00:00:00","2021-10-08T00:00:00","2021-10-11T00:00:00","2021-10-12T00:00:00","2021-10-13T00:00:00","2021-10-14T00:00:00","2021-10-15T00:00:00","2021-10-18T00:00:00","2021-10-19T00:00:00","2021-10-20T00:00:00","2021-10-21T00:00:00","2021-10-22T00:00:00","2021-10-25T00:00:00","2021-10-26T00:00:00","2021-10-27T00:00:00","2021-10-28T00:00:00","2021-10-29T00:00:00","2021-11-01T00:00:00","2021-11-02T00:00:00","2021-11-03T00:00:00","2021-11-04T00:00:00","2021-11-05T00:00:00","2021-11-08T00:00:00","2021-11-09T00:00:00","2021-11-10T00:00:00","2021-11-11T00:00:00","2021-11-12T00:00:00","2021-11-15T00:00:00","2021-11-16T00:00:00","2021-11-17T00:00:00","2021-11-18T00:00:00","2021-11-19T00:00:00","2021-11-22T00:00:00","2021-11-23T00:00:00","2021-11-24T00:00:00","2021-11-26T00:00:00","2021-11-29T00:00:00","2021-11-30T00:00:00","2021-12-01T00:00:00","2021-12-02T00:00:00","2021-12-03T00:00:00","2021-12-06T00:00:00","2021-12-07T00:00:00","2021-12-08T00:00:00","2021-12-09T00:00:00","2021-12-10T00:00:00","2021-12-13T00:00:00","2021-12-14T00:00:00","2021-12-15T00:00:00","2021-12-16T00:00:00","2021-12-17T00:00:00","2021-12-20T00:00:00","2021-12-21T00:00:00","2021-12-22T00:00:00","2021-12-23T00:00:00","2021-12-27T00:00:00","2021-12-28T00:00:00","2021-12-29T00:00:00","2021-12-30T00:00:00","2021-12-31T00:00:00","2022-01-03T00:00:00","2022-01-04T00:00:00","2022-01-05T00:00:00","2022-01-06T00:00:00","2022-01-07T00:00:00","2022-01-10T00:00:00","2022-01-11T00:00:00","2022-01-12T00:00:00","2022-01-13T00:00:00","2022-01-14T00:00:00","2022-01-18T00:00:00","2022-01-19T00:00:00","2022-01-20T00:00:00","2022-01-21T00:00:00","2022-01-24T00:00:00","2022-01-25T00:00:00","2022-01-26T00:00:00","2022-01-27T00:00:00","2022-01-28T00:00:00","2022-01-31T00:00:00","2022-02-01T00:00:00","2022-02-02T00:00:00","2022-02-03T00:00:00","2022-02-04T00:00:00","2022-02-07T00:00:00","2022-02-08T00:00:00","2022-02-09T00:00:00","2022-02-10T00:00:00","2022-02-11T00:00:00","2022-02-14T00:00:00","2022-02-15T00:00:00","2022-02-16T00:00:00","2022-02-17T00:00:00","2022-02-18T00:00:00","2022-02-22T00:00:00","2022-02-23T00:00:00","2022-02-24T00:00:00","2022-02-25T00:00:00","2022-02-28T00:00:00","2022-03-01T00:00:00","2022-03-02T00:00:00","2022-03-03T00:00:00","2022-03-04T00:00:00","2022-03-07T00:00:00","2022-03-08T00:00:00","2022-03-09T00:00:00","2022-03-10T00:00:00","2022-03-11T00:00:00","2022-03-14T00:00:00","2022-03-15T00:00:00","2022-03-16T00:00:00","2022-03-17T00:00:00","2022-03-18T00:00:00","2022-03-21T00:00:00","2022-03-22T00:00:00","2022-03-23T00:00:00","2022-03-24T00:00:00","2022-03-25T00:00:00","2022-03-28T00:00:00","2022-03-29T00:00:00","2022-03-30T00:00:00","2022-03-31T00:00:00","2022-04-01T00:00:00","2022-04-04T00:00:00","2022-04-05T00:00:00","2022-04-06T00:00:00","2022-04-07T00:00:00","2022-04-08T00:00:00","2022-04-11T00:00:00","2022-04-12T00:00:00","2022-04-13T00:00:00","2022-04-14T00:00:00","2022-04-18T00:00:00","2022-04-19T00:00:00","2022-04-20T00:00:00","2022-04-21T00:00:00","2022-04-22T00:00:00","2022-04-25T00:00:00","2022-04-26T00:00:00","2022-04-27T00:00:00","2022-04-28T00:00:00","2022-04-29T00:00:00","2022-05-02T00:00:00","2022-05-03T00:00:00","2022-05-04T00:00:00","2022-05-05T00:00:00","2022-05-06T00:00:00","2022-05-09T00:00:00","2022-05-10T00:00:00","2022-05-11T00:00:00","2022-05-12T00:00:00","2022-05-13T00:00:00","2022-05-16T00:00:00","2022-05-17T00:00:00","2022-05-18T00:00:00","2022-05-19T00:00:00","2022-05-20T00:00:00","2022-05-23T00:00:00","2022-05-24T00:00:00","2022-05-25T00:00:00","2022-05-26T00:00:00","2022-05-27T00:00:00","2022-05-31T00:00:00","2022-06-01T00:00:00","2022-06-02T00:00:00","2022-06-03T00:00:00","2022-06-06T00:00:00","2022-06-07T00:00:00","2022-06-08T00:00:00","2022-06-09T00:00:00","2022-06-10T00:00:00","2022-06-13T00:00:00","2022-06-14T00:00:00","2022-06-15T00:00:00","2022-06-16T00:00:00","2022-06-17T00:00:00","2022-06-21T00:00:00","2022-06-22T00:00:00","2022-06-23T00:00:00","2022-06-24T00:00:00","2022-06-27T00:00:00","2022-06-28T00:00:00","2022-06-29T00:00:00","2022-06-30T00:00:00","2022-07-01T00:00:00","2022-07-05T00:00:00","2022-07-06T00:00:00","2022-07-07T00:00:00","2022-07-08T00:00:00","2022-07-11T00:00:00","2022-07-12T00:00:00","2022-07-13T00:00:00","2022-07-14T00:00:00","2022-07-15T00:00:00","2022-07-18T00:00:00","2022-07-19T00:00:00","2022-07-20T00:00:00","2022-07-21T00:00:00","2022-07-22T00:00:00","2022-07-25T00:00:00","2022-07-26T00:00:00","2022-07-27T00:00:00","2022-07-28T00:00:00","2022-07-29T00:00:00","2022-08-01T00:00:00","2022-08-02T00:00:00","2022-08-03T00:00:00","2022-08-04T00:00:00","2022-08-05T00:00:00","2022-08-08T00:00:00","2022-08-09T00:00:00","2022-08-10T00:00:00","2022-08-11T00:00:00","2022-08-12T00:00:00","2022-08-15T00:00:00","2022-08-16T00:00:00","2022-08-17T00:00:00","2022-08-18T00:00:00","2022-08-19T00:00:00","2022-08-22T00:00:00","2022-08-23T00:00:00","2022-08-24T00:00:00","2022-08-25T00:00:00","2022-08-26T00:00:00","2022-08-29T00:00:00","2022-08-30T00:00:00","2022-08-31T00:00:00","2022-09-01T00:00:00","2022-09-02T00:00:00","2022-09-06T00:00:00","2022-09-07T00:00:00","2022-09-08T00:00:00","2022-09-09T00:00:00","2022-09-12T00:00:00","2022-09-13T00:00:00","2022-09-14T00:00:00","2022-09-15T00:00:00","2022-09-16T00:00:00","2022-09-19T00:00:00","2022-09-20T00:00:00","2022-09-21T00:00:00","2022-09-22T00:00:00","2022-09-23T00:00:00","2022-09-26T00:00:00","2022-09-27T00:00:00","2022-09-28T00:00:00","2022-09-29T00:00:00","2022-09-30T00:00:00","2022-10-03T00:00:00","2022-10-04T00:00:00","2022-10-05T00:00:00","2022-10-06T00:00:00","2022-10-07T00:00:00","2022-10-10T00:00:00","2022-10-11T00:00:00","2022-10-12T00:00:00","2022-10-13T00:00:00","2022-10-14T00:00:00","2022-10-17T00:00:00","2022-10-18T00:00:00","2022-10-19T00:00:00","2022-10-20T00:00:00","2022-10-21T00:00:00","2022-10-24T00:00:00","2022-10-25T00:00:00","2022-10-26T00:00:00","2022-10-27T00:00:00","2022-10-28T00:00:00","2022-10-31T00:00:00","2022-11-01T00:00:00","2022-11-02T00:00:00","2022-11-03T00:00:00","2022-11-04T00:00:00","2022-11-07T00:00:00","2022-11-08T00:00:00","2022-11-09T00:00:00","2022-11-10T00:00:00","2022-11-11T00:00:00","2022-11-14T00:00:00","2022-11-15T00:00:00","2022-11-16T00:00:00","2022-11-17T00:00:00","2022-11-18T00:00:00","2022-11-21T00:00:00","2022-11-22T00:00:00","2022-11-23T00:00:00","2022-11-25T00:00:00","2022-11-28T00:00:00","2022-11-29T00:00:00","2022-11-30T00:00:00","2022-12-01T00:00:00","2022-12-02T00:00:00","2022-12-05T00:00:00","2022-12-06T00:00:00","2022-12-07T00:00:00","2022-12-08T00:00:00","2022-12-09T00:00:00","2022-12-12T00:00:00","2022-12-13T00:00:00","2022-12-14T00:00:00","2022-12-15T00:00:00","2022-12-16T00:00:00","2022-12-19T00:00:00","2022-12-20T00:00:00","2022-12-21T00:00:00","2022-12-22T00:00:00","2022-12-23T00:00:00","2022-12-27T00:00:00","2022-12-28T00:00:00","2022-12-29T00:00:00","2022-12-30T00:00:00","2023-01-03T00:00:00","2023-01-04T00:00:00","2023-01-05T00:00:00","2023-01-06T00:00:00","2023-01-09T00:00:00","2023-01-10T00:00:00","2023-01-11T00:00:00","2023-01-12T00:00:00","2023-01-13T00:00:00","2023-01-17T00:00:00","2023-01-18T00:00:00","2023-01-19T00:00:00","2023-01-20T00:00:00","2023-01-23T00:00:00","2023-01-24T00:00:00","2023-01-25T00:00:00","2023-01-26T00:00:00","2023-01-27T00:00:00","2023-01-30T00:00:00","2023-01-31T00:00:00","2023-02-01T00:00:00","2023-02-02T00:00:00","2023-02-03T00:00:00","2023-02-06T00:00:00","2023-02-07T00:00:00","2023-02-08T00:00:00","2023-02-09T00:00:00","2023-02-10T00:00:00","2023-02-13T00:00:00","2023-02-14T00:00:00","2023-02-15T00:00:00","2023-02-16T00:00:00","2023-02-17T00:00:00","2023-02-21T00:00:00","2023-02-22T00:00:00","2023-02-23T00:00:00","2023-02-24T00:00:00","2023-02-27T00:00:00","2023-02-28T00:00:00","2023-03-01T00:00:00","2023-03-02T00:00:00","2023-03-03T00:00:00","2023-03-06T00:00:00","2023-03-07T00:00:00","2023-03-08T00:00:00","2023-03-09T00:00:00","2023-03-10T00:00:00","2023-03-13T00:00:00","2023-03-14T00:00:00","2023-03-15T00:00:00","2023-03-16T00:00:00","2023-03-17T00:00:00","2023-03-20T00:00:00","2023-03-21T00:00:00","2023-03-22T00:00:00","2023-03-23T00:00:00","2023-03-24T00:00:00","2023-03-27T00:00:00","2023-03-28T00:00:00","2023-03-29T00:00:00","2023-03-30T00:00:00","2023-03-31T00:00:00","2023-04-03T00:00:00","2023-04-04T00:00:00","2023-04-05T00:00:00","2023-04-06T00:00:00","2023-04-10T00:00:00","2023-04-11T00:00:00","2023-04-12T00:00:00","2023-04-13T00:00:00","2023-04-14T00:00:00","2023-04-17T00:00:00","2023-04-18T00:00:00","2023-04-19T00:00:00","2023-04-20T00:00:00","2023-04-21T00:00:00","2023-04-24T00:00:00","2023-04-25T00:00:00","2023-04-26T00:00:00","2023-04-27T00:00:00","2023-04-28T00:00:00","2023-05-01T00:00:00","2023-05-02T00:00:00","2023-05-03T00:00:00","2023-05-04T00:00:00","2023-05-05T00:00:00","2023-05-08T00:00:00","2023-05-09T00:00:00","2023-05-10T00:00:00","2023-05-11T00:00:00","2023-05-12T00:00:00","2023-05-15T00:00:00","2023-05-16T00:00:00","2023-05-17T00:00:00","2023-05-18T00:00:00","2023-05-19T00:00:00","2023-05-22T00:00:00","2023-05-23T00:00:00","2023-05-24T00:00:00","2023-05-25T00:00:00","2023-05-26T00:00:00","2023-05-30T00:00:00","2023-05-31T00:00:00","2023-06-01T00:00:00","2023-06-02T00:00:00","2023-06-05T00:00:00","2023-06-06T00:00:00","2023-06-07T00:00:00","2023-06-08T00:00:00","2023-06-09T00:00:00","2023-06-12T00:00:00","2023-06-13T00:00:00","2023-06-14T00:00:00","2023-06-15T00:00:00","2023-06-16T00:00:00","2023-06-20T00:00:00","2023-06-21T00:00:00","2023-06-22T00:00:00","2023-06-23T00:00:00","2023-06-26T00:00:00","2023-06-27T00:00:00","2023-06-28T00:00:00","2023-06-29T00:00:00","2023-06-30T00:00:00","2023-07-03T00:00:00","2023-07-05T00:00:00","2023-07-06T00:00:00","2023-07-07T00:00:00","2023-07-10T00:00:00","2023-07-11T00:00:00","2023-07-12T00:00:00","2023-07-13T00:00:00","2023-07-14T00:00:00","2023-07-17T00:00:00","2023-07-18T00:00:00","2023-07-19T00:00:00","2023-07-20T00:00:00","2023-07-21T00:00:00","2023-07-24T00:00:00","2023-07-25T00:00:00","2023-07-26T00:00:00","2023-07-27T00:00:00","2023-07-28T00:00:00","2023-07-31T00:00:00","2023-08-01T00:00:00","2023-08-02T00:00:00","2023-08-03T00:00:00","2023-08-04T00:00:00","2023-08-07T00:00:00","2023-08-08T00:00:00","2023-08-09T00:00:00","2023-08-10T00:00:00","2023-08-11T00:00:00","2023-08-14T00:00:00","2023-08-15T00:00:00","2023-08-16T00:00:00","2023-08-17T00:00:00","2023-08-18T00:00:00","2023-08-21T00:00:00","2023-08-22T00:00:00","2023-08-23T00:00:00","2023-08-24T00:00:00","2023-08-25T00:00:00","2023-08-28T00:00:00","2023-08-29T00:00:00","2023-08-30T00:00:00","2023-08-31T00:00:00","2023-09-01T00:00:00","2023-09-05T00:00:00","2023-09-06T00:00:00","2023-09-07T00:00:00","2023-09-08T00:00:00","2023-09-11T00:00:00","2023-09-12T00:00:00","2023-09-13T00:00:00","2023-09-14T00:00:00","2023-09-15T00:00:00","2023-09-18T00:00:00","2023-09-19T00:00:00","2023-09-20T00:00:00","2023-09-21T00:00:00","2023-09-22T00:00:00","2023-09-25T00:00:00","2023-09-26T00:00:00","2023-09-27T00:00:00","2023-09-28T00:00:00","2023-09-29T00:00:00","2023-10-02T00:00:00","2023-10-03T00:00:00","2023-10-04T00:00:00","2023-10-05T00:00:00","2023-10-06T00:00:00","2023-10-09T00:00:00","2023-10-10T00:00:00","2023-10-11T00:00:00","2023-10-12T00:00:00","2023-10-13T00:00:00","2023-10-16T00:00:00","2023-10-17T00:00:00","2023-10-18T00:00:00","2023-10-19T00:00:00","2023-10-20T00:00:00","2023-10-23T00:00:00","2023-10-24T00:00:00","2023-10-25T00:00:00","2023-10-26T00:00:00","2023-10-27T00:00:00","2023-10-30T00:00:00","2023-10-31T00:00:00","2023-11-01T00:00:00","2023-11-02T00:00:00","2023-11-03T00:00:00","2023-11-06T00:00:00","2023-11-07T00:00:00","2023-11-08T00:00:00","2023-11-09T00:00:00","2023-11-10T00:00:00","2023-11-13T00:00:00","2023-11-14T00:00:00","2023-11-15T00:00:00","2023-11-16T00:00:00","2023-11-17T00:00:00","2023-11-20T00:00:00","2023-11-21T00:00:00","2023-11-22T00:00:00","2023-11-24T00:00:00","2023-11-27T00:00:00","2023-11-28T00:00:00","2023-11-29T00:00:00","2023-11-30T00:00:00","2023-12-01T00:00:00","2023-12-04T00:00:00","2023-12-05T00:00:00","2023-12-06T00:00:00","2023-12-07T00:00:00","2023-12-08T00:00:00","2023-12-11T00:00:00","2023-12-12T00:00:00","2023-12-13T00:00:00","2023-12-14T00:00:00","2023-12-15T00:00:00","2023-12-18T00:00:00","2023-12-19T00:00:00","2023-12-20T00:00:00","2023-12-21T00:00:00","2023-12-22T00:00:00","2023-12-26T00:00:00","2023-12-27T00:00:00","2023-12-28T00:00:00","2023-12-29T00:00:00","2024-01-02T00:00:00","2024-01-03T00:00:00","2024-01-04T00:00:00","2024-01-05T00:00:00","2024-01-08T00:00:00","2024-01-09T00:00:00","2024-01-10T00:00:00","2024-01-11T00:00:00","2024-01-12T00:00:00","2024-01-16T00:00:00","2024-01-17T00:00:00","2024-01-18T00:00:00","2024-01-19T00:00:00","2024-01-22T00:00:00","2024-01-23T00:00:00","2024-01-24T00:00:00","2024-01-25T00:00:00","2024-01-26T00:00:00","2024-01-29T00:00:00","2024-01-30T00:00:00","2024-01-31T00:00:00","2024-02-01T00:00:00","2024-02-02T00:00:00","2024-02-05T00:00:00","2024-02-06T00:00:00","2024-02-07T00:00:00","2024-02-08T00:00:00","2024-02-09T00:00:00","2024-02-12T00:00:00","2024-02-13T00:00:00","2024-02-14T00:00:00","2024-02-15T00:00:00","2024-02-16T00:00:00","2024-02-20T00:00:00","2024-02-21T00:00:00","2024-02-22T00:00:00","2024-02-23T00:00:00","2024-02-26T00:00:00","2024-02-27T00:00:00","2024-02-28T00:00:00","2024-02-29T00:00:00","2024-03-01T00:00:00","2024-03-04T00:00:00","2024-03-05T00:00:00","2024-03-06T00:00:00","2024-03-07T00:00:00","2024-03-08T00:00:00","2024-03-11T00:00:00","2024-03-12T00:00:00","2024-03-13T00:00:00","2024-03-14T00:00:00","2024-03-15T00:00:00","2024-03-18T00:00:00","2024-03-19T00:00:00","2024-03-20T00:00:00","2024-03-21T00:00:00","2024-03-22T00:00:00","2024-03-25T00:00:00","2024-03-26T00:00:00","2024-03-27T00:00:00","2024-03-28T00:00:00","2024-04-01T00:00:00","2024-04-02T00:00:00","2024-04-03T00:00:00","2024-04-04T00:00:00","2024-04-05T00:00:00","2024-04-08T00:00:00","2024-04-09T00:00:00","2024-04-10T00:00:00","2024-04-11T00:00:00","2024-04-12T00:00:00","2024-04-15T00:00:00","2024-04-16T00:00:00","2024-04-17T00:00:00","2024-04-18T00:00:00","2024-04-19T00:00:00","2024-04-22T00:00:00","2024-04-23T00:00:00","2024-04-24T00:00:00","2024-04-25T00:00:00","2024-04-26T00:00:00","2024-04-29T00:00:00","2024-04-30T00:00:00","2024-05-01T00:00:00","2024-05-02T00:00:00","2024-05-03T00:00:00","2024-05-06T00:00:00","2024-05-07T00:00:00","2024-05-08T00:00:00","2024-05-09T00:00:00","2024-05-10T00:00:00","2024-05-13T00:00:00","2024-05-14T00:00:00","2024-05-15T00:00:00","2024-05-16T00:00:00","2024-05-17T00:00:00","2024-05-20T00:00:00","2024-05-21T00:00:00","2024-05-22T00:00:00","2024-05-23T00:00:00","2024-05-24T00:00:00","2024-05-28T00:00:00","2024-05-29T00:00:00","2024-05-30T00:00:00","2024-05-31T00:00:00","2024-06-03T00:00:00","2024-06-04T00:00:00","2024-06-05T00:00:00","2024-06-06T00:00:00","2024-06-07T00:00:00","2024-06-10T00:00:00","2024-06-11T00:00:00","2024-06-12T00:00:00","2024-06-13T00:00:00","2024-06-14T00:00:00","2024-06-17T00:00:00","2024-06-18T00:00:00","2024-06-20T00:00:00","2024-06-21T00:00:00","2024-06-24T00:00:00","2024-06-25T00:00:00","2024-06-26T00:00:00","2024-06-27T00:00:00","2024-06-28T00:00:00","2024-07-01T00:00:00","2024-07-02T00:00:00","2024-07-03T00:00:00","2024-07-05T00:00:00","2024-07-08T00:00:00","2024-07-09T00:00:00","2024-07-10T00:00:00","2024-07-11T00:00:00","2024-07-12T00:00:00","2024-07-15T00:00:00","2024-07-16T00:00:00","2024-07-17T00:00:00","2024-07-18T00:00:00","2024-07-19T00:00:00","2024-07-22T00:00:00","2024-07-23T00:00:00","2024-07-24T00:00:00","2024-07-25T00:00:00","2024-07-26T00:00:00","2024-07-29T00:00:00","2024-07-30T00:00:00","2024-07-31T00:00:00","2024-08-01T00:00:00","2024-08-02T00:00:00","2024-08-05T00:00:00","2024-08-06T00:00:00","2024-08-07T00:00:00","2024-08-08T00:00:00","2024-08-09T00:00:00","2024-08-12T00:00:00","2024-08-13T00:00:00","2024-08-14T00:00:00","2024-08-15T00:00:00","2024-08-16T00:00:00","2024-08-19T00:00:00","2024-08-20T00:00:00","2024-08-21T00:00:00","2024-08-22T00:00:00","2024-08-23T00:00:00","2024-08-26T00:00:00","2024-08-27T00:00:00","2024-08-28T00:00:00","2024-08-29T00:00:00","2024-08-30T00:00:00","2024-09-03T00:00:00","2024-09-04T00:00:00","2024-09-05T00:00:00","2024-09-06T00:00:00","2024-09-09T00:00:00","2024-09-10T00:00:00","2024-09-11T00:00:00","2024-09-12T00:00:00","2024-09-13T00:00:00","2024-09-16T00:00:00","2024-09-17T00:00:00","2024-09-18T00:00:00","2024-09-19T00:00:00","2024-09-20T00:00:00","2024-09-23T00:00:00","2024-09-24T00:00:00","2024-09-25T00:00:00","2024-09-26T00:00:00","2024-09-27T00:00:00","2024-09-30T00:00:00","2024-10-01T00:00:00","2024-10-02T00:00:00","2024-10-03T00:00:00","2024-10-04T00:00:00","2024-10-07T00:00:00","2024-10-08T00:00:00","2024-10-09T00:00:00","2024-10-10T00:00:00","2024-10-11T00:00:00","2024-10-14T00:00:00","2024-10-15T00:00:00","2024-10-16T00:00:00","2024-10-17T00:00:00","2024-10-18T00:00:00","2024-10-21T00:00:00","2024-10-22T00:00:00","2024-10-23T00:00:00","2024-10-24T00:00:00","2024-10-25T00:00:00","2024-10-28T00:00:00","2024-10-29T00:00:00","2024-10-30T00:00:00","2024-10-31T00:00:00","2024-11-01T00:00:00","2024-11-04T00:00:00","2024-11-05T00:00:00","2024-11-06T00:00:00","2024-11-07T00:00:00","2024-11-08T00:00:00","2024-11-11T00:00:00","2024-11-12T00:00:00","2024-11-13T00:00:00","2024-11-14T00:00:00","2024-11-15T00:00:00","2024-11-18T00:00:00","2024-11-19T00:00:00","2024-11-20T00:00:00","2024-11-21T00:00:00","2024-11-22T00:00:00","2024-11-25T00:00:00","2024-11-26T00:00:00","2024-11-27T00:00:00","2024-11-29T00:00:00","2024-12-02T00:00:00","2024-12-03T00:00:00","2024-12-04T00:00:00","2024-12-05T00:00:00","2024-12-06T00:00:00","2024-12-09T00:00:00","2024-12-10T00:00:00","2024-12-11T00:00:00","2024-12-12T00:00:00","2024-12-13T00:00:00","2024-12-16T00:00:00","2024-12-17T00:00:00","2024-12-18T00:00:00","2024-12-19T00:00:00","2024-12-20T00:00:00","2024-12-23T00:00:00","2024-12-24T00:00:00","2024-12-26T00:00:00","2024-12-27T00:00:00","2024-12-30T00:00:00","2024-12-31T00:00:00","2025-01-02T00:00:00","2025-01-03T00:00:00","2025-01-06T00:00:00","2025-01-07T00:00:00","2025-01-08T00:00:00","2025-01-10T00:00:00","2025-01-13T00:00:00","2025-01-14T00:00:00","2025-01-15T00:00:00","2025-01-16T00:00:00","2025-01-17T00:00:00","2025-01-21T00:00:00","2025-01-22T00:00:00","2025-01-23T00:00:00","2025-01-24T00:00:00","2025-01-27T00:00:00","2025-01-28T00:00:00","2025-01-29T00:00:00","2025-01-30T00:00:00","2025-01-31T00:00:00","2025-02-03T00:00:00","2025-02-04T00:00:00","2025-02-05T00:00:00","2025-02-06T00:00:00","2025-02-07T00:00:00","2025-02-10T00:00:00","2025-02-11T00:00:00","2025-02-12T00:00:00","2025-02-13T00:00:00","2025-02-14T00:00:00","2025-02-18T00:00:00","2025-02-19T00:00:00","2025-02-20T00:00:00","2025-02-21T00:00:00","2025-02-24T00:00:00","2025-02-25T00:00:00","2025-02-26T00:00:00","2025-02-27T00:00:00","2025-02-28T00:00:00","2025-03-03T00:00:00","2025-03-04T00:00:00","2025-03-05T00:00:00","2025-03-06T00:00:00","2025-03-07T00:00:00","2025-03-10T00:00:00","2025-03-11T00:00:00","2025-03-12T00:00:00","2025-03-13T00:00:00","2025-03-14T00:00:00","2025-03-17T00:00:00","2025-03-18T00:00:00","2025-03-19T00:00:00","2025-03-20T00:00:00","2025-03-21T00:00:00","2025-03-24T00:00:00","2025-03-25T00:00:00","2025-03-26T00:00:00","2025-03-27T00:00:00","2025-03-28T00:00:00","2025-03-31T00:00:00","2025-04-01T00:00:00","2025-04-02T00:00:00","2025-04-03T00:00:00","2025-04-04T00:00:00","2025-04-07T00:00:00","2025-04-08T00:00:00","2025-04-09T00:00:00","2025-04-10T00:00:00","2025-04-11T00:00:00","2025-04-14T00:00:00","2025-04-15T00:00:00","2025-04-16T00:00:00","2025-04-17T00:00:00","2025-04-21T00:00:00","2025-04-22T00:00:00","2025-04-23T00:00:00","2025-04-24T00:00:00","2025-04-25T00:00:00","2025-04-28T00:00:00","2025-04-29T00:00:00","2025-04-30T00:00:00","2025-05-01T00:00:00","2025-05-02T00:00:00","2025-05-05T00:00:00","2025-05-06T00:00:00","2025-05-07T00:00:00","2025-05-08T00:00:00","2025-05-09T00:00:00","2025-05-12T00:00:00","2025-05-13T00:00:00","2025-05-14T00:00:00","2025-05-15T00:00:00","2025-05-16T00:00:00","2025-05-19T00:00:00","2025-05-20T00:00:00","2025-05-21T00:00:00","2025-05-22T00:00:00","2025-05-23T00:00:00","2025-05-27T00:00:00","2025-05-28T00:00:00","2025-05-29T00:00:00","2025-05-30T00:00:00","2025-06-02T00:00:00","2025-06-03T00:00:00","2025-06-04T00:00:00","2025-06-05T00:00:00","2025-06-06T00:00:00","2025-06-09T00:00:00","2025-06-10T00:00:00","2025-06-11T00:00:00","2025-06-12T00:00:00","2025-06-13T00:00:00","2025-06-16T00:00:00","2025-06-17T00:00:00","2025-06-18T00:00:00","2025-06-20T00:00:00","2025-06-23T00:00:00","2025-06-24T00:00:00","2025-06-25T00:00:00","2025-06-26T00:00:00","2025-06-27T00:00:00","2025-06-30T00:00:00","2025-07-01T00:00:00","2025-07-02T00:00:00","2025-07-03T00:00:00","2025-07-07T00:00:00","2025-07-08T00:00:00","2025-07-09T00:00:00","2025-07-10T00:00:00","2025-07-11T00:00:00","2025-07-14T00:00:00","2025-07-15T00:00:00","2025-07-16T00:00:00","2025-07-17T00:00:00","2025-07-18T00:00:00","2025-07-21T00:00:00","2025-07-22T00:00:00","2025-07-23T00:00:00","2025-07-24T00:00:00","2025-07-25T00:00:00","2025-07-28T00:00:00","2025-07-29T00:00:00","2025-07-30T00:00:00","2025-07-31T00:00:00","2025-08-01T00:00:00","2025-08-04T00:00:00","2025-08-05T00:00:00","2025-08-06T00:00:00","2025-08-07T00:00:00","2025-08-08T00:00:00","2025-08-11T00:00:00","2025-08-12T00:00:00","2025-08-13T00:00:00","2025-08-14T00:00:00","2025-08-15T00:00:00","2025-08-18T00:00:00","2025-08-19T00:00:00","2025-08-20T00:00:00","2025-08-21T00:00:00","2025-08-22T00:00:00","2025-08-25T00:00:00","2025-08-26T00:00:00","2025-08-27T00:00:00","2025-08-28T00:00:00","2025-08-29T00:00:00","2025-09-02T00:00:00","2025-09-03T00:00:00","2025-09-04T00:00:00","2025-09-05T00:00:00","2025-09-08T00:00:00","2025-09-09T00:00:00","2025-09-10T00:00:00","2025-09-11T00:00:00","2025-09-12T00:00:00","2025-09-15T00:00:00","2025-09-16T00:00:00","2025-09-17T00:00:00","2025-09-18T00:00:00","2025-09-19T00:00:00","2025-09-22T00:00:00","2025-09-23T00:00:00","2025-09-24T00:00:00","2025-09-25T00:00:00","2025-09-26T00:00:00","2025-09-29T00:00:00","2025-09-30T00:00:00","2025-10-01T00:00:00","2025-10-02T00:00:00","2025-10-03T00:00:00","2025-10-06T00:00:00","2025-10-07T00:00:00","2025-10-08T00:00:00","2025-10-09T00:00:00","2025-10-10T00:00:00","2025-10-13T00:00:00","2025-10-14T00:00:00","2025-10-15T00:00:00","2025-10-16T00:00:00","2025-10-17T00:00:00","2025-10-20T00:00:00","2025-10-21T00:00:00","2025-10-22T00:00:00","2025-10-23T00:00:00","2025-10-24T00:00:00","2025-10-27T00:00:00","2025-10-28T00:00:00","2025-10-29T00:00:00","2025-10-30T00:00:00","2025-10-31T00:00:00","2025-11-03T00:00:00","2025-11-04T00:00:00","2025-11-05T00:00:00","2025-11-06T00:00:00","2025-11-07T00:00:00","2025-11-10T00:00:00","2025-11-11T00:00:00","2025-11-12T00:00:00","2025-11-13T00:00:00","2025-11-14T00:00:00","2025-11-17T00:00:00","2025-11-18T00:00:00","2025-11-19T00:00:00","2025-11-20T00:00:00","2025-11-21T00:00:00","2025-11-24T00:00:00","2025-11-25T00:00:00","2025-11-26T00:00:00","2025-11-28T00:00:00","2025-12-01T00:00:00","2025-12-02T00:00:00","2025-12-03T00:00:00","2025-12-04T00:00:00","2025-12-05T00:00:00","2025-12-08T00:00:00","2025-12-09T00:00:00","2025-12-10T00:00:00","2025-12-11T00:00:00","2025-12-12T00:00:00","2025-12-15T00:00:00","2025-12-16T00:00:00","2025-12-17T00:00:00","2025-12-18T00:00:00","2025-12-19T00:00:00","2025-12-22T00:00:00","2025-12-23T00:00:00","2025-12-24T00:00:00","2025-12-26T00:00:00","2025-12-29T00:00:00","2025-12-30T00:00:00","2025-12-31T00:00:00","2026-01-02T00:00:00","2026-01-05T00:00:00","2026-01-06T00:00:00","2026-01-07T00:00:00","2026-01-08T00:00:00","2026-01-09T00:00:00","2026-01-12T00:00:00","2026-01-13T00:00:00","2026-01-14T00:00:00","2026-01-15T00:00:00","2026-01-16T00:00:00","2026-01-20T00:00:00","2026-01-21T00:00:00","2026-01-22T00:00:00","2026-01-23T00:00:00","2026-01-26T00:00:00","2026-01-27T00:00:00","2026-01-28T00:00:00","2026-01-29T00:00:00","2026-01-30T00:00:00","2026-02-02T00:00:00","2026-02-03T00:00:00","2026-02-04T00:00:00","2026-02-05T00:00:00","2026-02-06T00:00:00","2026-02-09T00:00:00","2026-02-10T00:00:00","2026-02-11T00:00:00","2026-02-12T00:00:00","2026-02-13T00:00:00","2026-02-17T00:00:00","2026-02-18T00:00:00","2026-02-19T00:00:00","2026-02-20T00:00:00","2026-02-23T00:00:00","2026-02-24T00:00:00","2026-02-25T00:00:00","2026-02-26T00:00:00","2026-02-27T00:00:00","2026-03-02T00:00:00","2026-03-03T00:00:00","2026-03-04T00:00:00","2026-03-05T00:00:00","2026-03-06T00:00:00","2026-03-09T00:00:00","2026-03-10T00:00:00","2026-03-11T00:00:00","2026-03-12T00:00:00","2026-03-13T00:00:00","2026-03-16T00:00:00","2026-03-17T00:00:00","2026-03-18T00:00:00","2026-03-19T00:00:00","2026-03-20T00:00:00","2026-03-23T00:00:00","2026-03-24T00:00:00","2026-03-25T00:00:00","2026-03-26T00:00:00","2026-03-27T00:00:00","2026-03-30T00:00:00","2026-03-31T00:00:00","2026-04-01T00:00:00","2026-04-02T00:00:00","2026-04-06T00:00:00","2026-04-07T00:00:00","2026-04-08T00:00:00","2026-04-09T00:00:00","2026-04-10T00:00:00","2026-04-13T00:00:00","2026-04-14T00:00:00","2026-04-15T00:00:00","2026-04-16T00:00:00","2026-04-17T00:00:00","2026-04-20T00:00:00","2026-04-21T00:00:00","2026-04-22T00:00:00","2026-04-23T00:00:00","2026-04-24T00:00:00","2026-04-27T00:00:00","2026-04-28T00:00:00","2026-04-29T00:00:00","2026-04-30T00:00:00","2026-05-01T00:00:00","2026-05-04T00:00:00","2026-05-05T00:00:00","2026-05-06T00:00:00","2026-05-07T00:00:00","2026-05-08T00:00:00","2026-05-11T00:00:00","2026-05-12T00:00:00","2026-05-13T00:00:00","2026-05-14T00:00:00","2026-05-15T00:00:00","2026-05-18T00:00:00","2026-05-19T00:00:00","2026-05-20T00:00:00","2026-05-21T00:00:00","2026-05-22T00:00:00","2026-05-26T00:00:00","2026-05-27T00:00:00","2026-05-28T00:00:00","2026-05-29T00:00:00","2026-06-01T00:00:00","2026-06-02T00:00:00","2026-06-03T00:00:00","2026-06-04T00:00:00","2026-06-05T00:00:00","2026-06-08T00:00:00","2026-06-09T00:00:00","2026-06-10T00:00:00","2026-06-11T00:00:00","2026-06-12T00:00:00","2026-06-15T00:00:00","2026-06-16T00:00:00","2026-06-17T00:00:00","2026-06-18T00:00:00","2026-06-22T00:00:00","2026-06-23T00:00:00","2026-06-24T00:00:00","2026-06-25T00:00:00","2026-06-26T00:00:00","2026-06-29T00:00:00","2026-06-30T00:00:00","2026-07-01T00:00:00","2026-07-02T00:00:00","2026-07-06T00:00:00","2026-07-07T00:00:00","2026-07-08T00:00:00","2026-07-09T00:00:00","2026-07-10T00:00:00","2026-07-13T00:00:00","2026-07-14T00:00:00","2026-07-15T00:00:00","2026-07-16T00:00:00","2026-07-17T00:00:00"],"y":{"dtype":"f8","bdata":"AAAAgE9bYUAAAAAguM5hQAAAAEBTt2FAAAAAgP7iYUAAAABA5BliQAAAAMBNJ2JAAAAAIA\u002fiYUAAAACgOaphQAAAAODPvmFAAAAAwKzFYUAAAABgEbthQAAAAGB29GFAAAAAIKznYUAAAACgGuthQAAAAMA81WFAAAAA4KzTYUAAAABgXsRhQAAAAMB9zGFAAAAAwCQrYkAAAABgtDFiQAAAAIDOcGJAAAAAAMFTYkAAAABAHNxhQAAAACC75mFAAAAA4EYVYkAAAACgwkRiQAAAAMDyQWJAAAAAgJYaYkAAAAAA+QBiQAAAAMAVImJAAAAAAEmvYkAAAACg\u002fIZiQAAAAIA6nGJAAAAAINe\u002fYkAAAACgJdRiQAAAAIDOHmNAAAAAIHPtYkAAAAAA9sxiQAAAAKCkLWJAAAAA4MI\u002fYkAAAAAgFxNiQAAAAKCEL2JAAAAA4AQoYkAAAADgvNJhQAAAAABGcWFAAAAA4JSAYUAAAADALcxhQAAAAODK6mFAAAAAoJrtYUAAAAAgL71hQAAAACAZUWFAAAAAoNZtYUAAAABgSkRhQAAAAOA2aGFAAAAAoJD6YEAAAABAGzhhQAAAAMDoU2FAAAAA4DR8YUAAAAAgBnBhQAAAAGA2bWFAAAAAAJpEYUAAAADA2zFhQAAAAIDjimFAAAAA4KCsYUAAAADAC+JhQAAAAEAVJ2JAAAAAoLM2YkAAAAAgkz1iQAAAAIDlJGJAAAAAgFUjYkAAAADgkzhiQAAAACDlKWJAAAAAQBqeYkAAAABAkkdiQAAAAIBULWJAAAAAoHFOYkAAAABAXXxiQAAAAEDPa2JAAAAAALR8YkAAAABgbGJiQAAAAMD\u002fbWJAAAAAIJYTYkAAAACgBRJiQAAAACBYVGJAAAAAgKhUYkAAAABA8XNiQAAAAEDXwWJAAAAAoN1KY0AAAABgtZ5jQAAAAKBprWNAAAAA4Jy5Y0AAAACgMcpjQAAAAIC0KWNAAAAAgAKVY0AAAABgTzNkQAAAAIC6ImRAAAAAYCEDZEAAAADAEMdjQAAAAIDvM2RAAAAAoELrZEAAAABgRWVlQAAAAMAAVWVAAAAAwPvtZUAAAAAA63llQAAAAODOTWVAAAAAQErpZUAAAABgDA1lQAAAAIAC6mRAAAAAQIa+ZEAAAADg4iNlQAAAACDKdmVAAAAAwM+KZUAAAABggwlmQAAAAAD66GVAAAAAIMvrZUAAAADA4MZlQAAAAOAqs2VAAAAAYBI+ZkAAAADAzfVlQAAAAMBDYGVAAAAA4OkEZUAAAABgOwplQAAAAMDbCmVAAAAAYEVlZUAAAAAgWXNlQAAAAMDbCmVAAAAAwGMmZUAAAADAFsBkQAAAAGBnUGRAAAAAQJgaZEAAAAAA5thjQAAAAMAuwGNAAAAAYJ6GY0AAAADAzYNjQAAAAIAZdWNAAAAAgKvQZEAAAACg4ltlQAAAAGCRVmVAAAAAAAx9ZUAAAAAgEiFlQAAAAKD8F2VAAAAAoB4BZUAAAADAamRlQAAAAGDWkWVAAAAAQIcPZUAAAACAhaJkQAAAAMAJqmRAAAAAQIQkZUAAAACg\u002fxxlQAAAAMAJqmRAAAAAoIt4ZEAAAABAMxtkQAAAAEASlmNAAAAAgLXpY0AAAABAzStkQAAAAEBCNGRAAAAAwB34Y0AAAACgXWFkQAAAAMAHV2RAAAAAgC33Y0AAAADA831jQAAAAICwQ2NAAAAAAEnwY0AAAAAghWVjQAAAAKDM7mJAAAAA4A5uYkAAAAAAFPpiQAAAACAJh2NAAAAAwEynY0AAAADAjBBkQAAAAEBnPGRAAAAAwCioZEAAAADgstNkQAAAAGCcTGVAAAAAIPlgZUAAAADAiXxlQAAAAGDJ5WVAAAAA4ILAZUAAAADghl1lQAAAACAhVGVAAAAAYH\u002fVZUAAAABgn2tlQAAAAAByBmVAAAAAoCcQZUAAAADA8M9kQAAAAGD+R2RAAAAAgNKDZEAAAACgptlkQAAAAMCVOWRAAAAAgLEyZEAAAACgrXtkQAAAAGBadmRAAAAAYPtcZEAAAABA88tjQAAAAMAX7mNAAAAAgKQvY0AAAAAAcChjQAAAAGDmBWRAAAAAgERKY0AAAACA+lNjQAAAAACXg2NAAAAAwHNQZEAAAACAsy5jQAAAAGDqRWNAAAAA4CmiYkAAAAAgBe9iQAAAAGC+82FAAAAAYCV4YUAAAABg4QZiQAAAAOCg1WFAAAAAALNJYkAAAADgj0FhQAAAAOC01GBAAAAAQDzcYEAAAABgZolhQAAAAKAhM2FAAAAAYCY4YUAAAAAga55hQAAAACA\u002fVmJAAAAAoCY9YkAAAACAEjliQAAAAKB\u002fh2JAAAAAQJzQYUAAAACAc+hhQAAAAIASOWJAAAAAIIshYkAAAADAp3phQAAAAGDOzWBAAAAAgBwpYEAAAADAt0RgQAAAAMB5mGBAAAAA4AjgX0AAAADAEh9gQAAAAEBHpmBAAAAAgPeVYEAAAAAAkfFgQAAAAMDpW2FAAAAAwOlbYUAAAABAh9dgQAAAAKCuD2FAAAAAoPHAYEAAAACARQZhQAAAAIDGWGFAAAAAQHCDYUAAAADgCe9hQAAAAACvBGJAAAAAYJzAYUAAAADAqt9hQAAAAKAP1GFAAAAAAIsxYkAAAACg32ZiQAAAAACgBWJAAAAAYOmAYkAAAAAA6MBiQAAAAOBeCWNAAAAAINjhYkAAAAAAFb5iQAAAAIC7k2JAAAAAQIs2Y0AAAADAHEhjQAAAAID76WNAAAAAoJzKY0AAAABgjptjQAAAACCLW2RAAAAAQIFRZEAAAACgR0pkQAAAACAzO2RAAAAAYMU8ZEAAAABgesRkQAAAAADrrGRAAAAAoFIeZUAAAABgkEBlQAAAAMCJO2VAAAAAYElrZUAAAACAuF5lQAAAAGAaDGVAAAAAwASQZEAAAABgVoVkQAAAAKDCjmRAAAAAwEvdZEAAAAAA7xNkQAAAAMCQzWNAAAAAoPl\u002fY0AAAACg4kpjQAAAAMAhYmNAAAAAQJceY0AAAACgYfZiQAAAAIBNI2NAAAAA4C70YkAAAACAmE9jQAAAAOD2DWRAAAAA4LTgYkAAAABA4g5jQAAAAMCGsmJAAAAAABF+YkAAAACAz\u002fRiQAAAAMDUQGNAAAAAwO\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\u002f92VAAAAAwE3wZUAAAAAgM\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\u002fG5AAAAAgI\u002fybkAAAACg9t1vQAAAAACoHHBAAAAA4Nz+b0AAAAAA0RxwQAAAACD7L3BAAAAAICbYcEAAAABAr89wQAAAAMCiP3FAAAAAoF82cUAAAADgqllxQAAAACDgJXFAAAAAYNkWcUAAAABA8TNxQAAAAGDTV3BAAAAAAG3xb0AAAACgMXpwQAAAAAC1gXBAAAAAIHFFcEAAAAAgYoVwQAAAAKD1nnBAAAAAgDv+cEAAAABApB9xQAAAACAuC3FAAAAAQP1+cEAAAAAAn4dwQAAAAKAdeHBAAAAAIHRkcEAAAACAzkBwQAAAAGCRE3BAAAAAoEA6cEAAAABAcElwQAAAAGAeSXBAAAAAQMnwb0AAAAAAeTxvQAAAACDLkm9AAAAAIN+\u002fb0AAAADgtzZvQAAAACBjF29AAAAAIGD4bkAAAADARWhvQAAAAGARbW9AAAAAIGaMb0AAAAAACJVvQAAAAIBFEm9AAAAAQOXMbkAAAADgzbFvQAAAAGCh7G9AAAAA4Ob1b0AAAACA8ilwQAAAAICIqG9AAAAAQJYqcEAAAADgAERwQAAAAADYQ3BAAAAAAGIvcEAAAADAdylwQAAAAMD0onBAAAAAQIVycEAAAABAs99wQAAAAEDHDHFAAAAA4MyecEAAAACAsg5xQAAAAGDaEnFAAAAAwPfscEAAAACA0bVwQAAAAIBf53BAAAAAwL3ecEAAAACgmvFwQAAAAEAdfnFAAAAA4DNJcUAAAADgsb5xQAAAAADt83FAAAAAgM7ycUAAAADgzFByQAAAAEDhSnJAAAAAwMxsckAAAACA661yQAAAACBco3JAAAAAIK7DckAAAACgcJ1yQAAAACCFr3JAAAAAAADkckAAAAAA1w9zQAAAAMAeTXNAAAAAoEdFc0AAAACgmW1zQAAAAAApiHNAAAAAwPWAc0AAAADA9SRzQAAAAEAzs3NAAAAAAClkc0AAAAAgrnNzQAAAAKBwNXNAAAAA4KPYckAAAADAzChyQAAAAKBHOXJAAAAAgBR6ckAAAACAFDJyQAAAAGC4hnJAAAAAANezckAAAABAM39yQAAAAAApoHJAAAAAACmQckAAAADAzGRyQAAAAKBHUXJAAAAAYGYycUAAAADgerxxQAAAAADXm3FAAAAAgMIVckAAAACAFGZyQAAAAIAUSnNAAAAAYI+Kc0AAAABgj2pzQAAAAIA9lnNAAAAAIIXDc0AAAADAHrVzQAAAAMD11HNAAAAAgMKtc0AAAAAAAHh0QAAAAAAp1HRAAAAAANfbdEA="},"type":"scatter","xaxis":"x","yaxis":"y"},{"line":{"color":"#d04a35"},"name":"MADEV (20)","x":["2021-07-19T00:00:00","2021-07-20T00:00:00","2021-07-21T00:00:00","2021-07-22T00:00:00","2021-07-23T00:00:00","2021-07-26T00:00:00","2021-07-27T00:00:00","2021-07-28T00:00:00","2021-07-29T00:00:00","2021-07-30T00:00:00","2021-08-02T00:00:00","2021-08-03T00:00:00","2021-08-04T00:00:00","2021-08-05T00:00:00","2021-08-06T00:00:00","2021-08-09T00:00:00","2021-08-10T00:00:00","2021-08-11T00:00:00","2021-08-12T00:00:00","2021-08-13T00:00:00","2021-08-16T00:00:00","2021-08-17T00:00:00","2021-08-18T00:00:00","2021-08-19T00:00:00","2021-08-20T00:00:00","2021-08-23T00:00:00","2021-08-24T00:00:00","2021-08-25T00:00:00","2021-08-26T00:00:00","2021-08-27T00:00:00","2021-08-30T00:00:00","2021-08-31T00:00:00","2021-09-01T00:00:00","2021-09-02T00:00:00","2021-09-03T00:00:00","2021-09-07T00:00:00","2021-09-08T00:00:00","2021-09-09T00:00:00","2021-09-10T00:00:00","2021-09-13T00:00:00","2021-09-14T00:00:00","2021-09-15T00:00:00","2021-09-16T00:00:00","2021-09-17T00:00:00","2021-09-20T00:00:00","2021-09-21T00:00:00","2021-09-22T00:00:00","2021-09-23T00:00:00","2021-09-24T00:00:00","2021-09-27T00:00:00","2021-09-28T00:00:00","2021-09-29T00:00:00","2021-09-30T00:00:00","2021-10-01T00:00:00","2021-10-04T00:00:00","2021-10-05T00:00:00","2021-10-06T00:00:00","2021-10-07T00:00:00","2021-10-08T00:00:00","2021-10-11T00:00:00","2021-10-12T00:00:00","2021-10-13T00:00:00","2021-10-14T00:00:00","2021-10-15T00:00:00","2021-10-18T00:00:00","2021-10-19T00:00:00","2021-10-20T00:00:00","2021-10-21T00:00:00","2021-10-22T00:00:00","2021-10-25T00:00:00","2021-10-26T00:00:00","2021-10-27T00:00:00","2021-10-28T00:00:00","2021-10-29T00:00:00","2021-11-01T00:00:00","2021-11-02T00:00:00","2021-11-03T00:00:00","2021-11-04T00:00:00","2021-11-05T00:00:00","2021-11-08T00:00:00","2021-11-09T00:00:00","2021-11-10T00:00:00","2021-11-11T00:00:00","2021-11-12T00:00:00","2021-11-15T00:00:00","2021-11-16T00:00:00","2021-11-17T00:00:00","2021-11-18T00:00:00","2021-11-19T00:00:00","2021-11-22T00:00:00","2021-11-23T00:00:00","2021-11-24T00:00:00","2021-11-26T00:00:00","2021-11-29T00:00:00","2021-11-30T00:00:00","2021-12-01T00:00:00","2021-12-02T00:00:00","2021-12-03T00:00:00","2021-12-06T00:00:00","2021-12-07T00:00:00","2021-12-08T00:00:00","2021-12-09T00:00:00","2021-12-10T00:00:00","2021-12-13T00:00:00","2021-12-14T00:00:00","2021-12-15T00:00:00","2021-12-16T00:00:00","2021-12-17T00:00:00","2021-12-20T00:00:00","2021-12-21T00:00:00","2021-12-22T00:00:00","2021-12-23T00:00:00","2021-12-27T00:00:00","2021-12-28T00:00:00","2021-12-29T00:00:00","2021-12-30T00:00:00","2021-12-31T00:00:00","2022-01-03T00:00:00","2022-01-04T00:00:00","2022-01-05T00:00:00","2022-01-06T00:00:00","2022-01-07T00:00:00","2022-01-10T00:00:00","2022-01-11T00:00:00","2022-01-12T00:00:00","2022-01-13T00:00:00","2022-01-14T00:00:00","2022-01-18T00:00:00","2022-01-19T00:00:00","2022-01-20T00:00:00","2022-01-21T00:00:00","2022-01-24T00:00:00","2022-01-25T00:00:00","2022-01-26T00:00:00","2022-01-27T00:00:00","2022-01-28T00:00:00","2022-01-31T00:00:00","2022-02-01T00:00:00","2022-02-02T00:00:00","2022-02-03T00:00:00","2022-02-04T00:00:00","2022-02-07T00:00:00","2022-02-08T00:00:00","2022-02-09T00:00:00","2022-02-10T00:00:00","2022-02-11T00:00:00","2022-02-14T00:00:00","2022-02-15T00:00:00","2022-02-16T00:00:00","2022-02-17T00:00:00","2022-02-18T00:00:00","2022-02-22T00:00:00","2022-02-23T00:00:00","2022-02-24T00:00:00","2022-02-25T00:00:00","2022-02-28T00:00:00","2022-03-01T00:00:00","2022-03-02T00:00:00","2022-03-03T00:00:00","2022-03-04T00:00:00","2022-03-07T00:00:00","2022-03-08T00:00:00","2022-03-09T00:00:00","2022-03-10T00:00:00","2022-03-11T00:00:00","2022-03-14T00:00:00","2022-03-15T00:00:00","2022-03-16T00:00:00","2022-03-17T00:00:00","2022-03-18T00:00:00","2022-03-21T00:00:00","2022-03-22T00:00:00","2022-03-23T00:00:00","2022-03-24T00:00:00","2022-03-25T00:00:00","2022-03-28T00:00:00","2022-03-29T00:00:00","2022-03-30T00:00:00","2022-03-31T00:00:00","2022-04-01T00:00:00","2022-04-04T00:00:00","2022-04-05T00:00:00","2022-04-06T00:00:00","2022-04-07T00:00:00","2022-04-08T00:00:00","2022-04-11T00:00:00","2022-04-12T00:00:00","2022-04-13T00:00:00","2022-04-14T00:00:00","2022-04-18T00:00:00","2022-04-19T00:00:00","2022-04-20T00:00:00","2022-04-21T00:00:00","2022-04-22T00:00:00","2022-04-25T00:00:00","2022-04-26T00:00:00","2022-04-27T00:00:00","2022-04-28T00:00:00","2022-04-29T00:00:00","2022-05-02T00:00:00","2022-05-03T00:00:00","2022-05-04T00:00:00","2022-05-05T00:00:00","2022-05-06T00:00:00","2022-05-09T00:00:00","2022-05-10T00:00:00","2022-05-11T00:00:00","2022-05-12T00:00:00","2022-05-13T00:00:00","2022-05-16T00:00:00","2022-05-17T00:00:00","2022-05-18T00:00:00","2022-05-19T00:00:00","2022-05-20T00:00:00","2022-05-23T00:00:00","2022-05-24T00:00:00","2022-05-25T00:00:00","2022-05-26T00:00:00","2022-05-27T00:00:00","2022-05-31T00:00:00","2022-06-01T00:00:00","2022-06-02T00:00:00","2022-06-03T00:00:00","2022-06-06T00:00:00","2022-06-07T00:00:00","2022-06-08T00:00:00","2022-06-09T00:00:00","2022-06-10T00:00:00","2022-06-13T00:00:00","2022-06-14T00:00:00","2022-06-15T00:00:00","2022-06-16T00:00:00","2022-06-17T00:00:00","2022-06-21T00:00:00","2022-06-22T00:00:00","2022-06-23T00:00:00","2022-06-24T00:00:00","2022-06-27T00:00:00","2022-06-28T00:00:00","2022-06-29T00:00:00","2022-06-30T00:00:00","2022-07-01T00:00:00","2022-07-05T00:00:00","2022-07-06T00:00:00","2022-07-07T00:00:00","2022-07-08T00:00:00","2022-07-11T00:00:00","2022-07-12T00:00:00","2022-07-13T00:00:00","2022-07-14T00:00:00","2022-07-15T00:00:00","2022-07-18T00:00:00","2022-07-19T00:00:00","2022-07-20T00:00:00","2022-07-21T00:00:00","2022-07-22T00:00:00","2022-07-25T00:00:00","2022-07-26T00:00:00","2022-07-27T00:00:00","2022-07-28T00:00:00","2022-07-29T00:00:00","2022-08-01T00:00:00","2022-08-02T00:00:00","2022-08-03T00:00:00","2022-08-04T00:00:00","2022-08-05T00:00:00","2022-08-08T00:00:00","2022-08-09T00:00:00","2022-08-10T00:00:00","2022-08-11T00:00:00","2022-08-12T00:00:00","2022-08-15T00:00:00","2022-08-16T00:00:00","2022-08-17T00:00:00","2022-08-18T00:00:00","2022-08-19T00:00:00","2022-08-22T00:00:00","2022-08-23T00:00:00","2022-08-24T00:00:00","2022-08-25T00:00:00","2022-08-26T00:00:00","2022-08-29T00:00:00","2022-08-30T00:00:00","2022-08-31T00:00:00","2022-09-01T00:00:00","2022-09-02T00:00:00","2022-09-06T00:00:00","2022-09-07T00:00:00","2022-09-08T00:00:00","2022-09-09T00:00:00","2022-09-12T00:00:00","2022-09-13T00:00:00","2022-09-14T00:00:00","2022-09-15T00:00:00","2022-09-16T00:00:00","2022-09-19T00:00:00","2022-09-20T00:00:00","2022-09-21T00:00:00","2022-09-22T00:00:00","2022-09-23T00:00:00","2022-09-26T00:00:00","2022-09-27T00:00:00","2022-09-28T00:00:00","2022-09-29T00:00:00","2022-09-30T00:00:00","2022-10-03T00:00:00","2022-10-04T00:00:00","2022-10-05T00:00:00","2022-10-06T00:00:00","2022-10-07T00:00:00","2022-10-10T00:00:00","2022-10-11T00:00:00","2022-10-12T00:00:00","2022-10-13T00:00:00","2022-10-14T00:00:00","2022-10-17T00:00:00","2022-10-18T00:00:00","2022-10-19T00:00:00","2022-10-20T00:00:00","2022-10-21T00:00:00","2022-10-24T00:00:00","2022-10-25T00:00:00","2022-10-26T00:00:00","2022-10-27T00:00:00","2022-10-28T00:00:00","2022-10-31T00:00:00","2022-11-01T00:00:00","2022-11-02T00:00:00","2022-11-03T00:00:00","2022-11-04T00:00:00","2022-11-07T00:00:00","2022-11-08T00:00:00","2022-11-09T00:00:00","2022-11-10T00:00:00","2022-11-11T00:00:00","2022-11-14T00:00:00","2022-11-15T00:00:00","2022-11-16T00:00:00","2022-11-17T00:00:00","2022-11-18T00:00:00","2022-11-21T00:00:00","2022-11-22T00:00:00","2022-11-23T00:00:00","2022-11-25T00:00:00","2022-11-28T00:00:00","2022-11-29T00:00:00","2022-11-30T00:00:00","2022-12-01T00:00:00","2022-12-02T00:00:00","2022-12-05T00:00:00","2022-12-06T00:00:00","2022-12-07T00:00:00","2022-12-08T00:00:00","2022-12-09T00:00:00","2022-12-12T00:00:00","2022-12-13T00:00:00","2022-12-14T00:00:00","2022-12-15T00:00:00","2022-12-16T00:00:00","2022-12-19T00:00:00","2022-12-20T00:00:00","2022-12-21T00:00:00","2022-12-22T00:00:00","2022-12-23T00:00:00","2022-12-27T00:00:00","2022-12-28T00:00:00","2022-12-29T00:00:00","2022-12-30T00:00:00","2023-01-03T00:00:00","2023-01-04T00:00:00","2023-01-05T00:00:00","2023-01-06T00:00:00","2023-01-09T00:00:00","2023-01-10T00:00:00","2023-01-11T00:00:00","2023-01-12T00:00:00","2023-01-13T00:00:00","2023-01-17T00:00:00","2023-01-18T00:00:00","2023-01-19T00:00:00","2023-01-20T00:00:00","2023-01-23T00:00:00","2023-01-24T00:00:00","2023-01-25T00:00:00","2023-01-26T00:00:00","2023-01-27T00:00:00","2023-01-30T00:00:00","2023-01-31T00:00:00","2023-02-01T00:00:00","2023-02-02T00:00:00","2023-02-03T00:00:00","2023-02-06T00:00:00","2023-02-07T00:00:00","2023-02-08T00:00:00","2023-02-09T00:00:00","2023-02-10T00:00:00","2023-02-13T00:00:00","2023-02-14T00:00:00","2023-02-15T00:00:00","2023-02-16T00:00:00","2023-02-17T00:00:00","2023-02-21T00:00:00","2023-02-22T00:00:00","2023-02-23T00:00:00","2023-02-24T00:00:00","2023-02-27T00:00:00","2023-02-28T00:00:00","2023-03-01T00:00:00","2023-03-02T00:00:00","2023-03-03T00:00:00","2023-03-06T00:00:00","2023-03-07T00:00:00","2023-03-08T00:00:00","2023-03-09T00:00:00","2023-03-10T00:00:00","2023-03-13T00:00:00","2023-03-14T00:00:00","2023-03-15T00:00:00","2023-03-16T00:00:00","2023-03-17T00:00:00","2023-03-20T00:00:00","2023-03-21T00:00:00","2023-03-22T00:00:00","2023-03-23T00:00:00","2023-03-24T00:00:00","2023-03-27T00:00:00","2023-03-28T00:00:00","2023-03-29T00:00:00","2023-03-30T00:00:00","2023-03-31T00:00:00","2023-04-03T00:00:00","2023-04-04T00:00:00","2023-04-05T00:00:00","2023-04-06T00:00:00","2023-04-10T00:00:00","2023-04-11T00:00:00","2023-04-12T00:00:00","2023-04-13T00:00:00","2023-04-14T00:00:00","2023-04-17T00:00:00","2023-04-18T00:00:00","2023-04-19T00:00:00","2023-04-20T00:00:00","2023-04-21T00:00:00","2023-04-24T00:00:00","2023-04-25T00:00:00","2023-04-26T00:00:00","2023-04-27T00:00:00","2023-04-28T00:00:00","2023-05-01T00:00:00","2023-05-02T00:00:00","2023-05-03T00:00:00","2023-05-04T00:00:00","2023-05-05T00:00:00","2023-05-08T00:00:00","2023-05-09T00:00:00","2023-05-10T00:00:00","2023-05-11T00:00:00","2023-05-12T00:00:00","2023-05-15T00:00:00","2023-05-16T00:00:00","2023-05-17T00:00:00","2023-05-18T00:00:00","2023-05-19T00:00:00","2023-05-22T00:00:00","2023-05-23T00:00:00","2023-05-24T00:00:00","2023-05-25T00:00:00","2023-05-26T00:00:00","2023-05-30T00:00:00","2023-05-31T00:00:00","2023-06-01T00:00:00","2023-06-02T00:00:00","2023-06-05T00:00:00","2023-06-06T00:00:00","2023-06-07T00:00:00","2023-06-08T00:00:00","2023-06-09T00:00:00","2023-06-12T00:00:00","2023-06-13T00:00:00","2023-06-14T00:00:00","2023-06-15T00:00:00","2023-06-16T00:00:00","2023-06-20T00:00:00","2023-06-21T00:00:00","2023-06-22T00:00:00","2023-06-23T00:00:00","2023-06-26T00:00:00","2023-06-27T00:00:00","2023-06-28T00:00:00","2023-06-29T00:00:00","2023-06-30T00:00:00","2023-07-03T00:00:00","2023-07-05T00:00:00","2023-07-06T00:00:00","2023-07-07T00:00:00","2023-07-10T00:00:00","2023-07-11T00:00:00","2023-07-12T00:00:00","2023-07-13T00:00:00","2023-07-14T00:00:00","2023-07-17T00:00:00","2023-07-18T00:00:00","2023-07-19T00:00:00","2023-07-20T00:00:00","2023-07-21T00:00:00","2023-07-24T00:00:00","2023-07-25T00:00:00","2023-07-26T00:00:00","2023-07-27T00:00:00","2023-07-28T00:00:00","2023-07-31T00:00:00","2023-08-01T00:00:00","2023-08-02T00:00:00","2023-08-03T00:00:00","2023-08-04T00:00:00","2023-08-07T00:00:00","2023-08-08T00:00:00","2023-08-09T00:00:00","2023-08-10T00:00:00","2023-08-11T00:00:00","2023-08-14T00:00:00","2023-08-15T00:00:00","2023-08-16T00:00:00","2023-08-17T00:00:00","2023-08-18T00:00:00","2023-08-21T00:00:00","2023-08-22T00:00:00","2023-08-23T00:00:00","2023-08-24T00:00:00","2023-08-25T00:00:00","2023-08-28T00:00:00","2023-08-29T00:00:00","2023-08-30T00:00:00","2023-08-31T00:00:00","2023-09-01T00:00:00","2023-09-05T00:00:00","2023-09-06T00:00:00","2023-09-07T00:00:00","2023-09-08T00:00:00","2023-09-11T00:00:00","2023-09-12T00:00:00","2023-09-13T00:00:00","2023-09-14T00:00:00","2023-09-15T00:00:00","2023-09-18T00:00:00","2023-09-19T00:00:00","2023-09-20T00:00:00","2023-09-21T00:00:00","2023-09-22T00:00:00","2023-09-25T00:00:00","2023-09-26T00:00:00","2023-09-27T00:00:00","2023-09-28T00:00:00","2023-09-29T00:00:00","2023-10-02T00:00:00","2023-10-03T00:00:00","2023-10-04T00:00:00","2023-10-05T00:00:00","2023-10-06T00:00:00","2023-10-09T00:00:00","2023-10-10T00:00:00","2023-10-11T00:00:00","2023-10-12T00:00:00","2023-10-13T00:00:00","2023-10-16T00:00:00","2023-10-17T00:00:00","2023-10-18T00:00:00","2023-10-19T00:00:00","2023-10-20T00:00:00","2023-10-23T00:00:00","2023-10-24T00:00:00","2023-10-25T00:00:00","2023-10-26T00:00:00","2023-10-27T00:00:00","2023-10-30T00:00:00","2023-10-31T00:00:00","2023-11-01T00:00:00","2023-11-02T00:00:00","2023-11-03T00:00:00","2023-11-06T00:00:00","2023-11-07T00:00:00","2023-11-08T00:00:00","2023-11-09T00:00:00","2023-11-10T00:00:00","2023-11-13T00:00:00","2023-11-14T00:00:00","2023-11-15T00:00:00","2023-11-16T00:00:00","2023-11-17T00:00:00","2023-11-20T00:00:00","2023-11-21T00:00:00","2023-11-22T00:00:00","2023-11-24T00:00:00","2023-11-27T00:00:00","2023-11-28T00:00:00","2023-11-29T00:00:00","2023-11-30T00:00:00","2023-12-01T00:00:00","2023-12-04T00:00:00","2023-12-05T00:00:00","2023-12-06T00:00:00","2023-12-07T00:00:00","2023-12-08T00:00:00","2023-12-11T00:00:00","2023-12-12T00:00:00","2023-12-13T00:00:00","2023-12-14T00:00:00","2023-12-15T00:00:00","2023-12-18T00:00:00","2023-12-19T00:00:00","2023-12-20T00:00:00","2023-12-21T00:00:00","2023-12-22T00:00:00","2023-12-26T00:00:00","2023-12-27T00:00:00","2023-12-28T00:00:00","2023-12-29T00:00:00","2024-01-02T00:00:00","2024-01-03T00:00:00","2024-01-04T00:00:00","2024-01-05T00:00:00","2024-01-08T00:00:00","2024-01-09T00:00:00","2024-01-10T00:00:00","2024-01-11T00:00:00","2024-01-12T00:00:00","2024-01-16T00:00:00","2024-01-17T00:00:00","2024-01-18T00:00:00","2024-01-19T00:00:00","2024-01-22T00:00:00","2024-01-23T00:00:00","2024-01-24T00:00:00","2024-01-25T00:00:00","2024-01-26T00:00:00","2024-01-29T00:00:00","2024-01-30T00:00:00","2024-01-31T00:00:00","2024-02-01T00:00:00","2024-02-02T00:00:00","2024-02-05T00:00:00","2024-02-06T00:00:00","2024-02-07T00:00:00","2024-02-08T00:00:00","2024-02-09T00:00:00","2024-02-12T00:00:00","2024-02-13T00:00:00","2024-02-14T00:00:00","2024-02-15T00:00:00","2024-02-16T00:00:00","2024-02-20T00:00:00","2024-02-21T00:00:00","2024-02-22T00:00:00","2024-02-23T00:00:00","2024-02-26T00:00:00","2024-02-27T00:00:00","2024-02-28T00:00:00","2024-02-29T00:00:00","2024-03-01T00:00:00","2024-03-04T00:00:00","2024-03-05T00:00:00","2024-03-06T00:00:00","2024-03-07T00:00:00","2024-03-08T00:00:00","2024-03-11T00:00:00","2024-03-12T00:00:00","2024-03-13T00:00:00","2024-03-14T00:00:00","2024-03-15T00:00:00","2024-03-18T00:00:00","2024-03-19T00:00:00","2024-03-20T00:00:00","2024-03-21T00:00:00","2024-03-22T00:00:00","2024-03-25T00:00:00","2024-03-26T00:00:00","2024-03-27T00:00:00","2024-03-28T00:00:00","2024-04-01T00:00:00","2024-04-02T00:00:00","2024-04-03T00:00:00","2024-04-04T00:00:00","2024-04-05T00:00:00","2024-04-08T00:00:00","2024-04-09T00:00:00","2024-04-10T00:00:00","2024-04-11T00:00:00","2024-04-12T00:00:00","2024-04-15T00:00:00","2024-04-16T00:00:00","2024-04-17T00:00:00","2024-04-18T00:00:00","2024-04-19T00:00:00","2024-04-22T00:00:00","2024-04-23T00:00:00","2024-04-24T00:00:00","2024-04-25T00:00:00","2024-04-26T00:00:00","2024-04-29T00:00:00","2024-04-30T00:00:00","2024-05-01T00:00:00","2024-05-02T00:00:00","2024-05-03T00:00:00","2024-05-06T00:00:00","2024-05-07T00:00:00","2024-05-08T00:00:00","2024-05-09T00:00:00","2024-05-10T00:00:00","2024-05-13T00:00:00","2024-05-14T00:00:00","2024-05-15T00:00:00","2024-05-16T00:00:00","2024-05-17T00:00:00","2024-05-20T00:00:00","2024-05-21T00:00:00","2024-05-22T00:00:00","2024-05-23T00:00:00","2024-05-24T00:00:00","2024-05-28T00:00:00","2024-05-29T00:00:00","2024-05-30T00:00:00","2024-05-31T00:00:00","2024-06-03T00:00:00","2024-06-04T00:00:00","2024-06-05T00:00:00","2024-06-06T00:00:00","2024-06-07T00:00:00","2024-06-10T00:00:00","2024-06-11T00:00:00","2024-06-12T00:00:00","2024-06-13T00:00:00","2024-06-14T00:00:00","2024-06-17T00:00:00","2024-06-18T00:00:00","2024-06-20T00:00:00","2024-06-21T00:00:00","2024-06-24T00:00:00","2024-06-25T00:00:00","2024-06-26T00:00:00","2024-06-27T00:00:00","2024-06-28T00:00:00","2024-07-01T00:00:00","2024-07-02T00:00:00","2024-07-03T00:00:00","2024-07-05T00:00:00","2024-07-08T00:00:00","2024-07-09T00:00:00","2024-07-10T00:00:00","2024-07-11T00:00:00","2024-07-12T00:00:00","2024-07-15T00:00:00","2024-07-16T00:00:00","2024-07-17T00:00:00","2024-07-18T00:00:00","2024-07-19T00:00:00","2024-07-22T00:00:00","2024-07-23T00:00:00","2024-07-24T00:00:00","2024-07-25T00:00:00","2024-07-26T00:00:00","2024-07-29T00:00:00","2024-07-30T00:00:00","2024-07-31T00:00:00","2024-08-01T00:00:00","2024-08-02T00:00:00","2024-08-05T00:00:00","2024-08-06T00:00:00","2024-08-07T00:00:00","2024-08-08T00:00:00","2024-08-09T00:00:00","2024-08-12T00:00:00","2024-08-13T00:00:00","2024-08-14T00:00:00","2024-08-15T00:00:00","2024-08-16T00:00:00","2024-08-19T00:00:00","2024-08-20T00:00:00","2024-08-21T00:00:00","2024-08-22T00:00:00","2024-08-23T00:00:00","2024-08-26T00:00:00","2024-08-27T00:00:00","2024-08-28T00:00:00","2024-08-29T00:00:00","2024-08-30T00:00:00","2024-09-03T00:00:00","2024-09-04T00:00:00","2024-09-05T00:00:00","2024-09-06T00:00:00","2024-09-09T00:00:00","2024-09-10T00:00:00","2024-09-11T00:00:00","2024-09-12T00:00:00","2024-09-13T00:00:00","2024-09-16T00:00:00","2024-09-17T00:00:00","2024-09-18T00:00:00","2024-09-19T00:00:00","2024-09-20T00:00:00","2024-09-23T00:00:00","2024-09-24T00:00:00","2024-09-25T00:00:00","2024-09-26T00:00:00","2024-09-27T00:00:00","2024-09-30T00:00:00","2024-10-01T00:00:00","2024-10-02T00:00:00","2024-10-03T00:00:00","2024-10-04T00:00:00","2024-10-07T00:00:00","2024-10-08T00:00:00","2024-10-09T00:00:00","2024-10-10T00:00:00","2024-10-11T00:00:00","2024-10-14T00:00:00","2024-10-15T00:00:00","2024-10-16T00:00:00","2024-10-17T00:00:00","2024-10-18T00:00:00","2024-10-21T00:00:00","2024-10-22T00:00:00","2024-10-23T00:00:00","2024-10-24T00:00:00","2024-10-25T00:00:00","2024-10-28T00:00:00","2024-10-29T00:00:00","2024-10-30T00:00:00","2024-10-31T00:00:00","2024-11-01T00:00:00","2024-11-04T00:00:00","2024-11-05T00:00:00","2024-11-06T00:00:00","2024-11-07T00:00:00","2024-11-08T00:00:00","2024-11-11T00:00:00","2024-11-12T00:00:00","2024-11-13T00:00:00","2024-11-14T00:00:00","2024-11-15T00:00:00","2024-11-18T00:00:00","2024-11-19T00:00:00","2024-11-20T00:00:00","2024-11-21T00:00:00","2024-11-22T00:00:00","2024-11-25T00:00:00","2024-11-26T00:00:00","2024-11-27T00:00:00","2024-11-29T00:00:00","2024-12-02T00:00:00","2024-12-03T00:00:00","2024-12-04T00:00:00","2024-12-05T00:00:00","2024-12-06T00:00:00","2024-12-09T00:00:00","2024-12-10T00:00:00","2024-12-11T00:00:00","2024-12-12T00:00:00","2024-12-13T00:00:00","2024-12-16T00:00:00","2024-12-17T00:00:00","2024-12-18T00:00:00","2024-12-19T00:00:00","2024-12-20T00:00:00","2024-12-23T00:00:00","2024-12-24T00:00:00","2024-12-26T00:00:00","2024-12-27T00:00:00","2024-12-30T00:00:00","2024-12-31T00:00:00","2025-01-02T00:00:00","2025-01-03T00:00:00","2025-01-06T00:00:00","2025-01-07T00:00:00","2025-01-08T00:00:00","2025-01-10T00:00:00","2025-01-13T00:00:00","2025-01-14T00:00:00","2025-01-15T00:00:00","2025-01-16T00:00:00","2025-01-17T00:00:00","2025-01-21T00:00:00","2025-01-22T00:00:00","2025-01-23T00:00:00","2025-01-24T00:00:00","2025-01-27T00:00:00","2025-01-28T00:00:00","2025-01-29T00:00:00","2025-01-30T00:00:00","2025-01-31T00:00:00","2025-02-03T00:00:00","2025-02-04T00:00:00","2025-02-05T00:00:00","2025-02-06T00:00:00","2025-02-07T00:00:00","2025-02-10T00:00:00","2025-02-11T00:00:00","2025-02-12T00:00:00","2025-02-13T00:00:00","2025-02-14T00:00:00","2025-02-18T00:00:00","2025-02-19T00:00:00","2025-02-20T00:00:00","2025-02-21T00:00:00","2025-02-24T00:00:00","2025-02-25T00:00:00","2025-02-26T00:00:00","2025-02-27T00:00:00","2025-02-28T00:00:00","2025-03-03T00:00:00","2025-03-04T00:00:00","2025-03-05T00:00:00","2025-03-06T00:00:00","2025-03-07T00:00:00","2025-03-10T00:00:00","2025-03-11T00:00:00","2025-03-12T00:00:00","2025-03-13T00:00:00","2025-03-14T00:00:00","2025-03-17T00:00:00","2025-03-18T00:00:00","2025-03-19T00:00:00","2025-03-20T00:00:00","2025-03-21T00:00:00","2025-03-24T00:00:00","2025-03-25T00:00:00","2025-03-26T00:00:00","2025-03-27T00:00:00","2025-03-28T00:00:00","2025-03-31T00:00:00","2025-04-01T00:00:00","2025-04-02T00:00:00","2025-04-03T00:00:00","2025-04-04T00:00:00","2025-04-07T00:00:00","2025-04-08T00:00:00","2025-04-09T00:00:00","2025-04-10T00:00:00","2025-04-11T00:00:00","2025-04-14T00:00:00","2025-04-15T00:00:00","2025-04-16T00:00:00","2025-04-17T00:00:00","2025-04-21T00:00:00","2025-04-22T00:00:00","2025-04-23T00:00:00","2025-04-24T00:00:00","2025-04-25T00:00:00","2025-04-28T00:00:00","2025-04-29T00:00:00","2025-04-30T00:00:00","2025-05-01T00:00:00","2025-05-02T00:00:00","2025-05-05T00:00:00","2025-05-06T00:00:00","2025-05-07T00:00:00","2025-05-08T00:00:00","2025-05-09T00:00:00","2025-05-12T00:00:00","2025-05-13T00:00:00","2025-05-14T00:00:00","2025-05-15T00:00:00","2025-05-16T00:00:00","2025-05-19T00:00:00","2025-05-20T00:00:00","2025-05-21T00:00:00","2025-05-22T00:00:00","2025-05-23T00:00:00","2025-05-27T00:00:00","2025-05-28T00:00:00","2025-05-29T00:00:00","2025-05-30T00:00:00","2025-06-02T00:00:00","2025-06-03T00:00:00","2025-06-04T00:00:00","2025-06-05T00:00:00","2025-06-06T00:00:00","2025-06-09T00:00:00","2025-06-10T00:00:00","2025-06-11T00:00:00","2025-06-12T00:00:00","2025-06-13T00:00:00","2025-06-16T00:00:00","2025-06-17T00:00:00","2025-06-18T00:00:00","2025-06-20T00:00:00","2025-06-23T00:00:00","2025-06-24T00:00:00","2025-06-25T00:00:00","2025-06-26T00:00:00","2025-06-27T00:00:00","2025-06-30T00:00:00","2025-07-01T00:00:00","2025-07-02T00:00:00","2025-07-03T00:00:00","2025-07-07T00:00:00","2025-07-08T00:00:00","2025-07-09T00:00:00","2025-07-10T00:00:00","2025-07-11T00:00:00","2025-07-14T00:00:00","2025-07-15T00:00:00","2025-07-16T00:00:00","2025-07-17T00:00:00","2025-07-18T00:00:00","2025-07-21T00:00:00","2025-07-22T00:00:00","2025-07-23T00:00:00","2025-07-24T00:00:00","2025-07-25T00:00:00","2025-07-28T00:00:00","2025-07-29T00:00:00","2025-07-30T00:00:00","2025-07-31T00:00:00","2025-08-01T00:00:00","2025-08-04T00:00:00","2025-08-05T00:00:00","2025-08-06T00:00:00","2025-08-07T00:00:00","2025-08-08T00:00:00","2025-08-11T00:00:00","2025-08-12T00:00:00","2025-08-13T00:00:00","2025-08-14T00:00:00","2025-08-15T00:00:00","2025-08-18T00:00:00","2025-08-19T00:00:00","2025-08-20T00:00:00","2025-08-21T00:00:00","2025-08-22T00:00:00","2025-08-25T00:00:00","2025-08-26T00:00:00","2025-08-27T00:00:00","2025-08-28T00:00:00","2025-08-29T00:00:00","2025-09-02T00:00:00","2025-09-03T00:00:00","2025-09-04T00:00:00","2025-09-05T00:00:00","2025-09-08T00:00:00","2025-09-09T00:00:00","2025-09-10T00:00:00","2025-09-11T00:00:00","2025-09-12T00:00:00","2025-09-15T00:00:00","2025-09-16T00:00:00","2025-09-17T00:00:00","2025-09-18T00:00:00","2025-09-19T00:00:00","2025-09-22T00:00:00","2025-09-23T00:00:00","2025-09-24T00:00:00","2025-09-25T00:00:00","2025-09-26T00:00:00","2025-09-29T00:00:00","2025-09-30T00:00:00","2025-10-01T00:00:00","2025-10-02T00:00:00","2025-10-03T00:00:00","2025-10-06T00:00:00","2025-10-07T00:00:00","2025-10-08T00:00:00","2025-10-09T00:00:00","2025-10-10T00:00:00","2025-10-13T00:00:00","2025-10-14T00:00:00","2025-10-15T00:00:00","2025-10-16T00:00:00","2025-10-17T00:00:00","2025-10-20T00:00:00","2025-10-21T00:00:00","2025-10-22T00:00:00","2025-10-23T00:00:00","2025-10-24T00:00:00","2025-10-27T00:00:00","2025-10-28T00:00:00","2025-10-29T00:00:00","2025-10-30T00:00:00","2025-10-31T00:00:00","2025-11-03T00:00:00","2025-11-04T00:00:00","2025-11-05T00:00:00","2025-11-06T00:00:00","2025-11-07T00:00:00","2025-11-10T00:00:00","2025-11-11T00:00:00","2025-11-12T00:00:00","2025-11-13T00:00:00","2025-11-14T00:00:00","2025-11-17T00:00:00","2025-11-18T00:00:00","2025-11-19T00:00:00","2025-11-20T00:00:00","2025-11-21T00:00:00","2025-11-24T00:00:00","2025-11-25T00:00:00","2025-11-26T00:00:00","2025-11-28T00:00:00","2025-12-01T00:00:00","2025-12-02T00:00:00","2025-12-03T00:00:00","2025-12-04T00:00:00","2025-12-05T00:00:00","2025-12-08T00:00:00","2025-12-09T00:00:00","2025-12-10T00:00:00","2025-12-11T00:00:00","2025-12-12T00:00:00","2025-12-15T00:00:00","2025-12-16T00:00:00","2025-12-17T00:00:00","2025-12-18T00:00:00","2025-12-19T00:00:00","2025-12-22T00:00:00","2025-12-23T00:00:00","2025-12-24T00:00:00","2025-12-26T00:00:00","2025-12-29T00:00:00","2025-12-30T00:00:00","2025-12-31T00:00:00","2026-01-02T00:00:00","2026-01-05T00:00:00","2026-01-06T00:00:00","2026-01-07T00:00:00","2026-01-08T00:00:00","2026-01-09T00:00:00","2026-01-12T00:00:00","2026-01-13T00:00:00","2026-01-14T00:00:00","2026-01-15T00:00:00","2026-01-16T00:00:00","2026-01-20T00:00:00","2026-01-21T00:00:00","2026-01-22T00:00:00","2026-01-23T00:00:00","2026-01-26T00:00:00","2026-01-27T00:00:00","2026-01-28T00:00:00","2026-01-29T00:00:00","2026-01-30T00:00:00","2026-02-02T00:00:00","2026-02-03T00:00:00","2026-02-04T00:00:00","2026-02-05T00:00:00","2026-02-06T00:00:00","2026-02-09T00:00:00","2026-02-10T00:00:00","2026-02-11T00:00:00","2026-02-12T00:00:00","2026-02-13T00:00:00","2026-02-17T00:00:00","2026-02-18T00:00:00","2026-02-19T00:00:00","2026-02-20T00:00:00","2026-02-23T00:00:00","2026-02-24T00:00:00","2026-02-25T00:00:00","2026-02-26T00:00:00","2026-02-27T00:00:00","2026-03-02T00:00:00","2026-03-03T00:00:00","2026-03-04T00:00:00","2026-03-05T00:00:00","2026-03-06T00:00:00","2026-03-09T00:00:00","2026-03-10T00:00:00","2026-03-11T00:00:00","2026-03-12T00:00:00","2026-03-13T00:00:00","2026-03-16T00:00:00","2026-03-17T00:00:00","2026-03-18T00:00:00","2026-03-19T00:00:00","2026-03-20T00:00:00","2026-03-23T00:00:00","2026-03-24T00:00:00","2026-03-25T00:00:00","2026-03-26T00:00:00","2026-03-27T00:00:00","2026-03-30T00:00:00","2026-03-31T00:00:00","2026-04-01T00:00:00","2026-04-02T00:00:00","2026-04-06T00:00:00","2026-04-07T00:00:00","2026-04-08T00:00:00","2026-04-09T00:00:00","2026-04-10T00:00:00","2026-04-13T00:00:00","2026-04-14T00:00:00","2026-04-15T00:00:00","2026-04-16T00:00:00","2026-04-17T00:00:00","2026-04-20T00:00:00","2026-04-21T00:00:00","2026-04-22T00:00:00","2026-04-23T00:00:00","2026-04-24T00:00:00","2026-04-27T00:00:00","2026-04-28T00:00:00","2026-04-29T00:00:00","2026-04-30T00:00:00","2026-05-01T00:00:00","2026-05-04T00:00:00","2026-05-05T00:00:00","2026-05-06T00:00:00","2026-05-07T00:00:00","2026-05-08T00:00:00","2026-05-11T00:00:00","2026-05-12T00:00:00","2026-05-13T00:00:00","2026-05-14T00:00:00","2026-05-15T00:00:00","2026-05-18T00:00:00","2026-05-19T00:00:00","2026-05-20T00:00:00","2026-05-21T00:00:00","2026-05-22T00:00:00","2026-05-26T00:00:00","2026-05-27T00:00:00","2026-05-28T00:00:00","2026-05-29T00:00:00","2026-06-01T00:00:00","2026-06-02T00:00:00","2026-06-03T00:00:00","2026-06-04T00:00:00","2026-06-05T00:00:00","2026-06-08T00:00:00","2026-06-09T00:00:00","2026-06-10T00:00:00","2026-06-11T00:00:00","2026-06-12T00:00:00","2026-06-15T00:00:00","2026-06-16T00:00:00","2026-06-17T00:00:00","2026-06-18T00:00:00","2026-06-22T00:00:00","2026-06-23T00:00:00","2026-06-24T00:00:00","2026-06-25T00:00:00","2026-06-26T00:00:00","2026-06-29T00:00:00","2026-06-30T00:00:00","2026-07-01T00:00:00","2026-07-02T00:00:00","2026-07-06T00:00:00","2026-07-07T00:00:00","2026-07-08T00:00:00","2026-07-09T00:00:00","2026-07-10T00:00:00","2026-07-13T00:00:00","2026-07-14T00:00:00","2026-07-15T00:00:00","2026-07-16T00:00:00","2026-07-17T00:00:00"],"y":{"dtype":"f8","bdata":"AAAAAAAA+H8AAAAAAAD4fwAAAAAAAPh\u002fAAAAAAAA+H8AAAAAAAD4fwAAAAAAAPh\u002fAAAAAAAA+H8AAAAAAAD4fwAAAAAAAPh\u002fAAAAAAAA+H8AAAAAAAD4fwAAAAAAAPh\u002fAAAAAAAA+H8AAAAAAAD4fwAAAAAAAPh\u002fAAAAAAAA+H8AAAAAAAD4fwAAAAAAAPh\u002fAAAAAAAA+H8AAAAAAAD4fwAAAAAAAPh\u002fAAAAAAAA+H8AAAAAAAD4fwAAAAAAAPh\u002fAAAAAAAA+H8AAAAAAAD4fwAAAAAAAPh\u002fAAAAAAAA+H8AAAAAAAD4fwAAAAAAAPh\u002fAAAAAAAA+H8AAAAAAAD4fwAAAAAAAPh\u002fAAAAAAAA+H8AAAAAAAD4fwAAAAAAAPh\u002fAAAAAAAA+H8AAAAAAAD4f8bMzEwSmwZAfetROJoGBkBWj8L1jlQFQEPhepQAtARA8yhcDyQuBUDA9ShcXtcGQPMoXA\u002f5UwlAULgeBfjsCkCNwvUojZkLQOB6FC50bAxArUfhepWMDUDqUbgekt8OQKNwPQqjtw9ASOF6FJNPEECuR+H6v9YQQCpcj0L\u002f4BBA43oU7rJoEUDOzMyMCAoRQJuZmZnbxBBAU7geBcRsEEDOzMwMeGIQQF6PwvWwZxBApXA9SmVdEECuR+H6LY0QQFuPwjVASRBAWo\u002fC9QFvD0CA61G4wsYNQIrC9agqMQ1AI1yPQkPBDUD6\u002f\u002f\u002f\u002ft8MOQJOZmRl0eg9AA9ejcAuRD0BqPQrXu6QOQHMUrkdN9A1AhsL1KHsyDkCGwvWo9eENQAquR2FH+QtAzaNwPdVgC0A94XoUZcYLQM2jcD16hwxAw8zMTPxKDUD2\u002f\u002f\u002f\u002f2qsNQKZH4XpEoQ1AisL1KF0LDUD9\u002f\u002f\u002f\u002fXlMNQP3\u002f\u002f\u002f\u002fw3wxA1qNwPUnCC0BTuB4FKjoKQA3Xo3AedAlAxvUo3LcwCkB9FK5H+xQMQGpmZuaW\u002fg1AsEfherCyD0CuR+E6KNMQQHI9CpfAIhBA43oUrq2fEECmcD1K+TISQEvhepSPZxNAfhSux5IYFEA2MzNzW3sUQKZwPcqoYxVA7lG43gl7F0Bej8L1KR4aQON6FG6MoBxAuh6F61m7H0ABAABAWAAhQOxRuP6c5SFAUrgeheYNI0CamZm5wDUjQLgehcseziJAAAAAoDkEIkBcj8K1cIAhQB+F6\u002fHPMiFA9ihc76TmIEAVrkdhYWghQI\u002fC9Qi+byFAFK5HQdH9IECuR+H6jH0gQArXo7AkBSBAHoXrsY8gIEAVrkdhSVUfQD0K16MtEx1ACtejMAzVGkDNzMzMIOUYQArXo\u002fBNPBZAehSux1H7E0AK16MwSCoSQIXrUbiwPBBAZmZm5uBoD0DYo3D9ySUQQHsUroegnRFAUrgehR3SEkDWo3A9k+0TQHsUroe+DxVAPgrX47nKFUDtUbje5LwWQHI9ClfdshdA4noU7qPmFkDiehQuPkIXQArXo3AX\u002fBZAmJmZGcmUF0DgehSuOwQYQHA9Ctcq2RdA4HoU7ruYF0DgehQuLwMYQChcj8INRRlArUfhOu\u002fRGUC2HoXrDDwZQNWjcL15zRhAOwrXI4F6GEDC9SgcQGEXQJqZmdk0eBVAZmZmph6jE0D1KFzPz2cSQB2F61ET2hFAE65HoTj7EEB6FK7HU7gPQNajcP3uwRBAMzMzM74FEUBTuB5FhoMQQMb1KFwwZg9ALVyPQpvkD0DYo3D9uuIQQO1RuB6aMBJAAgAAwNa0EUCG61G4fKURQOJ6FO4E8RJAKlyPgsFqFUB7FK4HnuQWQB6F69HvnxZAwvUoXCImFkA7CtcjNJEWQCZcj0JK6xZAmJmZGeBJF0COwvWoeP4WQI7C9WjN1RdAcD0KlxwQGUAoXI+CTnYaQML1KJyjGRxACNejMEEhHkBlZmbmenwfQD0K10OcFSBAcD0KF+prIEDMzMzspTogQHoUrodGRiBAhetR+LDfH0Bdj8L1OBMeQM3MzMzJcxxAXY\u002fCdbeWG0CamZnZBE4bQJDC9eilYhxA2KNw\u002fRQvHUCuR+E600AdQOJ6FK74tRxAUrgeBfYdHEDLzMxMKaobQEbhepQ32hpA1qNwPQr6GkCjcD0KYWwaQOtRuJ6zsBhAPQrXIxyqGEAK16Pw9ZUYQGZmZmYYZxdA4noULlc9FkDNzMxMmOcWQPYoXI+kWhdAHoXrUU40GUBI4XqUiakZQB6F6xGNvBtA4noULlG+HkDiehQu4qIfQOxRuH4LTCBAzszMTCuLIEC5HoXrgHohQFK4HgU0jSJAXY\u002fCFSwXI0CkcD1KQCgjQK5H4Toz6SJAmpmZmZKoIkDiehSuYsAiQM3MzMyc+iFA16NwvStIIUC5HoVLiN0gQHE9CpciLCFAZmZmhuiMIEAzMzNTOA8gQD4K12MV0x5AmpmZWRYJHkB7FK4HG78bQHI9CheK+xlAFa5HoacqGkDNzMwMIe8ZQHsUrsea8RlAuB6FS6eBGUCF61E4DlIYQGZmZgb\u002fjRZAuB6Fq6MWFkDgehQOIaYUQKNwPUpb8RJACtej0MUWEkCF61F46GwSQBOuR0HtYhJArUfhuuukEkDLzMysTsoRQNajcL0SPRJARuF69OcCE0Bbj8K1a\u002fETQOJ6FI4VGhVASOF6FKryFUCF61EYGOAVQHA9CheCtxRAmpmZeU9JFEBSuB7FHrQUQB6F6zEdZhNAexSuR2YGE0AVrkeBob4TQF2PwjX9sRRA2KNwHTXWFUCQwvUo3hgXQHI9CreA+RdAhutR+NA2GUBK4Xp0utQaQNijcL0E1RxAksL1iATlHkBK4XoU1e0fQPYoXD+e0SBAZmZmRtQyIUAeheuhhmQhQLgehQsIqiFAcD0KB7PKIUDMzMzsMlQiQJmZmelceiJAehSup0PHIkCPwvXIn3EjQDMzM1PIsSNAPgrXozHfI0AVrkeByMkjQLkehYuUjyNA9ihcrz8KI0BI4XoU0pYiQKRwPYoxsyFA61G4vt4GIUBSuB5lpjIgQHA9CpeLmB9AW4\u002fC9VG\u002fH0CuR+F6SywfQNijcP3SoR5AkML1KIilHkB7FK4HfBofQPYoXI\u002fwXh9A43oUbrQsH0AqXI9CyqQeQD0K12OvWBxA9ShcT1XJG0CD61E4fwMbQN56FG7igxpAonA9SithGkDeehQuKwYaQPMoXM+HAhpAWo\u002fCdau1GkCD61F4W4EbQBOuR+GmMhxAhetR+BZAHECOwvXow5IbQD0K16M2tRpAehSuh2rlGkDLzMwMbfMbQHoUrscnthtAMzMzs+SFGkCamZmZ64wZQHoUrofChxhAW4\u002fCNccRGUCuR+H6wpcaQLoehStljxpANTMzs\u002fbyGkDjehRuNfkZQAvXo7AyrxlAIIXr0RxlGUB7FK5HE0sZQFK4HsXZlBhAuB6Fq6nSF0B7FK4HAm0XQOJ6FO6fqRdAexSuh\u002fq\u002fGEDNzMwMkfcYQCpcj0K\u002f9xZA2KNwvUBMFkAqXI+C8wMWQF2PwrWm9RVApXA9yp0SFUCG61E4LDoVQGhmZiahihRAuh6F6x4HFEClcD0KREUTQGhmZmbVbhNAaGZmZrskE0DOzMzMSYMSQNijcL3fcxJA2KNwvQgRE0DF9Sgcj4ATQFO4HgUUPhRArkfhei1uFEDNzMwMQYsTQB6F65GVihJAcD0K19JGEkB6FK6HoE8SQB2F69H2hxBA06NwvbWfD0BgZmbmlYMOQOZRuB6baQ9A5lG4nt2lDUCA61E4By4LQCNcj0LMfApAnXA9is3PCkAWhevR6dsIQJOZmRmS6wlALTMzM5QTCUCqR+H6engIQLYehWs1DghAg+tROJahCkCamZkZfg8NQKNwPYqy0Q9AZmZmJg\u002fIEUA+CtfjjHESQLBH4brfZRNAAgAAQOHhFEDOzMxM+WwWQIbrURhOHxhA7VG4XiBYGUCuR+HaVU0aQIbrUZg1LhxApXA9yknrHUAghesx3\u002fkeQMX1KFyQnR5AfRSup5xJHkA1MzMz4K4dQJuZmTkyhh1AIIXr0UKwHUByPQo3+dIdQOtRuJ6f\u002fxxAmJmZOWDKG0DC9SjcvFQaQNWjcB0AeBlACNejsMzzGUAI16PQeSoaQG49CpeFPBpAHYXrsdFcGkDqUbjebgsaQJiZmfnu5hlARuF6FJsdGkDzKFxv\u002fJ4ZQLYehasgZhpAJlyPIueFG0BtPQoXpuYcQN56FI7h1h5A\u002fv\u002f\u002fnyYhIED0KFwfvK4gQFC4HiUKIiFAyszM3ACYIUCD61G4JskhQKJwPTqiKSJARuF69OhLIkAoXI+SuwMiQITrUVgJLCFA9Chcvwg7IEA6Ctfj0MkeQEXhejQGZh1AHYXrcbCZG0D1KFxv9KcaQKNwPWpwBhpASOF6VEtCGUAK16Pwb9AWQD0K12PLfRRAhetROJJ9EkDrUbje8GsQQBOuR2HMUQ1AcD0KV2RFC0CG61G4Z7YIQLoehWt0RgZAmpmZGYeZBEDqUbgeFpoDQFC4HgXOPwNARuF6lCd\u002fBEBaj8L1+FkHQOpRuJ6vfwlAo3A9ipTuC0DqUbieE4ANQKBwPYqJhQ5AbT0K1xDNDkDdehSuQCcPQFqPwjXnAxBAMjMzMzStEUD+\u002f\u002f8\u002fJ+kSQEbhetQzVxRAZWZm5pIHFUD+\u002f\u002f+\u002fDDIWQHA9CteUWRZA4HoULpGEFkDrUbiejxgWQJDC9WgpfhZAKlyPAp8rFkBI4XoUaO4VQDMzM7MQbBVASOF6lJjLFEAAAABAE0MUQEjhehSUORNA2KNwPXsSEkDjehQuBCIRQMP1KBwLexBAXY\u002fC9dz+D0AK16NwaBUPQNajcL0EUQ1AIIXr0fDUCkDNzMzM9V4IQK1H4XrWKgZAXY\u002fC9YrGBkDD9Shcy24IQON6FK5l4QlAcz0K13sWDEBACtej02gMQIrrUThqiAxAENej8GSDDEAwXI\u002fCnhEMQHY9CtfbeAtAgxSuxyYyDEBtZmbmRoUNQBDXo3DfQw5AI4XrUQhdDkDK9ShctUgOQK1wPYrPTA1AKoXrUe7NDEBGCtejggQNQHo9Cle4fg1A7XoUrtRND0DyUbie3OsQQKpwPUoIahBAAClcj+bND0BwZmZmZQEPQPNRuB5ZtQ5ATeF6lDOBDkC9HoXrbbcPQF6PwvVNbRBAC9ejcO8PEUDOzMyMAecRQCpcj0K\u002fDBJAcj0KF8oyEkByPQoXnlISQNijcH1\u002ffhNAXY\u002fCtZZ7FECuR+H6kOQUQPYoXI9wThVAIIXrEd2LFUAVrkdhZ9QVQChcj8InaBZAjsL16AiOFkDC9SicJbIWQBOuR6Fi8BZAW4\u002fCtSgrF0CF61F4kHAWQHI9CldZiBVAU7geBc5zFEDYo3C9f6gTQPgoXM9t0RJAsEfhenNGEkAiheuRDugRQMb1KFyvyRFA5XoUrll+EUB+FK6H8XcQQBquR+F2gQ9AVrgeBSEND0DjehQuK\u002fcNQNqjcD0SEAxAamZm5gItC0CTwvUozwcJQLNH4fp5UAdAgBSuR7EYBUCqcD0KNnsDQGpmZubuAwZA0MzMTBmSCkC6HoVr\u002f+8OQAAAAIDElBFAAAAAQEmIE0DC9ShcQGIVQAAAAEA7MRZAjsL1KLdgF0C2HoVrz2IYQDsK12PDMRpArUfhOgoFHEAzMzNzZFAdQPYoXE\u002fYFR5A9ihcT0jZHUBdj8L1Ha0eQKVwPYpNcR5AaGZmJqimHUCbmZkZdfEdQAIAAMB8kR9Ar0fhumB\u002fIECvR+FaqncgQHI9CncMJSBAVbgeRfSJHkDG9Sic+J0cQH4UrsdmqBpAdT0KVyKeGEAYrkchGp8XQJ2ZmZlqxBZAYI\u002fCtfabFUAFAACAvEgUQCOF61HhrBJAamZmJuxPEUCdmZnZnxIRQJPC9Wjd9xFAdT0KV9znEUBgj8K12isSQGCPwnUjoRNAIoXrURdeFEArXI9CvSQUQAvXo7AplBNAxfUo3I8eEkAWrkehY9EQQM7MzEznjBBAC9ejcMYJEEClcD1KDCkQQNijcL3JzBBAexSuRy66EEAqXI\u002fCQH8QQIXrUfg5tRBAZWZmZvxbEEDA9SjcI4cQQP7\u002f\u002f783lxBAGoXr0SRnD0DmUbgeUw0NQNCjcD29DQxAYGZm5q+BC0DQo3A9nlkJQHYUrscPzAdAJlyPQg1FCEBQuB4FQLEIQB2F61HpiglAcD0K17\u002f6CUBQuB6Fv9YJQD0K1yOIzQpAkML1KCZjCkATrkdh5WIKQD0K1yNyngtAMzMzs0DEDEDNzMxMCW4NQLoehWsaNhBAQArXo6pcEUBACtejxjgTQF6PwvV3VRVAcz0KlyKwF0Dao3D9C2EZQIjrUbihSRtApnA9ipnvHEAN16OwwAseQHM9CpfV3R1ApnA9CnK6HUDOzMyM3\u002fMdQLBH4Xrk5R1AVbgeBUJtHkCSwvWoxbseQLoehasauh5AksL16BTcHkDao3B95zAeQLBH4fq+nB1ApnA9CshLHUCG61H4H6cbQJDC9ejUlxpAUrgeRW2nGUA+CtdjlacYQNijcP0YRxdAFq5HYQCuFUB9FK5HWBIUQAIAAEBiVhJAzszMDBucEEBTuB6Fb08OQLBH4XpnLwxAAwAAgFk8CkBACtejqfoIQLBH4XqvRwhAIIXr0cT1CUBTuB4FhQ8NQErhehT3kA9AzszMDNZkEUD4KFxPF8gRQDUzMzM5\u002fxFAux6Fa8CAEkAN16MwMtUSQGCPwvWMcBJAIoXrkShtEkDuUbheZ6MSQKZwPcqiEhJAksL1aJD8EUBzPQqXQtQSQIbrUfgf\u002fBNAfRSuhzY4FUDF9SgcqjwWQIbrUXh36BZASOF6FCKBF0DWo3A9qS4XQK5H4TqNMxZASOF6FECJFEBbj8K1uMISQEbhehQ+pxBAwPUoXP\u002ftDkAmXI9CBY4MQE24HoXfyQpAgOtROM26CEANrkdh470HQDYK1yOqAAdAxszMzH6RBkANrkdhSoAIQONRuB6pmglAQOF6lCPTCUA2Ctejjf4IQGBmZuZycQdA0KNwPS6NBkBqPQpXdqgGQNCjcL1QPgZA8ChcD2aNB0AWhevRFMMHQHMUrsfZLwlA2noULmy7C0C1HoXrO0AQQEXhelR4qxJA8yhcj+juFEDA9SgcnacWQGVmZmZJ7xdAW4\u002fCdXOhGEDLzMxMrysZQAjXozBvCRlAehSuB73aGEAyMzOzwyYYQAjXo\u002fC85hZA1aNwvb15FkDoUbge3cQWQDAzMzMGhxZAOwrXY4ROFkDqUbieA5AWQP7\u002f\u002f\u002f+B6BVACtejcMJdFUATrkehft4UQArXo3AuvxNAE65HIRKlEUDzKFyPPGgPQIPrUThLlgtARuF6FLMyCUBjZmbmNWIHQNOjcD3wrAZAJlyPwjVhBUC2HoVrr5IFQB2F69HqTgRAzczMzNUcBECamZmZBFcFQBauR+F+ngVA43oUrjEmBkAAAAAAQcgGQK1H4XocjgZAcD0K13RHBUCtR+H6kGEFQK1H4Xqu7QRACtej8OygBUCtR+F6UbIEQKNwPQo17wNA1qNwPaUABEBdj8J1ji8IQH0UrkfvCgtAfRSuRwl3DkBoZmam5IoQQD4K12PpIhJAkML16M8lE0AqXI8Cbm0VQHA9Cte3hRdA9ihcjxKpGUAVrkch44QbQHsUrgdGyxxApXA9imxHHkB7FK4HUwIgQPYoXM+v1iBAw\u002fUofOU0IUBnZmZGt88hQGdmZqY88yFAhutR2PtWIkCRwvWoKsIiQIbrUXg74yJA7VG4vs0uIkByPQrXRq0hQEnhenSQPyFAAQAAwLOpIEDiehSuvx4gQIjrUXg8oB5Acz0KV00VH0DtUbh+6DQgQEnhelR5vyBAAQAA4A4bIUAL16Nwzd0hQCCF6xE1SSJAxPUo3PMoIkAqXI\u002fC6\u002fwhQLoehYtJQiJAr0fhWuNSIkCRwvXIB8UiQCCF6\u002fGJQCNAmpmZ2QJOI0Bdj8K1S9gjQIbrURhGeyRArkfhmnMkJUD2KFwPXQsmQHwUrgcFICdAZ2ZmRvL0J0CQwvUo43ApQD4K14MCAClAw\u002fUovKBOKEAfhesRDecnQNijcH30tidAhutRGIeYJkAqXI8CLFAlQM7MzIyLgyRArkfh+sTlI0ABAABgt1cjQOJ6FO7OOiNAH4XrsVvxIkCG61EYhakiQF2PwtUY1SJA2KNw3ZJ4IkD2KFyvD5MhQEnhetTxCSFAU7geBUP\u002fH0Bdj8K1mN4fQBWuR4EJCiBA2KNwPTIWH0BK4XrUaYkeQF6PwnUw2RxA2qNwfcIfGkArXI8Co84XQA3Xo7Bo8hZAamZmJki0F0AtXI9CMtMYQMb1KJz7HxpAskfh+lJ9G0Bgj8J1at8bQGCPwrXjjxtAS+F6lJysG0DQzMwMIb4bQAMAAED4+RtA5XoULpd9HEA2MzOzf9YcQFW4HoX5Sx1AK1yPwnV3GkDlehTu6dwXQJ2ZmVll0xVAVbgehTUCFUCmcD0K+fEUQKZwPcpiiRVAksL16MldFUDOzMxM4QYVQHI9ChegIRRAAAAAADMfFEAeheuRdfsTQOB6FK6z5xJAE65H4f50EkDqUbheeUgSQP7\u002f\u002f7\u002fJZhFA9Shcj2+4EECqR+H6wpAPQPAoXI+K1A5ATbgeBeMpDUAwMzOzevwNQD0K16OByg5ArUfheiveDkC2HoVrvcoOQHA9CtfMRQ5Ao3A9CmwPDkBmZmbmyZIMQBOuR2F6bg1AMzMzM1T9DUD2KFwP68oNQEAK16PYhgxAk8L1qEVNDEBN4XqU6LIMQJbC9ajJHwxAUOF6FIfiDED9KFwPxrYOQBDXo3BZxg9AWrgehXcWD0C2R+F6HtQNQCaF61EmrwxAoJmZGTJVCkBN4XqUYbQKQFa4HgWm5QlA0MzMTIlDC0DD9ShcHGoNQPYoXI9djw9AzczMDCf\u002fEEBmZmYmSZwRQD0K16PlbBFAHoXrUe6iEUAyMzMzAroRQG49ClcHYxFA3noUbtpTEUB4FK4HJpMQQIrC9ajYuw9AxszMTDgHDUDQo3C9c\u002fwKQJOZmZlFXwtAVo\u002fCdTS9C0BWj8L1DmgMQE24HgVUfQ1AOgrXI4VzD0AmXI9CXyoRQI3C9ajcIRJAWo\u002fCtbPSEkBF4XqUi7sTQPMoXM9l0xRA\u002fv\u002f\u002fv7KkFUCD61E4+jkXQI3C9Wj3VhlAwPUonGryGkD+\u002f\u002f9\u002f8CscQP7\u002f\u002f3+4sx1AeBSux5C4H0AJ16NQF8IgQChcj2I9\u002fyFACtejsDGJIkAyMzMzvBAjQHA9Cje6+CNAHoXrkUewJEAK16NwfEUlQMzMzIx2myVAwvUoXK+JJUAAAABgjeAkQDMzM1Nn2CNAFa5H4ZEmI0BxPQqXrZEiQI\u002fC9Sj07iFA9ihcT1erIUDsUbh+0gshQGdmZqY39yBAzszMDG5OIUBTuB4lHqchQMT1KPz+kiFAzszMrHMtIkD2KFzvlGAiQIbrUbhf0SNAAAAAQA\u002fxJEBSuB7FVJclQArXozAhNyZAehSup3jUJUBmZmYmFdMkQPUoXE\u002fYcyRAzMzMjE9jJECZmZl5uXckQMzMzGzCcSRAehSux5vXI0BRuB7lI10jQEbhehRXsiJAZWZmRtVfIkDqUbj+JXQhQOpRuJ7UPCBALjMzswzGHkBiZmYmaPkeQC4zMzPp7x1ALjMzs4hNHUBYj8K1glEbQJaZmdlOzBlA\u002ff\u002f\u002ff0BGGEBOuB6FdfYWQN56FG6AJxdAULgexQBPF0AmXI9CD84WQKJwPQqqDRdA4HoU7vPZFkATrkehk0cWQFK4HoWR1RZA4noUrnWPF0ACAABAvm4XQD4K1yM3DxlAK1yPwgoVHEDjehRuAvEfQOJ6FI5vFiJANTMzs\u002fY9I0BoZmbmfPgjQAIAACD9wSRApnA9qkE3JUAghesRCKUlQHwUrgcyqSVAxPUovPFEJUB8FK6H240kQK9H4dpxpCRAuh6Fy2ySJEAghetxnLMkQKVwPYpzriRArkfhOqCUJECPwvWozpIkQMzMzAyuxiVA6lG4fp6KKEAAAABg6ZwqQEbhevRWtyxA4HoUzj\u002fLK0AzMzMzCAYrQJqZmVkp7SlA61G4nlaKKEB6FK5H3SonQDIzM1PE3yZAehSu5zpFJkB6FK7n7HgmQFuPwnWNSiZAhOtReDdHJkCE61F4FZQmQEbherThVidAMjMzM2zAJ0BG4Xq0OckoQChcj2JG1SlAo3A9CsDiKkAeheuxat4pQFyPwjW6MSdAR+F6lMwuJEDhehSuNdsgQML1KHxyHiBAHoXrUcAmHUA9CtejcYMcQEbhehTbLR1AE65H4YWmHUCD61F4bmocQJiZmRkztRtACtej8GfWGUBdj8I1dAcZQMP1KJyomxlAUrgeBWRiGUCF61E4OekZQJDC9WjyGxlAzczMDNnWF0DD9SgcgS0WQHI9Cld\u002f8hNAm5mZ2fAeE0AL16MwqeYSQJuZmRk2khJADdejMHsJEkDjehRupCwRQIbrUTgx9hBAhutRuHxVD0Dao3C9W18NQDYzM7PxbQtA0MzMTDD7CkDG9SjcitsJQNqjcD1U4gpAAAAAAEo+DED2KFyPn88KQDMzM7MkawlAFq5HYYNLBUBTuB6Fm84DQIbrUbipYAJAKlyPQsIDAUCjcD0K88sBQKNwPQoo6wNAIIXrUUk7CEBmZmbms4AMQIPrUThkMA5AjsL1KEx6EEDrUbjePncRQFK4HkUM7xJAW4\u002fCdTxlE0A9CtejxHgTQMP1KBwDHxNASOF61BJiE0AqXI+CDw0TQON6FG4gGBNAVbgehWvJE0DG9Sjcl6IUQPooXI+5lRVAskfhegsZFkCocD2KrZ8WQC1cjwK2DBdA0szMDEQ2FkBgj8L1oVwVQH4UrsfU7RNAqHA9yvpNE0Dbo3C9LzsTQIrrUbi2OBNAS+F61AM9EkBL4XrUt18SQJ2ZmdmmjhRApnA9CqTFFkCG61F4\u002fUwZQHsUrkfbPBxAuB6Fa70BH0C4HoXLnJ8gQHoUrucqgiFAPQrX49kmIkA9CtfD918iQML1KBy4hyJAUbge5dDzIkAehevxwEsjQAnXo5AzAiRAehSup+2AJEDgehRuxfQkQML1KByEwSRA9ShcD65PJEAyMzPznY0kQK5H4Tr6NiVAuB6FC3YhJUC4HoXrD\u002fwjQD4K1wMmvCJAUrge5Y6aIUD4KFxP9sMfQO5RuF7dzxxAnZmZmXfGGkBACtfj6kcZQNDMzAx1GRhAiOtRuDibF0B+FK6HK8MYQJ2ZmRkGURtAux6F672FHUB+FK4HZ9QeQHI9CtfPYSBAAgAA4I0DIUByPQpXjZ8hQCCF6zGXgCJANDMzkzCvIkCQwvWoQvMiQK5H4TpdUiNAKlyPgu6wI0CamZk5KFEkQArXo1DyriRAR+F6tGPeJEBSuB5lojclQK5H4do9JSVAZmZmJpIAJUBwPQo3WbYkQDIzM1MT1CRA1qNw3a\u002fWI0DMzMysFKgiQHoUrkdJySFAwvUo\u002fNnHIECicD3KIhofQJiZmVmmuR1AhetR+MPTHUCamZmZRggeQJuZmRmhPR5A7lG4nt17HkCI61G4V2ceQLsehSvLYx5A7lG4nmOzHkCTwvUoaegeQGpmZibs7B9AQgrXo\u002ff5H0CwR+EalTUgQCCF65EC1iBA+ChcL69EIUAN16NQuUghQO5RuF7VlyFA+ShcTxDYIEArXI9CNhwgQAUAAIAwjh9ABgAAgOs4H0BWuB4FNfodQLNH4frxfRxA5noU7ks9G0AN16PwMgYaQH0Urgd3yxhAxvUo3NecGECAFK7HnkIZQCOF6xF9SxlANjMzsx+iGECAFK6H\u002frkXQNDMzEw+CRdADdejsEsaFkCK61E4f5EUQL0ehev1bxNAnZmZGe2pEkD6KFwPgEISQBauR+EcgBJAYI\u002fC9exIE0DmehSu4ycUQKZwPYpwRhRANjMzM3REFUD2KFyPxSIVQPYoXI9IjhRAQArXIzv7E0D2KFwPCxoTQBOuR2EBihFA+v\u002f\u002f\u002f35ED0CTmZmZqaIMQIbC9Shc0wxAcxSuR5mYD0BQuB6FArARQArXo3Bh3xNAo3A9ioqDFUCNwvWoRv8WQD0K16PxJhhAULgehS9TGUBG4XoUPbYaQHoUrofF3xtAg+tReAqUHkBmZmZm+YYgQCpcj0LQUCFAm5mZmZErIkACAADglFsiQHI9CpcCKiJAaGZm5sUgIkACAADAn9EhQGhmZuYWpCFA2qNwPfh\u002fIkC7HoXr0fwiQJuZmZmCsiNAFa5H4QkoJECQwvXo37MkQMP1KBxD+iRA7VG4HlNEJUDiehSumdQlQAIAAIBnECVAksL1aNPJJEDjehTu9tQjQAvXozAyFCJAexSux1jOIEBmZmZmD8weQKNwPYpJLBxAmpmZGaY5HEDWo3A9TUEdQOB6FC5gqx1AKlyPQsWNHkCwR+H6mgUfQMP1KNz\u002fgh1AsEfh+ulOHEBgj8L1\u002fCEaQHY9Cle\u002fnBhA+ihcD4stFkBK4XoU1TcUQEAK16NIdRJAVrgehQ1LEUB9FK5HBrkTQCCF65GMahRAU7gehYy4FUBzPQoX1NIXQJ2ZmZm3fhlADdejME3UG0DtUbgeuE4dQGZmZiaPhx1AkML16IYVHUAL16Nwsc4cQHsUrocXPB1ACtej8NL3HUCuR+F6kwkdQPUoXE+JShxARuF61DVcG0A7CtfjdJ4aQML1KJyeiBlAwvUoHM\u002ffGUDLzMwMC6kaQKtH4TrclRpAMjMz8ysnGUAdhesR3icYQFC4HsXt7hhAwPUoHPtBGEBG4XrUmKcYQOpRuF4uVhlA4HoUbuVXGUCjcD1KuMQaQCCF65EEcxxAzszMjLq6HUAVrkch+XcdQCpcj4J4VR1AaGZmJi51HkByPQoXE0wfQHI9CndSxiBAzszMbJAxIUCG61FYfbIiQJqZmblq1yNA7FG4fgOvJEBcj8KVS\u002fklQMzMzCxLOydArUfh+l2WKECYmZkZBH0pQI7C9YichCpAth6Fy7YFK0BlZmZmgAErQIPrUViositAwPUoPLz6K0C1HoVrM3QsQN56FE7qci1A6lG4HvGgLkAyMzMTSqsvQBOuR1EwZjBA\u002f\u002f\u002f\u002fP7jRMEAeheux0IEwQArXo3DNwDBACtejkFJlMEDWo3D9O90vQIXrUfiuli5AzczMzF3kLEBTuB7FTH0sQH0UrofR7ytAK1yPgie4KkDF9SgcZCgqQJLC9ShV\u002fyhAXo\u002fCtRztJ0A2MzNznjgnQDYzM\u002fOJGyZAux6Fa2vwJEDjehTuscYjQIbrUfip6SJAw\u002fUoXCGdI0DD9Shc6VojQD4K12MOZiNAuh6F63VNI0AL16PwjuchQEjhelTrdiJA4noUbnxxI0D2KFyP\u002f7EkQKVwPYqaKCZASOF6VC6wJkDrUbge0iAnQKNwPUp7FChA1qNw\u002fehAKED1KFwPcRUqQAAAAIBImCxAjsL16K6mLkA="},"type":"scatter","xaxis":"x","yaxis":"y2"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"},"margin":{"b":0,"l":0,"r":0,"t":30}}},"xaxis":{"anchor":"y","domain":[0.0,0.94]},"yaxis":{"anchor":"x","domain":[0.0,1.0],"title":{"text":"Close"}},"yaxis2":{"anchor":"x","overlaying":"y","side":"right","title":{"text":"MADEV"}},"title":{"text":"AAPL close and deviation from its rolling SMA"},"hovermode":"x unified"},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('1379c24d-91f2-4c9c-963b-49e3a923eca6');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div>
+</div>
+</div>
+
+
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/quantbert\.github\.io\/qrt\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../indicator/qrt/ema.html" class="pagination-link" aria-label="Exponential moving average (EMA)">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Exponential moving average (EMA)</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../indicator/qrt/volume_spike_ratio.html" class="pagination-link" aria-label="Volume spike ratio">
+        <span class="nav-page-text">Volume spike ratio</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.dev/quantbert/qrt/blob/main/indicator/qrt/madev.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/indicator/qrt/madev.ipynb" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
