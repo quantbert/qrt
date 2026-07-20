@@ -372,8 +372,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="./factor/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">q.factor — Factors</span></a>
+            <a href="./cross_section/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.cross_section — Cross-sectional analysis</span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -381,7 +381,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./factor/roadmap.html" class="sidebar-item-text sidebar-link">
+  <a href="./cross_section/roadmap.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Roadmap</span></a>
   </div>
 </li>
@@ -670,7 +670,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#q.data-acquire-and-persist-observations" id="toc-q.data-acquire-and-persist-observations" class="nav-link" data-scroll-target="#q.data-acquire-and-persist-observations"><code>q.data</code>: acquire and persist observations</a></li>
   <li><a href="#q.calendar-define-market-time" id="toc-q.calendar-define-market-time" class="nav-link" data-scroll-target="#q.calendar-define-market-time"><code>q.calendar</code>: define market time</a></li>
   <li><a href="#q.indicator-measure-one-market-series" id="toc-q.indicator-measure-one-market-series" class="nav-link" data-scroll-target="#q.indicator-measure-one-market-series"><code>q.indicator</code>: measure one market series</a></li>
-  <li><a href="#q.factor-compare-assets-cross-sectionally" id="toc-q.factor-compare-assets-cross-sectionally" class="nav-link" data-scroll-target="#q.factor-compare-assets-cross-sectionally"><code>q.factor</code>: compare assets cross-sectionally</a></li>
+  <li><a href="#q.cross_section-compare-assets-cross-sectionally" id="toc-q.cross_section-compare-assets-cross-sectionally" class="nav-link" data-scroll-target="#q.cross_section-compare-assets-cross-sectionally"><code>q.cross_section</code>: compare assets cross-sectionally</a></li>
   <li><a href="#q.feature-define-and-materialize-model-inputs" id="toc-q.feature-define-and-materialize-model-inputs" class="nav-link" data-scroll-target="#q.feature-define-and-materialize-model-inputs"><code>q.feature</code>: define and materialize model inputs</a></li>
   <li><a href="#q.preprocess-fit-the-training-boundary" id="toc-q.preprocess-fit-the-training-boundary" class="nav-link" data-scroll-target="#q.preprocess-fit-the-training-boundary"><code>q.preprocess</code>: fit the training boundary</a></li>
   <li><a href="#q.model-train-and-inspect-models" id="toc-q.model-train-and-inspect-models" class="nav-link" data-scroll-target="#q.model-train-and-inspect-models"><code>q.model</code>: train and inspect models</a></li>
@@ -723,7 +723,7 @@ Warning
 </div>
 <section id="the-research-flow" class="level2">
 <h2 class="anchored" data-anchor-id="the-research-flow">The research flow</h2>
-<pre class="text"><code>q.data -&gt; q.indicator / q.factor -&gt; q.feature -&gt; q.preprocess -&gt; q.model
+<pre class="text"><code>q.data -&gt; q.indicator / q.cross_section -&gt; q.feature -&gt; q.preprocess -&gt; q.model
                            \-&gt; q.signal -&gt; q.portfolio -&gt; q.bt -&gt; q.stats / q.plot
              q.calendar supplies exchange-time semantics across the flow</code></pre>
 <p>Each block describes what an operation <em>is</em>, not every way its output might be used. An SMA can become a stored model feature, a chart overlay, or an online rule input; it remains an indicator in all three cases.</p>
@@ -779,9 +779,9 @@ Warning
 <p>Use indicators in notebooks, monitoring, rules, backtests, or as compute functions inside <code>q.feature.Feature</code>.</p>
 <p>Boundary: indicators do not register metadata, persist themselves, compare a whole asset universe, or express a buy/sell decision. Functions accept one instrument at a time and must not silently cross symbol boundaries.</p>
 </section>
-<section id="q.factor-compare-assets-cross-sectionally" class="level3">
-<h3 class="anchored" data-anchor-id="q.factor-compare-assets-cross-sectionally"><code>q.factor</code>: compare assets cross-sectionally</h3>
-<p><code>q.factor</code> owns characteristics that require a universe snapshot or interactions between assets: ranks, sector neutralization, and relative rating models such as Elo.</p>
+<section id="q.cross_section-compare-assets-cross-sectionally" class="level3">
+<h3 class="anchored" data-anchor-id="q.cross_section-compare-assets-cross-sectionally"><code>q.cross_section</code>: compare assets cross-sectionally</h3>
+<p><code>q.cross_section</code> owns characteristics that require a universe snapshot or interactions between assets: ranks, sector neutralization, and relative rating models such as Elo.</p>
 <p>Use factors when the value of one symbol depends on other symbols at the same point in time. Factor output can be stored through <code>q.feature</code> or interpreted by <code>q.signal</code>.</p>
 <p>Boundary: a factor scores or transforms assets; it does not choose portfolio weights. Feature-column selection is also not factor work.</p>
 </section>

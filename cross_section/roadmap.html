@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Factors – qrt</title>
+<title>q.cross_section Roadmap – qrt</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,41 +23,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -68,8 +33,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../factor/roadmap.html" rel="next">
-<link href="../indicator/roadmap.html" rel="prev">
+<link href="../feature/index.html" rel="next">
+<link href="../cross_section/index.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -153,7 +118,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../factor/index.html">q.factor — Factors</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../cross_section/index.html">q.cross_section — Cross-sectional analysis</a></li><li class="breadcrumb-item"><a href="../cross_section/roadmap.html">Roadmap</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -373,8 +338,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../factor/index.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">q.factor — Factors</span></a>
+            <a href="../cross_section/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.cross_section — Cross-sectional analysis</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -382,7 +347,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../factor/roadmap.html" class="sidebar-item-text sidebar-link">
+  <a href="../cross_section/roadmap.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Roadmap</span></a>
   </div>
 </li>
@@ -664,16 +629,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#elo-ratings" id="toc-elo-ratings" class="nav-link active" data-scroll-target="#elo-ratings">Elo ratings</a></li>
+  <li><a href="#elo-follow-up-issues" id="toc-elo-follow-up-issues" class="nav-link active" data-scroll-target="#elo-follow-up-issues">Elo follow-up issues</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/factor/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/factor/index.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/cross_section/roadmap.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/cross_section/roadmap.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../cross_section/index.html">q.cross_section — Cross-sectional analysis</a></li><li class="breadcrumb-item"><a href="../cross_section/roadmap.html">Roadmap</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Factors</h1>
+<h1 class="title">q.cross_section Roadmap</h1>
 </div>
 
 
@@ -690,21 +655,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><code>q.factor</code> is reserved for characteristics calculated across a universe, including ranks, neutralization, and relative rating models such as Elo.</p>
-<section id="elo-ratings" class="level2">
-<h2 class="anchored" data-anchor-id="elo-ratings">Elo ratings</h2>
-<p><code>q.factor.compute_elo</code> compares each symbol with nearby-rated symbols in the same sector on each date. Call it once with the complete long-form universe; do not group by symbol before calling it.</p>
-<p>The input requires <code>date</code>, <code>symbol</code>, <code>close</code>, and <code>sectorid</code>. The sector column is not optional because matches are constrained to peers in the same sector. Missing sector values are placed in one <code>"UnknownSector"</code> bucket.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>rated <span class="op">=</span> q.factor.compute_elo(</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    daily_prices,  <span class="co"># date, symbol, close, sectorid</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    daily_vol_window<span class="op">=</span><span class="dv">20</span>,</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    matches_per_stock<span class="op">=</span><span class="dv">1</span>,</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    initial_elo<span class="op">=</span><span class="dv">1500</span>,</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    rf_data<span class="op">=</span>daily_risk_free_rates,  <span class="co"># optional: date, rate</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The result includes prepared return/volatility columns, the current <code>elo</code>, the day’s <code>elo_change</code>, and cumulative <code>matches_played</code>. If <code>rf_data</code> is supplied and <code>use_excess_returns=True</code>, matches use log return minus the aligned daily risk-free rate; otherwise they use log returns.</p>
-<p>This is a migration of the legacy model, not a claim that every modeling choice has been settled. See the <a href="../factor/roadmap.html">factor roadmap</a> for the known match scheduling, K-factor, sample-data, and missing-price issues.</p>
-<p>A factor measures relative characteristics; portfolio selection and weighting belong in <code>q.signal</code> and <code>q.portfolio</code>.</p>
+<ul class="task-list">
+<li><label><input type="checkbox">Cross-sectional ranks with explicit date and symbol columns</label></li>
+<li><label><input type="checkbox">Group and sector neutralization</label></li>
+<li><label><input type="checkbox">Cross-sectional z-scores and winsorization</label></li>
+</ul>
+<section id="elo-follow-up-issues" class="level2">
+<h2 class="anchored" data-anchor-id="elo-follow-up-issues">Elo follow-up issues</h2>
+<p><code>q.cross_section.compute_elo</code> is migrated with <code>symbol</code> replacing <code>insref</code>. <code>sectorid</code> remains a required input because the current algorithm only matches symbols inside the same sector.</p>
+<ul class="task-list">
+<li><p><label><input type="checkbox">Add sector classifications to a multi-symbol demo dataset before adding an Elo tutorial. The bundled AAPL/SPY/BTC-USD datasets contain OHLCV only and do not have <code>sectorid</code>; inventing sectors in an example would conceal a real required input and produce a misleading demonstration.</label></p></li>
+<li><p><label><input type="checkbox">Redesign match scheduling as deterministic simultaneous matches. The migrated algorithm independently selects each symbol’s nearest-rated peers, resolves equal-distance candidates in snapshot order, and updates only the current symbol during that pass. A pair can therefore be selected in both directions or only one direction, and multiple opponents are applied sequentially. This is not a conventional paired simultaneous Elo update and need not conserve total rating, especially when K-factors differ.</label></p></li>
+<li><p><label><input type="checkbox">Resolve the K-factor threshold conflict. The active legacy <code>_assign_k</code> compares the current Elo rating directly with <code>low_qt</code> and <code>high_qt</code>, using K=40 for the first 60 days, K=10 above the high threshold, K=30 below the low threshold, and K=20 otherwise. The public defaults are <code>0.2</code> and <code>0.8</code>, which look like quantiles and came from an alternate volatility-quantile design left commented out in the legacy source. Ratings start near 1500, so almost every non-IPO symbol is above <code>0.8</code> and receives K=10. This can suppress rating responsiveness and makes the lower threshold effectively unreachable. Preserve it for migration compatibility until research determines whether the API should use rating levels such as 1300/1800 or actual volatility quantiles.</label></p></li>
+<li><p><label><input type="checkbox">Define missing-close and calendar semantics. The migrated code forward-fills at most three observed rows per symbol before computing returns. Those are rows, not calendar or exchange sessions, so an irregular dataset can bridge a much longer elapsed period and assign its eventual move to the wrong date. Decide whether gaps should be rejected, aligned to an explicit exchange calendar, or filled under a documented session-based policy.</label></p></li>
+</ul>
 
 
 </section>
@@ -1112,13 +1076,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../indicator/roadmap.html" class="pagination-link" aria-label="Roadmap">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Roadmap</span>
+      <a href="../cross_section/index.html" class="pagination-link" aria-label="q.cross_section — Cross-sectional analysis">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">q.cross_section — Cross-sectional analysis</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../factor/roadmap.html" class="pagination-link" aria-label="Roadmap">
-        <span class="nav-page-text">Roadmap</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../feature/index.html" class="pagination-link" aria-label="q.feature — Feature lifecycle">
+        <span class="nav-page-text">q.feature — Feature lifecycle</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -1127,4 +1091,4 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/factor/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/factor/index.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/cross_section/roadmap.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/cross_section/roadmap.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
