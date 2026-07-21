@@ -6,75 +6,75 @@
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/utils/index.html</loc>
-    <lastmod>2026-07-21T18:23:46.548Z</lastmod>
+    <lastmod>2026-07-21T19:59:09.819Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/stats/performance.html</loc>
-    <lastmod>2026-07-21T18:23:40.142Z</lastmod>
+    <lastmod>2026-07-21T19:59:03.323Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/stats/chained.html</loc>
-    <lastmod>2026-07-21T18:23:32.581Z</lastmod>
+    <lastmod>2026-07-21T19:58:55.877Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/plot/simulation.html</loc>
-    <lastmod>2026-07-21T18:23:12.087Z</lastmod>
+    <lastmod>2026-07-21T19:58:34.976Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/plot/report.html</loc>
-    <lastmod>2026-07-21T18:23:03.466Z</lastmod>
+    <lastmod>2026-07-21T19:58:26.459Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/model/index.html</loc>
-    <lastmod>2026-07-21T18:22:56.348Z</lastmod>
+    <lastmod>2026-07-21T19:58:19.522Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/indicator/qrt/volume_spike_ratio.html</loc>
-    <lastmod>2026-07-21T18:22:50.599Z</lastmod>
+    <lastmod>2026-07-21T19:58:13.770Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/indicator/qrt/rsnhbp.html</loc>
-    <lastmod>2026-07-21T18:22:45.401Z</lastmod>
+    <lastmod>2026-07-21T19:58:08.381Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/indicator/qrt/rs_phase.html</loc>
-    <lastmod>2026-07-21T18:22:40.021Z</lastmod>
+    <lastmod>2026-07-21T19:58:02.872Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/indicator/qrt/relative_strength.html</loc>
-    <lastmod>2026-07-21T18:22:34.791Z</lastmod>
+    <lastmod>2026-07-21T19:57:57.560Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/indicator/qrt/realized_variance.html</loc>
-    <lastmod>2026-07-21T18:22:29.302Z</lastmod>
+    <lastmod>2026-07-21T19:57:52.358Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/indicator/qrt/price_spikes.html</loc>
-    <lastmod>2026-07-21T18:22:24.039Z</lastmod>
+    <lastmod>2026-07-21T19:57:47.309Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/indicator/qrt/med_rv.html</loc>
-    <lastmod>2026-07-21T18:22:18.673Z</lastmod>
+    <lastmod>2026-07-21T19:57:42.137Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/indicator/qrt/log_returns.html</loc>
-    <lastmod>2026-07-21T18:22:13.424Z</lastmod>
+    <lastmod>2026-07-21T19:57:37.054Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/indicator/qrt/bipower_variation.html</loc>
-    <lastmod>2026-07-21T18:22:08.096Z</lastmod>
+    <lastmod>2026-07-21T19:57:31.785Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/indicator/index.html</loc>
-    <lastmod>2026-07-21T18:22:02.574Z</lastmod>
+    <lastmod>2026-07-21T19:57:26.533Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/data/schemas.html</loc>
-    <lastmod>2026-07-21T18:21:57.574Z</lastmod>
+    <lastmod>2026-07-21T19:57:21.516Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/data/datasets.html</loc>
-    <lastmod>2026-07-21T18:21:52.730Z</lastmod>
+    <lastmod>2026-07-21T19:57:16.422Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/stats/roadmap.html</loc>
@@ -86,7 +86,7 @@
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/roadmap.html</loc>
-    <lastmod>2026-07-20T19:33:54.988Z</lastmod>
+    <lastmod>2026-07-21T19:22:35.354Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/reference/stats.html</loc>
@@ -117,131 +117,43 @@
     <lastmod>2026-07-19T13:07:23.488Z</lastmod>
   </url>
   <url>
-    <loc>https://quantbert.github.io/qrt/reference/indicator.talib.html</loc>
-    <lastmod>2026-07-20T10:46:27.684Z</lastmod>
+    <loc>https://quantbert.github.io/qrt/reference/label.html</loc>
+    <lastmod>2026-07-21T19:40:19.635Z</lastmod>
   </url>
   <url>
-    <loc>https://quantbert.github.io/qrt/reference/indicator.pandas_ta.html</loc>
-    <lastmod>2026-07-20T10:46:27.685Z</lastmod>
+    <loc>https://quantbert.github.io/qrt/reference/indicator.html</loc>
+    <lastmod>2026-07-20T13:10:09.780Z</lastmod>
   </url>
   <url>
-    <loc>https://quantbert.github.io/qrt/reference/feature.html</loc>
-    <lastmod>2026-07-20T10:46:27.691Z</lastmod>
+    <loc>https://quantbert.github.io/qrt/reference/index.html</loc>
+    <lastmod>2026-07-21T19:56:52.843Z</lastmod>
   </url>
   <url>
-    <loc>https://quantbert.github.io/qrt/reference/env.html</loc>
-    <lastmod>2026-07-19T13:07:23.503Z</lastmod>
+    <loc>https://quantbert.github.io/qrt/reference/feature.ops.html</loc>
+    <lastmod>2026-07-20T10:46:27.693Z</lastmod>
   </url>
   <url>
-    <loc>https://quantbert.github.io/qrt/reference/data.sources.html</loc>
-    <lastmod>2026-07-20T10:46:27.991Z</lastmod>
+    <loc>https://quantbert.github.io/qrt/reference/data.sources.yfinance.html</loc>
+    <lastmod>2026-07-19T13:07:23.475Z</lastmod>
   </url>
   <url>
-    <loc>https://quantbert.github.io/qrt/reference/data.sources.binance.html</loc>
-    <lastmod>2026-07-19T13:07:23.481Z</lastmod>
+    <loc>https://quantbert.github.io/qrt/reference/data.sources.duckdb.html</loc>
+    <lastmod>2026-07-19T13:07:23.485Z</lastmod>
   </url>
   <url>
-    <loc>https://quantbert.github.io/qrt/reference/data.local.html</loc>
-    <lastmod>2026-07-19T13:07:23.468Z</lastmod>
+    <loc>https://quantbert.github.io/qrt/reference/data.html</loc>
+    <lastmod>2026-07-19T13:07:23.463Z</lastmod>
   </url>
   <url>
-    <loc>https://quantbert.github.io/qrt/reference/cross_section.html</loc>
-    <lastmod>2026-07-20T20:31:01.758Z</lastmod>
+    <loc>https://quantbert.github.io/qrt/reference/data.datasets.html</loc>
+    <lastmod>2026-07-19T13:07:23.472Z</lastmod>
   </url>
   <url>
-    <loc>https://quantbert.github.io/qrt/preprocess/selection.html</loc>
-    <lastmod>2026-07-20T10:42:56.622Z</lastmod>
+    <loc>https://quantbert.github.io/qrt/reference/calendar.html</loc>
+    <lastmod>2026-07-20T10:46:27.699Z</lastmod>
   </url>
   <url>
-    <loc>https://quantbert.github.io/qrt/preprocess/roadmap.html</loc>
-    <lastmod>2026-07-20T10:42:56.622Z</lastmod>
-  </url>
-  <url>
-    <loc>https://quantbert.github.io/qrt/preprocess/outlier.html</loc>
-    <lastmod>2026-07-20T10:42:56.622Z</lastmod>
-  </url>
-  <url>
-    <loc>https://quantbert.github.io/qrt/preprocess/impute.html</loc>
-    <lastmod>2026-07-20T10:42:56.622Z</lastmod>
-  </url>
-  <url>
-    <loc>https://quantbert.github.io/qrt/portfolio/roadmap.html</loc>
-    <lastmod>2026-07-19T10:26:23.543Z</lastmod>
-  </url>
-  <url>
-    <loc>https://quantbert.github.io/qrt/plot/saving.html</loc>
-    <lastmod>2026-07-18T13:00:51.038Z</lastmod>
-  </url>
-  <url>
-    <loc>https://quantbert.github.io/qrt/plot/index.html</loc>
-    <lastmod>2026-07-21T05:28:12.691Z</lastmod>
-  </url>
-  <url>
-    <loc>https://quantbert.github.io/qrt/indicator/roadmap.html</loc>
-    <lastmod>2026-07-20T13:05:31.419Z</lastmod>
-  </url>
-  <url>
-    <loc>https://quantbert.github.io/qrt/feature/roadmap.html</loc>
-    <lastmod>2026-07-20T10:42:56.622Z</lastmod>
-  </url>
-  <url>
-    <loc>https://quantbert.github.io/qrt/data/roadmap.html</loc>
-    <lastmod>2026-07-19T10:26:23.543Z</lastmod>
-  </url>
-  <url>
-    <loc>https://quantbert.github.io/qrt/cross_section/roadmap.html</loc>
-    <lastmod>2026-07-20T20:29:24.682Z</lastmod>
-  </url>
-  <url>
-    <loc>https://quantbert.github.io/qrt/calendar/roadmap.html</loc>
-    <lastmod>2026-07-20T10:42:56.622Z</lastmod>
-  </url>
-  <url>
-    <loc>https://quantbert.github.io/qrt/bt/roadmap.html</loc>
-    <lastmod>2026-07-19T10:26:23.543Z</lastmod>
-  </url>
-  <url>
-    <loc>https://quantbert.github.io/qrt/bt/index.html</loc>
-    <lastmod>2026-07-19T09:35:53.900Z</lastmod>
-  </url>
-  <url>
-    <loc>https://quantbert.github.io/qrt/calendar/index.html</loc>
-    <lastmod>2026-07-20T10:42:56.622Z</lastmod>
-  </url>
-  <url>
-    <loc>https://quantbert.github.io/qrt/cross_section/index.html</loc>
-    <lastmod>2026-07-20T20:29:24.682Z</lastmod>
-  </url>
-  <url>
-    <loc>https://quantbert.github.io/qrt/data/index.html</loc>
-    <lastmod>2026-07-18T13:00:51.038Z</lastmod>
-  </url>
-  <url>
-    <loc>https://quantbert.github.io/qrt/feature/index.html</loc>
-    <lastmod>2026-07-20T19:33:54.988Z</lastmod>
-  </url>
-  <url>
-    <loc>https://quantbert.github.io/qrt/index.html</loc>
-    <lastmod>2026-07-20T19:33:54.988Z</lastmod>
-  </url>
-  <url>
-    <loc>https://quantbert.github.io/qrt/model/roadmap.html</loc>
-    <lastmod>2026-07-19T10:26:23.543Z</lastmod>
-  </url>
-  <url>
-    <loc>https://quantbert.github.io/qrt/plot/roadmap.html</loc>
-    <lastmod>2026-07-21T06:27:14.493Z</lastmod>
-  </url>
-  <url>
-    <loc>https://quantbert.github.io/qrt/portfolio/index.html</loc>
-    <lastmod>2026-07-19T09:35:53.899Z</lastmod>
-  </url>
-  <url>
-    <loc>https://quantbert.github.io/qrt/preprocess/encode.html</loc>
-    <lastmod>2026-07-20T10:42:56.622Z</lastmod>
-  </url>
-  <url>
-    <loc>https://quantbert.github.io/qrt/preprocess/index.html</loc>
+    <loc>https://quantbert.github.io/qrt/preprocess/scale.html</loc>
     <lastmod>2026-07-20T10:42:56.622Z</lastmod>
   </url>
   <url>
@@ -249,40 +161,140 @@
     <lastmod>2026-07-20T10:42:56.622Z</lastmod>
   </url>
   <url>
-    <loc>https://quantbert.github.io/qrt/preprocess/scale.html</loc>
+    <loc>https://quantbert.github.io/qrt/preprocess/index.html</loc>
     <lastmod>2026-07-20T10:42:56.622Z</lastmod>
   </url>
   <url>
-    <loc>https://quantbert.github.io/qrt/reference/calendar.html</loc>
-    <lastmod>2026-07-20T10:46:27.699Z</lastmod>
+    <loc>https://quantbert.github.io/qrt/preprocess/encode.html</loc>
+    <lastmod>2026-07-20T10:42:56.622Z</lastmod>
   </url>
   <url>
-    <loc>https://quantbert.github.io/qrt/reference/data.datasets.html</loc>
-    <lastmod>2026-07-19T13:07:23.472Z</lastmod>
+    <loc>https://quantbert.github.io/qrt/portfolio/index.html</loc>
+    <lastmod>2026-07-19T09:35:53.899Z</lastmod>
   </url>
   <url>
-    <loc>https://quantbert.github.io/qrt/reference/data.html</loc>
-    <lastmod>2026-07-19T13:07:23.463Z</lastmod>
+    <loc>https://quantbert.github.io/qrt/plot/roadmap.html</loc>
+    <lastmod>2026-07-21T06:27:14.493Z</lastmod>
   </url>
   <url>
-    <loc>https://quantbert.github.io/qrt/reference/data.sources.duckdb.html</loc>
-    <lastmod>2026-07-19T13:07:23.485Z</lastmod>
+    <loc>https://quantbert.github.io/qrt/model/roadmap.html</loc>
+    <lastmod>2026-07-19T10:26:23.543Z</lastmod>
   </url>
   <url>
-    <loc>https://quantbert.github.io/qrt/reference/data.sources.yfinance.html</loc>
-    <lastmod>2026-07-19T13:07:23.475Z</lastmod>
+    <loc>https://quantbert.github.io/qrt/label/index.html</loc>
+    <lastmod>2026-07-21T19:52:06.526Z</lastmod>
   </url>
   <url>
-    <loc>https://quantbert.github.io/qrt/reference/feature.ops.html</loc>
-    <lastmod>2026-07-20T10:46:27.693Z</lastmod>
+    <loc>https://quantbert.github.io/qrt/index.html</loc>
+    <lastmod>2026-07-21T19:22:35.354Z</lastmod>
   </url>
   <url>
-    <loc>https://quantbert.github.io/qrt/reference/index.html</loc>
-    <lastmod>2026-07-21T18:21:30.647Z</lastmod>
+    <loc>https://quantbert.github.io/qrt/feature/index.html</loc>
+    <lastmod>2026-07-20T19:33:54.988Z</lastmod>
   </url>
   <url>
-    <loc>https://quantbert.github.io/qrt/reference/indicator.html</loc>
-    <lastmod>2026-07-20T13:10:09.780Z</lastmod>
+    <loc>https://quantbert.github.io/qrt/data/index.html</loc>
+    <lastmod>2026-07-18T13:00:51.038Z</lastmod>
+  </url>
+  <url>
+    <loc>https://quantbert.github.io/qrt/cross_section/index.html</loc>
+    <lastmod>2026-07-20T20:29:24.682Z</lastmod>
+  </url>
+  <url>
+    <loc>https://quantbert.github.io/qrt/calendar/index.html</loc>
+    <lastmod>2026-07-20T10:42:56.622Z</lastmod>
+  </url>
+  <url>
+    <loc>https://quantbert.github.io/qrt/bt/index.html</loc>
+    <lastmod>2026-07-19T09:35:53.900Z</lastmod>
+  </url>
+  <url>
+    <loc>https://quantbert.github.io/qrt/bt/roadmap.html</loc>
+    <lastmod>2026-07-19T10:26:23.543Z</lastmod>
+  </url>
+  <url>
+    <loc>https://quantbert.github.io/qrt/calendar/roadmap.html</loc>
+    <lastmod>2026-07-20T10:42:56.622Z</lastmod>
+  </url>
+  <url>
+    <loc>https://quantbert.github.io/qrt/cross_section/roadmap.html</loc>
+    <lastmod>2026-07-20T20:29:24.682Z</lastmod>
+  </url>
+  <url>
+    <loc>https://quantbert.github.io/qrt/data/roadmap.html</loc>
+    <lastmod>2026-07-19T10:26:23.543Z</lastmod>
+  </url>
+  <url>
+    <loc>https://quantbert.github.io/qrt/feature/roadmap.html</loc>
+    <lastmod>2026-07-20T10:42:56.622Z</lastmod>
+  </url>
+  <url>
+    <loc>https://quantbert.github.io/qrt/indicator/roadmap.html</loc>
+    <lastmod>2026-07-20T13:05:31.419Z</lastmod>
+  </url>
+  <url>
+    <loc>https://quantbert.github.io/qrt/label/roadmap.html</loc>
+    <lastmod>2026-07-21T19:38:03.170Z</lastmod>
+  </url>
+  <url>
+    <loc>https://quantbert.github.io/qrt/plot/index.html</loc>
+    <lastmod>2026-07-21T05:28:12.691Z</lastmod>
+  </url>
+  <url>
+    <loc>https://quantbert.github.io/qrt/plot/saving.html</loc>
+    <lastmod>2026-07-18T13:00:51.038Z</lastmod>
+  </url>
+  <url>
+    <loc>https://quantbert.github.io/qrt/portfolio/roadmap.html</loc>
+    <lastmod>2026-07-19T10:26:23.543Z</lastmod>
+  </url>
+  <url>
+    <loc>https://quantbert.github.io/qrt/preprocess/impute.html</loc>
+    <lastmod>2026-07-20T10:42:56.622Z</lastmod>
+  </url>
+  <url>
+    <loc>https://quantbert.github.io/qrt/preprocess/outlier.html</loc>
+    <lastmod>2026-07-20T10:42:56.622Z</lastmod>
+  </url>
+  <url>
+    <loc>https://quantbert.github.io/qrt/preprocess/roadmap.html</loc>
+    <lastmod>2026-07-20T10:42:56.622Z</lastmod>
+  </url>
+  <url>
+    <loc>https://quantbert.github.io/qrt/preprocess/selection.html</loc>
+    <lastmod>2026-07-20T10:42:56.622Z</lastmod>
+  </url>
+  <url>
+    <loc>https://quantbert.github.io/qrt/reference/cross_section.html</loc>
+    <lastmod>2026-07-20T20:31:01.758Z</lastmod>
+  </url>
+  <url>
+    <loc>https://quantbert.github.io/qrt/reference/data.local.html</loc>
+    <lastmod>2026-07-19T13:07:23.468Z</lastmod>
+  </url>
+  <url>
+    <loc>https://quantbert.github.io/qrt/reference/data.sources.binance.html</loc>
+    <lastmod>2026-07-19T13:07:23.481Z</lastmod>
+  </url>
+  <url>
+    <loc>https://quantbert.github.io/qrt/reference/data.sources.html</loc>
+    <lastmod>2026-07-20T10:46:27.991Z</lastmod>
+  </url>
+  <url>
+    <loc>https://quantbert.github.io/qrt/reference/env.html</loc>
+    <lastmod>2026-07-19T13:07:23.503Z</lastmod>
+  </url>
+  <url>
+    <loc>https://quantbert.github.io/qrt/reference/feature.html</loc>
+    <lastmod>2026-07-20T10:46:27.691Z</lastmod>
+  </url>
+  <url>
+    <loc>https://quantbert.github.io/qrt/reference/indicator.pandas_ta.html</loc>
+    <lastmod>2026-07-20T10:46:27.685Z</lastmod>
+  </url>
+  <url>
+    <loc>https://quantbert.github.io/qrt/reference/indicator.talib.html</loc>
+    <lastmod>2026-07-20T10:46:27.684Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/reference/model.html</loc>
@@ -330,74 +342,74 @@
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/data/local.html</loc>
-    <lastmod>2026-07-21T18:21:55.195Z</lastmod>
+    <lastmod>2026-07-21T19:57:18.874Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/data/sources.html</loc>
-    <lastmod>2026-07-21T18:22:00.045Z</lastmod>
+    <lastmod>2026-07-21T19:57:23.967Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/indicator/pandas_ta.html</loc>
-    <lastmod>2026-07-21T18:22:05.448Z</lastmod>
+    <lastmod>2026-07-21T19:57:29.283Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/indicator/qrt/ema.html</loc>
-    <lastmod>2026-07-21T18:22:10.832Z</lastmod>
+    <lastmod>2026-07-21T19:57:34.435Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/indicator/qrt/madev.html</loc>
-    <lastmod>2026-07-21T18:22:16.060Z</lastmod>
+    <lastmod>2026-07-21T19:57:39.558Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/indicator/qrt/min_rv.html</loc>
-    <lastmod>2026-07-21T18:22:21.406Z</lastmod>
+    <lastmod>2026-07-21T19:57:44.795Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/indicator/qrt/realized_quarticity.html</loc>
-    <lastmod>2026-07-21T18:22:26.609Z</lastmod>
+    <lastmod>2026-07-21T19:57:49.837Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/indicator/qrt/realized_volatility.html</loc>
-    <lastmod>2026-07-21T18:22:32.127Z</lastmod>
+    <lastmod>2026-07-21T19:57:54.942Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/indicator/qrt/rs_days.html</loc>
-    <lastmod>2026-07-21T18:22:37.342Z</lastmod>
+    <lastmod>2026-07-21T19:58:00.223Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/indicator/qrt/rsma.html</loc>
-    <lastmod>2026-07-21T18:22:42.720Z</lastmod>
+    <lastmod>2026-07-21T19:58:05.607Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/indicator/qrt/sma.html</loc>
-    <lastmod>2026-07-21T18:22:47.963Z</lastmod>
+    <lastmod>2026-07-21T19:58:11.041Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/indicator/talib.html</loc>
-    <lastmod>2026-07-21T18:22:53.096Z</lastmod>
+    <lastmod>2026-07-21T19:58:16.463Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/plot/classification.html</loc>
-    <lastmod>2026-07-21T18:22:59.733Z</lastmod>
+    <lastmod>2026-07-21T19:58:22.772Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/plot/returns.html</loc>
-    <lastmod>2026-07-21T18:23:07.402Z</lastmod>
+    <lastmod>2026-07-21T19:58:30.312Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/plot/trades.html</loc>
-    <lastmod>2026-07-21T18:23:29.232Z</lastmod>
+    <lastmod>2026-07-21T19:58:52.511Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/stats/factors.html</loc>
-    <lastmod>2026-07-21T18:23:35.842Z</lastmod>
+    <lastmod>2026-07-21T19:58:59.112Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/stats/rolling.html</loc>
-    <lastmod>2026-07-21T18:23:42.703Z</lastmod>
+    <lastmod>2026-07-21T19:59:06.002Z</lastmod>
   </url>
   <url>
     <loc>https://quantbert.github.io/qrt/env/index.html</loc>
-    <lastmod>2026-07-21T18:23:50.240Z</lastmod>
+    <lastmod>2026-07-21T19:59:13.476Z</lastmod>
   </url>
 </urlset>
