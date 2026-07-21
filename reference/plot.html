@@ -522,6 +522,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#qrt.plot.equity" id="toc-qrt.plot.equity" class="nav-link" data-scroll-target="#qrt.plot.equity">equity</a></li>
   <li><a href="#qrt.plot.factor_contributions" id="toc-qrt.plot.factor_contributions" class="nav-link" data-scroll-target="#qrt.plot.factor_contributions">factor_contributions</a></li>
   <li><a href="#qrt.plot.factor_loadings" id="toc-qrt.plot.factor_loadings" class="nav-link" data-scroll-target="#qrt.plot.factor_loadings">factor_loadings</a></li>
+  <li><a href="#qrt.plot.labels" id="toc-qrt.plot.labels" class="nav-link" data-scroll-target="#qrt.plot.labels">labels</a></li>
   <li><a href="#qrt.plot.mae_mfe" id="toc-qrt.plot.mae_mfe" class="nav-link" data-scroll-target="#qrt.plot.mae_mfe">mae_mfe</a></li>
   <li><a href="#qrt.plot.metrics_table" id="toc-qrt.plot.metrics_table" class="nav-link" data-scroll-target="#qrt.plot.metrics_table">metrics_table</a></li>
   <li><a href="#qrt.plot.montecarlo" id="toc-qrt.plot.montecarlo" class="nav-link" data-scroll-target="#qrt.plot.montecarlo">montecarlo</a></li>
@@ -560,7 +561,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>plot</h1>
 <p><code>plot</code></p>
 <p>Opinionated static and interactive plots for quantitative research.</p>
-<p>The first helpers focus on return streams: quick column charts, equity curves, drawdowns, and compact performance tearsheets. The Plotly implementations live in :mod:<code>qrt.plot.interactive</code> and are re-exported here; this module only adds the ergonomic aliases :func:<code>col</code>, :func:<code>plot</code>, and :func:<code>tearsheet</code>. Return-stream statistics (performance, alpha/beta, rolling diagnostics, …) live in :mod:<code>qrt.stats</code>.</p>
+<p>The first helpers focus on return streams: quick column charts, equity curves, drawdowns, and compact performance tearsheets. Directional label visualization and trade-log charts use the same interactive Plotly styling. Implementations live in :mod:<code>qrt.plot.interactive</code> and are re-exported here; this module only adds the ergonomic aliases :func:<code>col</code>, :func:<code>plot</code>, and :func:<code>tearsheet</code>. Return-stream statistics (performance, alpha/beta, rolling diagnostics, …) live in :mod:<code>qrt.stats</code>.</p>
 <section id="functions" class="level2">
 <h2 class="anchored" data-anchor-id="functions">Functions</h2>
 <table class="caption-top table">
@@ -604,94 +605,98 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Create an interactive bar chart of full-period multi-factor regression coefficients.</td>
 </tr>
 <tr class="odd">
+<td><a href="#qrt.plot.labels">labels</a></td>
+<td>Plot directional labels over a price series.</td>
+</tr>
+<tr class="even">
 <td><a href="#qrt.plot.mae_mfe">mae_mfe</a></td>
 <td>Create an interactive MAE/MFE excursion scatter from a trade log.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#qrt.plot.metrics_table">metrics_table</a></td>
 <td>Create an interactive table of performance metrics.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#qrt.plot.montecarlo">montecarlo</a></td>
 <td>Create an interactive Monte Carlo fan chart of bootstrap-resampled return simulations.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#qrt.plot.montecarlo_distribution">montecarlo_distribution</a></td>
 <td>Create interactive terminal-return and Max Drawdown distributions from a Monte Carlo run.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#qrt.plot.monthly_distribution">monthly_distribution</a></td>
 <td>Create an interactive histogram of compounded monthly returns.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#qrt.plot.monthly_heatmap">monthly_heatmap</a></td>
 <td>Create an interactive, annotated calendar-month return heatmap.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#qrt.plot.noise_test">noise_test</a></td>
 <td>Create an interactive Noise Test fan chart of noise-perturbed return path simulations.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#qrt.plot.plot">plot</a></td>
 <td>Create an interactive Plotly equity-and-drawdown performance report.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#qrt.plot.precision_recall">precision_recall</a></td>
 <td>Plot one-vs-rest multiclass precision-recall curves and averages.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#qrt.plot.report">report</a></td>
 <td>Create a full quantstats-style multi-panel strategy tearsheet.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#qrt.plot.return_quantiles">return_quantiles</a></td>
 <td>Create box plots comparing return distributions across compounding periods.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#qrt.plot.roc">roc</a></td>
 <td>Plot one-vs-rest multiclass ROC curves and micro/macro averages.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#qrt.plot.rolling_beta">rolling_beta</a></td>
 <td>Create an interactive chart of rolling beta over two windows (e.g.&nbsp;6- and 12-month).</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#qrt.plot.rolling_factor_betas">rolling_factor_betas</a></td>
 <td>Create an interactive chart of rolling multi-factor betas over time.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#qrt.plot.rolling_sharpe">rolling_sharpe</a></td>
 <td>Create an interactive chart of annualized rolling Sharpe ratio.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#qrt.plot.rolling_sortino">rolling_sortino</a></td>
 <td>Create an interactive chart of annualized rolling Sortino ratio.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#qrt.plot.rolling_volatility">rolling_volatility</a></td>
 <td>Create an interactive chart of annualized rolling volatility.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#qrt.plot.show">show</a></td>
 <td>Display a figure, optionally saving it to <code>save_to</code> as PNG (default) and/or self-contained HTML.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#qrt.plot.tearsheet">tearsheet</a></td>
 <td>Alias for the interactive :func:<code>plot</code> performance report.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#qrt.plot.trade_distribution">trade_distribution</a></td>
 <td>Create an interactive box plot of per-trade returns grouped by a column.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#qrt.plot.trades">trades</a></td>
 <td>Create an interactive price chart with entry/exit markers for a trade log.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#qrt.plot.variance_test">variance_test</a></td>
 <td>Create an interactive Variance Testing fan chart of forward win-rate-varied trade paths.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#qrt.plot.worst_drawdowns">worst_drawdowns</a></td>
 <td>Create an equity curve with the worst drawdown periods shaded.</td>
 </tr>
@@ -1391,13 +1396,110 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </section>
 </section>
-<section id="qrt.plot.mae_mfe" class="level3">
-<h3 class="anchored" data-anchor-id="qrt.plot.mae_mfe">mae_mfe</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>plot.mae_mfe(trades, <span class="op">*</span>, title<span class="op">=</span><span class="va">None</span>, height<span class="op">=</span><span class="dv">430</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Create an interactive MAE/MFE excursion scatter from a trade log.</p>
-<p>Two panels sharing the trade-return y-axis: max adverse excursion (how far each trade went against you – informs stop placement) and max favorable excursion (how much open profit existed – informs profit taking). Dashed identity lines mark the bounds <code>return &gt;= MAE</code> and <code>return &lt;= MFE</code>; exits near the MFE line captured most of their open profit, winners far below it round-tripped gains.</p>
+<section id="qrt.plot.labels" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.plot.labels">labels</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>plot.labels(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    prices,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    labels,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    label_col<span class="op">=</span><span class="st">'label'</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    end_col<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    show_spans<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">520</span>,</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Plot directional labels over a price series.</p>
+<p>Labels use green upward triangles for long (1), orange dashes for neutral (0), and red downward triangles for short (-1). When label data includes <code>touch_time</code> or <code>end_time</code>, translucent outcome spans can be drawn from each event to its endpoint.</p>
 <section id="parameters-8" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-8">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 18%">
+<col style="width: 65%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>prices</td>
+<td>pd.Series | pd.DataFrame</td>
+<td>Close-price Series or frame containing a <code>close</code> column.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>labels</td>
+<td>pd.Series | pd.DataFrame</td>
+<td>Event-indexed label Series or DataFrame containing <code>label_col</code>. Missing labels are omitted.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="odd">
+<td>label_col</td>
+<td>str</td>
+<td>DataFrame column containing values in {-1, 0, 1}.</td>
+<td><code>'label'</code></td>
+</tr>
+<tr class="even">
+<td>end_col</td>
+<td>str | None</td>
+<td>Optional outcome-end column. Defaults to <code>touch_time</code> when present, then <code>end_time</code>.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>show_spans</td>
+<td>bool</td>
+<td>Whether to shade each event’s outcome interval when an endpoint column is available.</td>
+<td><code>True</code></td>
+</tr>
+<tr class="even">
+<td>title</td>
+<td>str | None</td>
+<td>Figure title.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>height</td>
+<td>int</td>
+<td>Figure height in pixels.</td>
+<td><code>520</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-8" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-8">Returns</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>Figure</td>
+<td>A Plotly <code>Figure</code>.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="qrt.plot.mae_mfe" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.plot.mae_mfe">mae_mfe</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>plot.mae_mfe(trades, <span class="op">*</span>, title<span class="op">=</span><span class="va">None</span>, height<span class="op">=</span><span class="dv">430</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create an interactive MAE/MFE excursion scatter from a trade log.</p>
+<p>Two panels sharing the trade-return y-axis: max adverse excursion (how far each trade went against you – informs stop placement) and max favorable excursion (how much open profit existed – informs profit taking). Dashed identity lines mark the bounds <code>return &gt;= MAE</code> and <code>return &lt;= MFE</code>; exits near the MFE line captured most of their open profit, winners far below it round-tripped gains.</p>
+<section id="parameters-9" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-9">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 8%">
@@ -1435,8 +1537,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="returns-8" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-8">Returns</h4>
+<section id="returns-9" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-9">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1457,20 +1559,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="qrt.plot.metrics_table" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.plot.metrics_table">metrics_table</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>plot.metrics_table(</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    benchmark<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    rf<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">'full'</span>,</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'Key Performance Metrics'</span>,</span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>plot.metrics_table(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    benchmark<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    rf<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">'full'</span>,</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'Key Performance Metrics'</span>,</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create an interactive table of performance metrics.</p>
-<section id="parameters-9" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-9">Parameters</h4>
+<section id="parameters-10" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-10">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 6%">
@@ -1538,8 +1640,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="returns-9" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-9">Returns</h4>
+<section id="returns-10" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-10">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1560,21 +1662,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="qrt.plot.montecarlo" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.plot.montecarlo">montecarlo</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>plot.montecarlo(</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    sims<span class="op">=</span><span class="dv">1000</span>,</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    bust<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    goal<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    confidence<span class="op">=</span><span class="fl">0.95</span>,</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    seed<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    block_size<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    periods<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    sample<span class="op">=</span><span class="dv">200</span>,</span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">520</span>,</span>
-<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>plot.montecarlo(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    sims<span class="op">=</span><span class="dv">1000</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    bust<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    goal<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    confidence<span class="op">=</span><span class="fl">0.95</span>,</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    seed<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    block_size<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    periods<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    sample<span class="op">=</span><span class="dv">200</span>,</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">520</span>,</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create an interactive Monte Carlo fan chart of bootstrap-resampled return simulations.</p>
 <p>Runs :func:<code>qrt.stats.montecarlo</code> on the full <code>sims</code> simulations, so the shaded confidence band and any <code>bust</code>/<code>goal</code> probabilities reflect the entire sample, then renders only a <code>sample</code> of the individual paths for readability. Unlike quantstats’ <code>plot_montecarlo</code> (which colors paths arbitrarily and, being built on a plain permutation of returns, can only vary each path’s <em>shape</em>, never its terminal value — see the note on :func:<code>qrt.stats.montecarlo</code>), each rendered path here is colored by its own outcome:</p>
 <ul>
@@ -1583,8 +1685,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Reached goal</strong> paths (terminal return met <code>goal</code>): green.</li>
 <li>Everything else: light gray.</li>
 </ul>
-<section id="parameters-10" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-10">Parameters</h4>
+<section id="parameters-11" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-11">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 3%">
@@ -1676,8 +1778,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="returns-10" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-10">Returns</h4>
+<section id="returns-11" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-11">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1698,24 +1800,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="qrt.plot.montecarlo_distribution" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.plot.montecarlo_distribution">montecarlo_distribution</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>plot.montecarlo_distribution(</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    sims<span class="op">=</span><span class="dv">1000</span>,</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    bust<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    goal<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    confidence<span class="op">=</span><span class="fl">0.95</span>,</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    seed<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    block_size<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    periods<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">420</span>,</span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>plot.montecarlo_distribution(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    sims<span class="op">=</span><span class="dv">1000</span>,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    bust<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    goal<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    confidence<span class="op">=</span><span class="fl">0.95</span>,</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    seed<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    block_size<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    periods<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">420</span>,</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create interactive terminal-return and Max Drawdown distributions from a Monte Carlo run.</p>
 <p>Complements :func:<code>montecarlo</code>‘s fan chart with two histograms, both built from all <code>sims</code> simulations: the spread of terminal cumulative returns (reward) side-by-side with the spread of each simulation’s Max Drawdown (risk). Where quantstats’ <code>plot_montecarlo_distribution</code> shows only the former, pairing it with the drawdown distribution surfaces the downside risk a single terminal-value histogram hides. This distinction matters more than it first appears: since :func:<code>qrt.stats.montecarlo</code> resamples <em>with replacement</em>, the terminal-return panel here carries real information (a plain permutation-based simulation, as used by quantstats, cannot vary the terminal value at all — see the note on :func:<code>qrt.stats.montecarlo</code>). The original (unresampled) outcome is marked on both panels, along with the <code>goal</code>/<code>bust</code> thresholds and probabilities when given.</p>
-<section id="parameters-11" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-11">Parameters</h4>
+<section id="parameters-12" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-12">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 3%">
@@ -1801,8 +1903,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="returns-11" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-11">Returns</h4>
+<section id="returns-12" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-12">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1823,17 +1925,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="qrt.plot.monthly_distribution" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.plot.monthly_distribution">monthly_distribution</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>plot.monthly_distribution(</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    benchmark<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'Distribution of Monthly Returns'</span>,</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">400</span>,</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>plot.monthly_distribution(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    benchmark<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'Distribution of Monthly Returns'</span>,</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">400</span>,</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create an interactive histogram of compounded monthly returns.</p>
-<section id="parameters-12" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-12">Parameters</h4>
+<section id="parameters-13" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-13">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 7%">
@@ -1883,8 +1985,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="returns-12" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-12">Returns</h4>
+<section id="returns-13" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-13">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1905,16 +2007,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="qrt.plot.monthly_heatmap" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.plot.monthly_heatmap">monthly_heatmap</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>plot.monthly_heatmap(</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'Monthly returns'</span>,</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>plot.monthly_heatmap(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'Monthly returns'</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create an interactive, annotated calendar-month return heatmap.</p>
-<section id="parameters-13" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-13">Parameters</h4>
+<section id="parameters-14" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-14">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 10%">
@@ -1958,8 +2060,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="returns-13" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-13">Returns</h4>
+<section id="returns-14" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-14">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1980,20 +2082,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="qrt.plot.noise_test" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.plot.noise_test">noise_test</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>plot.noise_test(</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    sims<span class="op">=</span><span class="dv">1000</span>,</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    noise<span class="op">=</span><span class="fl">0.1</span>,</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    bust<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    goal<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    confidence<span class="op">=</span><span class="fl">0.95</span>,</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    seed<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    sample<span class="op">=</span><span class="dv">200</span>,</span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">520</span>,</span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>plot.noise_test(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    sims<span class="op">=</span><span class="dv">1000</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    noise<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    bust<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    goal<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    confidence<span class="op">=</span><span class="fl">0.95</span>,</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    seed<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    sample<span class="op">=</span><span class="dv">200</span>,</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">520</span>,</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create an interactive Noise Test fan chart of noise-perturbed return path simulations.</p>
 <p>Runs :func:<code>qrt.stats.noise_test</code> on the full <code>sims</code> simulations, so the shaded confidence band and any <code>bust</code>/<code>goal</code> probabilities reflect the entire sample, then renders only a <code>sample</code> of the individual perturbed paths for readability. Unlike :func:<code>montecarlo</code> (which bootstrap-resamples returns, varying their order/composition) or :func:<code>variance_test</code> (which varies the win rate over a forward horizon), each rendered path here keeps the exact historical sequence of <code>returns</code> but jitters the <em>magnitude</em> of every period’s return by multiplicative noise, testing sensitivity to day-to-day noise/volatility rather than resampling variance:</p>
 <ul>
@@ -2002,8 +2104,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Reached goal</strong> paths (terminal return met <code>goal</code>): green.</li>
 <li>Everything else: light gray, labeled <strong>Random</strong>.</li>
 </ul>
-<section id="parameters-14" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-14">Parameters</h4>
+<section id="parameters-15" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-15">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 7%">
@@ -2089,8 +2191,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="returns-14" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-14">Returns</h4>
+<section id="returns-15" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-15">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2111,19 +2213,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="qrt.plot.plot" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.plot.plot">plot</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>plot.plot(</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    benchmark<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">700</span>,</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>plot.plot(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    benchmark<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">700</span>,</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create an interactive Plotly equity-and-drawdown performance report.</p>
 <p>Alias for :func:<code>qrt.plot.interactive.performance</code>.</p>
-<section id="parameters-15" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-15">Parameters</h4>
+<section id="parameters-16" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-16">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 13%">
@@ -2179,8 +2281,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="returns-15" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-15">Returns</h4>
+<section id="returns-16" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-16">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2201,17 +2303,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="qrt.plot.precision_recall" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.plot.precision_recall">precision_recall</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>plot.precision_recall(</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    y_true,</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    y_score,</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    classes<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'Multiclass precision-recall curve'</span>,</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">500</span>,</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>plot.precision_recall(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    y_true,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    y_score,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    classes<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'Multiclass precision-recall curve'</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">500</span>,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Plot one-vs-rest multiclass precision-recall curves and averages.</p>
-<section id="parameters-16" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-16">Parameters</h4>
+<section id="parameters-17" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-17">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 4%">
@@ -2261,8 +2363,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="returns-16" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-16">Returns</h4>
+<section id="returns-17" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-17">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2283,21 +2385,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="qrt.plot.report" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.plot.report">report</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>plot.report(</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    benchmark<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    rf<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">'full'</span>,</span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    worst_drawdowns_count<span class="op">=</span><span class="dv">5</span>,</span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>plot.report(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    benchmark<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    rf<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">'full'</span>,</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    worst_drawdowns_count<span class="op">=</span><span class="dv">5</span>,</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create a full quantstats-style multi-panel strategy tearsheet.</p>
 <p>Lays out a chart column (cumulative-returns variants, EOY returns, return distributions, rolling risk diagnostics, drawdown analysis, a monthly heatmap) alongside a table column (key metrics, EOY returns, worst drawdowns) in a single scrollable Plotly figure. Individual panels are also available standalone (:func:<code>metrics_table</code>, :func:<code>cumulative_returns</code>, :func:<code>eoy_returns</code>, :func:<code>monthly_distribution</code>, :func:<code>daily_returns</code>, :func:<code>rolling_volatility</code>, :func:<code>rolling_sharpe</code>, :func:<code>rolling_sortino</code>, :func:<code>rolling_beta</code>, :func:<code>worst_drawdowns</code>, :func:<code>drawdown</code>, :func:<code>monthly_heatmap</code>, :func:<code>return_quantiles</code>).</p>
-<section id="parameters-17" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-17">Parameters</h4>
+<section id="parameters-18" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-18">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 8%">
@@ -2365,8 +2467,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="returns-17" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-17">Returns</h4>
+<section id="returns-18" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-18">Returns</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 9%">
@@ -2392,17 +2494,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="qrt.plot.return_quantiles" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.plot.return_quantiles">return_quantiles</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>plot.return_quantiles(</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'Return Quantiles'</span>,</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">400</span>,</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>plot.return_quantiles(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'Return Quantiles'</span>,</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">400</span>,</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create box plots comparing return distributions across compounding periods.</p>
 <p>See :func:<code>qrt.stats.distribution</code> for the underlying period buckets.</p>
-<section id="parameters-18" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-18">Parameters</h4>
+<section id="parameters-19" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-19">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 12%">
@@ -2446,8 +2548,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="returns-18" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-18">Returns</h4>
+<section id="returns-19" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-19">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2468,17 +2570,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="qrt.plot.roc" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.plot.roc">roc</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>plot.roc(</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    y_true,</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    y_score,</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    classes<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'Multiclass ROC curve'</span>,</span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">500</span>,</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>plot.roc(</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    y_true,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    y_score,</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    classes<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'Multiclass ROC curve'</span>,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">500</span>,</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Plot one-vs-rest multiclass ROC curves and micro/macro averages.</p>
-<section id="parameters-19" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-19">Parameters</h4>
+<section id="parameters-20" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-20">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 4%">
@@ -2528,8 +2630,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="returns-19" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-19">Returns</h4>
+<section id="returns-20" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-20">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2550,19 +2652,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="qrt.plot.rolling_beta" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.plot.rolling_beta">rolling_beta</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>plot.rolling_beta(</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    benchmark,</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    windows<span class="op">=</span>(<span class="dv">126</span>, <span class="dv">252</span>),</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'Rolling Beta to Benchmark'</span>,</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">320</span>,</span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>plot.rolling_beta(</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    benchmark,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    windows<span class="op">=</span>(<span class="dv">126</span>, <span class="dv">252</span>),</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'Rolling Beta to Benchmark'</span>,</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">320</span>,</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create an interactive chart of rolling beta over two windows (e.g.&nbsp;6- and 12-month).</p>
 <p>See :func:<code>qrt.stats.rolling_beta</code> for the underlying calculation.</p>
-<section id="parameters-20" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-20">Parameters</h4>
+<section id="parameters-21" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-21">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 9%">
@@ -2618,8 +2720,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="returns-20" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-20">Returns</h4>
+<section id="returns-21" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-21">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2640,21 +2742,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="qrt.plot.rolling_factor_betas" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.plot.rolling_factor_betas">rolling_factor_betas</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>plot.rolling_factor_betas(</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    factors,</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    window<span class="op">=</span><span class="dv">63</span>,</span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    rf<span class="op">=</span><span class="st">'RF'</span>,</span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    min_observations<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">380</span>,</span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>plot.rolling_factor_betas(</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    factors,</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    window<span class="op">=</span><span class="dv">63</span>,</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    rf<span class="op">=</span><span class="st">'RF'</span>,</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    min_observations<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">380</span>,</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create an interactive chart of rolling multi-factor betas over time.</p>
 <p>See :func:<code>qrt.stats.rolling_factor_regression</code> for the underlying calculation, e.g.&nbsp;the rolling Fama-French five-factor betas that reveal time-varying exposure.</p>
-<section id="parameters-21" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-21">Parameters</h4>
+<section id="parameters-22" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-22">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 13%">
@@ -2722,8 +2824,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="returns-21" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-21">Returns</h4>
+<section id="returns-22" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-22">Returns</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 9%">
@@ -2759,20 +2861,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="qrt.plot.rolling_sharpe" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.plot.rolling_sharpe">rolling_sharpe</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>plot.rolling_sharpe(</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    window<span class="op">=</span><span class="dv">126</span>,</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    rf<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'Rolling Sharpe (6-Months)'</span>,</span>
-<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">320</span>,</span>
-<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>plot.rolling_sharpe(</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    window<span class="op">=</span><span class="dv">126</span>,</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    rf<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'Rolling Sharpe (6-Months)'</span>,</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">320</span>,</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create an interactive chart of annualized rolling Sharpe ratio.</p>
 <p>See :func:<code>qrt.stats.rolling_sharpe</code> for the underlying calculation.</p>
-<section id="parameters-22" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-22">Parameters</h4>
+<section id="parameters-23" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-23">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 14%">
@@ -2834,8 +2936,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="returns-22" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-22">Returns</h4>
+<section id="returns-23" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-23">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2856,20 +2958,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="qrt.plot.rolling_sortino" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.plot.rolling_sortino">rolling_sortino</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>plot.rolling_sortino(</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    window<span class="op">=</span><span class="dv">126</span>,</span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    rf<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'Rolling Sortino (6-Months)'</span>,</span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">320</span>,</span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>plot.rolling_sortino(</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    window<span class="op">=</span><span class="dv">126</span>,</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    rf<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'Rolling Sortino (6-Months)'</span>,</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">320</span>,</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create an interactive chart of annualized rolling Sortino ratio.</p>
 <p>See :func:<code>qrt.stats.rolling_sortino</code> for the underlying calculation.</p>
-<section id="parameters-23" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-23">Parameters</h4>
+<section id="parameters-24" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-24">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 13%">
@@ -2931,8 +3033,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="returns-23" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-23">Returns</h4>
+<section id="returns-24" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-24">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2953,20 +3055,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="qrt.plot.rolling_volatility" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.plot.rolling_volatility">rolling_volatility</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>plot.rolling_volatility(</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    benchmark<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    window<span class="op">=</span><span class="dv">126</span>,</span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'Rolling Volatility (6-Months)'</span>,</span>
-<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">320</span>,</span>
-<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>plot.rolling_volatility(</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    benchmark<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    window<span class="op">=</span><span class="dv">126</span>,</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'Rolling Volatility (6-Months)'</span>,</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">320</span>,</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create an interactive chart of annualized rolling volatility.</p>
 <p>See :func:<code>qrt.stats.rolling_volatility</code> for the underlying calculation.</p>
-<section id="parameters-24" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-24">Parameters</h4>
+<section id="parameters-25" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-25">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 9%">
@@ -3028,8 +3130,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="returns-24" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-24">Returns</h4>
+<section id="returns-25" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-25">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3050,19 +3152,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="qrt.plot.show" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.plot.show">show</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>plot.show(</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    figure,</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    save_to<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    formats<span class="op">=</span>(<span class="st">'png'</span>,),</span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    width<span class="op">=</span><span class="dv">1400</span>,</span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">800</span>,</span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="dv">2</span>,</span>
-<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>plot.show(</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    figure,</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    save_to<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    formats<span class="op">=</span>(<span class="st">'png'</span>,),</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>    width<span class="op">=</span><span class="dv">1400</span>,</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">800</span>,</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Display a figure, optionally saving it to <code>save_to</code> as PNG (default) and/or self-contained HTML.</p>
-<section id="parameters-25" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-25">Parameters</h4>
+<section id="parameters-26" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-26">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 7%">
@@ -3127,10 +3229,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="qrt.plot.tearsheet" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.plot.tearsheet">tearsheet</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>plot.tearsheet(returns, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>plot.tearsheet(returns, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Alias for the interactive :func:<code>plot</code> performance report.</p>
-<section id="parameters-26" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-26">Parameters</h4>
+<section id="parameters-27" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-27">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 10%">
@@ -3162,8 +3264,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="returns-25" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-25">Returns</h4>
+<section id="returns-26" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-26">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3184,10 +3286,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="qrt.plot.trade_distribution" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.plot.trade_distribution">trade_distribution</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>plot.trade_distribution(trades, by<span class="op">=</span><span class="st">'exit_reason'</span>, <span class="op">*</span>, title<span class="op">=</span><span class="va">None</span>, height<span class="op">=</span><span class="dv">430</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>plot.trade_distribution(trades, by<span class="op">=</span><span class="st">'exit_reason'</span>, <span class="op">*</span>, title<span class="op">=</span><span class="va">None</span>, height<span class="op">=</span><span class="dv">430</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create an interactive box plot of per-trade returns grouped by a column.</p>
-<section id="parameters-27" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-27">Parameters</h4>
+<section id="parameters-28" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-28">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 5%">
@@ -3231,8 +3333,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="returns-26" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-26">Returns</h4>
+<section id="returns-27" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-27">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3272,11 +3374,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="qrt.plot.trades" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.plot.trades">trades</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>plot.trades(trades, prices, <span class="op">*</span>, features<span class="op">=</span><span class="va">None</span>, title<span class="op">=</span><span class="va">None</span>, height<span class="op">=</span><span class="dv">520</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>plot.trades(trades, prices, <span class="op">*</span>, features<span class="op">=</span><span class="va">None</span>, title<span class="op">=</span><span class="va">None</span>, height<span class="op">=</span><span class="dv">520</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create an interactive price chart with entry/exit markers for a trade log.</p>
 <p>Renders the price series with one marker per trade entry (triangle up for longs, down for shorts) and exit (x, green for winners, red for losers), plus a translucent span shading each trade by outcome. Hovering a marker shows the trade’s reason, return, holding period, and any feature-snapshot columns beyond the reserved trades-format set.</p>
-<section id="parameters-28" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-28">Parameters</h4>
+<section id="parameters-29" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-29">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 4%">
@@ -3326,8 +3428,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="returns-27" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-27">Returns</h4>
+<section id="returns-28" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-28">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3348,20 +3450,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="qrt.plot.variance_test" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.plot.variance_test">variance_test</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>plot.variance_test(</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    trades,</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    periods,</span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    sims<span class="op">=</span><span class="dv">1000</span>,</span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    win_rate_variance<span class="op">=</span><span class="fl">0.1</span>,</span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    ruin<span class="op">=-</span><span class="fl">0.9</span>,</span>
-<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>    confidence<span class="op">=</span><span class="fl">0.95</span>,</span>
-<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>    seed<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>    sample<span class="op">=</span><span class="dv">200</span>,</span>
-<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">520</span>,</span>
-<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>plot.variance_test(</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>    trades,</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    periods,</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    sims<span class="op">=</span><span class="dv">1000</span>,</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>    win_rate_variance<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>    ruin<span class="op">=-</span><span class="fl">0.9</span>,</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>    confidence<span class="op">=</span><span class="fl">0.95</span>,</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>    seed<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>    sample<span class="op">=</span><span class="dv">200</span>,</span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">520</span>,</span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create an interactive Variance Testing fan chart of forward win-rate-varied trade paths.</p>
 <p>Runs :func:<code>qrt.stats.variance_test</code> on the full <code>sims</code> simulations, so the shaded confidence band and the make-money/ruin probabilities reflect the entire sample, then renders only a <code>sample</code> of the individual simulated paths for readability, alongside the actual historical (<code>"Real"</code>) cumulative return over the most recent <code>periods</code> trades of <code>trades</code> for comparison (truncated to <code>periods</code> rather than the full history so its scale and length stay comparable to the simulated paths):</p>
 <ul>
@@ -3372,8 +3474,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <p>The simulated paths and confidence band are 0-based when computed (statistics such as <code>make_money_probability</code>/<code>ruin_probability</code> stay purely forward-looking, unaffected by history), but are rebased for display onto the last <code>"Real"</code> cumulative return so the fan chart continues smoothly from history instead of visually resetting to 0% at “Now” (the <code>ruin</code> reference line is shifted the same way).</p>
 <p>When <code>trades</code> has a <code>DatetimeIndex</code>, the x-axis shows real calendar dates — the actual dates for <code>"Real"</code> and dates extrapolated forward from the last one for the simulated paths (marked with a dotted “Now” line at the boundary) — matching the date axes used throughout :mod:<code>qrt.plot</code>. Falls back to a plain trade-count axis otherwise.</p>
-<section id="parameters-29" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-29">Parameters</h4>
+<section id="parameters-30" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-30">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 9%">
@@ -3459,8 +3561,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="returns-28" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-28">Returns</h4>
+<section id="returns-29" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-29">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3481,18 +3583,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="qrt.plot.worst_drawdowns" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.plot.worst_drawdowns">worst_drawdowns</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>plot.worst_drawdowns(</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    top<span class="op">=</span><span class="dv">5</span>,</span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">400</span>,</span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>plot.worst_drawdowns(</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    top<span class="op">=</span><span class="dv">5</span>,</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">400</span>,</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create an equity curve with the worst drawdown periods shaded.</p>
 <p>See :func:<code>qrt.stats.drawdown_details</code> for the underlying episode breakdown.</p>
-<section id="parameters-30" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-30">Parameters</h4>
+<section id="parameters-31" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-31">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 13%">
@@ -3542,8 +3644,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="returns-29" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-29">Returns</h4>
+<section id="returns-30" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-30">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
