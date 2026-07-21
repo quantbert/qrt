@@ -93,6 +93,7 @@ from qrt.stats.core import (
     win_rate,
     worst,
 )
+from qrt.stats.classification import multiclass_precision_recall_curve, multiclass_roc_curve
 
 __all__ = [
     "Returns",
@@ -135,6 +136,8 @@ __all__ = [
     "max_drawdown",
     "metrics",
     "monthly_returns",
+    "multiclass_precision_recall_curve",
+    "multiclass_roc_curve",
     "montecarlo",
     "noise_test",
     "omega",

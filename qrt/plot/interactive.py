@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterable
+from collections.abc import Iterable, Sequence
 from fnmatch import fnmatch
 from pathlib import Path
 from typing import TYPE_CHECKING, Literal
@@ -32,6 +32,10 @@ from qrt.stats.core import (
     rolling_sortino as rolling_sortino_stats,
     rolling_volatility as rolling_volatility_stats,
     to_drawdown_series as to_drawdown_series_,
+)
+from qrt.stats.classification import (
+    multiclass_precision_recall_curve,
+    multiclass_roc_curve,
 )
 
 if TYPE_CHECKING:
@@ -162,6 +166,141 @@ def line(
     _base_layout(figure, title=chart_title, height=height)
     _set_date_range(figure, frame.index)
     figure.update_yaxes(title_text=yaxis_title)
+    return figure
+
+
+def roc(
+    y_true: Sequence[object] | pd.Series | np.ndarray,
+    y_score: pd.DataFrame | np.ndarray,
+    *,
+    classes: Iterable[object] | None = None,
+    title: str = "Multiclass ROC curve",
+    height: int = 500,
+) -> Figure:
+    """Plot one-vs-rest multiclass ROC curves and micro/macro averages.
+
+    Args:
+        y_true: True class labels with shape ``(n_samples,)``.
+        y_score: Class scores with shape ``(n_samples, n_classes)``. DataFrame
+            column names are used as class labels when ``classes`` is omitted.
+        classes: Class labels in the same order as the score columns.
+        title: Figure title.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
+    curves = multiclass_roc_curve(y_true, y_score, classes=classes)
+    figure = go.Figure()
+    class_curves = curves[curves["curve"] == "class"]
+    for index, (label, curve) in enumerate(class_curves.groupby("class", sort=False)):
+        figure.add_scatter(
+            x=curve["fpr"],
+            y=curve["tpr"],
+            mode="lines",
+            name=f"{label} (AUC={curve['auc'].iloc[0]:.3f})",
+            line={"color": _QUANT_COLORS[index % len(_QUANT_COLORS)], "width": 1.8},
+            hovertemplate="FPR=%{x:.3f}<br>TPR=%{y:.3f}<extra>%{fullData.name}</extra>",
+        )
+    for curve_name, dash in (("micro", "dash"), ("macro", "dot")):
+        curve = curves[curves["curve"] == curve_name]
+        figure.add_scatter(
+            x=curve["fpr"],
+            y=curve["tpr"],
+            mode="lines",
+            name=f"{curve_name.title()} average (AUC={curve['auc'].iloc[0]:.3f})",
+            line={"color": "#111827", "width": 2.4, "dash": dash},
+            hovertemplate="FPR=%{x:.3f}<br>TPR=%{y:.3f}<extra>%{fullData.name}</extra>",
+        )
+    figure.add_shape(type="line", x0=0, y0=0, x1=1, y1=1, line={"color": "#9CA3AF", "width": 1, "dash": "dash"})
+    _base_layout(figure, title=title, height=height, time_axis=False)
+    figure.update_layout(
+        hovermode="closest",
+        legend={"yanchor": "bottom"},
+        margin={"t": 130},
+    )
+    figure.update_xaxes(
+        title_text="False positive rate",
+        range=[-0.05, 1.05],
+        tickvals=np.linspace(0, 1, 6),
+        constrain="domain",
+    )
+    figure.update_yaxes(
+        title_text="True positive rate",
+        range=[-0.05, 1.05],
+        tickvals=np.linspace(0, 1, 6),
+        scaleanchor="x",
+        scaleratio=1,
+        constrain="domain",
+    )
+    return figure
+
+
+def precision_recall(
+    y_true: Sequence[object] | pd.Series | np.ndarray,
+    y_score: pd.DataFrame | np.ndarray,
+    *,
+    classes: Iterable[object] | None = None,
+    title: str = "Multiclass precision-recall curve",
+    height: int = 500,
+) -> Figure:
+    """Plot one-vs-rest multiclass precision-recall curves and averages.
+
+    Args:
+        y_true: True class labels with shape ``(n_samples,)``.
+        y_score: Class scores with shape ``(n_samples, n_classes)``. DataFrame
+            column names are used as class labels when ``classes`` is omitted.
+        classes: Class labels in the same order as the score columns.
+        title: Figure title.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
+    curves = multiclass_precision_recall_curve(y_true, y_score, classes=classes)
+    figure = go.Figure()
+    class_curves = curves[curves["curve"] == "class"]
+    for index, (label, curve) in enumerate(class_curves.groupby("class", sort=False)):
+        figure.add_scatter(
+            x=curve["recall"],
+            y=curve["precision"],
+            mode="lines",
+            name=f"{label} (AP={curve['average_precision'].iloc[0]:.3f})",
+            line={"color": _QUANT_COLORS[index % len(_QUANT_COLORS)], "width": 1.8},
+            hovertemplate="Recall=%{x:.3f}<br>Precision=%{y:.3f}<extra>%{fullData.name}</extra>",
+        )
+    for curve_name, dash in (("micro", "dash"), ("macro", "dot")):
+        curve = curves[curves["curve"] == curve_name]
+        figure.add_scatter(
+            x=curve["recall"],
+            y=curve["precision"],
+            mode="lines",
+            name=f"{curve_name.title()} average (AP={curve['average_precision'].iloc[0]:.3f})",
+            line={"color": "#111827", "width": 2.4, "dash": dash},
+            hovertemplate="Recall=%{x:.3f}<br>Precision=%{y:.3f}<extra>%{fullData.name}</extra>",
+        )
+    prevalence = 1.0 / y_score.shape[1]
+    figure.add_hline(y=prevalence, line={"color": "#9CA3AF", "width": 1, "dash": "dash"})
+    _base_layout(figure, title=title, height=height, time_axis=False)
+    figure.update_layout(
+        hovermode="closest",
+        legend={"yanchor": "bottom"},
+        margin={"t": 130},
+    )
+    figure.update_xaxes(
+        title_text="Recall",
+        range=[-0.05, 1.05],
+        tickvals=np.linspace(0, 1, 6),
+        constrain="domain",
+    )
+    figure.update_yaxes(
+        title_text="Precision",
+        range=[-0.05, 1.05],
+        tickvals=np.linspace(0, 1, 6),
+        scaleanchor="x",
+        scaleratio=1,
+        constrain="domain",
+    )
     return figure
 
 

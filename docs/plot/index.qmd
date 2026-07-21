@@ -2,11 +2,12 @@
 title: Plotting
 ---
 
-`q.plot` renders interactive Plotly figures for return streams — quick column
-charts, equity curves, drawdowns, calendar heatmaps, full quantstats-style
-tearsheets, and Monte Carlo diagnostics — and for trade logs in qrt's
-canonical trades format (entry/exit markers on price, excursion scatters,
-per-trade return distributions), with sensible defaults for quant research.
+`q.plot` renders interactive Plotly figures for multiclass model evaluation,
+return streams, and trade logs. Classification diagnostics include one-vs-rest
+ROC and precision-recall curves with per-class, micro-average, and macro-average
+summaries. Return and trade visualizations cover quick column charts, equity
+curves, drawdowns, calendar heatmaps, full quantstats-style tearsheets, Monte
+Carlo diagnostics, entry/exit markers, excursions, and per-trade distributions.
 Return-stream *statistics* (performance, alpha/beta, rolling diagnostics,
 `q.stats.montecarlo`, ...) live in `q.stats`; see
 [Return Statistics](../stats/index.qmd). For feature engineering and
@@ -14,6 +15,8 @@ price-chart examples, see [Feature Engineering](../feature/index.qmd).
 
 Pages:
 
+- [Classification curves](classification.ipynb) — multiclass ROC and
+  precision-recall curves, plus reusable tidy curve data from `q.stats`.
 - [Return charts](returns.ipynb) — column charts, equity curves, drawdowns,
   full performance reports, and monthly heatmaps.
 - [Tearsheet report](report.ipynb) — full quantstats-style strategy tearsheet

@@ -156,6 +156,8 @@ website:
         - section: "q.plot — Plotting"
           href: plot/index.qmd
           contents:
+            - text: "Classification curves"
+              href: plot/classification.ipynb
             - text: "Return charts"
               href: plot/returns.ipynb
             - text: "Tearsheet report"
@@ -252,12 +254,12 @@ quartodoc:
       contents:
         - signal
     - title: q.stats
-      desc: "Return-stream statistics: performance, alpha/beta, rolling diagnostics, and the chained `Returns` helper (no plotting dependency)."
+      desc: "Reusable return-stream and classification statistics, including performance, rolling diagnostics, and multiclass evaluation curves (no plotting dependency)."
       contents:
         - name: stats
           include_imports: true
     - title: q.plot
-      desc: "Plotting + performance reports (tearsheets)."
+      desc: "Interactive classification diagnostics, return-stream charts, trade visualizations, and performance reports."
       contents:
         - name: plot
           include_imports: true

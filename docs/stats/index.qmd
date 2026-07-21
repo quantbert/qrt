@@ -8,6 +8,9 @@ feature engineering and price-chart examples, and [Data](../data/index.qmd)
 for loading/saving OHLCV data. Trade-log statistics
 (`q.stats.trade_stats`, `q.stats.trades_to_returns`) are shown on the
 [Trade logs](../plot/trades.ipynb) page.
+Multiclass ROC and precision-recall curve tables are demonstrated alongside
+their Plotly visualizations on the
+[Classification curves](../plot/classification.ipynb) page.
 
 Pages:
 
