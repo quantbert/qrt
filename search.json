@@ -317,6 +317,138 @@
     ]
   },
   {
+    "objectID": "label/triple_barrier.html",
+    "href": "label/triple_barrier.html",
+    "title": "Triple-barrier labels",
+    "section": "",
+    "text": "q.label.triple_barrier follows each future close-price path until it touches a profit-taking barrier, a stop-loss barrier, or its vertical time limit. Horizontal widths are multiples of an event-specific target known at event time.\nWithout side, labels are directional: -1, 0, or 1. Events without a complete vertical horizon are dropped by default.\nimport pandas as pd\n\nimport qrt as q\n\nclose = q.data.datasets.load(\"spy\")[\"close\"]\nclose = close.loc[close.index.max() - pd.DateOffset(years=5) :]\ntarget = close.pct_change(fill_method=None).ewm(span=20, min_periods=20).std()\nevents = q.label.cusum_filter(close, target.mul(0.5).where(target.gt(0)))\nlabels = q.label.triple_barrier(\n    close,\n    target,\n    events=events,\n    horizon=20,\n    upper=2.0,\n    lower=1.0,\n    min_target=0.002,\n)\nlabels.tail()\n\n\n\n\n\n\n\n\nvertical_barrier\ntouch_time\nbarrier\ntarget\nreturn\nlabel\n\n\nevent_time\n\n\n\n\n\n\n\n\n\n\n2026-06-12\n2026-07-14\n2026-06-26\nlower\n0.010510\n-0.014671\n-1\n\n\n2026-06-15\n2026-07-15\n2026-06-17\nlower\n0.011291\n-0.018375\n-1\n\n\n2026-06-16\n2026-07-16\n2026-06-17\nlower\n0.010996\n-0.012488\n-1\n\n\n2026-06-17\n2026-07-17\n2026-06-26\nlower\n0.011234\n-0.013620\n-1\n\n\n2026-06-18\n2026-07-20\n2026-06-23\nlower\n0.011150\n-0.017623\n-1",
+    "crumbs": [
+      "Getting Started",
+      "q.label — Financial labels",
+      "Triple-barrier labels"
+    ]
+  },
+  {
+    "objectID": "label/triple_barrier.html#barrier-outcomes",
+    "href": "label/triple_barrier.html#barrier-outcomes",
+    "title": "Triple-barrier labels",
+    "section": "Barrier outcomes",
+    "text": "Barrier outcomes\ntouch_time is the realized event endpoint used by concurrency, uniqueness, sample-weighting, and purging utilities. vertical_barrier remains available to distinguish the scheduled horizon from the first actual touch.\n\nlabels.groupby([\"barrier\", \"label\"], observed=True).agg(\n    observations=(\"label\", \"size\"),\n    average_return=(\"return\", \"mean\"),\n    average_lifetime=(\"touch_time\", lambda end: (end - end.index).mean()),\n)\n\n\n\n\n\n\n\n\n\nobservations\naverage_return\naverage_lifetime\n\n\nbarrier\nlabel\n\n\n\n\n\n\n\nlower\n-1\n431\n-0.016950\n5 days 23:13:13.503480\n\n\nupper\n1\n343\n0.025201\n7 days 21:20:27.988338\n\n\nvertical\n-1\n1\n-0.003573\n29 days 00:00:00\n\n\n1\n3\n0.042213\n29 days 00:00:00",
+    "crumbs": [
+      "Getting Started",
+      "q.label — Financial labels",
+      "Triple-barrier labels"
+    ]
+  },
+  {
+    "objectID": "label/time_decay.html",
+    "href": "label/time_decay.html",
+    "title": "Linear time decay",
+    "section": "",
+    "text": "q.label.time_decay creates linear recency factors from cumulative sample importance. Average uniqueness is a common input because elapsed progress then reflects independent information rather than raw row count.\nminimum_weight controls the oldest intercept. A value of 1 disables decay without changing alignment.\n\nimport pandas as pd\n\nimport qrt as q\n\nevents = pd.date_range(\"2026-01-01\", periods=6, name=\"event_time\")\nuniqueness = pd.Series([0.4, 0.6, 0.5, 0.8, 0.7, 1.0], index=events)\ncomparison = pd.DataFrame({\n    \"uniqueness\": uniqueness,\n    \"decay from zero\": q.label.time_decay(uniqueness),\n    \"preserve 25%\": q.label.time_decay(uniqueness, minimum_weight=0.25),\n    \"no decay\": q.label.time_decay(uniqueness, minimum_weight=1.0),\n})\ncomparison\n\n\n\n\n\n\n\n\nuniqueness\ndecay from zero\npreserve 25%\nno decay\n\n\nevent_time\n\n\n\n\n\n\n\n\n2026-01-01\n0.4\n0.100\n0.32500\n1.0\n\n\n2026-01-02\n0.6\n0.250\n0.43750\n1.0\n\n\n2026-01-03\n0.5\n0.375\n0.53125\n1.0\n\n\n2026-01-04\n0.8\n0.575\n0.68125\n1.0\n\n\n2026-01-05\n0.7\n0.750\n0.81250\n1.0\n\n\n2026-01-06\n1.0\n1.000\n1.00000\n1.0\n\n\n\n\n\n\n\nThe factors are ordered by the input index and reach 1 at the newest event. Multiply them into other aligned components with combine_weights.\n\n\n\n Back to top",
+    "crumbs": [
+      "Getting Started",
+      "q.label — Financial labels",
+      "Linear time decay"
+    ]
+  },
+  {
+    "objectID": "label/sample_weights.html",
+    "href": "label/sample_weights.html",
+    "title": "Return-attribution sample weights",
+    "section": "",
+    "text": "q.label.sample_weights attributes each log return equally among labels active at that observation, accumulates the attributed return over each event lifetime, and takes its absolute value.\nNormalization is enabled by default and scales nonzero weights to unit mean.\n\nimport pandas as pd\n\nimport qrt as q\n\nobservations = pd.date_range(\"2026-01-01\", periods=7, name=\"datetime\")\nprices = pd.Series([100, 102, 103, 101, 105, 108, 107], index=observations)\nend_times = pd.Series(\n    observations[[3, 5, 6]],\n    index=observations[[0, 1, 4]].rename(\"event_time\"),\n)\nraw = q.label.sample_weights(prices, end_times, normalize=False)\nnormalized = q.label.sample_weights(prices, end_times)\npd.DataFrame({\"end_time\": end_times, \"raw_weight\": raw, \"normalized_weight\": normalized})\n\n\n\n\n\n\n\n\nend_time\nraw_weight\nnormalized_weight\n\n\nevent_time\n\n\n\n\n\n\n\n2026-01-01\n2026-01-04\n0.004975\n0.220600\n\n\n2026-01-02\n2026-01-06\n0.038481\n1.706235\n\n\n2026-01-05\n2026-01-07\n0.024203\n1.073165\n\n\n\n\n\n\n\nThese are outcome-based weights and therefore are not point-in-time features. Combine them with uniqueness, time decay, or class balance only through an explicit training policy.\n\n\n\n Back to top",
+    "crumbs": [
+      "Getting Started",
+      "q.label — Financial labels",
+      "Return-attribution weights"
+    ]
+  },
+  {
+    "objectID": "label/prune_labels.html",
+    "href": "label/prune_labels.html",
+    "title": "Rare-label pruning",
+    "section": "",
+    "text": "q.label.prune_labels iteratively removes classes below a minimum sample fraction and returns an audit report. Fractions are recomputed after each removal, and min_classes prevents the target from silently collapsing to one class.\nTied rare classes are removed in first-observed order. The function preserves the original event index for all retained labels.\nimport pandas as pd\n\nimport qrt as q\n\nclose = q.data.datasets.load(\"spy\")[\"close\"]\nclose = close.loc[close.index.max() - pd.DateOffset(years=5) :]\nvolatility = close.pct_change(fill_method=None).ewm(span=20, min_periods=20).std()\nevents = q.label.cusum_filter(close, volatility.mul(0.5).where(volatility.gt(0)))\noutcomes = q.label.fixed_horizon(close, 5, events=events, threshold=0.02)\nretained, report = q.label.prune_labels(outcomes[\"label\"], min_fraction=0.20)\nreport\n\n\n\n\n\n\n\n\ninitial_count\ninitial_fraction\nfinal_count\nfinal_fraction\ndropped\ndrop_step\n\n\nlabel\n\n\n\n\n\n\n\n\n\n\n0\n522\n0.663278\n522\n0.780269\nFalse\n&lt;NA&gt;\n\n\n1\n147\n0.186785\n147\n0.219731\nFalse\n&lt;NA&gt;\n\n\n-1\n118\n0.149936\n0\n0.0\nTrue\n1",
+    "crumbs": [
+      "Getting Started",
+      "q.label — Financial labels",
+      "Rare-label pruning"
+    ]
+  },
+  {
+    "objectID": "label/prune_labels.html#apply-the-retained-event-index",
+    "href": "label/prune_labels.html#apply-the-retained-event-index",
+    "title": "Rare-label pruning",
+    "section": "Apply the retained event index",
+    "text": "Apply the retained event index\nThe returned Series is filtered rather than recoded. Use its index to align all event-level features, endpoints, and weights to the same surviving sample.\n\ntraining_outcomes = outcomes.loc[retained.index].assign(label=retained)\npd.DataFrame({\n    \"before\": outcomes[\"label\"].value_counts().sort_index(),\n    \"after\": training_outcomes[\"label\"].value_counts().sort_index(),\n}).fillna(0).astype(int)\n\n\n\n\n\n\n\n\nbefore\nafter\n\n\nlabel\n\n\n\n\n\n\n-1\n118\n0\n\n\n0\n522\n522\n\n\n1\n147\n147",
+    "crumbs": [
+      "Getting Started",
+      "q.label — Financial labels",
+      "Rare-label pruning"
+    ]
+  },
+  {
+    "objectID": "label/indicator_matrix.html",
+    "href": "label/indicator_matrix.html",
+    "title": "Event indicator matrix",
+    "section": "",
+    "text": "q.label.indicator_matrix builds a sparse observation-by-event membership matrix. A value of 1 means the observation belongs to the event’s inclusive lifetime.\nRows sum to label concurrency. Columns expose each event path for uniqueness calculations and sequential bootstrap sampling.\n\nimport pandas as pd\n\nimport qrt as q\n\nobservations = pd.date_range(\"2026-01-01\", periods=7, name=\"datetime\")\nend_times = pd.Series(\n    observations[[3, 5, 6]],\n    index=observations[[0, 1, 4]].rename(\"event_time\"),\n)\nmembership = q.label.indicator_matrix(observations, end_times)\nmembership.sparse.to_dense()\n\n\n\n\n\n\n\nevent_time\n2026-01-01\n2026-01-02\n2026-01-05\n\n\ndatetime\n\n\n\n\n\n\n\n2026-01-01\n1\n0\n0\n\n\n2026-01-02\n1\n1\n0\n\n\n2026-01-03\n1\n1\n0\n\n\n2026-01-04\n1\n1\n0\n\n\n2026-01-05\n0\n1\n1\n\n\n2026-01-06\n0\n1\n1\n\n\n2026-01-07\n0\n0\n1\n\n\n\n\n\n\n\n\npd.DataFrame({\n    \"matrix row sum\": membership.sum(axis=1),\n    \"concurrency\": q.label.concurrency(observations, end_times),\n})\n\n\n\n\n\n\n\n\nmatrix row sum\nconcurrency\n\n\ndatetime\n\n\n\n\n\n\n2026-01-01\n1\n1\n\n\n2026-01-02\n2\n2\n\n\n2026-01-03\n2\n2\n\n\n2026-01-04\n2\n2\n\n\n2026-01-05\n2\n2\n\n\n2026-01-06\n2\n2\n\n\n2026-01-07\n1\n1\n\n\n\n\n\n\n\n\n\n\n Back to top",
+    "crumbs": [
+      "Getting Started",
+      "q.label — Financial labels",
+      "Event indicator matrix"
+    ]
+  },
+  {
+    "objectID": "label/cusum_filter.html",
+    "href": "label/cusum_filter.html",
+    "title": "CUSUM event filter",
+    "section": "",
+    "text": "q.label.cusum_filter emits event timestamps when cumulative positive or negative price changes cross a threshold. A volatility-scaled threshold reduces routine sampling during quiet periods and increases it during volatile periods.\nThe filter uses only changes observed through each event timestamp. It discovers candidate events; it does not assign future-aware outcomes.\nimport pandas as pd\nimport plotly.graph_objects as go\n\nimport qrt as q\n\nclose = q.data.datasets.load(\"spy\")[\"close\"]\nclose = close.loc[close.index.max() - pd.DateOffset(years=3) :]\nvolatility = close.pct_change(fill_method=None).ewm(span=20, min_periods=20).std()\nthreshold = volatility.mul(0.5).where(volatility.gt(0))\nevents = q.label.cusum_filter(close, threshold)\npd.DataFrame({\"close\": close.reindex(events), \"threshold\": threshold.reindex(events)}).tail()\n\n\n\n\n\n\n\n\nclose\nthreshold\n\n\ndatetime\n\n\n\n\n\n\n2026-07-10\n754.950012\n0.004142\n\n\n2026-07-13\n749.169983\n0.004175\n\n\n2026-07-15\n754.809998\n0.003828\n\n\n2026-07-16\n750.719971\n0.003775\n\n\n2026-07-17\n743.289978\n0.003922",
+    "crumbs": [
+      "Getting Started",
+      "q.label — Financial labels",
+      "CUSUM event filter"
+    ]
+  },
+  {
+    "objectID": "label/cusum_filter.html#inspect-detected-events",
+    "href": "label/cusum_filter.html#inspect-detected-events",
+    "title": "CUSUM event filter",
+    "section": "Inspect detected events",
+    "text": "Inspect detected events\nMarkers show the observations selected for downstream labeling. events is an index drawn directly from the price index, so it can be passed to fixed_horizon, triple_barrier, or trend_scanning.\n\nfigure = go.Figure()\nfigure.add_trace(go.Scatter(x=close.index, y=close, name=\"SPY close\"))\nfigure.add_trace(go.Scatter(x=events, y=close.reindex(events), name=\"CUSUM event\", mode=\"markers\", marker={\"size\": 5, \"color\": \"#d04a35\"}))\nfigure.update_layout(title=\"SPY volatility-scaled CUSUM events\", yaxis_title=\"Close\", hovermode=\"x unified\")\nfigure.show(renderer=\"notebook_connected\")",
+    "crumbs": [
+      "Getting Started",
+      "q.label — Financial labels",
+      "CUSUM event filter"
+    ]
+  },
+  {
+    "objectID": "label/combine_weights.html",
+    "href": "label/combine_weights.html",
+    "title": "Combine sample weights",
+    "section": "",
+    "text": "q.label.combine_weights multiplies non-negative weight components with identical indexes and optionally normalizes the result to unit mean.\nKeeping components separate makes the training policy auditable: return attribution, recency, uniqueness, and class balancing can be inspected before they are combined.\n\nimport pandas as pd\n\nimport qrt as q\n\nevents = pd.date_range(\"2026-01-01\", periods=5, name=\"event_time\")\nreturn_weight = pd.Series([0.4, 0.8, 1.2, 0.9, 1.4], index=events)\nuniqueness = pd.Series([0.5, 0.7, 0.9, 0.8, 1.0], index=events)\ndecay = q.label.time_decay(uniqueness, minimum_weight=0.25)\ncombined = q.label.combine_weights(return_weight, uniqueness, decay)\npd.DataFrame({\n    \"return_weight\": return_weight,\n    \"uniqueness\": uniqueness,\n    \"time_decay\": decay,\n    \"combined\": combined,\n})\n\n\n\n\n\n\n\n\nreturn_weight\nuniqueness\ntime_decay\ncombined\n\n\nevent_time\n\n\n\n\n\n\n\n\n2026-01-01\n0.4\n0.5\n0.346154\n0.114387\n\n\n2026-01-02\n0.8\n0.7\n0.480769\n0.444840\n\n\n2026-01-03\n1.2\n0.9\n0.653846\n1.166751\n\n\n2026-01-04\n0.9\n0.8\n0.807692\n0.960854\n\n\n2026-01-05\n1.4\n1.0\n1.000000\n2.313167\n\n\n\n\n\n\n\nA zero component removes that event multiplicatively. When normalization is enabled, an all-zero result is rejected because it cannot define usable training weights.\n\n\n\n Back to top",
+    "crumbs": [
+      "Getting Started",
+      "q.label — Financial labels",
+      "Combine sample weights"
+    ]
+  },
+  {
+    "objectID": "label/average_uniqueness.html",
+    "href": "label/average_uniqueness.html",
+    "title": "Average label uniqueness",
+    "section": "",
+    "text": "q.label.average_uniqueness averages inverse concurrency over each event lifetime. An isolated label has uniqueness 1; overlapping labels receive smaller values.\nUse uniqueness as a diagnostic, a decay input, or one component of explicit training weights.\n\nimport pandas as pd\n\nimport qrt as q\n\nobservations = pd.date_range(\"2026-01-01\", periods=7, name=\"datetime\")\nend_times = pd.Series(\n    observations[[3, 5, 6]],\n    index=observations[[0, 1, 4]].rename(\"event_time\"),\n)\nuniqueness = q.label.average_uniqueness(observations, end_times)\npd.DataFrame({\"end_time\": end_times, \"average_uniqueness\": uniqueness})\n\n\n\n\n\n\n\n\nend_time\naverage_uniqueness\n\n\nevent_time\n\n\n\n\n\n\n2026-01-01\n2026-01-04\n0.625000\n\n\n2026-01-02\n2026-01-06\n0.500000\n\n\n2026-01-05\n2026-01-07\n0.666667\n\n\n\n\n\n\n\nPrecomputed concurrency can be supplied when several analyses share the same intervals. It may be zero outside all event lifetimes but must be positive inside every event.\n\n\n\n Back to top",
+    "crumbs": [
+      "Getting Started",
+      "q.label — Financial labels",
+      "Average label uniqueness"
+    ]
+  },
+  {
     "objectID": "indicator/qrt/volume_spike_ratio.html",
     "href": "indicator/qrt/volume_spike_ratio.html",
     "title": "Volume spike ratio",
@@ -1424,7 +1556,29 @@
     "href": "label/index.html",
     "title": "Financial Labels",
     "section": "",
-    "text": "q.label constructs supervised-learning targets from future market paths. That future dependence is intentional: these values belong on the target side of a training dataset, never among point-in-time features.\nAll functions operate on one ordered instrument at a time, preserve event timestamps, and reject duplicate or unsorted indexes. For panel data, group by symbol explicitly and label each history independently.",
+    "text": "q.label owns the event-to-target part of a financial machine-learning workflow. It answers four related but distinct questions:\nOnly the target-construction functions deliberately inspect future market paths. Event filters and event-time inputs must remain point-in-time safe, while overlap and weighting functions are training metadata rather than predictors. None of these outputs should be materialized as contemporaneous features.\nAll functions operate on one ordered instrument at a time, preserve event timestamps, and reject duplicate or unsorted indexes. For panel data, group by symbol explicitly and label each history independently.",
+    "crumbs": [
+      "Getting Started",
+      "q.label — Financial labels"
+    ]
+  },
+  {
+    "objectID": "label/index.html#function-map",
+    "href": "label/index.html#function-map",
+    "title": "Financial Labels",
+    "section": "Function map",
+    "text": "Function map\n\nEvent selection and time limits\nThese functions define when a label begins and the latest time at which its outcome may be observed. They do not assign a target class by themselves.\n\n\n\n\n\n\n\n\nFunction\nWhat it provides\nWhere it is useful\n\n\n\n\nq.label.cusum_filter\nSymmetric cumulative-change event detection with scalar or time-varying thresholds\nReduces routine sampling and focuses labeling on structural price moves. A volatility-scaled threshold adapts event density across regimes, but the threshold must be known at event time.\n\n\nq.label.vertical_barriers\nEvent-to-endpoint mapping by bar count or elapsed time\nGives labels a maximum lifetime, supports explicit censoring, and makes bar-time versus wall-clock assumptions visible.\n\n\n\n\n\nTarget construction\nTarget choice encodes the economic question presented to the model. There is no universally best label: simpler targets are easier to interpret, while path-dependent targets can better reflect trading decisions at the cost of more parameters and stronger overlap.\n\n\n\n\n\n\n\n\nFunction\nWhat it provides\nWhere it is useful\n\n\n\n\nq.label.fixed_horizon\nReturn class at one future bar or time horizon, with an optional neutral band\nA transparent baseline for directional forecasting and cross-sectional studies. It is easy to compare across experiments, but ignores the path taken before the endpoint.\n\n\nq.label.triple_barrier\nFirst-touch outcome across profit-taking, stop-loss, and vertical barriers\nUseful when the learning target should resemble an exit policy and adapt to event-time volatility. Results depend on barrier widths and horizon, so parameter stability matters.\n\n\nq.label.meta_label\nBinary target stating whether a proposed side produced sufficient adjusted return\nSeparates direction from whether to trade. It is suited to secondary models for filtering or sizing primary-model decisions, not for inventing direction after the fact.\n\n\nq.label.trend_scanning\nDirection from the strongest forward regression across candidate horizons\nUseful when trend duration is unknown and a single fixed endpoint is too rigid. The selected horizon is data-dependent, so retain end_time for purging and inspect t-value stability.\n\n\nq.label.prune_labels\nIterative rare-class removal plus a class-level audit report\nPrevents vanishing classes from destabilizing classification. Use it transparently and fit the pruning policy on training data; pruning can discard economically important tail events.\n\n\n\n\n\nDependence and event lifetimes\nFinancial labels frequently overlap: one event may still be waiting for an outcome when several newer events begin. These functions expose that dependence rather than treating event rows as independent and identically distributed.\n\n\n\n\n\n\n\n\nFunction\nWhat it provides\nWhere it is useful\n\n\n\n\nq.label.concurrency\nNumber of inclusive event lifetimes active at each observation\nThe quickest diagnostic for label crowding and the basis for overlap-aware return attribution.\n\n\nq.label.indicator_matrix\nSparse observation-by-event lifetime membership\nMakes the overlap structure explicit for diagnostics and resampling without allocating a dense matrix for mostly inactive events.\n\n\nq.label.average_uniqueness\nMean inverse concurrency over each event lifetime\nQuantifies how much independent information each label contributes. Values near 1 are isolated; smaller values indicate heavily shared paths.\n\n\nq.label.purging_metadata\nRunning maximum endpoints and embargo-adjusted next-safe observations\nBridges labels to chronological model selection. It supplies the information a splitter needs to avoid train/test path overlap, but does not construct folds itself.\n\n\n\n\n\nSampling and training weights\nThese functions modify how labeled events enter model fitting. They should be derived inside the training workflow, aligned by event time, and kept separate from input features so their policy remains auditable.\n\n\n\n\n\n\n\n\nFunction\nWhat it provides\nWhere it is useful\n\n\n\n\nq.label.sequential_bootstrap\nSeeded bootstrap draws weighted by marginal uniqueness after each selection\nBuilds bags with less redundant event paths than ordinary uniform bootstrap. Repeated events are intentional, and the result remains a sample rather than a deterministic ranking.\n\n\nq.label.sample_weights\nAbsolute event return after concurrency attribution\nGives greater influence to economically consequential outcomes without double-counting shared returns. Because it uses realized outcomes, it is training weight metadata, never a feature.\n\n\nq.label.time_decay\nLinear recency factors based on cumulative sample importance\nLets newer regimes matter more while retaining older observations. minimum_weight controls how aggressively history is discounted.\n\n\nq.label.class_balance_weights\nInverse-frequency factors with equal total mass per observed class\nUseful when majority classes dominate the loss. It changes the training objective and should not be confused with improving the underlying information content.\n\n\nq.label.combine_weights\nAligned multiplication and optional normalization of weight components\nMakes a composite weighting policy explicit. Inspect components first: a zero in any component removes that event multiplicatively.",
+    "crumbs": [
+      "Getting Started",
+      "q.label — Financial labels"
+    ]
+  },
+  {
+    "objectID": "label/index.html#choosing-a-target",
+    "href": "label/index.html#choosing-a-target",
+    "title": "Financial Labels",
+    "section": "Choosing a target",
+    "text": "Choosing a target\n\nStart with fixed_horizon when you need an interpretable baseline or want to isolate model quality from exit-policy assumptions.\nUse triple_barrier when the path to the outcome matters and barrier levels have a defensible economic or risk interpretation.\nUse trend_scanning when the relevant forward duration is genuinely unknown, then inspect which horizons are selected and whether labels are stable across nearby candidates.\nAdd meta_label only when a separate primary process already supplies a side; the binary target answers whether to act, not which direction to choose.\nKeep touch_time or end_time regardless of method. Target accuracy is not trustworthy if overlapping future paths leak across validation folds.",
     "crumbs": [
       "Getting Started",
       "q.label — Financial labels"
@@ -2685,6 +2839,150 @@
     ]
   },
   {
+    "objectID": "label/class_balance_weights.html",
+    "href": "label/class_balance_weights.html",
+    "title": "Class-balance weights",
+    "section": "",
+    "text": "q.label.class_balance_weights assigns inverse-frequency factors so every observed class receives equal total weight. The resulting factors have unit mean.\nUse class balancing when the training objective should not be dominated by the majority target. It changes the loss contribution, not the labels themselves.\n\nimport pandas as pd\n\nimport qrt as q\n\nevents = pd.date_range(\"2026-01-01\", periods=10, name=\"event_time\")\nlabels = pd.Series([0, 0, 0, 0, 0, 0, 1, 1, -1, -1], index=events, name=\"label\")\nweights = q.label.class_balance_weights(labels)\npd.DataFrame({\"label\": labels, \"class_balance_weight\": weights})\n\n\n\n\n\n\n\n\nlabel\nclass_balance_weight\n\n\nevent_time\n\n\n\n\n\n\n2026-01-01\n0\n0.555556\n\n\n2026-01-02\n0\n0.555556\n\n\n2026-01-03\n0\n0.555556\n\n\n2026-01-04\n0\n0.555556\n\n\n2026-01-05\n0\n0.555556\n\n\n2026-01-06\n0\n0.555556\n\n\n2026-01-07\n1\n1.666667\n\n\n2026-01-08\n1\n1.666667\n\n\n2026-01-09\n-1\n1.666667\n\n\n2026-01-10\n-1\n1.666667\n\n\n\n\n\n\n\n\nweights.groupby(labels).agg([\"count\", \"sum\"]).rename_axis(\"label\")\n\n\n\n\n\n\n\n\ncount\nsum\n\n\nlabel\n\n\n\n\n\n\n-1\n2\n3.333333\n\n\n0\n6\n3.333333\n\n\n1\n2\n3.333333\n\n\n\n\n\n\n\n\n\n\n Back to top",
+    "crumbs": [
+      "Getting Started",
+      "q.label — Financial labels",
+      "Class-balance weights"
+    ]
+  },
+  {
+    "objectID": "label/concurrency.html",
+    "href": "label/concurrency.html",
+    "title": "Label concurrency",
+    "section": "",
+    "text": "q.label.concurrency counts the label intervals active at each observation. Event lifetimes include both their start and end observations, matching the endpoint convention used by triple-barrier labels.\nConcurrent labels share future returns and are therefore not independent observations.\n\nimport pandas as pd\n\nimport qrt as q\n\nobservations = pd.date_range(\"2026-01-01\", periods=7, name=\"datetime\")\nend_times = pd.Series(\n    observations[[3, 5, 6]],\n    index=observations[[0, 1, 4]].rename(\"event_time\"),\n    name=\"touch_time\",\n)\nactive = q.label.concurrency(observations, end_times)\npd.DataFrame({\"concurrency\": active})\n\n\n\n\n\n\n\n\nconcurrency\n\n\ndatetime\n\n\n\n\n\n2026-01-01\n1\n\n\n2026-01-02\n2\n\n\n2026-01-03\n2\n\n\n2026-01-04\n2\n\n\n2026-01-05\n2\n\n\n2026-01-06\n2\n\n\n2026-01-07\n1\n\n\n\n\n\n\n\nThe first event is active from positions 0 through 3, the second from 1 through 5, and the third from 4 through 6. Counts outside all event lifetimes are zero.\n\n\n\n Back to top",
+    "crumbs": [
+      "Getting Started",
+      "q.label — Financial labels",
+      "Label concurrency"
+    ]
+  },
+  {
+    "objectID": "label/fixed_horizon.html",
+    "href": "label/fixed_horizon.html",
+    "title": "Fixed-horizon labels",
+    "section": "",
+    "text": "q.label.fixed_horizon measures the return at one future horizon. Returns above the positive threshold receive label 1, returns below the negative threshold receive -1, and observations inside the neutral band receive 0.\nThe threshold may be scalar or event-specific. This example labels volatility-scaled CUSUM events after 10 trading observations.\nimport pandas as pd\n\nimport qrt as q\n\nclose = q.data.datasets.load(\"spy\")[\"close\"]\nclose = close.loc[close.index.max() - pd.DateOffset(years=5) :]\nvolatility = close.pct_change(fill_method=None).ewm(span=20, min_periods=20).std()\nevents = q.label.cusum_filter(close, volatility.mul(0.5).where(volatility.gt(0)))\nlabels = q.label.fixed_horizon(\n    close,\n    10,\n    events=events,\n    threshold=volatility.mul(0.5),\n)\nlabels.tail()\n\n\n\n\n\n\n\n\nend_time\nreturn\nthreshold\nlabel\n\n\nevent_time\n\n\n\n\n\n\n\n\n2026-06-23\n2026-07-08\n0.016113\n0.005554\n1\n\n\n2026-06-26\n2026-07-13\n0.027682\n0.004893\n1\n\n\n2026-06-29\n2026-07-14\n0.014615\n0.005370\n1\n\n\n2026-06-30\n2026-07-15\n0.010766\n0.005229\n1\n\n\n2026-07-06\n2026-07-20\n-0.012232\n0.004683\n-1",
+    "crumbs": [
+      "Getting Started",
+      "q.label — Financial labels",
+      "Fixed-horizon labels"
+    ]
+  },
+  {
+    "objectID": "label/fixed_horizon.html#inspect-class-balance",
+    "href": "label/fixed_horizon.html#inspect-class-balance",
+    "title": "Fixed-horizon labels",
+    "section": "Inspect class balance",
+    "text": "Inspect class balance\nThe output retains end_time, realized return, and the event-time threshold. Keep event_time and end_time when constructing validation folds so overlapping outcomes can be purged.\n\nlabels.groupby(\"label\", observed=True).agg(\n    observations=(\"label\", \"size\"),\n    average_return=(\"return\", \"mean\"),\n    average_threshold=(\"threshold\", \"mean\"),\n)\n\n\n\n\n\n\n\n\nobservations\naverage_return\naverage_threshold\n\n\nlabel\n\n\n\n\n\n\n\n-1\n252\n-0.029042\n0.004836\n\n\n0\n91\n-0.000487\n0.005234\n\n\n1\n440\n0.026843\n0.004970",
+    "crumbs": [
+      "Getting Started",
+      "q.label — Financial labels",
+      "Fixed-horizon labels"
+    ]
+  },
+  {
+    "objectID": "label/meta_label.html",
+    "href": "label/meta_label.html",
+    "title": "Meta-labels",
+    "section": "",
+    "text": "q.label.meta_label asks whether a proposed long, short, or no-trade side produced enough side-adjusted return. It turns an existing directional decision into a binary target for a secondary model.\nThe primary model chooses the side; the meta-model learns whether to act on it. Zero side always receives label 0, and missing outcomes remain missing.\nimport pandas as pd\n\nimport qrt as q\n\nclose = q.data.datasets.load(\"spy\")[\"close\"]\nclose = close.loc[close.index.max() - pd.DateOffset(years=5) :]\nreturns = close.pct_change(5, fill_method=None).shift(-5).dropna()\nfast = q.indicator.sma(close, 20)\nslow = q.indicator.sma(close, 100)\nside = fast.gt(slow).astype(int).sub(fast.lt(slow).astype(int)).reindex(returns.index)\nmeta = q.label.meta_label(returns, side, threshold=0.005)\npd.DataFrame({\"return\": returns, \"side\": side, \"meta_label\": meta}).tail()\n\n\n\n\n\n\n\n\nreturn\nside\nmeta_label\n\n\ndatetime\n\n\n\n\n\n\n\n2026-07-07\n0.005510\n1\n1\n\n\n2026-07-08\n0.012624\n1\n1\n\n\n2026-07-09\n-0.001317\n1\n0\n\n\n2026-07-10\n-0.015445\n1\n0\n\n\n2026-07-13\n-0.009450\n1\n0",
+    "crumbs": [
+      "Getting Started",
+      "q.label — Financial labels",
+      "Meta-labels"
+    ]
+  },
+  {
+    "objectID": "label/meta_label.html#acceptance-by-side",
+    "href": "label/meta_label.html#acceptance-by-side",
+    "title": "Meta-labels",
+    "section": "Acceptance by side",
+    "text": "Acceptance by side\nA meta-label of 1 means the proposed side exceeded the required side-adjusted return. The threshold should reflect costs or a minimum economically useful outcome rather than being selected from the final test sample.\n\npd.crosstab(side.rename(\"side\"), meta, normalize=\"index\").rename(columns={0: \"reject\", 1: \"accept\"})\n\n\n\n\n\n\n\nmeta_label\nreject\naccept\n\n\nside\n\n\n\n\n\n\n-1\n0.648026\n0.351974\n\n\n0\n1.000000\n0.000000\n\n\n1\n0.527745\n0.472255",
+    "crumbs": [
+      "Getting Started",
+      "q.label — Financial labels",
+      "Meta-labels"
+    ]
+  },
+  {
+    "objectID": "label/purging_metadata.html",
+    "href": "label/purging_metadata.html",
+    "title": "Purging and embargo metadata",
+    "section": "",
+    "text": "q.label.purging_metadata exports running label endpoints and the first safe observation after an optional bar embargo. It prepares canonical event-lifetime metadata; actual fold construction belongs in q.model.selection.\nThe running maximum matters when a later event ends before an earlier, longer event.\n\nimport pandas as pd\n\nimport qrt as q\n\nobservations = pd.date_range(\"2026-01-01\", periods=9, name=\"datetime\")\nend_times = pd.Series(\n    observations[[5, 3, 7]],\n    index=observations[[0, 1, 4]].rename(\"event_time\"),\n)\nmetadata = q.label.purging_metadata(\n    observations,\n    end_times,\n    embargo=1,\n)\nmetadata\n\n\n\n\n\n\n\n\nend_time\nstart_position\nend_position\nmax_end_time\nmax_end_position\noverlaps_previous\nnext_safe_time\nnext_safe_position\n\n\nevent_time\n\n\n\n\n\n\n\n\n\n\n\n\n2026-01-01\n2026-01-06\n0\n5\n2026-01-06\n5\nFalse\n2026-01-08\n7\n\n\n2026-01-02\n2026-01-04\n1\n3\n2026-01-06\n5\nTrue\n2026-01-08\n7\n\n\n2026-01-05\n2026-01-08\n4\n7\n2026-01-08\n7\nTrue\nNaT\n&lt;NA&gt;\n\n\n\n\n\n\n\nmax_end_time is cumulative across ordered events. next_safe_time skips the observation immediately after that endpoint when embargo=1; missing values mean the safe point lies beyond available data.\n\n\n\n Back to top",
+    "crumbs": [
+      "Getting Started",
+      "q.label — Financial labels",
+      "Purging and embargo metadata"
+    ]
+  },
+  {
+    "objectID": "label/sequential_bootstrap.html",
+    "href": "label/sequential_bootstrap.html",
+    "title": "Sequential bootstrap",
+    "section": "",
+    "text": "q.label.sequential_bootstrap draws events in proportion to the marginal uniqueness they would contribute if selected next. Probabilities are recomputed after every draw.\nLike an ordinary bootstrap, events may repeat. Pass random_state for reproducible bags.\n\nimport pandas as pd\n\nimport qrt as q\n\nobservations = pd.date_range(\"2026-01-01\", periods=10, name=\"datetime\")\nend_times = pd.Series(\n    observations[[5, 6, 7, 9]],\n    index=observations[[0, 1, 4, 8]].rename(\"event_time\"),\n)\nsample = q.label.sequential_bootstrap(\n    observations,\n    end_times,\n    size=12,\n    random_state=42,\n)\npd.Series(sample, name=\"sampled_event\").to_frame()\n\n\n\n\n\n\n\n\nsampled_event\n\n\n\n\n0\n2026-01-09\n\n\n1\n2026-01-02\n\n\n2\n2026-01-09\n\n\n3\n2026-01-05\n\n\n4\n2026-01-01\n\n\n5\n2026-01-09\n\n\n6\n2026-01-05\n\n\n7\n2026-01-09\n\n\n8\n2026-01-01\n\n\n9\n2026-01-02\n\n\n10\n2026-01-02\n\n\n11\n2026-01-09\n\n\n\n\n\n\n\n\npd.Series(sample).value_counts().rename(\"draws\").sort_index().to_frame()\n\n\n\n\n\n\n\n\ndraws\n\n\nevent_time\n\n\n\n\n\n2026-01-01\n2\n\n\n2026-01-02\n3\n\n\n2026-01-05\n2\n\n\n2026-01-09\n5\n\n\n\n\n\n\n\n\n\n\n Back to top",
+    "crumbs": [
+      "Getting Started",
+      "q.label — Financial labels",
+      "Sequential bootstrap"
+    ]
+  },
+  {
+    "objectID": "label/trend_scanning.html",
+    "href": "label/trend_scanning.html",
+    "title": "Trend-scanning labels",
+    "section": "",
+    "text": "q.label.trend_scanning fits forward linear regressions over several candidate bar horizons. For each event it keeps the slope with the largest absolute t-value and assigns a directional label when that statistic exceeds min_t_value.\nA horizon of 5 means five bars after the event and therefore fits six prices including the event itself.\nimport pandas as pd\n\nimport qrt as q\n\nclose = q.data.datasets.load(\"spy\")[\"close\"]\nclose = close.loc[close.index.max() - pd.DateOffset(years=5) :]\nvolatility = close.pct_change(fill_method=None).ewm(span=20, min_periods=20).std()\nevents = q.label.cusum_filter(close, volatility.mul(0.75).where(volatility.gt(0)))\nevents = events[::5]\ntrends = q.label.trend_scanning(\n    close,\n    events=events,\n    horizons=range(5, 21),\n    min_t_value=2.0,\n)\ntrends.tail()\n\n\n\n\n\n\n\n\nend_time\nhorizon\nslope\nt_value\nreturn\nlabel\n\n\nevent_time\n\n\n\n\n\n\n\n\n\n\n2026-05-14\n2026-06-04\n14\n0.002057\n5.612657\n0.011922\n1\n\n\n2026-05-26\n2026-06-02\n5\n0.002688\n8.716830\n0.011964\n1\n\n\n2026-06-10\n2026-07-10\n20\n0.000920\n2.561758\n0.043374\n1\n\n\n2026-06-23\n2026-07-15\n15\n0.002054\n7.111428\n0.028940\n1\n\n\n2026-07-13\n2026-07-20\n5\n-0.002491\n-1.954247\n-0.009450\n0",
+    "crumbs": [
+      "Getting Started",
+      "q.label — Financial labels",
+      "Trend-scanning labels"
+    ]
+  },
+  {
+    "objectID": "label/trend_scanning.html#selected-horizons",
+    "href": "label/trend_scanning.html#selected-horizons",
+    "title": "Trend-scanning labels",
+    "section": "Selected horizons",
+    "text": "Selected horizons\nThe chosen horizon, slope, t_value, and realized return make the label auditable. end_time is the outcome boundary needed for leakage-aware splitting.\n\ntrends.groupby(\"label\", observed=True).agg(\n    observations=(\"label\", \"size\"),\n    median_horizon=(\"horizon\", \"median\"),\n    median_t_value=(\"t_value\", \"median\"),\n    average_return=(\"return\", \"mean\"),\n)\n\n\n\n\n\n\n\n\nobservations\nmedian_horizon\nmedian_t_value\naverage_return\n\n\nlabel\n\n\n\n\n\n\n\n\n-1\n48\n14.0\n-5.801710\n-0.044580\n\n\n0\n3\n15.0\n-1.775394\n0.002572\n\n\n1\n75\n16.0\n7.549171\n0.038422",
+    "crumbs": [
+      "Getting Started",
+      "q.label — Financial labels",
+      "Trend-scanning labels"
+    ]
+  },
+  {
+    "objectID": "label/vertical_barriers.html",
+    "href": "label/vertical_barriers.html",
+    "title": "Vertical barriers",
+    "section": "",
+    "text": "q.label.vertical_barriers maps each event to its maximum allowed outcome time. Integer horizons count observations; timedelta-like horizons choose the first observed timestamp at or beyond the requested duration.\nEvents without enough future data receive a missing barrier rather than being silently shortened.\nimport pandas as pd\n\nimport qrt as q\n\nclose = q.data.datasets.load(\"spy\")[\"close\"]\nclose = close.loc[close.index.max() - pd.DateOffset(years=1) :]\nevents = close.index[::21]\nbarriers = pd.DataFrame({\n    \"10 bars\": q.label.vertical_barriers(close.index, 10, events=events),\n    \"30 days\": q.label.vertical_barriers(close.index, \"30D\", events=events),\n})\nbarriers.tail(10)\n\n\n\n\n\n\n\n\n10 bars\n30 days\n\n\nevent_time\n\n\n\n\n\n\n2025-09-18\n2025-10-02\n2025-10-20\n\n\n2025-10-17\n2025-10-31\n2025-11-17\n\n\n2025-11-17\n2025-12-02\n2025-12-17\n\n\n2025-12-17\n2026-01-02\n2026-01-16\n\n\n2026-01-20\n2026-02-03\n2026-02-19\n\n\n2026-02-19\n2026-03-05\n2026-03-23\n\n\n2026-03-20\n2026-04-06\n2026-04-20\n\n\n2026-04-21\n2026-05-05\n2026-05-21\n\n\n2026-05-20\n2026-06-04\n2026-06-22\n\n\n2026-06-22\n2026-07-07\nNaT",
+    "crumbs": [
+      "Getting Started",
+      "q.label — Financial labels",
+      "Vertical barriers"
+    ]
+  },
+  {
+    "objectID": "label/vertical_barriers.html#bar-time-versus-wall-clock-time",
+    "href": "label/vertical_barriers.html#bar-time-versus-wall-clock-time",
+    "title": "Vertical barriers",
+    "section": "Bar time versus wall-clock time",
+    "text": "Bar time versus wall-clock time\nA 10-bar horizon advances over available observations. A 30-day horizon uses elapsed calendar time and then snaps forward to the next observation. The two contracts intentionally differ around weekends, holidays, and missing sessions.\n\npd.DataFrame({\n    \"events\": [len(barriers)],\n    \"complete_10_bar\": [barriers[\"10 bars\"].notna().sum()],\n    \"complete_30_day\": [barriers[\"30 days\"].notna().sum()],\n})\n\n\n\n\n\n\n\n\nevents\ncomplete_10_bar\ncomplete_30_day\n\n\n\n\n0\n12\n12\n11",
+    "crumbs": [
+      "Getting Started",
+      "q.label — Financial labels",
+      "Vertical barriers"
+    ]
+  },
+  {
     "objectID": "plot/classification.html",
     "href": "plot/classification.html",
     "title": "AAPL classification from SPY regimes",
@@ -3094,7 +3392,7 @@
     "href": "env/index.html#inspect-the-runtime",
     "title": "Environment",
     "section": "Inspect the runtime",
-    "text": "Inspect the runtime\nThe other half of q.env describes the current machine: operating system, filesystem capacity, usable PyTorch accelerators, and preferred device. info combines those details into an immutable, JSON-friendly snapshot.\n\nenvironment = q.env.info()\nenvironment.as_dict()\n\n{'operating_system': {'name': 'Linux',\n  'release': '7.0.0-27-generic',\n  'version': '#27-Ubuntu SMP PREEMPT_DYNAMIC Thu Jun 18 19:13:49 UTC 2026',\n  'machine': 'x86_64'},\n 'disk': {'path': '/home/hi/qrt/docs/env',\n  'total': 2011838955520,\n  'used': 130433064960,\n  'free': 1779134500864},\n 'accelerators': (),\n 'device': 'cpu',\n 'cpu_count': 24}\n\n\n\nEnvironment report\nreport presents the same snapshot as a compact Rich table and returns it for programmatic use.\n\n_ = q.env.report()\n\n                            qrt environment                            \n┌──────────────────┬──────────────────────────────────────────────────┐\n│ OS               │ Linux 7.0.0-27-generic (x86_64)                  │\n│ CPU cores        │ 24                                               │\n│ Disk             │ 1.6 TiB free of 1.8 TiB at /home/hi/qrt/docs/env │\n│ Accelerator      │ None detected                                    │\n│ Preferred device │ cpu                                              │\n└──────────────────┴──────────────────────────────────────────────────┘",
+    "text": "Inspect the runtime\nThe other half of q.env describes the current machine: operating system, filesystem capacity, usable PyTorch accelerators, and preferred device. info combines those details into an immutable, JSON-friendly snapshot.\n\nenvironment = q.env.info()\nenvironment.as_dict()\n\n{'operating_system': {'name': 'Linux',\n  'release': '7.0.0-27-generic',\n  'version': '#27-Ubuntu SMP PREEMPT_DYNAMIC Thu Jun 18 19:13:49 UTC 2026',\n  'machine': 'x86_64'},\n 'disk': {'path': '/home/hi/qrt/docs/env',\n  'total': 2011838955520,\n  'used': 130466787328,\n  'free': 1779100778496},\n 'accelerators': (),\n 'device': 'cpu',\n 'cpu_count': 24}\n\n\n\nEnvironment report\nreport presents the same snapshot as a compact Rich table and returns it for programmatic use.\n\n_ = q.env.report()\n\n                            qrt environment                            \n┌──────────────────┬──────────────────────────────────────────────────┐\n│ OS               │ Linux 7.0.0-27-generic (x86_64)                  │\n│ CPU cores        │ 24                                               │\n│ Disk             │ 1.6 TiB free of 1.8 TiB at /home/hi/qrt/docs/env │\n│ Accelerator      │ None detected                                    │\n│ Preferred device │ cpu                                              │\n└──────────────────┴──────────────────────────────────────────────────┘",
     "crumbs": [
       "Getting Started",
       "q.env — Environment"

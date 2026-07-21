@@ -68,7 +68,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../label/roadmap.html" rel="next">
+<link href="../label/cusum_filter.html" rel="next">
 <link href="../feature/roadmap.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -416,6 +416,102 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../label/cusum_filter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CUSUM event filter</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/vertical_barriers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Vertical barriers</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/fixed_horizon.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Fixed-horizon labels</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/triple_barrier.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Triple-barrier labels</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/meta_label.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Meta-labels</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/trend_scanning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Trend-scanning labels</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/prune_labels.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Rare-label pruning</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/concurrency.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Label concurrency</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/indicator_matrix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Event indicator matrix</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/average_uniqueness.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Average label uniqueness</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/sequential_bootstrap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sequential bootstrap</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/purging_metadata.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Purging and embargo metadata</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/sample_weights.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Return-attribution weights</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/time_decay.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Linear time decay</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/class_balance_weights.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Class-balance weights</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/combine_weights.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Combine sample weights</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../label/roadmap.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Roadmap</span></a>
   </div>
@@ -687,7 +783,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#triple-barrier-workflow" id="toc-triple-barrier-workflow" class="nav-link active" data-scroll-target="#triple-barrier-workflow">Triple-barrier workflow</a></li>
+  <li><a href="#function-map" id="toc-function-map" class="nav-link active" data-scroll-target="#function-map">Function map</a>
+  <ul class="collapse">
+  <li><a href="#event-selection-and-time-limits" id="toc-event-selection-and-time-limits" class="nav-link" data-scroll-target="#event-selection-and-time-limits">Event selection and time limits</a></li>
+  <li><a href="#target-construction" id="toc-target-construction" class="nav-link" data-scroll-target="#target-construction">Target construction</a></li>
+  <li><a href="#dependence-and-event-lifetimes" id="toc-dependence-and-event-lifetimes" class="nav-link" data-scroll-target="#dependence-and-event-lifetimes">Dependence and event lifetimes</a></li>
+  <li><a href="#sampling-and-training-weights" id="toc-sampling-and-training-weights" class="nav-link" data-scroll-target="#sampling-and-training-weights">Sampling and training weights</a></li>
+  </ul></li>
+  <li><a href="#choosing-a-target" id="toc-choosing-a-target" class="nav-link" data-scroll-target="#choosing-a-target">Choosing a target</a></li>
+  <li><a href="#triple-barrier-workflow" id="toc-triple-barrier-workflow" class="nav-link" data-scroll-target="#triple-barrier-workflow">Triple-barrier workflow</a></li>
   <li><a href="#other-target-methods" id="toc-other-target-methods" class="nav-link" data-scroll-target="#other-target-methods">Other target methods</a></li>
   <li><a href="#overlapping-outcomes" id="toc-overlapping-outcomes" class="nav-link" data-scroll-target="#overlapping-outcomes">Overlapping outcomes</a></li>
   </ul>
@@ -715,8 +819,188 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><code>q.label</code> constructs supervised-learning targets from future market paths. That future dependence is intentional: these values belong on the target side of a training dataset, never among point-in-time features.</p>
+<p><code>q.label</code> owns the event-to-target part of a financial machine-learning workflow. It answers four related but distinct questions:</p>
+<ol type="1">
+<li><strong>When is an observation worth labeling?</strong> Detect events instead of creating a highly redundant target at every bar.</li>
+<li><strong>What future outcome should the model learn?</strong> Define directional, path-dependent, fixed-horizon, or conditional targets.</li>
+<li><strong>How independent are those outcomes?</strong> Measure overlap between labels whose future paths share observations.</li>
+<li><strong>How should dependent observations influence training?</strong> Resample or weight events without pretending that every row carries equal information.</li>
+</ol>
+<p>Only the target-construction functions deliberately inspect future market paths. Event filters and event-time inputs must remain point-in-time safe, while overlap and weighting functions are training metadata rather than predictors. None of these outputs should be materialized as contemporaneous features.</p>
 <p>All functions operate on one ordered instrument at a time, preserve event timestamps, and reject duplicate or unsorted indexes. For panel data, group by <code>symbol</code> explicitly and label each history independently.</p>
+<section id="function-map" class="level2">
+<h2 class="anchored" data-anchor-id="function-map">Function map</h2>
+<section id="event-selection-and-time-limits" class="level3">
+<h3 class="anchored" data-anchor-id="event-selection-and-time-limits">Event selection and time limits</h3>
+<p>These functions define <em>when</em> a label begins and the latest time at which its outcome may be observed. They do not assign a target class by themselves.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>What it provides</th>
+<th>Where it is useful</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>q.label.cusum_filter</code></td>
+<td>Symmetric cumulative-change event detection with scalar or time-varying thresholds</td>
+<td>Reduces routine sampling and focuses labeling on structural price moves. A volatility-scaled threshold adapts event density across regimes, but the threshold must be known at event time.</td>
+</tr>
+<tr class="even">
+<td><code>q.label.vertical_barriers</code></td>
+<td>Event-to-endpoint mapping by bar count or elapsed time</td>
+<td>Gives labels a maximum lifetime, supports explicit censoring, and makes bar-time versus wall-clock assumptions visible.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="target-construction" class="level3">
+<h3 class="anchored" data-anchor-id="target-construction">Target construction</h3>
+<p>Target choice encodes the economic question presented to the model. There is no universally best label: simpler targets are easier to interpret, while path-dependent targets can better reflect trading decisions at the cost of more parameters and stronger overlap.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>What it provides</th>
+<th>Where it is useful</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>q.label.fixed_horizon</code></td>
+<td>Return class at one future bar or time horizon, with an optional neutral band</td>
+<td>A transparent baseline for directional forecasting and cross-sectional studies. It is easy to compare across experiments, but ignores the path taken before the endpoint.</td>
+</tr>
+<tr class="even">
+<td><code>q.label.triple_barrier</code></td>
+<td>First-touch outcome across profit-taking, stop-loss, and vertical barriers</td>
+<td>Useful when the learning target should resemble an exit policy and adapt to event-time volatility. Results depend on barrier widths and horizon, so parameter stability matters.</td>
+</tr>
+<tr class="odd">
+<td><code>q.label.meta_label</code></td>
+<td>Binary target stating whether a proposed side produced sufficient adjusted return</td>
+<td>Separates <em>direction</em> from <em>whether to trade</em>. It is suited to secondary models for filtering or sizing primary-model decisions, not for inventing direction after the fact.</td>
+</tr>
+<tr class="even">
+<td><code>q.label.trend_scanning</code></td>
+<td>Direction from the strongest forward regression across candidate horizons</td>
+<td>Useful when trend duration is unknown and a single fixed endpoint is too rigid. The selected horizon is data-dependent, so retain <code>end_time</code> for purging and inspect t-value stability.</td>
+</tr>
+<tr class="odd">
+<td><code>q.label.prune_labels</code></td>
+<td>Iterative rare-class removal plus a class-level audit report</td>
+<td>Prevents vanishing classes from destabilizing classification. Use it transparently and fit the pruning policy on training data; pruning can discard economically important tail events.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="dependence-and-event-lifetimes" class="level3">
+<h3 class="anchored" data-anchor-id="dependence-and-event-lifetimes">Dependence and event lifetimes</h3>
+<p>Financial labels frequently overlap: one event may still be waiting for an outcome when several newer events begin. These functions expose that dependence rather than treating event rows as independent and identically distributed.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>What it provides</th>
+<th>Where it is useful</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>q.label.concurrency</code></td>
+<td>Number of inclusive event lifetimes active at each observation</td>
+<td>The quickest diagnostic for label crowding and the basis for overlap-aware return attribution.</td>
+</tr>
+<tr class="even">
+<td><code>q.label.indicator_matrix</code></td>
+<td>Sparse observation-by-event lifetime membership</td>
+<td>Makes the overlap structure explicit for diagnostics and resampling without allocating a dense matrix for mostly inactive events.</td>
+</tr>
+<tr class="odd">
+<td><code>q.label.average_uniqueness</code></td>
+<td>Mean inverse concurrency over each event lifetime</td>
+<td>Quantifies how much independent information each label contributes. Values near 1 are isolated; smaller values indicate heavily shared paths.</td>
+</tr>
+<tr class="even">
+<td><code>q.label.purging_metadata</code></td>
+<td>Running maximum endpoints and embargo-adjusted next-safe observations</td>
+<td>Bridges labels to chronological model selection. It supplies the information a splitter needs to avoid train/test path overlap, but does not construct folds itself.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="sampling-and-training-weights" class="level3">
+<h3 class="anchored" data-anchor-id="sampling-and-training-weights">Sampling and training weights</h3>
+<p>These functions modify how labeled events enter model fitting. They should be derived inside the training workflow, aligned by event time, and kept separate from input features so their policy remains auditable.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>What it provides</th>
+<th>Where it is useful</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>q.label.sequential_bootstrap</code></td>
+<td>Seeded bootstrap draws weighted by marginal uniqueness after each selection</td>
+<td>Builds bags with less redundant event paths than ordinary uniform bootstrap. Repeated events are intentional, and the result remains a sample rather than a deterministic ranking.</td>
+</tr>
+<tr class="even">
+<td><code>q.label.sample_weights</code></td>
+<td>Absolute event return after concurrency attribution</td>
+<td>Gives greater influence to economically consequential outcomes without double-counting shared returns. Because it uses realized outcomes, it is training weight metadata, never a feature.</td>
+</tr>
+<tr class="odd">
+<td><code>q.label.time_decay</code></td>
+<td>Linear recency factors based on cumulative sample importance</td>
+<td>Lets newer regimes matter more while retaining older observations. <code>minimum_weight</code> controls how aggressively history is discounted.</td>
+</tr>
+<tr class="even">
+<td><code>q.label.class_balance_weights</code></td>
+<td>Inverse-frequency factors with equal total mass per observed class</td>
+<td>Useful when majority classes dominate the loss. It changes the training objective and should not be confused with improving the underlying information content.</td>
+</tr>
+<tr class="odd">
+<td><code>q.label.combine_weights</code></td>
+<td>Aligned multiplication and optional normalization of weight components</td>
+<td>Makes a composite weighting policy explicit. Inspect components first: a zero in any component removes that event multiplicatively.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="choosing-a-target" class="level2">
+<h2 class="anchored" data-anchor-id="choosing-a-target">Choosing a target</h2>
+<ul>
+<li>Start with <code>fixed_horizon</code> when you need an interpretable baseline or want to isolate model quality from exit-policy assumptions.</li>
+<li>Use <code>triple_barrier</code> when the path to the outcome matters and barrier levels have a defensible economic or risk interpretation.</li>
+<li>Use <code>trend_scanning</code> when the relevant forward duration is genuinely unknown, then inspect which horizons are selected and whether labels are stable across nearby candidates.</li>
+<li>Add <code>meta_label</code> only when a separate primary process already supplies a side; the binary target answers whether to act, not which direction to choose.</li>
+<li>Keep <code>touch_time</code> or <code>end_time</code> regardless of method. Target accuracy is not trustworthy if overlapping future paths leak across validation folds.</li>
+</ul>
+</section>
 <section id="triple-barrier-workflow" class="level2">
 <h2 class="anchored" data-anchor-id="triple-barrier-workflow">Triple-barrier workflow</h2>
 <p>A typical workflow detects economically meaningful events, estimates a barrier width using information available at each event, and then follows each future path until a horizontal or vertical barrier is touched.</p>
@@ -1267,8 +1551,8 @@ Warning
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../label/roadmap.html" class="pagination-link" aria-label="Roadmap">
-        <span class="nav-page-text">Roadmap</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../label/cusum_filter.html" class="pagination-link" aria-label="CUSUM event filter">
+        <span class="nav-page-text">CUSUM event filter</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
