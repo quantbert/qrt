@@ -16,6 +16,7 @@ items are removed from these pages.
 | `q.indicator` | Single-instrument market measurements | [View roadmap](indicator/roadmap.qmd) |
 | `q.cross_section` | Cross-sectional characteristics | [View roadmap](cross_section/roadmap.qmd) |
 | `q.feature` | Feature definitions and materialization | [View roadmap](feature/roadmap.qmd) |
+| `q.label` | Future-aware target construction | [View roadmap](label/roadmap.qmd) |
 | `q.preprocess` | Fitted model-input transformations | [View roadmap](preprocess/roadmap.qmd) |
 | `q.signal` | Investment intent and rule outputs | [View roadmap](signal/roadmap.qmd) |
 | `q.model` | Model utilities and selection | [View roadmap](model/roadmap.qmd) |

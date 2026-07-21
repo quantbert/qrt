@@ -95,6 +95,7 @@ output:
 | `q.indicator` | Stateless, single-instrument market measurements |
 | `q.cross_section` | Cross-sectional characteristics and rankings |
 | `q.feature` | Named/versioned feature definitions, computation, and materialization |
+| `q.label` | Future-aware target construction and sample weighting |
 | `q.preprocess` | Transformations fitted at the model-training boundary |
 | `q.model` | Validation and model lifecycle |
 | `q.signal` | Investment intent |
@@ -114,6 +115,7 @@ Consequences:
 - [x] Preserve entity/time keys and reject unsorted histories rather than
   silently sorting them.
 - [x] Keep fitted transformations out of materialized raw-feature computation.
+- [x] Keep future-aware labels out of point-in-time feature materialization.
 - [x] Keep data/network access outside indicator and factor functions.
 
 ## Completed moves

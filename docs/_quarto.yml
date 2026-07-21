@@ -116,6 +116,11 @@ website:
           contents:
             - text: "Roadmap"
               href: feature/roadmap.qmd
+        - section: "q.label — Financial labels"
+          href: label/index.qmd
+          contents:
+            - text: "Roadmap"
+              href: label/roadmap.qmd
         - section: "q.preprocess — Preprocessing"
           href: preprocess/index.qmd
           contents:
@@ -233,6 +238,11 @@ quartodoc:
         - name: feature
           include_imports: true
         - name: feature.ops
+          include_imports: true
+    - title: q.label
+      desc: "Future-aware financial labels, event detection, and overlap-aware sample weights."
+      contents:
+        - name: label
           include_imports: true
     - title: q.preprocess
       desc: "Fitted transformations applied at the model-training boundary."

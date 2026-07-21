@@ -13,9 +13,11 @@ QRT is in alpha. Public APIs can still change while the architecture settles.
 ## The research flow
 
 ```text
-q.data -> q.indicator / q.cross_section -> q.feature -> q.preprocess -> q.model
-                           \-> q.signal -> q.portfolio -> q.bt -> q.stats / q.plot
-             q.calendar supplies exchange-time semantics across the flow
+inputs:    q.data -> q.indicator / q.cross_section -> q.feature -> q.preprocess -> q.model
+targets:   q.data -> q.label -----------------------------------------------> q.model
+decisions:          q.indicator / q.cross_section -> q.signal -> q.portfolio -> q.bt
+results:                                                                  q.stats / q.plot
+                     q.calendar supplies exchange-time semantics across the flow
 ```
 
 Each block describes what an operation *is*, not every way its output might be
@@ -131,6 +133,19 @@ Boundary: indicators and factors provide calculations; `q.feature` gives their
 outputs identity, point-in-time metadata, repeatable computation, and storage.
 Fitted scalers and selectors do not belong here because their state is tied to a
 training sample.
+
+### `q.label`: construct future-aware model targets
+
+`q.label` owns operations that deliberately inspect observations after an event:
+CUSUM event detection, fixed-horizon and triple-barrier labels, meta-labels,
+trend scanning, concurrency, average uniqueness, and sample weights. Label
+outputs retain event and outcome times so leakage-aware splitters can purge
+overlapping training examples.
+
+Boundary: labels are supervised-learning targets, not point-in-time model
+inputs. Barrier widths may use volatility known at the event time, but the
+resulting barrier outcome must never be materialized through `q.feature` or
+used as a contemporaneous predictor.
 
 ### `q.preprocess`: fit the training boundary
 

@@ -52,6 +52,7 @@ q.plot.plot(strategy, benchmark=benchmark)      # interactive equity + drawdown 
 | `q.indicator` | native single-instrument measurements plus explicit TA-Lib and pandas-ta-classic providers |
 | `q.cross_section` | cross-sectional characteristics and rankings *(planned)* |
 | `q.feature` | named, versioned model inputs, computation, and materialization |
+| `q.label` | future-aware target construction, event filtering, and overlap-aware sample weights |
 | `q.preprocess` | fitted model-input transformations *(planned)* |
 | `q.signal` | investment intent derived from measurements, factors, models, and rules *(planned)* |
 | `q.stats` | return-stream & trade-level statistics: performance, alpha/beta, Monte Carlo, variance/noise testing |

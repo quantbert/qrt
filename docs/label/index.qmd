@@ -1,0 +1,183 @@
+---
+title: Financial Labels
+---
+
+`q.label` constructs supervised-learning targets from future market paths. That
+future dependence is intentional: these values belong on the target side of a
+training dataset, never among point-in-time features.
+
+All functions operate on one ordered instrument at a time, preserve event
+timestamps, and reject duplicate or unsorted indexes. For panel data, group by
+`symbol` explicitly and label each history independently.
+
+## Triple-barrier workflow
+
+A typical workflow detects economically meaningful events, estimates a barrier
+width using information available at each event, and then follows each future
+path until a horizontal or vertical barrier is touched.
+
+```python
+import qrt as q
+
+spy = q.data.datasets.load("spy")
+close = spy["close"]
+
+# This volatility estimate is known at each event time. Initial warmup values
+# stay missing and are excluded by the event and labeling functions.
+target = close.pct_change(fill_method=None).ewm(
+    span=20, min_periods=20
+).std()
+event_threshold = target.mul(0.5).where(target.gt(0))
+events = q.label.cusum_filter(close, event_threshold)
+
+labels = q.label.triple_barrier(
+    close,
+    target,
+    events=events,
+    horizon=20,
+    upper=2.0,
+    lower=1.0,
+    min_target=0.002,
+)
+```
+
+`horizon=20` means 20 observations after each event. A timedelta-like value
+such as `"5D"` instead chooses the first observed timestamp at least five days
+later. Events whose vertical horizon extends beyond available data are dropped
+by default; set `drop_censored=False` to retain them with a missing label and a
+`"censored"` barrier.
+
+The result is indexed by `event_time` and contains:
+
+| Column | Meaning |
+|---|---|
+| `vertical_barrier` | Scheduled maximum outcome time |
+| `touch_time` | First horizontal touch or the vertical barrier |
+| `barrier` | `upper`, `lower`, `vertical`, or `censored` |
+| `target` | Return width known at event time |
+| `return` | Underlying close-to-close return at the touch |
+| `label` | Directional `-1`, `0`, or `1` outcome |
+
+Pass `side=` when a primary model or rule has already proposed long (`1`) or
+short (`-1`) intent. Barriers are then evaluated on side-adjusted returns, the
+result includes `side` and `adjusted_return`, and `label` becomes a binary
+meta-label indicating whether that side was profitable.
+
+```python
+side_aware = q.label.triple_barrier(
+    close,
+    target,
+    events=events,
+    horizon="5D",
+    side=predicted_side,
+)
+
+# The same transformation can be applied to outcomes produced elsewhere.
+binary_target = q.label.meta_label(realized_returns, predicted_side)
+```
+
+## Other target methods
+
+Fixed-horizon labels apply a symmetric neutral band to returns at one future
+horizon:
+
+```python
+fixed = q.label.fixed_horizon(
+    close,
+    5,
+    events=events,
+    threshold=0.005,
+)
+```
+
+Trend scanning fits forward regressions over several candidate bar counts and
+keeps the slope with the largest absolute t-value. Horizons count bars after
+the event, so a horizon of 5 fits 6 prices including the event itself.
+
+```python
+trends = q.label.trend_scanning(
+    close,
+    events=events,
+    horizons=range(5, 21),
+    min_t_value=2.0,
+)
+```
+
+Rare classes can be pruned iteratively while preserving at least two classes.
+The second return value records every class's initial and final frequency and
+the step at which it was removed:
+
+```python
+target, pruning_report = q.label.prune_labels(
+    labels["label"],
+    min_fraction=0.05,
+)
+labels = labels.loc[target.index].assign(label=target)
+```
+
+## Overlapping outcomes
+
+Labels with overlapping lifetimes are not independent. Use their touch times to
+measure overlap and derive training weights:
+
+```python
+end_times = labels["touch_time"]
+active = q.label.concurrency(close.index, end_times)
+uniqueness = q.label.average_uniqueness(close.index, end_times)
+membership = q.label.indicator_matrix(close.index, end_times)
+
+# Reproducible bag sample favoring events with greater marginal uniqueness.
+bag_events = q.label.sequential_bootstrap(
+    close.index,
+    end_times,
+    random_state=42,
+)
+```
+
+`concurrency` counts inclusive event intervals. `average_uniqueness` averages
+inverse concurrency over each interval. The sparse indicator matrix has one row
+per observation and one column per event; its row sums equal `concurrency`.
+Sequential bootstrap recomputes marginal uniqueness after every draw and may
+select an event more than once.
+
+Weight components remain separate so the training policy is explicit:
+
+```python
+return_weight = q.label.sample_weights(close, end_times, normalize=False)
+decay = q.label.time_decay(uniqueness, minimum_weight=0.25)
+class_weight = q.label.class_balance_weights(labels["label"])
+weights = q.label.combine_weights(return_weight, decay, class_weight)
+```
+
+`sample_weights` attributes each log return equally among active labels and
+takes the absolute event-level result. `time_decay` reaches 1 at the newest
+event, `class_balance_weights` gives every observed class equal total mass, and
+`combine_weights` multiplies aligned components before normalizing to unit mean.
+A zero component removes that event from the weighted sample; an all-zero
+combination is rejected when normalization is enabled.
+
+Export running event endpoints for a chronological splitter, optionally with a
+bar-based embargo:
+
+```python
+split_metadata = q.label.purging_metadata(
+    close.index,
+    end_times,
+    embargo=5,
+)
+```
+
+For each event, `max_end_time` is the latest label endpoint seen so far and
+`next_safe_time` is the first observation after that endpoint and the embargo.
+For example, an endpoint at position 10 with `embargo=2` skips positions 11 and
+12, making position 13 the next safe observation.
+Actual fold construction remains the responsibility of `q.model.selection`.
+
+::: {.callout-warning}
+Keep `event_time`, `touch_time`, or `end_time` with every target. Random splits
+can leak one future path into another when intervals overlap; use purging and an
+embargo when evaluating models on these labels.
+:::
+
+See the [API reference](../reference/label.qmd) for complete signatures and
+validation rules.

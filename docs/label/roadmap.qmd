@@ -1,0 +1,62 @@
+---
+title: q.label Roadmap
+---
+
+Open work for future-aware target construction. The candidates below draw from
+methods Marcos López de Prado developed, co-developed, or popularized in his
+financial-machine-learning research.
+
+## Event discovery
+
+- [ ] Structural-break event filters: Chu-Stinchcombe-White CUSUM, Chow-type
+  Dickey-Fuller, and SADF/explosiveness tests
+- [ ] Volatility-normalized CUSUM thresholds with explicit lagging rules so an
+  event threshold uses only information available at that timestamp
+- [ ] Information-driven event times from tick, volume, and dollar imbalance
+  bars and run bars; bar construction belongs in `q.data`, while `q.label`
+  consumes the resulting event index
+- [ ] Event-filter diagnostics comparing clock-time sampling with
+  information-driven sampling, including event density and regime stability
+
+## Label construction
+
+- [ ] Optional high/low intrabar barrier touches with an explicit same-bar tie
+  policy
+- [ ] Event-specific asymmetric barriers and dynamic vertical horizons derived
+  from point-in-time volatility or market regimes
+- [ ] Optimal profit-taking and stop-loss calibration for mean-reverting and
+  momentum processes without brute-force backtest parameter searches
+- [ ] Trend-scanning extensions for irregular timestamps, session-aware
+  horizons, robust regression, and multiscale label consensus
+- [x] Rare-label pruning with transparent minimum-frequency rules and a report
+  of discarded observations
+- [ ] A first-class meta-labeling workflow that joins primary-model side,
+  predicted probability, barrier outcome, and secondary binary target without
+  losing event-lifetime metadata
+- [ ] Label-stability surfaces across barrier multipliers, horizons, and target
+  widths to reveal targets that depend on a narrow parameter choice
+
+## Uniqueness and sample weights
+
+- [x] Sparse indicator-matrix construction showing which observations belong
+  to each event lifetime
+- [x] Sequential bootstrap sampling based on average uniqueness, with a seeded
+  and reproducible draw API
+- [x] Linear time-decay weights that preserve a configurable fraction of older
+  observations instead of silently deleting them
+- [ ] Piecewise and nonlinear time-decay schedules
+- [x] Composable weights combining average uniqueness, concurrency-attributed
+  absolute returns, time decay, and optional class balancing
+- [ ] Uniqueness-aware train/bag sampling adapters for `q.model`, while keeping
+  estimator implementations outside `q.label`
+
+## Diagnostics and scale
+
+- [ ] Label-distribution, barrier-touch, event-lifetime, concurrency, and
+  uniqueness diagnostics under `q.plot`
+- [x] Purging and embargo metadata export for `q.model.selection`, including
+  the maximum label end time required to prevent overlapping train/test paths
+- [ ] Synthetic Ornstein-Uhlenbeck, momentum, and regime-switching paths for
+  measuring label recovery, stability, and class balance against known dynamics
+- [ ] Scalable chunked execution and sparse interval operations for very large
+  event sets
