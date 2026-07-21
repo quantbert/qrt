@@ -33,7 +33,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../plot/returns.html" rel="next">
+<link href="../plot/classification.html" rel="next">
 <link href="../env/roadmap.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -502,6 +502,12 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../plot/classification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Classification curves</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../plot/returns.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Return charts</span></a>
   </div>
@@ -649,9 +655,10 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><code>q.plot</code> renders interactive Plotly figures for return streams — quick column charts, equity curves, drawdowns, calendar heatmaps, full quantstats-style tearsheets, and Monte Carlo diagnostics — and for trade logs in qrt’s canonical trades format (entry/exit markers on price, excursion scatters, per-trade return distributions), with sensible defaults for quant research. Return-stream <em>statistics</em> (performance, alpha/beta, rolling diagnostics, <code>q.stats.montecarlo</code>, …) live in <code>q.stats</code>; see <a href="../stats/index.html">Return Statistics</a>. For feature engineering and price-chart examples, see <a href="../feature/index.html">Feature Engineering</a>.</p>
+<p><code>q.plot</code> renders interactive Plotly figures for multiclass model evaluation, return streams, and trade logs. Classification diagnostics include one-vs-rest ROC and precision-recall curves with per-class, micro-average, and macro-average summaries. Return and trade visualizations cover quick column charts, equity curves, drawdowns, calendar heatmaps, full quantstats-style tearsheets, Monte Carlo diagnostics, entry/exit markers, excursions, and per-trade distributions. Return-stream <em>statistics</em> (performance, alpha/beta, rolling diagnostics, <code>q.stats.montecarlo</code>, …) live in <code>q.stats</code>; see <a href="../stats/index.html">Return Statistics</a>. For feature engineering and price-chart examples, see <a href="../feature/index.html">Feature Engineering</a>.</p>
 <p>Pages:</p>
 <ul>
+<li><a href="../plot/classification.html">Classification curves</a> — multiclass ROC and precision-recall curves, plus reusable tidy curve data from <code>q.stats</code>.</li>
 <li><a href="../plot/returns.html">Return charts</a> — column charts, equity curves, drawdowns, full performance reports, and monthly heatmaps.</li>
 <li><a href="../plot/report.html">Tearsheet report</a> — full quantstats-style strategy tearsheet (<code>q.plot.report</code>) plus its individual panels (metrics table, cumulative returns, EOY returns, rolling diagnostics, worst drawdowns, …).</li>
 <li><a href="../plot/simulation.html">Simulation tests</a> — Monte Carlo fan charts and outcome distributions, variance testing, and noise testing.</li>
@@ -1069,8 +1076,8 @@ ul.task-list li input[type="checkbox"] {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../plot/returns.html" class="pagination-link" aria-label="Return charts">
-        <span class="nav-page-text">Return charts</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../plot/classification.html" class="pagination-link" aria-label="Classification curves">
+        <span class="nav-page-text">Classification curves</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
