@@ -119,6 +119,38 @@ website:
         - section: "q.label — Financial labels"
           href: label/index.qmd
           contents:
+            - text: "CUSUM event filter"
+              href: label/cusum_filter.ipynb
+            - text: "Vertical barriers"
+              href: label/vertical_barriers.ipynb
+            - text: "Fixed-horizon labels"
+              href: label/fixed_horizon.ipynb
+            - text: "Triple-barrier labels"
+              href: label/triple_barrier.ipynb
+            - text: "Meta-labels"
+              href: label/meta_label.ipynb
+            - text: "Trend-scanning labels"
+              href: label/trend_scanning.ipynb
+            - text: "Rare-label pruning"
+              href: label/prune_labels.ipynb
+            - text: "Label concurrency"
+              href: label/concurrency.ipynb
+            - text: "Event indicator matrix"
+              href: label/indicator_matrix.ipynb
+            - text: "Average label uniqueness"
+              href: label/average_uniqueness.ipynb
+            - text: "Sequential bootstrap"
+              href: label/sequential_bootstrap.ipynb
+            - text: "Purging and embargo metadata"
+              href: label/purging_metadata.ipynb
+            - text: "Return-attribution weights"
+              href: label/sample_weights.ipynb
+            - text: "Linear time decay"
+              href: label/time_decay.ipynb
+            - text: "Class-balance weights"
+              href: label/class_balance_weights.ipynb
+            - text: "Combine sample weights"
+              href: label/combine_weights.ipynb
             - text: "Roadmap"
               href: label/roadmap.qmd
         - section: "q.preprocess — Preprocessing"

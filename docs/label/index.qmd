@@ -2,13 +2,94 @@
 title: Financial Labels
 ---
 
-`q.label` constructs supervised-learning targets from future market paths. That
-future dependence is intentional: these values belong on the target side of a
-training dataset, never among point-in-time features.
+`q.label` owns the event-to-target part of a financial machine-learning
+workflow. It answers four related but distinct questions:
+
+1. **When is an observation worth labeling?** Detect events instead of creating
+     a highly redundant target at every bar.
+2. **What future outcome should the model learn?** Define directional,
+     path-dependent, fixed-horizon, or conditional targets.
+3. **How independent are those outcomes?** Measure overlap between labels whose
+     future paths share observations.
+4. **How should dependent observations influence training?** Resample or weight
+     events without pretending that every row carries equal information.
+
+Only the target-construction functions deliberately inspect future market
+paths. Event filters and event-time inputs must remain point-in-time safe, while
+overlap and weighting functions are training metadata rather than predictors.
+None of these outputs should be materialized as contemporaneous features.
 
 All functions operate on one ordered instrument at a time, preserve event
 timestamps, and reject duplicate or unsorted indexes. For panel data, group by
 `symbol` explicitly and label each history independently.
+
+## Function map
+
+### Event selection and time limits
+
+These functions define *when* a label begins and the latest time at which its
+outcome may be observed. They do not assign a target class by themselves.
+
+| Function | What it provides | Where it is useful |
+|---|---|---|
+| `q.label.cusum_filter` | Symmetric cumulative-change event detection with scalar or time-varying thresholds | Reduces routine sampling and focuses labeling on structural price moves. A volatility-scaled threshold adapts event density across regimes, but the threshold must be known at event time. |
+| `q.label.vertical_barriers` | Event-to-endpoint mapping by bar count or elapsed time | Gives labels a maximum lifetime, supports explicit censoring, and makes bar-time versus wall-clock assumptions visible. |
+
+### Target construction
+
+Target choice encodes the economic question presented to the model. There is no
+universally best label: simpler targets are easier to interpret, while
+path-dependent targets can better reflect trading decisions at the cost of more
+parameters and stronger overlap.
+
+| Function | What it provides | Where it is useful |
+|---|---|---|
+| `q.label.fixed_horizon` | Return class at one future bar or time horizon, with an optional neutral band | A transparent baseline for directional forecasting and cross-sectional studies. It is easy to compare across experiments, but ignores the path taken before the endpoint. |
+| `q.label.triple_barrier` | First-touch outcome across profit-taking, stop-loss, and vertical barriers | Useful when the learning target should resemble an exit policy and adapt to event-time volatility. Results depend on barrier widths and horizon, so parameter stability matters. |
+| `q.label.meta_label` | Binary target stating whether a proposed side produced sufficient adjusted return | Separates *direction* from *whether to trade*. It is suited to secondary models for filtering or sizing primary-model decisions, not for inventing direction after the fact. |
+| `q.label.trend_scanning` | Direction from the strongest forward regression across candidate horizons | Useful when trend duration is unknown and a single fixed endpoint is too rigid. The selected horizon is data-dependent, so retain `end_time` for purging and inspect t-value stability. |
+| `q.label.prune_labels` | Iterative rare-class removal plus a class-level audit report | Prevents vanishing classes from destabilizing classification. Use it transparently and fit the pruning policy on training data; pruning can discard economically important tail events. |
+
+### Dependence and event lifetimes
+
+Financial labels frequently overlap: one event may still be waiting for an
+outcome when several newer events begin. These functions expose that dependence
+rather than treating event rows as independent and identically distributed.
+
+| Function | What it provides | Where it is useful |
+|---|---|---|
+| `q.label.concurrency` | Number of inclusive event lifetimes active at each observation | The quickest diagnostic for label crowding and the basis for overlap-aware return attribution. |
+| `q.label.indicator_matrix` | Sparse observation-by-event lifetime membership | Makes the overlap structure explicit for diagnostics and resampling without allocating a dense matrix for mostly inactive events. |
+| `q.label.average_uniqueness` | Mean inverse concurrency over each event lifetime | Quantifies how much independent information each label contributes. Values near 1 are isolated; smaller values indicate heavily shared paths. |
+| `q.label.purging_metadata` | Running maximum endpoints and embargo-adjusted next-safe observations | Bridges labels to chronological model selection. It supplies the information a splitter needs to avoid train/test path overlap, but does not construct folds itself. |
+
+### Sampling and training weights
+
+These functions modify how labeled events enter model fitting. They should be
+derived inside the training workflow, aligned by event time, and kept separate
+from input features so their policy remains auditable.
+
+| Function | What it provides | Where it is useful |
+|---|---|---|
+| `q.label.sequential_bootstrap` | Seeded bootstrap draws weighted by marginal uniqueness after each selection | Builds bags with less redundant event paths than ordinary uniform bootstrap. Repeated events are intentional, and the result remains a sample rather than a deterministic ranking. |
+| `q.label.sample_weights` | Absolute event return after concurrency attribution | Gives greater influence to economically consequential outcomes without double-counting shared returns. Because it uses realized outcomes, it is training weight metadata, never a feature. |
+| `q.label.time_decay` | Linear recency factors based on cumulative sample importance | Lets newer regimes matter more while retaining older observations. `minimum_weight` controls how aggressively history is discounted. |
+| `q.label.class_balance_weights` | Inverse-frequency factors with equal total mass per observed class | Useful when majority classes dominate the loss. It changes the training objective and should not be confused with improving the underlying information content. |
+| `q.label.combine_weights` | Aligned multiplication and optional normalization of weight components | Makes a composite weighting policy explicit. Inspect components first: a zero in any component removes that event multiplicatively. |
+
+## Choosing a target
+
+- Start with `fixed_horizon` when you need an interpretable baseline or want to
+    isolate model quality from exit-policy assumptions.
+- Use `triple_barrier` when the path to the outcome matters and barrier levels
+    have a defensible economic or risk interpretation.
+- Use `trend_scanning` when the relevant forward duration is genuinely unknown,
+    then inspect which horizons are selected and whether labels are stable across
+    nearby candidates.
+- Add `meta_label` only when a separate primary process already supplies a side;
+    the binary target answers whether to act, not which direction to choose.
+- Keep `touch_time` or `end_time` regardless of method. Target accuracy is not
+    trustworthy if overlapping future paths leak across validation folds.
 
 ## Triple-barrier workflow
 
