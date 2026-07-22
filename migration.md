@@ -62,10 +62,10 @@ pickle caches and should not be copied intact.
 ### Cleaning and asset exports awaiting a decision
 
 - [ ] `fill_close_nan`: decide explicit symbol, ordering, and gap/calendar
-  semantics before placing it under `q.data` or `q.preprocess`.
+  semantics before placing it under `q.data` or `q.transform`.
 - [ ] `apply_mad_filter`: verify the legacy implementation, which is described
   as MAD but computes a rolling mean absolute deviation around a rolling median,
-  then design its `q.preprocess.outlier` contract.
+  then design its `q.transform.outlier` contract.
 - [ ] `load_omxn40_data`: reject the hardcoded `insref`/Nordic metadata or move
   the OMXN40 asset and merge behavior behind a general dataset/provider API.
 
@@ -96,7 +96,7 @@ output:
 | `q.cross_section` | Cross-sectional characteristics and rankings |
 | `q.feature` | Named/versioned feature definitions, computation, and materialization |
 | `q.label` | Future-aware target construction and sample weighting |
-| `q.preprocess` | Transformations fitted at the model-training boundary |
+| `q.transform` | Transformations fitted at the model-training boundary |
 | `q.model` | Validation and model lifecycle |
 | `q.signal` | Investment intent |
 | `q.portfolio` | Positions, weights, and constraints |
@@ -180,9 +180,9 @@ the legacy pure-pandas formulas, smoothing, warm-up behavior, or output names.
 
 ### Training boundary
 
-- [x] Reserve `q.preprocess.impute`, `scale`, `outlier`, `encode`, `reduction`,
+- [x] Reserve `q.transform.impute`, `scale`, `outlier`, `encode`, `reduction`,
   and `selection` for fitted model-input transformations.
-- [x] Distinguish `q.preprocess.selection` (feature columns) from
+- [x] Distinguish `q.transform.selection` (feature columns) from
   `q.model.selection` (validation rows/splits).
 
 ### Cross-sectional Elo

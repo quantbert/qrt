@@ -1,0 +1,9 @@
+---
+title: Outliers
+---
+
+`q.transform.outlier` is reserved for fitted outlier scoring, clipping, and
+replacement methods such as learned winsorization and Isolation Forest.
+
+The namespace is currently empty. Deterministic bad-tick removal belongs in
+`q.data`.

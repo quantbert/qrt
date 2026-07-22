@@ -1,0 +1,9 @@
+---
+title: Feature scaling
+---
+
+`q.transform.scale` is reserved for min-max, standard, robust, max-absolute, and
+related numeric scaling.
+
+The namespace is currently empty. Learned scaling parameters must be fitted
+only on fit partitions.

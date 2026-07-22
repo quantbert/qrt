@@ -1,0 +1,24 @@
+---
+title: Transformations
+---
+
+`q.transform` owns stateful transformations learned at the model-training
+boundary. The namespace is intentionally separate from `q.feature`: feature
+values may be materialized for all dates, while fitted transformations must
+learn only from fit partitions.
+
+| Namespace | Role |
+|---|---|
+| `q.transform.impute` | Missing-value indicators and imputation |
+| `q.transform.scale` | Numeric normalization |
+| `q.transform.outlier` | Outlier detection and treatment |
+| `q.transform.encode` | Categorical representation |
+| `q.transform.reduction` | Learned projection and decomposition |
+| `q.transform.selection` | Selection of model-input columns |
+
+The packages are currently placeholders. Implementations will use a shared
+`fit`/`transform` contract, preserve pandas labels, and expose fitted artifacts
+for reuse in validation, testing, and online inference. When input is split
+aware, every stateful transform must fit only on fit partitions and transform
+every partition. Deterministic cleaning that learns no state belongs in
+`q.data`, not here.

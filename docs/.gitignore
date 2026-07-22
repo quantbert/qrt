@@ -1,2 +1,4 @@
 /.quarto/
+/_freeze/
+/.qrt-runtime.sha256
 **/*.quarto_ipynb

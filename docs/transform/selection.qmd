@@ -1,0 +1,10 @@
+---
+title: Feature selection
+---
+
+`q.transform.selection` is reserved for methods that select existing features
+without projecting them, including variance filters, mutual information, and
+recursive selection.
+
+The namespace is currently empty. Learned selectors must be fitted only on fit
+partitions.

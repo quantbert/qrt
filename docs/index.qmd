@@ -13,7 +13,7 @@ QRT is in alpha. Public APIs can still change while the architecture settles.
 ## The research flow
 
 ```text
-inputs:    q.data -> q.indicator / q.cross_section -> q.feature -> q.preprocess -> q.model
+inputs:    q.data -> q.indicator / q.cross_section -> q.feature -> q.transform -> q.model
 targets:   q.data -> q.label -----------------------------------------------> q.model
 decisions:          q.indicator / q.cross_section -> q.signal -> q.portfolio -> q.bt
 results:                                                                  q.stats / q.plot
@@ -147,16 +147,17 @@ inputs. Barrier widths may use volatility known at the event time, but the
 resulting barrier outcome must never be materialized through `q.feature` or
 used as a contemporaneous predictor.
 
-### `q.preprocess`: fit the training boundary
+### `q.transform`: fit the training boundary
 
-`q.preprocess` is reserved for imputation, scaling, outlier treatment, encoding,
+`q.transform` is reserved for imputation, scaling, outlier treatment, encoding,
 dimensionality reduction, and feature-column selection. Learned operations must
-follow `fit`/`transform`: fit only on training data, retain fitted state, and
-reuse that state for validation, testing, and inference.
+follow `fit`/`transform`: fit only on fit partitions, retain fitted state, and
+transform every partition with that same state.
 
 Boundary: globally fitting these operations before a train/test split leaks
 future information. Deterministic raw feature computation belongs before this
-boundary; learned preprocessing belongs after the split.
+boundary; learned transformations belong after the split. Non-learning data
+cleaning and canonicalization remain in `q.data`.
 
 ### `q.model`: train and inspect models
 
@@ -165,7 +166,7 @@ provides walk-forward and purged cross-validation under `q.model.selection` and
 lazy PyTorch helpers under `q.model.torch`.
 
 Boundary: `q.model.selection` selects rows/splits for evaluation;
-`q.preprocess.selection` selects feature columns. Model code consumes prepared
+`q.transform.selection` selects feature columns. Model code consumes prepared
 features but does not fetch market data or define trading intent.
 
 ### `q.signal`: express investment intent
@@ -217,7 +218,7 @@ computation and online inference. `q.feature` adds batch identity and persistenc
 an online service may call the underlying computation directly, provided it
 supplies the same ordered history and availability rules.
 
-Fitted preprocessing is different: online inference must load the exact artifact
+Fitted transformation is different: online inference must load the exact artifact
 fitted on training data. It must never refit on a live window silently.
 
 ## Development

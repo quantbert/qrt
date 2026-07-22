@@ -1,9 +1,0 @@
----
-title: Missing data
----
-
-`q.preprocess.impute` is reserved for deterministic and fitted missing-data
-handling, including missing-value flags, simple imputers, KNN, and MICE.
-
-The namespace is currently empty. Fitted imputers must be trained on training
-data only.

@@ -9,7 +9,7 @@ calculation that might eventually become a feature.
 Use [`q.indicator`](../indicator/index.ipynb) for single-instrument market
 measurements, [`q.cross_section`](../cross_section/index.qmd) for cross-sectional
 values, and
-[`q.preprocess`](../preprocess/index.qmd) for transformations fitted on training
+[`q.transform`](../transform/index.qmd) for transformations fitted on training
 data.
 
 ## Definitions

@@ -1,9 +1,9 @@
 .DEFAULT_GOAL := help
 
-.PHONY: help install test stubs datasets nb-execute docs docs-deploy clean publish
+.PHONY: help install test stubs datasets nb-execute docs docs-render docs-render-refresh docs-deploy docs-deploy-refresh clean publish
 
 help: ## Show available targets
-	@grep -E '^[a-z-]+:.*##' $(MAKEFILE_LIST) | awk -F ':.*## ' '{printf "  %-12s %s\n", $$1, $$2}'
+	@grep -E '^[a-z-]+:.*##' $(MAKEFILE_LIST) | awk -F ':.*## ' '{printf "  %-20s %s\n", $$1, $$2}'
 
 install: ## Create/sync the environment (incl. dev deps)
 	uv sync
@@ -21,13 +21,27 @@ datasets: ## Refresh prepackaged sample datasets (OHLCV from Yahoo, then regener
 nb-execute: ## Re-run docs/*.ipynb in place so they carry saved cell outputs (for local editor preview)
 	uv run --group docs jupyter nbconvert --to notebook --execute --inplace docs/feature.ipynb docs/data.ipynb docs/stats.ipynb
 
-docs: ## Build the API reference and serve the docs locally with live reload. Must run in active venv!
+docs: ## Build the API reference and serve the docs locally with live reload
 	uv run --group docs quartodoc build --config docs/_quarto.yml
-	quarto preview docs
+	uv run --group docs quarto preview docs
 
-docs-deploy: ## Build the API reference and publish the docs to GitHub Pages. Must run in active venv!
+docs-render: ## Build docs, re-executing notebooks changed since the last successful render
 	uv run --group docs quartodoc build --config docs/_quarto.yml
-	quarto publish gh-pages docs --no-prompt
+	uv run python tools/docs_freeze.py prepare
+	uv run --group docs quarto render docs
+	uv run python tools/docs_freeze.py record
+
+docs-render-refresh: ## Build docs and force every notebook to re-execute
+	uv run --group docs quartodoc build --config docs/_quarto.yml
+	uv run python tools/docs_freeze.py prepare --force
+	uv run --group docs quarto render docs
+	uv run python tools/docs_freeze.py record
+
+docs-deploy: docs-render ## Incrementally build and publish docs to GitHub Pages
+	uv run --group docs quarto publish gh-pages docs --no-prompt --no-render
+
+docs-deploy-refresh: docs-render-refresh ## Fully re-execute and publish docs to GitHub Pages
+	uv run --group docs quarto publish gh-pages docs --no-prompt --no-render
 
 publish: test datasets ## Runs test first, refreshes bundled datasets. Then bump patch version, build and publish to PyPI
 	uv version --bump patch
@@ -36,6 +50,6 @@ publish: test datasets ## Runs test first, refreshes bundled datasets. Then bump
 	uv publish
 
 clean: ## Remove caches and build artifacts
-	rm -rf .pytest_cache dist build docs/_site docs/.quarto docs/reference
+	rm -rf .pytest_cache dist build docs/_site docs/.quarto docs/_freeze docs/.qrt-runtime.sha256 docs/reference
 	find . -type d -name __pycache__ -not -path './.venv/*' -exec rm -rf {} +
 	uv run python -c "import qrt as q; q.utils.clear_cache()"

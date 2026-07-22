@@ -2,7 +2,7 @@
 
 ``q.feature`` owns the lifecycle of model inputs: metadata, point-in-time
 computation, feature sets, and persistence. Market measurements live in
-``q.indicator``; fitted training transformations live in ``q.preprocess``.
+``q.indicator``; fitted training transformations live in ``q.transform``.
 """
 
 from qrt.feature import ops

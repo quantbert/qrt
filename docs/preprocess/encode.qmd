@@ -1,9 +1,0 @@
----
-title: Categorical encoding
----
-
-`q.preprocess.encode` is reserved for one-hot, ordinal, target, frequency, and
-related categorical encoders.
-
-The namespace is currently empty. Learned encoders must be fitted on training
-data only.

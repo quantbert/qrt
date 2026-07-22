@@ -16,9 +16,9 @@ from qrt import (
     model,
     plot,
     portfolio,
-    preprocess,
     signal,
     stats,
+    transform,
     utils,
 )
 from qrt.utils import log, set_seed
@@ -37,8 +37,8 @@ __all__ = [
     "model",
     "plot",
     "portfolio",
-    "preprocess",
     "signal",
     "stats",
+    "transform",
     "utils",
 ]

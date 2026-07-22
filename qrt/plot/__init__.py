@@ -1,9 +1,10 @@
 """Opinionated static and interactive plots for quantitative research.
 
 The first helpers focus on return streams: quick column charts, equity curves,
-drawdowns, and compact performance tearsheets. The Plotly implementations live
-in :mod:`qrt.plot.interactive` and are re-exported here; this module only adds
-the ergonomic aliases :func:`col`, :func:`plot`, and :func:`tearsheet`.
+drawdowns, and compact performance tearsheets. Directional label visualization
+and trade-log charts use the same interactive Plotly styling. Implementations
+live in :mod:`qrt.plot.interactive` and are re-exported here; this module only
+adds the ergonomic aliases :func:`col`, :func:`plot`, and :func:`tearsheet`.
 Return-stream statistics (performance, alpha/beta, rolling diagnostics, ...)
 live in :mod:`qrt.stats`.
 """
@@ -24,6 +25,7 @@ from qrt.plot.interactive import (
     equity,
     factor_contributions,
     factor_loadings,
+    labels,
     mae_mfe,
     metrics_table,
     monthly_distribution,
@@ -137,6 +139,7 @@ __all__ = [
     "factor_contributions",
     "factor_loadings",
     "interactive",
+    "labels",
     "mae_mfe",
     "metrics_table",
     "monthly_distribution",

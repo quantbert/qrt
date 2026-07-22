@@ -2213,6 +2213,146 @@ def trades(
     return figure
 
 
+def labels(
+    prices: pd.Series | pd.DataFrame,
+    labels: pd.Series | pd.DataFrame,
+    *,
+    label_col: str = "label",
+    end_col: str | None = None,
+    show_spans: bool = True,
+    title: str | None = None,
+    height: int = 520,
+) -> Figure:
+    """Plot directional labels over a price series.
+
+    Labels use green upward triangles for long (1), orange dashes for neutral
+    (0), and red downward triangles for short (-1). When label data includes
+    ``touch_time`` or ``end_time``, translucent outcome spans can be drawn
+    from each event to its endpoint.
+
+    Args:
+        prices: Close-price Series or frame containing a ``close`` column.
+        labels: Event-indexed label Series or DataFrame containing
+            ``label_col``. Missing labels are omitted.
+        label_col: DataFrame column containing values in {-1, 0, 1}.
+        end_col: Optional outcome-end column. Defaults to ``touch_time`` when
+            present, then ``end_time``.
+        show_spans: Whether to shade each event's outcome interval when an
+            endpoint column is available.
+        title: Figure title.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
+    close = prices["close"] if isinstance(prices, pd.DataFrame) else prices
+    if not isinstance(close, pd.Series):
+        raise TypeError("prices must be a pandas Series or DataFrame with a 'close' column")
+    if not pd.api.types.is_numeric_dtype(close):
+        raise TypeError("prices must contain numeric values")
+    if close.index.has_duplicates or not close.index.is_monotonic_increasing:
+        raise ValueError("prices index must be unique and sorted in increasing order")
+
+    if isinstance(labels, pd.Series):
+        frame = labels.rename(label_col).to_frame()
+    elif isinstance(labels, pd.DataFrame):
+        if label_col not in labels:
+            raise ValueError(f"labels must contain a {label_col!r} column")
+        frame = labels.copy()
+    else:
+        raise TypeError("labels must be a pandas Series or DataFrame")
+    if frame.index.has_duplicates or not frame.index.is_monotonic_increasing:
+        raise ValueError("labels index must be unique and sorted in increasing order")
+    if not frame.index.isin(close.index).all():
+        raise ValueError("every label event must be present in prices index")
+
+    frame = frame.loc[frame[label_col].notna()]
+    if not pd.api.types.is_numeric_dtype(frame[label_col]):
+        raise TypeError("labels must contain numeric values")
+    if not frame[label_col].isin([-1, 0, 1]).all():
+        raise ValueError("labels must contain only -1, 0, or 1")
+
+    endpoint = end_col if show_spans else None
+    if show_spans and endpoint is None:
+        endpoint = next(
+            (column for column in ("touch_time", "end_time") if column in frame),
+            None,
+        )
+    if endpoint and endpoint not in frame:
+        raise ValueError(f"labels must contain an {endpoint!r} column")
+
+    figure = go.Figure()
+    figure.add_scatter(
+        x=close.index,
+        y=close,
+        mode="lines",
+        name=close.name or "Price",
+        line={"color": "#6B7280", "width": 1.5},
+    )
+
+    styles = {
+        1: ("Long", "triangle-up", "#16856B"),
+        0: ("Hold", "line-ew", "#F59E0B"),
+        -1: ("Short", "triangle-down", "#D04A35"),
+    }
+    event_prices = close.reindex(frame.index)
+    for value in (1, 0, -1):
+        selected = frame[label_col].eq(value)
+        if not selected.any():
+            continue
+        name, symbol, color = styles[value]
+        custom_columns = [label_col]
+        if endpoint:
+            custom_columns.append(endpoint)
+        customdata = frame.loc[selected, custom_columns].astype(object).to_numpy()
+        endpoint_hover = (
+            f"<br>{endpoint}: %{{customdata[1]}}" if endpoint else ""
+        )
+        figure.add_scatter(
+            x=frame.index[selected],
+            y=event_prices[selected],
+            mode="markers",
+            name=name,
+            marker={
+                "symbol": symbol,
+                "size": 10 if value else 12,
+                "color": color,
+                "line": {"color": "white", "width": 0.8},
+            },
+            customdata=customdata,
+            hovertemplate=(
+                f"{name} %{{x|%Y-%m-%d}} @ %{{y:.2f}}"
+                + endpoint_hover
+                + "<extra></extra>"
+            ),
+        )
+
+    if endpoint:
+        fill_colors = {1: "#16856B", 0: "#F59E0B", -1: "#D04A35"}
+        for event_time, row in frame.iterrows():
+            end_time = row[endpoint]
+            if pd.isna(end_time):
+                continue
+            if end_time not in close.index:
+                raise ValueError(f"every {endpoint} must be present in prices index")
+            if end_time < event_time:
+                raise ValueError(f"every {endpoint} must be at or after its event")
+            figure.add_vrect(
+                x0=event_time,
+                x1=end_time,
+                layer="below",
+                line_width=0,
+                fillcolor=fill_colors[int(row[label_col])],
+                opacity=0.08,
+            )
+
+    _base_layout(figure, title=title or "Price labels", height=height)
+    figure.update_layout(hovermode="closest")
+    _set_date_range(figure, close.index)
+    figure.update_yaxes(title_text="Price")
+    return figure
+
+
 def mae_mfe(
     trades: pd.DataFrame,
     *,

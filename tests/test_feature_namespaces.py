@@ -9,7 +9,7 @@ import pytest
 import qrt as q
 
 
-PREPROCESS_NAMESPACES = [
+TRANSFORM_NAMESPACES = [
     "encode",
     "impute",
     "outlier",
@@ -19,10 +19,16 @@ PREPROCESS_NAMESPACES = [
 ]
 
 
-def test_preprocess_namespaces_are_lightweight_packages():
-    for name in PREPROCESS_NAMESPACES:
-        namespace = getattr(q.preprocess, name)
+def test_transform_namespaces_are_lightweight_packages():
+    for name in TRANSFORM_NAMESPACES:
+        namespace = getattr(q.transform, name)
         assert namespace.__all__ == []
+
+
+def test_preprocess_namespace_is_removed():
+    assert not hasattr(q, "preprocess")
+    with pytest.raises(ModuleNotFoundError, match=r"qrt\.preprocess"):
+        importlib.import_module("qrt.preprocess")
 
 
 def test_indicator_providers_are_lazy_on_root_import():

@@ -1,0 +1,9 @@
+---
+title: Categorical encoding
+---
+
+`q.transform.encode` is reserved for one-hot, ordinal, target, frequency, and
+related categorical encoders.
+
+The namespace is currently empty. Learned encoders must be fitted only on fit
+partitions.
