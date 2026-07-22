@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>data.sources – qrt</title>
+<title>dataset – qrt</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,6 +23,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -33,8 +68,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../reference/data.sources.yfinance.html" rel="next">
-<link href="../reference/data.datasets.html" rel="prev">
+<link href="../reference/transform.html" rel="next">
+<link href="../reference/label.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -118,7 +153,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/data.html">q.data</a></li><li class="breadcrumb-item"><a href="../reference/data.sources.html">data.sources</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/dataset.html">q.dataset</a></li><li class="breadcrumb-item"><a href="../reference/dataset.html">dataset</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -224,16 +259,16 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
  <span class="menu-text">q.dataset</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/dataset.html" class="sidebar-item-text sidebar-link">
+  <a href="../reference/dataset.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">dataset</span></a>
   </div>
 </li>
@@ -368,13 +403,13 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="false">
  <span class="menu-text">q.data</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../reference/data.html" class="sidebar-item-text sidebar-link">
@@ -395,7 +430,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/data.sources.html" class="sidebar-item-text sidebar-link active">
+  <a href="../reference/data.sources.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">data.sources</span></a>
   </div>
 </li>
@@ -492,30 +527,522 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#qrt.data.sources" id="toc-qrt.data.sources" class="nav-link active" data-scroll-target="#qrt.data.sources">data.sources</a></li>
+  <li><a href="#qrt.dataset" id="toc-qrt.dataset" class="nav-link active" data-scroll-target="#qrt.dataset">dataset</a>
+  <ul class="collapse">
+  <li><a href="#classes" id="toc-classes" class="nav-link" data-scroll-target="#classes">Classes</a>
+  <ul class="collapse">
+  <li><a href="#qrt.dataset.Dataset" id="toc-qrt.dataset.Dataset" class="nav-link" data-scroll-target="#qrt.dataset.Dataset">Dataset</a></li>
+  <li><a href="#qrt.dataset.DatasetView" id="toc-qrt.dataset.DatasetView" class="nav-link" data-scroll-target="#qrt.dataset.DatasetView">DatasetView</a></li>
+  <li><a href="#qrt.dataset.Partition" id="toc-qrt.dataset.Partition" class="nav-link" data-scroll-target="#qrt.dataset.Partition">Partition</a></li>
+  <li><a href="#qrt.dataset.PurgedTimeSeriesSplit" id="toc-qrt.dataset.PurgedTimeSeriesSplit" class="nav-link" data-scroll-target="#qrt.dataset.PurgedTimeSeriesSplit">PurgedTimeSeriesSplit</a></li>
+  <li><a href="#qrt.dataset.Split" id="toc-qrt.dataset.Split" class="nav-link" data-scroll-target="#qrt.dataset.Split">Split</a></li>
+  <li><a href="#qrt.dataset.SplitScheme" id="toc-qrt.dataset.SplitScheme" class="nav-link" data-scroll-target="#qrt.dataset.SplitScheme">SplitScheme</a></li>
+  <li><a href="#qrt.dataset.TemporalSplit" id="toc-qrt.dataset.TemporalSplit" class="nav-link" data-scroll-target="#qrt.dataset.TemporalSplit">TemporalSplit</a></li>
+  <li><a href="#qrt.dataset.TimeSeriesSplit" id="toc-qrt.dataset.TimeSeriesSplit" class="nav-link" data-scroll-target="#qrt.dataset.TimeSeriesSplit">TimeSeriesSplit</a></li>
+  </ul></li>
+  <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions">Functions</a>
+  <ul class="collapse">
+  <li><a href="#qrt.dataset.audit_splits" id="toc-qrt.dataset.audit_splits" class="nav-link" data-scroll-target="#qrt.dataset.audit_splits">audit_splits</a></li>
+  <li><a href="#qrt.dataset.build" id="toc-qrt.dataset.build" class="nav-link" data-scroll-target="#qrt.dataset.build">build</a></li>
+  <li><a href="#qrt.dataset.split_diagnostics" id="toc-qrt.dataset.split_diagnostics" class="nav-link" data-scroll-target="#qrt.dataset.split_diagnostics">split_diagnostics</a></li>
+  </ul></li>
+  </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/data.sources.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/data.sources.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/dataset.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/dataset.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/data.html">q.data</a></li><li class="breadcrumb-item"><a href="../reference/data.sources.html">data.sources</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/dataset.html">q.dataset</a></li><li class="breadcrumb-item"><a href="../reference/dataset.html">dataset</a></li></ol></nav></header>
 
 
 
 
-<section id="qrt.data.sources" class="level1">
-<h1>data.sources</h1>
-<p><code>data.sources</code></p>
-<p>Data sources: network vendors, databases, and other backends – each exposed as its own explicit submodule.</p>
-<pre><code>import qrt as q
+<section id="qrt.dataset" class="level1">
+<h1>dataset</h1>
+<p><code>dataset</code></p>
+<p>Aligned datasets that bridge feature and label research with model fitting.</p>
+<section id="classes" class="level2">
+<h2 class="anchored" data-anchor-id="classes">Classes</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#qrt.dataset.Dataset">Dataset</a></td>
+<td>One aligned collection of model inputs, targets, weights, and metadata.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.dataset.DatasetView">DatasetView</a></td>
+<td>A partition-backed view over one aligned :class:<code>Dataset</code>.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.dataset.Partition">Partition</a></td>
+<td>A named subset and its role in model fitting or evaluation.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.dataset.PurgedTimeSeriesSplit">PurgedTimeSeriesSplit</a></td>
+<td>Walk-forward folds purged by label horizons and optional embargo.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.dataset.Split">Split</a></td>
+<td>One assignment of dataset rows to named partitions.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.dataset.SplitScheme">SplitScheme</a></td>
+<td>A named collection of splits, such as the folds of walk-forward CV.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.dataset.TemporalSplit">TemporalSplit</a></td>
+<td>Create one train/validation/test assignment from ordered boundaries.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.dataset.TimeSeriesSplit">TimeSeriesSplit</a></td>
+<td>Wrap sklearn’s expanding or rolling time-series cross-validator.</td>
+</tr>
+</tbody>
+</table>
+<section id="qrt.dataset.Dataset" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.dataset.Dataset">Dataset</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>dataset.Dataset(X, y<span class="op">=</span><span class="va">None</span>, sample_weight<span class="op">=</span><span class="va">None</span>, metadata<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, splits<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>One aligned collection of model inputs, targets, weights, and metadata.</p>
+<section id="attributes" class="level4">
+<h4 class="anchored" data-anchor-id="attributes">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#qrt.dataset.Dataset.index">index</a></td>
+<td>Return the canonical row index shared by every dataset component.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.dataset.Dataset.test">test</a></td>
+<td>Return the default split’s conventional <code>test</code> partition.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.dataset.Dataset.train">train</a></td>
+<td>Return the default split’s conventional <code>train</code> partition.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.dataset.Dataset.validation">validation</a></td>
+<td>Return the default split’s conventional <code>validation</code> partition.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="methods" class="level4">
+<h4 class="anchored" data-anchor-id="methods">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#qrt.dataset.Dataset.load">load</a></td>
+<td>Load a dataset written by :meth:<code>save</code>.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.dataset.Dataset.partition">partition</a></td>
+<td>Return a row view for one partition in one split scheme.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.dataset.Dataset.save">save</a></td>
+<td>Serialize the aligned dataset and all split metadata with joblib.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.dataset.Dataset.with_split">with_split</a></td>
+<td>Return a dataset sharing the same data with an added split scheme.</td>
+</tr>
+</tbody>
+</table>
+<section id="qrt.dataset.Dataset.load" class="level5">
+<h5 class="anchored" data-anchor-id="qrt.dataset.Dataset.load">load</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>dataset.Dataset.load(path)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Load a dataset written by :meth:<code>save</code>.</p>
+<p>Only load files from trusted sources because joblib uses pickle.</p>
+</section>
+<section id="qrt.dataset.Dataset.partition" class="level5">
+<h5 class="anchored" data-anchor-id="qrt.dataset.Dataset.partition">partition</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>dataset.Dataset.partition(name, <span class="op">*</span>, scheme<span class="op">=</span><span class="st">'default'</span>, fold<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return a row view for one partition in one split scheme.</p>
+</section>
+<section id="qrt.dataset.Dataset.save" class="level5">
+<h5 class="anchored" data-anchor-id="qrt.dataset.Dataset.save">save</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>dataset.Dataset.save(path)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Serialize the aligned dataset and all split metadata with joblib.</p>
+</section>
+<section id="qrt.dataset.Dataset.with_split" class="level5">
+<h5 class="anchored" data-anchor-id="qrt.dataset.Dataset.with_split">with_split</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>dataset.Dataset.with_split(split)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return a dataset sharing the same data with an added split scheme.</p>
+</section>
+</section>
+</section>
+<section id="qrt.dataset.DatasetView" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.dataset.DatasetView">DatasetView</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>dataset.DatasetView(dataset, split, partition)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A partition-backed view over one aligned :class:<code>Dataset</code>.</p>
+<section id="attributes-1" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#qrt.dataset.DatasetView.X">X</a></td>
+<td>Return feature rows assigned to this partition.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.dataset.DatasetView.index">index</a></td>
+<td>Return row labels assigned to this partition.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.dataset.DatasetView.metadata">metadata</a></td>
+<td>Return row metadata assigned to this partition, when present.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.dataset.DatasetView.sample_weight">sample_weight</a></td>
+<td>Return sample weights assigned to this partition, when present.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.dataset.DatasetView.y">y</a></td>
+<td>Return target rows assigned to this partition, when present.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="qrt.dataset.Partition" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.dataset.Partition">Partition</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>dataset.Partition(name, role, metadata<span class="op">=</span><span class="bu">dict</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A named subset and its role in model fitting or evaluation.</p>
+</section>
+<section id="qrt.dataset.PurgedTimeSeriesSplit" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.dataset.PurgedTimeSeriesSplit">PurgedTimeSeriesSplit</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>dataset.PurgedTimeSeriesSplit(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    n_splits<span class="op">=</span><span class="dv">5</span>,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    max_train_size<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    test_size<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    gap<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">'purged_walk_forward'</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    label_end<span class="op">=</span><span class="st">'label_end_time'</span>,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    embargo<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Walk-forward folds purged by label horizons and optional embargo.</p>
+<section id="parameters" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 16%">
+<col style="width: 66%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>label_end</td>
+<td>str</td>
+<td>Metadata column containing each row’s inclusive label end.</td>
+<td><code>'label_end_time'</code></td>
+</tr>
+<tr class="even">
+<td>embargo</td>
+<td>int | str | pd.Timedelta</td>
+<td>Additional separation before each test partition, expressed as a row count or pandas-compatible timedelta string.</td>
+<td><code>0</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="methods-1" class="level4">
+<h4 class="anchored" data-anchor-id="methods-1">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#qrt.dataset.PurgedTimeSeriesSplit.split">split</a></td>
+<td>Return sklearn folds after removing overlapping training labels.</td>
+</tr>
+</tbody>
+</table>
+<section id="qrt.dataset.PurgedTimeSeriesSplit.split" class="level5">
+<h5 class="anchored" data-anchor-id="qrt.dataset.PurgedTimeSeriesSplit.split">split</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>dataset.PurgedTimeSeriesSplit.split(dataset)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return sklearn folds after removing overlapping training labels.</p>
+</section>
+</section>
+</section>
+<section id="qrt.dataset.Split" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.dataset.Split">Split</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>dataset.Split(membership, partitions, name<span class="op">=</span><span class="st">'default'</span>, metadata<span class="op">=</span><span class="bu">dict</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>One assignment of dataset rows to named partitions.</p>
+<section id="attributes-2" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-2">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#qrt.dataset.Split.fit_partitions">fit_partitions</a></td>
+<td>Return names of partitions from which learned state may be fitted.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="methods-2" class="level4">
+<h4 class="anchored" data-anchor-id="methods-2">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#qrt.dataset.Split.partition">partition</a></td>
+<td>Return one partition definition by name.</td>
+</tr>
+</tbody>
+</table>
+<section id="qrt.dataset.Split.partition" class="level5">
+<h5 class="anchored" data-anchor-id="qrt.dataset.Split.partition">partition</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>dataset.Split.partition(name)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return one partition definition by name.</p>
+</section>
+</section>
+</section>
+<section id="qrt.dataset.SplitScheme" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.dataset.SplitScheme">SplitScheme</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>dataset.SplitScheme(splits, name<span class="op">=</span><span class="st">'default'</span>, metadata<span class="op">=</span><span class="bu">dict</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A named collection of splits, such as the folds of walk-forward CV.</p>
+<section id="methods-3" class="level4">
+<h4 class="anchored" data-anchor-id="methods-3">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#qrt.dataset.SplitScheme.split">split</a></td>
+<td>Return a split by zero-based fold position or name.</td>
+</tr>
+</tbody>
+</table>
+<section id="qrt.dataset.SplitScheme.split" class="level5">
+<h5 class="anchored" data-anchor-id="qrt.dataset.SplitScheme.split">split</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>dataset.SplitScheme.split(fold<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return a split by zero-based fold position or name.</p>
+</section>
+</section>
+</section>
+<section id="qrt.dataset.TemporalSplit" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.dataset.TemporalSplit">TemporalSplit</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>dataset.TemporalSplit(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    train_end,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    validation_end<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    test_end<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">'default'</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create one train/validation/test assignment from ordered boundaries.</p>
+<section id="parameters-1" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 8%">
+<col style="width: 71%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>train_end</td>
+<td>Any</td>
+<td>Inclusive end of the training partition.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>validation_end</td>
+<td>Any | None</td>
+<td>Inclusive end of validation. Omit validation by leaving this as <code>None</code>.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>test_end</td>
+<td>Any | None</td>
+<td>Inclusive end of test. Rows after it are excluded. By default, test extends to the end of the dataset.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>name</td>
+<td>str</td>
+<td>Split name.</td>
+<td><code>'default'</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="methods-4" class="level4">
+<h4 class="anchored" data-anchor-id="methods-4">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#qrt.dataset.TemporalSplit.apply">apply</a></td>
+<td>Return <code>dataset</code> with this split attached as the default scheme.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.dataset.TemporalSplit.split">split</a></td>
+<td>Return the boundary assignment for <code>dataset</code>.</td>
+</tr>
+</tbody>
+</table>
+<section id="qrt.dataset.TemporalSplit.apply" class="level5">
+<h5 class="anchored" data-anchor-id="qrt.dataset.TemporalSplit.apply">apply</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>dataset.TemporalSplit.<span class="bu">apply</span>(dataset)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return <code>dataset</code> with this split attached as the default scheme.</p>
+</section>
+<section id="qrt.dataset.TemporalSplit.split" class="level5">
+<h5 class="anchored" data-anchor-id="qrt.dataset.TemporalSplit.split">split</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>dataset.TemporalSplit.split(dataset)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return the boundary assignment for <code>dataset</code>.</p>
+</section>
+</section>
+</section>
+<section id="qrt.dataset.TimeSeriesSplit" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.dataset.TimeSeriesSplit">TimeSeriesSplit</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>dataset.TimeSeriesSplit(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    n_splits<span class="op">=</span><span class="dv">5</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    max_train_size<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    test_size<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    gap<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">'walk_forward'</span>,</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Wrap sklearn’s expanding or rolling time-series cross-validator.</p>
+<p><code>max_train_size</code> selects a rolling window; leaving it unset produces expanding training windows. <code>gap</code> and <code>test_size</code> retain sklearn’s row semantics. Rows not selected in a fold receive the <code>excluded</code> role.</p>
+<section id="methods-5" class="level4">
+<h4 class="anchored" data-anchor-id="methods-5">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#qrt.dataset.TimeSeriesSplit.apply">apply</a></td>
+<td>Return <code>dataset</code> with the generated scheme attached.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.dataset.TimeSeriesSplit.split">split</a></td>
+<td>Return sklearn-generated folds as a QRT split scheme.</td>
+</tr>
+</tbody>
+</table>
+<section id="qrt.dataset.TimeSeriesSplit.apply" class="level5">
+<h5 class="anchored" data-anchor-id="qrt.dataset.TimeSeriesSplit.apply">apply</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>dataset.TimeSeriesSplit.<span class="bu">apply</span>(dataset)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return <code>dataset</code> with the generated scheme attached.</p>
+</section>
+<section id="qrt.dataset.TimeSeriesSplit.split" class="level5">
+<h5 class="anchored" data-anchor-id="qrt.dataset.TimeSeriesSplit.split">split</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>dataset.TimeSeriesSplit.split(dataset)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return sklearn-generated folds as a QRT split scheme.</p>
+</section>
+</section>
+</section>
+</section>
+<section id="functions" class="level2">
+<h2 class="anchored" data-anchor-id="functions">Functions</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#qrt.dataset.audit_splits">audit_splits</a></td>
+<td>Audit all folds for ordering and label-horizon leakage.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.dataset.build">build</a></td>
+<td>Assemble already-aligned research outputs into a :class:<code>Dataset</code>.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.dataset.split_diagnostics">split_diagnostics</a></td>
+<td>Summarize partition roles, sizes, proportions, and index boundaries.</td>
+</tr>
+</tbody>
+</table>
+<section id="qrt.dataset.audit_splits" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.dataset.audit_splits">audit_splits</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>dataset.audit_splits(dataset, scheme, <span class="op">*</span>, label_end<span class="op">=</span><span class="st">'label_end_time'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Audit all folds for ordering and label-horizon leakage.</p>
+<p>A fold passes when every fit row precedes every evaluate/holdout row and, when label-end metadata exists, each fit label ends before evaluation starts.</p>
+</section>
+<section id="qrt.dataset.build" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.dataset.build">build</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>dataset.build(features, labels<span class="op">=</span><span class="va">None</span>, sample_weights<span class="op">=</span><span class="va">None</span>, metadata<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Assemble already-aligned research outputs into a :class:<code>Dataset</code>.</p>
+</section>
+<section id="qrt.dataset.split_diagnostics" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.dataset.split_diagnostics">split_diagnostics</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>dataset.split_diagnostics(dataset, scheme, fold<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Summarize partition roles, sizes, proportions, and index boundaries.</p>
 
-ohlc = q.data.sources.yfinance.read("AAPL", "2024-01-01", "2025-01-01", "1d")
-ohlc = q.data.sources.binance.read("BTCUSDT", "2025-01-01", "2025-01-07", "1h")
 
-with q.data.sources.duckdb.connect(path="prod.duckdb") as db:
-    db.write(ohlc, table="ohlc")</code></pre>
-<p>To add a new source, create <code>qrt/data/sources/&lt;name&gt;.py</code> with whatever functions/classes make sense for that backend (no shared base class required), then register it below.</p>
-
-
+</section>
+</section>
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
@@ -921,13 +1448,13 @@ with q.data.sources.duckdb.connect(path="prod.duckdb") as db:
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../reference/data.datasets.html" class="pagination-link" aria-label="data.datasets">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">data.datasets</span>
+      <a href="../reference/label.html" class="pagination-link" aria-label="label">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">label</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../reference/data.sources.yfinance.html" class="pagination-link" aria-label="data.sources.yfinance">
-        <span class="nav-page-text">data.sources.yfinance</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../reference/transform.html" class="pagination-link" aria-label="transform">
+        <span class="nav-page-text">transform</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -936,4 +1463,4 @@ with q.data.sources.duckdb.connect(path="prod.duckdb") as db:
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/data.sources.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/data.sources.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/dataset.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/dataset.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
