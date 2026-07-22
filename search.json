@@ -593,9 +593,22 @@
   {
     "objectID": "indicator/qrt/returns.html",
     "href": "indicator/qrt/returns.html",
-    "title": "qrt",
+    "title": "Simple returns",
     "section": "",
-    "text": "Back to top",
+    "text": "q.indicator.returns calculates the percentage change in one instrument’s price over a fixed number of observations. It preserves the input index and leaves the first periods rows missing because no earlier price is available.\nThe result is a decimal return: 0.01 means a 1% gain.\nimport pandas as pd\n\nimport qrt as q\n\ndata = q.data.datasets.load(\"aapl\")\nend = data.index.max()\ndata = data.loc[end - pd.DateOffset(years=1) :].copy()\ndaily_returns = q.indicator.returns(data[\"close\"])\npd.DataFrame({\"close\": data[\"close\"], \"return\": daily_returns}).tail()\n\n\n\n\n\n\n\n\nclose\nreturn\n\n\ndatetime\n\n\n\n\n\n\n2026-07-14\n314.859985\n-0.007721\n\n\n2026-07-15\n327.500000\n0.040145\n\n\n2026-07-16\n333.260010\n0.017588\n\n\n2026-07-17\n333.739990\n0.001440\n\n\n2026-07-20\n326.589996\n-0.021424",
+    "crumbs": [
+      "Getting Started",
+      "q.indicator — Indicators",
+      "QRT indicators",
+      "Simple returns"
+    ]
+  },
+  {
+    "objectID": "indicator/qrt/returns.html#inspect-the-return-series",
+    "href": "indicator/qrt/returns.html#inspect-the-return-series",
+    "title": "Simple returns",
+    "section": "Inspect the return series",
+    "text": "Inspect the return series\nPlotting returns in percent makes the scale easier to read while leaving the indicator itself in decimal form.\n\nfigure = q.plot.col(\n    daily_returns.mul(100).to_frame(\"AAPL daily return\"),\n    title=\"AAPL close-to-close returns\",\n    ylabel=\"Return (%)\",\n)\nfigure.show(renderer=\"notebook_connected\")",
     "crumbs": [
       "Getting Started",
       "q.indicator — Indicators",
@@ -684,9 +697,22 @@
   {
     "objectID": "indicator/qrt/momentum.html",
     "href": "indicator/qrt/momentum.html",
-    "title": "qrt",
+    "title": "Price momentum",
     "section": "",
-    "text": "Back to top",
+    "text": "q.indicator.momentum measures the percentage change from the close window observations ago. Positive values indicate appreciation over the lookback and negative values indicate depreciation.\nMomentum is a measurement, not a trading signal. The initial window is missing.\nimport pandas as pd\n\nimport qrt as q\n\nprices = pd.concat(\n    {\"AAPL\": q.data.datasets.load(\"aapl\")[\"close\"], \"SPY\": q.data.datasets.load(\"spy\")[\"close\"]},\n    axis=1,\n    join=\"inner\",\n).dropna()\nend = prices.index.max()\nprices = prices.loc[end - pd.DateOffset(years=3) :]\nprices.tail()\n\n\n\n\n\n\n\n\nAAPL\nSPY\n\n\ndatetime\n\n\n\n\n\n\n2026-07-14\n314.859985\n751.830017\n\n\n2026-07-15\n327.500000\n754.809998\n\n\n2026-07-16\n333.260010\n750.719971\n\n\n2026-07-17\n333.739990\n743.289978\n\n\n2026-07-20\n326.589996\n742.090027",
+    "crumbs": [
+      "Getting Started",
+      "q.indicator — Indicators",
+      "QRT indicators",
+      "Price momentum"
+    ]
+  },
+  {
+    "objectID": "indicator/qrt/momentum.html#compare-instruments",
+    "href": "indicator/qrt/momentum.html#compare-instruments",
+    "title": "Price momentum",
+    "section": "Compare instruments",
+    "text": "Compare instruments\nA 63-session window is roughly one trading quarter. Calling the function column by column keeps instrument boundaries explicit.\n\nwindow = 63\nquarterly_momentum = prices.apply(\n    lambda series: q.indicator.momentum(series, window=window)\n).mul(100)\nquarterly_momentum.tail()\n\n\n\n\n\n\n\n\nAAPL\nSPY\n\n\ndatetime\n\n\n\n\n\n\n2026-07-14\n21.585670\n9.862545\n\n\n2026-07-15\n26.647512\n8.970211\n\n\n2026-07-16\n25.198760\n7.531218\n\n\n2026-07-17\n26.821371\n6.205980\n\n\n2026-07-20\n20.967653\n4.768326\n\n\n\n\n\n\n\n\nfigure = q.plot.col(\n    quarterly_momentum.add_suffix(f\" {window}-session momentum\"),\n    title=\"AAPL and SPY quarterly price momentum\",\n    ylabel=\"Momentum (%)\",\n)\nfigure.show(renderer=\"notebook_connected\")",
     "crumbs": [
       "Getting Started",
       "q.indicator — Indicators",
@@ -3032,9 +3058,22 @@
   {
     "objectID": "indicator/qrt/rolling_volatility.html",
     "href": "indicator/qrt/rolling_volatility.html",
-    "title": "qrt",
+    "title": "Rolling volatility",
     "section": "",
-    "text": "Back to top",
+    "text": "q.indicator.rolling_volatility calculates the rolling standard deviation of a return Series. It does not annualize the result, so its units match the sampling frequency of the input returns.\nBy default, each value requires a complete window. Set min_periods explicitly when a shorter warm-up is appropriate.\nimport numpy as np\nimport pandas as pd\n\nimport qrt as q\n\nprices = pd.concat(\n    {\"AAPL\": q.data.datasets.load(\"aapl\")[\"close\"], \"SPY\": q.data.datasets.load(\"spy\")[\"close\"]},\n    axis=1,\n    join=\"inner\",\n).dropna()\nend = prices.index.max()\nprices = prices.loc[end - pd.DateOffset(years=5) :]\ndaily_returns = prices.apply(q.indicator.returns)",
+    "crumbs": [
+      "Getting Started",
+      "q.indicator — Indicators",
+      "QRT indicators",
+      "Rolling volatility"
+    ]
+  },
+  {
+    "objectID": "indicator/qrt/rolling_volatility.html#annualize-daily-volatility",
+    "href": "indicator/qrt/rolling_volatility.html#annualize-daily-volatility",
+    "title": "Rolling volatility",
+    "section": "Annualize daily volatility",
+    "text": "Annualize daily volatility\nFor daily data, multiplying by \\(\\sqrt{252}\\) expresses the estimate on an approximate annual scale. This scaling remains separate because the correct factor depends on input frequency.\n\nwindow = 21\nannualized_volatility = daily_returns.apply(\n    lambda series: q.indicator.rolling_volatility(series, window=window)\n).mul(np.sqrt(252) * 100)\nannualized_volatility.tail()\n\n\n\n\n\n\n\n\nAAPL\nSPY\n\n\ndatetime\n\n\n\n\n\n\n2026-07-14\n34.315974\n13.734103\n\n\n2026-07-15\n35.888697\n13.685482\n\n\n2026-07-16\n35.864081\n12.424601\n\n\n2026-07-17\n35.868887\n12.729275\n\n\n2026-07-20\n36.645054\n11.950500\n\n\n\n\n\n\n\n\nfigure = q.plot.col(\n    annualized_volatility.add_suffix(f\" {window}-session volatility\"),\n    title=\"AAPL and SPY rolling annualized volatility\",\n    ylabel=\"Annualized volatility (%)\",\n)\nfigure.show(renderer=\"notebook_connected\")",
     "crumbs": [
       "Getting Started",
       "q.indicator — Indicators",
@@ -3123,9 +3162,22 @@
   {
     "objectID": "indicator/qrt/volume_ratio.html",
     "href": "indicator/qrt/volume_ratio.html",
-    "title": "qrt",
+    "title": "Relative volume",
     "section": "",
-    "text": "Back to top",
+    "text": "q.indicator.volume_ratio divides each volume observation by a trailing mean or median baseline. A ratio of 2 means volume is twice its rolling baseline; values below 1 indicate quieter trading.\nThe median is the default because isolated volume spikes affect it less than the mean.\nimport pandas as pd\n\nimport qrt as q\n\ndata = q.data.datasets.load(\"aapl\")\nend = data.index.max()\ndata = data.loc[end - pd.DateOffset(years=2) :].copy()\nmedian_ratio = q.indicator.volume_ratio(data[\"volume\"], window=20)\nmean_ratio = q.indicator.volume_ratio(data[\"volume\"], window=20, statistic=\"mean\")\nratios = pd.DataFrame({\"median baseline\": median_ratio, \"mean baseline\": mean_ratio})\nratios.tail()\n\n\n\n\n\n\n\n\nmedian baseline\nmean baseline\n\n\ndatetime\n\n\n\n\n\n\n2026-07-14\n0.739389\n0.563634\n\n\n2026-07-15\n1.193199\n0.934502\n\n\n2026-07-16\n1.198381\n0.948569\n\n\n2026-07-17\n1.188825\n0.940508\n\n\n2026-07-20\n1.002956\n0.811626",
+    "crumbs": [
+      "Getting Started",
+      "q.indicator — Indicators",
+      "QRT indicators",
+      "Relative volume"
+    ]
+  },
+  {
+    "objectID": "indicator/qrt/volume_ratio.html#compare-rolling-baselines",
+    "href": "indicator/qrt/volume_ratio.html#compare-rolling-baselines",
+    "title": "Relative volume",
+    "section": "Compare rolling baselines",
+    "text": "Compare rolling baselines\nLarge observations raise the rolling mean, which can suppress subsequent mean-based ratios. The median-based series remains more responsive after an isolated spike.\n\nfigure = q.plot.col(\n    ratios,\n    title=\"AAPL volume relative to its 20-session baseline\",\n    ylabel=\"Volume ratio\",\n)\nfigure.add_hline(y=1, line_dash=\"dot\", line_color=\"#555555\")\nfigure.show(renderer=\"notebook_connected\")",
     "crumbs": [
       "Getting Started",
       "q.indicator — Indicators",
