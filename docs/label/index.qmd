@@ -61,7 +61,7 @@ rather than treating event rows as independent and identically distributed.
 | `q.label.concurrency` | Number of inclusive event lifetimes active at each observation | The quickest diagnostic for label crowding and the basis for overlap-aware return attribution. |
 | `q.label.indicator_matrix` | Sparse observation-by-event lifetime membership | Makes the overlap structure explicit for diagnostics and resampling without allocating a dense matrix for mostly inactive events. |
 | `q.label.average_uniqueness` | Mean inverse concurrency over each event lifetime | Quantifies how much independent information each label contributes. Values near 1 are isolated; smaller values indicate heavily shared paths. |
-| `q.label.purging_metadata` | Running maximum endpoints and embargo-adjusted next-safe observations | Bridges labels to chronological model selection. It supplies the information a splitter needs to avoid train/test path overlap, but does not construct folds itself. |
+| `q.label.purging_metadata` | Running maximum endpoints and embargo-adjusted next-safe observations | Bridges labels to `q.dataset` splitters. It supplies event-lifetime metadata but does not construct folds itself. |
 
 ### Sampling and training weights
 
@@ -252,7 +252,7 @@ For each event, `max_end_time` is the latest label endpoint seen so far and
 `next_safe_time` is the first observation after that endpoint and the embargo.
 For example, an endpoint at position 10 with `embargo=2` skips positions 11 and
 12, making position 13 the next safe observation.
-Actual fold construction remains the responsibility of `q.model.selection`.
+Actual fold construction remains the responsibility of `q.dataset`.
 
 ::: {.callout-warning}
 Keep `event_time`, `touch_time`, or `end_time` with every target. Random splits

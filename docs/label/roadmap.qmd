@@ -54,7 +54,7 @@ financial-machine-learning research.
 
 - [ ] Label-distribution, barrier-touch, event-lifetime, concurrency, and
   uniqueness diagnostics under `q.plot`
-- [x] Purging and embargo metadata export for `q.model.selection`, including
+- [x] Purging and embargo metadata export for `q.dataset`, including
   the maximum label end time required to prevent overlapping train/test paths
 - [ ] Synthetic Ornstein-Uhlenbeck, momentum, and regime-switching paths for
   measuring label recovery, stability, and class balance against known dynamics

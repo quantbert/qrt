@@ -6,5 +6,14 @@ features.
 """
 
 from qrt.transform import encode, impute, outlier, reduction, scale, selection
+from qrt.transform._pipeline import Pipeline
 
-__all__ = ["encode", "impute", "outlier", "reduction", "scale", "selection"]
+__all__ = [
+	"Pipeline",
+	"encode",
+	"impute",
+	"outlier",
+	"reduction",
+	"scale",
+	"selection",
+]

@@ -7,6 +7,9 @@ boundary. The namespace is intentionally separate from `q.feature`: feature
 values may be materialized for all dates, while fitted transformations must
 learn only from fit partitions.
 
+Split-aware inputs use [`q.dataset`](../dataset/index.qmd): transforms discover
+allowed fit rows from partition roles rather than assuming a partition name.
+
 | Namespace | Role |
 |---|---|
 | `q.transform.impute` | Missing-value indicators and imputation |
@@ -16,9 +19,9 @@ learn only from fit partitions.
 | `q.transform.reduction` | Learned projection and decomposition |
 | `q.transform.selection` | Selection of model-input columns |
 
-The packages are currently placeholders. Implementations will use a shared
-`fit`/`transform` contract, preserve pandas labels, and expose fitted artifacts
-for reuse in validation, testing, and online inference. When input is split
-aware, every stateful transform must fit only on fit partitions and transform
-every partition. Deterministic cleaning that learns no state belongs in
-`q.data`, not here.
+`q.transform.Pipeline` wraps `sklearn.pipeline.Pipeline` for split-aware QRT
+datasets. It fits sklearn transformers only on role-`fit` partitions, applies
+the learned state to every row, preserves aligned dataset components, and
+records fit provenance. Individual transform namespaces remain reserved for
+QRT-provided estimator adapters. Deterministic cleaning that learns no state
+belongs in `q.data`, not here.

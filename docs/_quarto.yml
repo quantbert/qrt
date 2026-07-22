@@ -156,6 +156,13 @@ website:
               href: label/combine_weights.ipynb
             - text: "Roadmap"
               href: label/roadmap.qmd
+        - section: "q.dataset — ML datasets"
+          href: dataset/index.qmd
+          contents:
+            - text: "Splitting datasets"
+              href: dataset/splitting.ipynb
+            - text: "Roadmap"
+              href: dataset/roadmap.qmd
         - section: "q.transform — Transformations"
           href: transform/index.qmd
           contents:
@@ -280,10 +287,16 @@ quartodoc:
       contents:
         - name: label
           include_imports: true
+    - title: q.dataset
+      desc: "Aligned model inputs, targets, sample weights, metadata, and split schemes."
+      contents:
+        - name: dataset
+          include_imports: true
     - title: q.transform
       desc: "Fitted transformations applied at the model-training boundary."
       contents:
-        - transform
+        - name: transform
+          include_imports: true
         - transform.impute
         - transform.scale
         - transform.outlier
@@ -323,7 +336,7 @@ quartodoc:
         - data.sources.binance
         - data.sources.duckdb
     - title: q.model
-      desc: "ML model utilities: PyTorch helpers (model summaries via torchinfo) and leakage-aware CV splitters named after scikit-learn's model_selection."
+      desc: "ML model utilities: PyTorch helpers and a compatibility bridge for sklearn time-series position arrays."
       contents:
         - name: model
           include_imports: true

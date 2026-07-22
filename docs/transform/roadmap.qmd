@@ -2,8 +2,6 @@
 title: q.transform Roadmap
 ---
 
-- [ ] Define the shared pandas-friendly `fit`/`transform` protocol
-- [ ] Add split-aware dataset integration with explicit fit partitions
 - [ ] Add fitted imputers
 - [ ] Add standard, robust, min-max, and max-absolute scalers
 - [ ] Add fitted clipping, winsorization, and outlier detectors
@@ -11,4 +9,4 @@ title: q.transform Roadmap
 - [ ] Add PCA and related reduction adapters
 - [ ] Add variance, mutual-information, and recursive feature selection
 - [ ] Add independent feature and target pipelines with target inversion
-- [ ] Serialize fitted state and validate training-boundary provenance
+- [ ] Serialize fitted pipeline state

@@ -12,7 +12,5 @@ Only open work is listed here. Completed items are removed.
 
 ## Leakage-safe data splitting
 
-- [ ] Walk-forward splits (`q.model.selection.timeseries_split`)
-- [ ] Purged K-fold with embargo (López de Prado)
 - [ ] Combinatorial purged CV
 - [ ] Split visualization (plot which samples are train/test/embargo)

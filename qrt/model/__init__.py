@@ -5,9 +5,8 @@ Two kinds of submodules live here:
 - Framework-agnostic helpers -- no import of a specific ML framework, work
   on plain arrays/indices/callables. Flat siblings at this level, e.g.:
 
-    q.model.selection   -- leakage-aware CV splitters (walk-forward, purged
-                           K-fold, embargo), named after scikit-learn's
-                           ``model_selection``
+    q.model.selection   -- compatibility helpers for sklearn-style position
+                 arrays; aligned and purged splits live in q.dataset
 
 - Framework-specific adapters -- thin wrappers around one library's actual
   model objects/training API. Each framework gets its own submodule, which

@@ -53,11 +53,12 @@ q.plot.plot(strategy, benchmark=benchmark)      # interactive equity + drawdown 
 | `q.cross_section` | cross-sectional characteristics and rankings *(planned)* |
 | `q.feature` | named, versioned model inputs, computation, and materialization |
 | `q.label` | future-aware target construction, event filtering, and overlap-aware sample weights |
+| `q.dataset` | aligned model inputs, targets, weights, metadata, and split schemes |
 | `q.transform` | fitted model-input transformations *(planned)* |
 | `q.signal` | investment intent derived from measurements, factors, models, and rules *(planned)* |
 | `q.stats` | return-stream & trade-level statistics: performance, alpha/beta, Monte Carlo, variance/noise testing |
 | `q.plot` | interactive Plotly charts and performance reports, for both return streams and trade logs |
-| `q.model` | leakage-aware validation and optional PyTorch helpers |
+| `q.model` | sklearn-compatible position-array helpers and optional PyTorch utilities |
 | `q.bt` | event-driven backtesting *(planned)* |
 | `q.portfolio` | portfolio construction and analysis *(planned)* |
 

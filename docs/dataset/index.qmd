@@ -1,0 +1,127 @@
+---
+title: Datasets
+---
+
+`q.dataset` assembles model inputs, targets, sample weights, and row metadata
+under one canonical pandas index. It is the object that flows from feature and
+label research into fitted transformations and models; it is not another data
+acquisition stage.
+
+This singular namespace is distinct from `q.data.datasets`, which contains
+bundled sample market data.
+
+## Build an aligned dataset
+
+```python
+dataset = q.dataset.build(
+    features=feature_frame,
+    labels=labels,
+    sample_weights=weights,
+    metadata=event_metadata,
+)
+```
+
+Splits are optional. Construction rejects mismatched or duplicate indexes
+instead of silently reindexing components, so features, labels, weights, and
+event metadata cannot drift apart.
+
+## Fixed temporal partitions
+
+```python
+dataset = q.dataset.TemporalSplit(
+    train_end="2022-12-31",
+    validation_end="2023-12-31",
+    test_end="2024-12-31",
+).apply(dataset)
+
+model.fit(
+    dataset.train.X,
+    dataset.train.y,
+    sample_weight=dataset.train.sample_weight,
+)
+predictions = model.predict(dataset.test.X)
+```
+
+Rows outside the requested boundaries receive the explicit `excluded` role,
+preserving complete row membership without exposing those rows to fitting or
+evaluation.
+
+## Expanding and rolling folds
+
+`TimeSeriesSplit` wraps
+[`sklearn.model_selection.TimeSeriesSplit`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.TimeSeriesSplit.html).
+Its `n_splits`, `test_size`, `gap`, and `max_train_size` parameters retain
+scikit-learn semantics. Omit `max_train_size` for expanding windows or set it
+for rolling windows.
+
+```python
+expanding = q.dataset.TimeSeriesSplit(
+    n_splits=5,
+    test_size=63,
+    gap=5,
+).apply(dataset)
+
+rolling = q.dataset.TimeSeriesSplit(
+    n_splits=5,
+    test_size=63,
+    gap=5,
+    max_train_size=504,
+    name="rolling",
+).apply(expanding)
+```
+
+## Purging and embargo
+
+`PurgedTimeSeriesSplit` starts with the sklearn folds and removes fit rows whose
+label horizon reaches the test partition. An integer embargo counts rows; on a
+session-indexed dataset those rows are trading sessions. Timedelta strings such
+as `"5D"` provide calendar-time embargoes.
+
+```python
+purged = q.dataset.PurgedTimeSeriesSplit(
+    n_splits=5,
+    test_size=63,
+    label_end="label_end_time",
+    embargo=5,
+).apply(dataset)
+
+q.dataset.split_diagnostics(purged, "purged_walk_forward", "fold_1")
+q.dataset.audit_splits(purged, "purged_walk_forward")
+```
+
+## Leakage-aware transformations
+
+`q.transform.Pipeline` delegates estimator composition to sklearn and reads QRT
+partition roles. It fits only from role-`fit` rows, transforms the complete
+feature frame, and preserves targets, weights, metadata, and split schemes.
+
+```python
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import StandardScaler
+
+pipeline = q.transform.Pipeline(
+    [
+        ("impute", SimpleImputer(strategy="median")),
+        ("scale", StandardScaler()),
+    ]
+)
+processed = pipeline.fit_transform(purged, scheme="purged_walk_forward")
+```
+
+Fitting records the source scheme, fold, partitions, row count, and boundaries
+in `pipeline.fit_provenance_`.
+
+## Persistence
+
+Datasets and all attached split metadata can be persisted with joblib:
+
+```python
+purged.save("research-dataset.joblib")
+restored = q.dataset.Dataset.load("research-dataset.joblib")
+```
+
+Only load trusted joblib files because the format uses pickle internally.
+
+See the executable [dataset splitting notebook](splitting.ipynb) for a complete
+comparison of fixed, expanding, rolling, and purged splits on bundled SPY data,
+including diagnostics, leakage audits, transformations, and persistence.

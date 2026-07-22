@@ -12,17 +12,37 @@ QRT is in alpha. Public APIs can still change while the architecture settles.
 
 ## The research flow
 
-```text
-inputs:    q.data -> q.indicator / q.cross_section -> q.feature -> q.transform -> q.model
-targets:   q.data -> q.label -----------------------------------------------> q.model
-decisions:          q.indicator / q.cross_section -> q.signal -> q.portfolio -> q.bt
-results:                                                                  q.stats / q.plot
-                     q.calendar supplies exchange-time semantics across the flow
+```mermaid
+flowchart TD
+    data["q.data<br/>Acquire observations"]
+    calendar["q.calendar<br/>Apply market-time semantics"]
+    indicator["q.indicator<br/>Measure one instrument"]
+    cross_section["q.cross_section<br/>Measure relationships across assets"]
+    feature["q.feature<br/>Materialize reusable model inputs"]
+    label["q.label<br/>Construct supervised targets"]
+    dataset["q.dataset<br/>Assemble one aligned ML dataset"]
+    transform["q.transform<br/>Apply fitted transformations"]
+    model["q.model<br/>Train predictive models"]
+    signal["q.signal<br/>Generate investment intent"]
+    portfolio["q.portfolio<br/>Construct positions"]
+    bt["q.bt<br/>Simulate execution"]
+    stats["q.stats / q.plot<br/>Evaluate and present realized results"]
+
+    data --> calendar --> indicator --> cross_section --> feature --> label
+    label --> dataset --> transform --> model --> signal --> portfolio --> bt --> stats
+
+    classDef datasetObject fill:#e8f2ec,stroke:#24704a,stroke-width:2px,color:#153d29
+    class dataset datasetObject
 ```
 
-Each block describes what an operation *is*, not every way its output might be
-used. An SMA can become a stored model feature, a chart overlay, or an online
-rule input; it remains an indicator in all three cases.
+The flow describes ownership, not a requirement that every workflow invoke
+every namespace. Most blocks classify operations by what they do. `q.dataset`
+is the deliberate exception: it is the aligned object carrying features,
+targets, weights, event metadata, and split assignments across the fitted
+transformation and model-training boundary.
+
+An SMA can become a stored model feature, a chart overlay, or an online rule
+input; it remains an indicator in all three cases.
 
 ## Quickstart
 
@@ -147,6 +167,21 @@ inputs. Barrier widths may use volatility known at the event time, but the
 resulting barrier outcome must never be materialized through `q.feature` or
 used as a contemporaneous predictor.
 
+### `q.dataset`: keep machine-learning rows aligned
+
+`q.dataset` assembles features, labels, sample weights, and event metadata under
+one canonical index. Optional split schemes assign every row to arbitrary named
+partitions with explicit roles such as `fit`, `evaluate`, and `holdout`.
+
+Partition access returns views over the aligned parent dataset. A scheme may
+contain multiple named folds for walk-forward or cross-validation workflows,
+and split metadata can record methods, boundaries, purge, and embargo policy.
+
+Boundary: a dataset stores aligned values and split assignments; it does not
+acquire observations, compute features or labels, learn transformations, or
+train models. `q.data.datasets` remains the separate catalog of bundled sample
+market data.
+
 ### `q.transform`: fit the training boundary
 
 `q.transform` is reserved for imputation, scaling, outlier treatment, encoding,
@@ -161,13 +196,14 @@ cleaning and canonicalization remain in `q.data`.
 
 ### `q.model`: train and inspect models
 
-`q.model` owns model lifecycle helpers and leakage-aware validation. Today it
-provides walk-forward and purged cross-validation under `q.model.selection` and
-lazy PyTorch helpers under `q.model.torch`.
+`q.model` owns model lifecycle helpers. Today it provides a sklearn-compatible
+position-array bridge under `q.model.selection` and lazy PyTorch helpers under
+`q.model.torch`. Aligned temporal and purged folds belong to `q.dataset`.
 
-Boundary: `q.model.selection` selects rows/splits for evaluation;
+Boundary: `q.dataset` defines aligned row partitions;
 `q.transform.selection` selects feature columns. Model code consumes prepared
-features but does not fetch market data or define trading intent.
+features but does not fetch market data, define split metadata, or express
+trading intent.
 
 ### `q.signal`: express investment intent
 
