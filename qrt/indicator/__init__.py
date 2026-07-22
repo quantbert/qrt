@@ -8,6 +8,7 @@ only when accessed.
 from importlib import import_module
 
 from qrt.indicator._ema import ema
+from qrt.indicator._features import momentum, returns, rolling_volatility, volume_ratio
 from qrt.indicator._madev import madev
 from qrt.indicator._realized_volatility import (
     bipower_variation,
@@ -37,18 +38,22 @@ __all__ = [
     "madev",
     "med_rv",
     "min_rv",
+    "momentum",
     "pandas_ta",
     "price_spikes",
     "realized_quarticity",
     "realized_variance",
     "realized_volatility",
     "relative_strength",
+    "returns",
+    "rolling_volatility",
     "rs_days",
     "rs_phase",
     "rsma",
     "rsnhbp",
     "sma",
     "talib",
+    "volume_ratio",
     "volume_spike_ratio",
 ]
 

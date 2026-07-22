@@ -12,27 +12,38 @@ QRT is in alpha. Public APIs can still change while the architecture settles.
 
 ## The research flow
 
-```mermaid
-flowchart TD
-    data["q.data<br/>Acquire observations"]
-    calendar["q.calendar<br/>Apply market-time semantics"]
-    indicator["q.indicator<br/>Measure one instrument"]
-    cross_section["q.cross_section<br/>Measure relationships across assets"]
-    feature["q.feature<br/>Materialize reusable model inputs"]
-    label["q.label<br/>Construct supervised targets"]
-    dataset["q.dataset<br/>Assemble one aligned ML dataset"]
-    transform["q.transform<br/>Apply fitted transformations"]
-    model["q.model<br/>Train predictive models"]
-    signal["q.signal<br/>Generate investment intent"]
-    portfolio["q.portfolio<br/>Construct positions"]
-    bt["q.bt<br/>Simulate execution"]
-    stats["q.stats / q.plot<br/>Evaluate and present realized results"]
+```{dot}
+digraph research_flow {
+    graph [bgcolor="transparent", nodesep=0.22, ranksep=0.45, pad=0.05]
+    node [shape=box, style="filled", fillcolor="#edf3fb", color="#495057", fontcolor="#1465b8", fontname="Arial", fontsize=10, margin="0.08,0.05"]
+    edge [color="#495057", arrowsize=0.65, penwidth=1.1]
 
-    data --> calendar --> indicator --> cross_section --> feature --> label
-    label --> dataset --> transform --> model --> signal --> portfolio --> bt --> stats
+    data [label="q.data\nAcquire observations"]
+    calendar [label="q.calendar\nApply market-time semantics"]
+    indicator [label="q.indicator\nMeasure one instrument"]
+    cross_section [label="q.cross_section\nCompare assets"]
+    feature [label="q.feature\nMaterialize inputs"]
+    label [label="q.label\nConstruct targets"]
+    dataset [label="q.dataset\nAlign ML data", fillcolor="#e8f2ec", color="#24704a", penwidth=1.5]
+    transform [label="q.transform\nFit transformations"]
+    model [label="q.model\nTrain models"]
+    signal [label="q.signal\nExpress intent"]
+    portfolio [label="q.portfolio\nConstruct positions"]
+    bt [label="q.bt\nSimulate execution"]
+    stats [label="q.stats / q.plot\nEvaluate results"]
 
-    classDef datasetObject fill:#e8f2ec,stroke:#24704a,stroke-width:2px,color:#153d29
-    class dataset datasetObject
+    { rank=same; data; calendar; indicator; cross_section; feature }
+    { rank=same; signal; model; transform; dataset; label }
+    { rank=same; portfolio; bt; stats }
+
+    signal -> model -> transform -> dataset -> label [style=invis, weight=100]
+
+    data -> calendar -> indicator -> cross_section -> feature
+    feature -> label
+    label -> dataset -> transform -> model -> signal [constraint=false, weight=0]
+    signal -> portfolio
+    portfolio -> bt -> stats
+}
 ```
 
 The flow describes ownership, not a requirement that every workflow invoke
