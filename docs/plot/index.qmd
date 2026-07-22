@@ -12,8 +12,8 @@ curves, drawdowns, calendar heatmaps, full quantstats-style tearsheets, Monte
 Carlo diagnostics, entry/exit markers, excursions, and per-trade distributions.
 Return-stream *statistics* (performance, alpha/beta, rolling diagnostics,
 `q.stats.montecarlo`, ...) live in `q.stats`; see
-[Return Statistics](../stats/index.qmd). For feature engineering and
-price-chart examples, see [Feature Engineering](../feature/index.qmd).
+[Return Statistics](../stats/index.qmd). For market measurements, see
+[Indicators](../indicator/index.ipynb).
 
 Pages:
 

@@ -114,11 +114,6 @@ website:
           contents:
             - text: "Roadmap"
               href: cross_section/roadmap.qmd
-        - section: "q.feature — Feature lifecycle"
-          href: feature/index.qmd
-          contents:
-            - text: "Roadmap"
-              href: feature/roadmap.qmd
         - section: "q.label — Financial labels"
           href: label/index.qmd
           contents:
@@ -222,6 +217,11 @@ website:
           contents:
             - text: "Roadmap"
               href: portfolio/roadmap.qmd
+        - section: "q.risk — Risk"
+          href: risk/index.qmd
+          contents:
+            - text: "Roadmap"
+              href: risk/roadmap.qmd
         - section: "q.stats — Statistics"
           href: stats/index.qmd
           contents:
@@ -275,12 +275,10 @@ quartodoc:
       contents:
         - name: cross_section
           include_imports: true
-    - title: q.feature
-      desc: "Named, versioned feature definitions, computation, and materialization."
+    - title: q.risk
+      desc: "Downside and tail-risk estimators expressed as loss magnitudes."
       contents:
-        - name: feature
-          include_imports: true
-        - name: feature.ops
+        - name: risk
           include_imports: true
     - title: q.label
       desc: "Future-aware financial labels, event detection, and overlap-aware sample weights."
@@ -328,6 +326,7 @@ quartodoc:
       contents:
         - name: data
           include_imports: true
+        - data.clean
         - data.local
         - data.datasets
         - name: data.sources

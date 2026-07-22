@@ -15,7 +15,6 @@ items are removed from these pages.
 | `q.calendar` | Exchange sessions and market time | [View roadmap](calendar/roadmap.qmd) |
 | `q.indicator` | Single-instrument market measurements | [View roadmap](indicator/roadmap.qmd) |
 | `q.cross_section` | Cross-sectional characteristics | [View roadmap](cross_section/roadmap.qmd) |
-| `q.feature` | Feature definitions and materialization | [View roadmap](feature/roadmap.qmd) |
 | `q.label` | Future-aware target construction | [View roadmap](label/roadmap.qmd) |
 | `q.dataset` | Aligned ML datasets and split schemes | [View roadmap](dataset/roadmap.qmd) |
 | `q.transform` | Fitted model-input transformations | [View roadmap](transform/roadmap.qmd) |
@@ -23,6 +22,7 @@ items are removed from these pages.
 | `q.model` | Model utilities and selection | [View roadmap](model/roadmap.qmd) |
 | `q.plot` | Plotting and reports | [View roadmap](plot/roadmap.qmd) |
 | `q.portfolio` | Portfolio analysis | [View roadmap](portfolio/roadmap.qmd) |
+| `q.risk` | Downside and tail-risk estimation | [View roadmap](risk/roadmap.qmd) |
 | `q.stats` | Return-stream and factor statistics | [View roadmap](stats/roadmap.qmd) |
 | `q.utils` | Shared utilities | [View roadmap](utils/roadmap.qmd) |
 
@@ -44,8 +44,6 @@ on that module's roadmap; the items below would introduce or span namespaces.
   overrides with validation
 - [ ] `q.calendar` — exchange calendars, sessions, holidays, market hours, and
   timestamp alignment using `exchange-calendars`
-- [ ] `q.risk` — VaR/CVaR, volatility targeting, drawdown limits, risk budgets,
-  and position sizing
 - [ ] `q.optimize` — mean-variance, risk-parity, minimum-variance, and constrained
   portfolio optimization
 - [ ] `q.experiment` — record parameters, dataset fingerprints, random seeds,

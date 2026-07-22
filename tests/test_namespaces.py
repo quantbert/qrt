@@ -44,27 +44,25 @@ assert 'qrt.indicator.pandas_ta' not in sys.modules
     subprocess.run([sys.executable, "-c", code], check=True)
 
 
-def test_indicator_and_feature_operation_boundaries():
+def test_indicator_and_cross_section_boundaries():
     series = pd.Series([1.0, 2.0, 3.0, 4.0], name="close")
 
     assert q.indicator.sma(series, 2).iloc[-1] == 3.5
-    assert q.feature.ops.lags(series, 1).iloc[-1, 0] == 3.0
-    assert q.feature.ops.pct_rank(series, 2).iloc[-1] == 100.0
     assert q.cross_section.__all__ == [
         "compute_elo",
         "group_weighted_return",
+        "neutralize",
+        "percentile_rank",
+        "rank",
+        "relative_strength",
+        "zscore",
     ]
     assert q.signal.__all__ == []
 
-
-@pytest.mark.parametrize(
-    "name",
-    ["timeseries", "talib", "pandas_ta", "datetime", "cross_sectional"],
-)
-def test_old_feature_namespaces_are_removed(name):
-    assert not hasattr(q.feature, name)
-    with pytest.raises(ModuleNotFoundError, match=rf"qrt\.feature\.{name}"):
-        importlib.import_module(f"qrt.feature.{name}")
+def test_feature_namespace_is_removed():
+    assert not hasattr(q, "feature")
+    with pytest.raises(ModuleNotFoundError, match=r"qrt\.feature"):
+        importlib.import_module("qrt.feature")
 
 
 def test_non_trading_days_after_requires_an_exchange_session():

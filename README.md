@@ -50,8 +50,7 @@ q.plot.plot(strategy, benchmark=benchmark)      # interactive equity + drawdown 
 | `q.env` | explicit `.env` loading and environment-variable access |
 | `q.calendar` | exchange sessions, closures, and market-time semantics |
 | `q.indicator` | native single-instrument measurements plus explicit TA-Lib and pandas-ta-classic providers |
-| `q.cross_section` | cross-sectional characteristics and rankings *(planned)* |
-| `q.feature` | named, versioned model inputs, computation, and materialization |
+| `q.cross_section` | cross-sectional ranks, neutralization, relative strength, grouped returns, and Elo |
 | `q.label` | future-aware target construction, event filtering, and overlap-aware sample weights |
 | `q.dataset` | aligned model inputs, targets, weights, metadata, and split schemes |
 | `q.transform` | fitted model-input transformations *(planned)* |
@@ -61,6 +60,7 @@ q.plot.plot(strategy, benchmark=benchmark)      # interactive equity + drawdown 
 | `q.model` | sklearn-compatible position-array helpers and optional PyTorch utilities |
 | `q.bt` | event-driven backtesting *(planned)* |
 | `q.portfolio` | portfolio construction and analysis *(planned)* |
+| `q.risk` | VaR, CVaR, EVaR, TCE, worst-case dollar risk, and lower partial moments |
 
 ## Warning ⚠️
 

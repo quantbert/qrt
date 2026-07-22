@@ -5,6 +5,36 @@ title: Cross-Sectional Analysis
 `q.cross_section` owns characteristics calculated across a universe,
 including ranks, neutralization, and relative rating models such as Elo.
 
+## Universe transforms
+
+`q.cross_section.rank`, `percentile_rank`, and `zscore` accept one universe
+snapshot as a `Series` or a time-by-asset panel as a `DataFrame`. DataFrames
+operate across columns by default and preserve their index, columns, and
+missing values.
+
+```python
+ranked = q.cross_section.percentile_rank(signals)
+standardized = q.cross_section.zscore(signals)
+```
+
+`q.cross_section.neutralize` removes aligned numeric or categorical exposures
+from one snapshot with least squares. Optional positive weights select weighted
+least squares. Rows with missing values remain missing rather than being
+silently imputed.
+
+```python
+residual_signal = q.cross_section.neutralize(
+	signal,
+	exposures[["beta", "sector"]],
+	weights=market_cap,
+)
+```
+
+`q.cross_section.relative_strength(prices, lookback=21)` calculates trailing
+returns from a time-by-asset price matrix and percentile-ranks assets at every
+timestamp. This differs from `q.indicator.relative_strength`, which compares
+one instrument's price path with an explicit benchmark.
+
 ## Group-weighted returns
 
 `q.cross_section.group_weighted_return` aggregates long-form asset returns by
@@ -35,11 +65,11 @@ Missing sector values are placed in one `"UnknownSector"` bucket.
 
 ```python
 rated = q.cross_section.compute_elo(
-	daily_prices,  # date, symbol, close, sectorid
-	daily_vol_window=20,
-	matches_per_stock=1,
-	initial_elo=1500,
-	rf_data=daily_risk_free_rates,  # optional: date, rate
+    daily_prices,  # date, symbol, close, sectorid
+    daily_vol_window=20,
+    matches_per_stock=1,
+    initial_elo=1500,
+    rf_data=daily_risk_free_rates,  # optional: date, rate
 )
 ```
 

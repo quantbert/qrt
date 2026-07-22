@@ -2,9 +2,7 @@
 title: q.cross_section Roadmap
 ---
 
-- [ ] Cross-sectional ranks with explicit date and symbol columns
-- [ ] Group and sector neutralization
-- [ ] Cross-sectional z-scores and winsorization
+- [ ] Cross-sectional winsorization
 - [ ] Add a group-weighted-return tutorial when a multi-symbol demo dataset
   with real sector classifications is available
 

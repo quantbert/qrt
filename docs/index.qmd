@@ -3,7 +3,7 @@ title: Getting Started
 ---
 
 QRT is a collection of quantitative-research tools with explicit boundaries
-between market data, measurements, stored model inputs, training transforms,
+between market data, measurements, model inputs, training transforms,
 investment intent, portfolio construction, simulation, and evaluation.
 
 ::: {.callout-warning}
@@ -22,26 +22,27 @@ digraph research_flow {
     calendar [label="q.calendar\nApply market-time semantics"]
     indicator [label="q.indicator\nMeasure one instrument"]
     cross_section [label="q.cross_section\nCompare assets"]
-    feature [label="q.feature\nMaterialize inputs"]
     label [label="q.label\nConstruct targets"]
     dataset [label="q.dataset\nAlign ML data", fillcolor="#e8f2ec", color="#24704a", penwidth=1.5]
     transform [label="q.transform\nFit transformations"]
     model [label="q.model\nTrain models"]
     signal [label="q.signal\nExpress intent"]
     portfolio [label="q.portfolio\nConstruct positions"]
+    risk [label="q.risk\nEstimate prospective risk"]
     bt [label="q.bt\nSimulate execution"]
     stats [label="q.stats / q.plot\nEvaluate results"]
 
-    { rank=same; data; calendar; indicator; cross_section; feature }
+    { rank=same; data; calendar; indicator; cross_section }
     { rank=same; signal; model; transform; dataset; label }
-    { rank=same; portfolio; bt; stats }
+    { rank=same; portfolio; risk; bt; stats }
 
     signal -> model -> transform -> dataset -> label [style=invis, weight=100]
 
-    data -> calendar -> indicator -> cross_section -> feature
-    feature -> label
+    data -> calendar -> indicator -> cross_section
+    cross_section -> label
     label -> dataset -> transform -> model -> signal [constraint=false, weight=0]
     signal -> portfolio
+    risk -> portfolio [constraint=false]
     portfolio -> bt -> stats
 }
 ```
@@ -73,22 +74,11 @@ aapl = q.data.sources.yfinance.read(
 )
 source = aapl.rename_axis("datetime").reset_index().assign(symbol="AAPL")
 
-# A reusable market measurement
-sma_20 = q.indicator.sma(aapl["close"], 20)
-
-# A versioned model input computed independently per symbol
-sma_feature = q.feature.Feature(
-    name="sma_20",
-    function=q.indicator.sma,
-    inputs={"series": "close"},
-    params={"window": 20},
-    entity_keys=("symbol",),
-    timestamp="datetime",
-    lookback=20,
-    available_at="bar_close",
-)
-features = q.feature.FeatureSet([sma_feature], name="daily_prices")
-feature_frame = q.feature.compute(features, source)
+# Calculate model inputs directly and keep their canonical row index.
+model_inputs = aapl[["close"]].assign(
+    sma_20=q.indicator.sma(aapl["close"], 20),
+).dropna()
+dataset = q.dataset.build(features=model_inputs)
 ```
 
 ## Namespace roles
@@ -124,12 +114,12 @@ averages, relative strength, and realized volatility. Native formulas are flat;
 provider formulas remain explicit under `q.indicator.talib` and
 `q.indicator.pandas_ta`.
 
-Use indicators in notebooks, monitoring, rules, backtests, or as compute
-functions inside `q.feature.Feature`.
+Use indicators directly in notebooks, model-input frames, monitoring, rules,
+and backtests.
 
-Boundary: indicators do not register metadata, persist themselves, compare a
-whole asset universe, or express a buy/sell decision. Functions accept one
-instrument at a time and must not silently cross symbol boundaries.
+Boundary: indicators do not persist themselves, compare a whole asset universe,
+or express a buy/sell decision. Functions accept one instrument at a time and
+must not silently cross symbol boundaries.
 
 ### `q.cross_section`: compare assets cross-sectionally
 
@@ -138,32 +128,11 @@ between assets: ranks, sector neutralization, and relative rating models such as
 Elo.
 
 Use factors when the value of one symbol depends on other symbols at the same
-point in time. Factor output can be stored through `q.feature` or interpreted by
-`q.signal`.
+point in time. Factor output can become a model-input column or be interpreted
+by `q.signal`.
 
 Boundary: a factor scores or transforms assets; it does not choose portfolio
 weights. Feature-column selection is also not factor work.
-
-### `q.feature`: define and materialize model inputs
-
-`q.feature` owns the lifecycle of reproducible feature columns. `Feature`
-records a stable name, version, compute callable, source-column mapping,
-parameters, entity keys, timestamp, lookback, and availability boundary.
-`FeatureSet` groups definitions with one entity/time contract.
-
-`q.feature.compute` validates required columns, preserves entity/time keys, and
-applies each feature independently per entity. It rejects unsorted histories
-instead of silently changing database order. `q.feature.materialize` writes the
-computed frame to a sink exposing `write(data, table=...)`.
-
-`q.feature.ops` contains generic column-building operations such as lags and
-rolling percentile rank. These are building blocks, not registered features by
-themselves.
-
-Boundary: indicators and factors provide calculations; `q.feature` gives their
-outputs identity, point-in-time metadata, repeatable computation, and storage.
-Fitted scalers and selectors do not belong here because their state is tied to a
-training sample.
 
 ### `q.label`: construct future-aware model targets
 
@@ -175,8 +144,7 @@ overlapping training examples.
 
 Boundary: labels are supervised-learning targets, not point-in-time model
 inputs. Barrier widths may use volatility known at the event time, but the
-resulting barrier outcome must never be materialized through `q.feature` or
-used as a contemporaneous predictor.
+resulting barrier outcome must never be used as a contemporaneous predictor.
 
 ### `q.dataset`: keep machine-learning rows aligned
 
@@ -189,9 +157,9 @@ contain multiple named folds for walk-forward or cross-validation workflows,
 and split metadata can record methods, boundaries, purge, and embargo policy.
 
 Boundary: a dataset stores aligned values and split assignments; it does not
-acquire observations, compute features or labels, learn transformations, or
-train models. `q.data.datasets` remains the separate catalog of bundled sample
-market data.
+acquire observations, calculate model inputs or labels, learn transformations,
+or train models. `q.data.datasets` remains the separate catalog of bundled
+sample market data.
 
 ### `q.transform`: fit the training boundary
 
@@ -201,7 +169,7 @@ follow `fit`/`transform`: fit only on fit partitions, retain fitted state, and
 transform every partition with that same state.
 
 Boundary: globally fitting these operations before a train/test split leaks
-future information. Deterministic raw feature computation belongs before this
+future information. Deterministic market calculations belong before this
 boundary; learned transformations belong after the split. Non-learning data
 cleaning and canonicalization remain in `q.data`.
 
@@ -233,13 +201,23 @@ attribution, and rebalance decisions.
 Boundary: signals state preferences; portfolio logic resolves those preferences
 against capital, risk, and constraints to produce target positions.
 
+### `q.risk`: estimate downside and tail risk
+
+`q.risk` owns loss-distribution measures used before or during portfolio
+construction. Historical VaR, CVaR, EVaR, TCE, worst-case dollar risk, and
+lower partial moments are expressed as non-negative loss magnitudes.
+
+Boundary: risk estimators quantify possible losses; `q.portfolio` decides how
+positions should change in response. Realized performance reporting remains in
+`q.stats`.
+
 ### `q.bt`: simulate decisions
 
 `q.bt` owns event progression, order handling, fills, fees, slippage, and the
 historical state required to simulate a strategy without look-ahead.
 
 Boundary: backtesting consumes data, signals, and portfolio decisions. It should
-not become the canonical implementation of indicators, features, or statistics.
+not become the canonical implementation of indicators or statistics.
 
 ### `q.stats` and `q.plot`: evaluate results
 
@@ -261,9 +239,8 @@ a stable financial or lifecycle meaning belongs in its owning domain module.
 ## Batch and online parity
 
 The same indicator or factor callable should be usable in historical batch
-computation and online inference. `q.feature` adds batch identity and persistence;
-an online service may call the underlying computation directly, provided it
-supplies the same ordered history and availability rules.
+computation and online inference. An online service may call the calculation
+directly, provided it supplies the same ordered history and availability rules.
 
 Fitted transformation is different: online inference must load the exact artifact
 fitted on training data. It must never refit on a live window silently.

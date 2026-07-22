@@ -94,7 +94,6 @@ output:
 | `q.calendar` | Exchange sessions and market-time semantics |
 | `q.indicator` | Stateless, single-instrument market measurements |
 | `q.cross_section` | Cross-sectional characteristics and rankings |
-| `q.feature` | Named/versioned feature definitions, computation, and materialization |
 | `q.label` | Future-aware target construction and sample weighting |
 | `q.transform` | Transformations fitted at the model-training boundary |
 | `q.model` | Validation and model lifecycle |
@@ -110,12 +109,8 @@ Consequences:
 - [x] Keep provider formulas explicit under `q.indicator.talib` and
   `q.indicator.pandas_ta`.
 - [x] Keep TA-Lib, pandas-ta-classic, and PyTorch optional at runtime.
-- [x] Compute single-instrument indicators independently per entity when used
-  through `q.feature`.
-- [x] Preserve entity/time keys and reject unsorted histories rather than
-  silently sorting them.
-- [x] Keep fitted transformations out of materialized raw-feature computation.
-- [x] Keep future-aware labels out of point-in-time feature materialization.
+- [x] Keep fitted transformations at the model-training boundary.
+- [x] Keep future-aware labels out of contemporaneous model inputs.
 - [x] Keep data/network access outside indicator and factor functions.
 
 ## Completed moves
@@ -168,16 +163,6 @@ not mutate inputs, and do not fetch benchmark or market data internally.
 These are explicit provider adoptions, not claims of exact compatibility with
 the legacy pure-pandas formulas, smoothing, warm-up behavior, or output names.
 
-### Feature lifecycle
-
-- [x] Add `q.feature.Feature` metadata definitions.
-- [x] Add contract-enforcing `q.feature.FeatureSet` collections.
-- [x] Add per-entity `q.feature.compute`.
-- [x] Add sink-based `q.feature.materialize`.
-- [x] Move generic lags and rolling percentile rank to `q.feature.ops`.
-- [x] Add tests for entity isolation, ordering, required columns, metadata
-  conflicts, callable outputs, and sink writes.
-
 ### Training boundary
 
 - [x] Reserve `q.transform.impute`, `scale`, `outlier`, `encode`, `reduction`,
@@ -200,7 +185,7 @@ the legacy pure-pandas formulas, smoothing, warm-up behavior, or output names.
   - It combines proprietary fetching with computation and lacks safe
     point-in-time publication semantics.
   - A future fundamentals API must be designed independently under `q.data`
-    and `q.feature` contracts.
+    contracts.
 
 ## Remaining completion work
 

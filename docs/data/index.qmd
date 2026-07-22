@@ -6,9 +6,28 @@ title: Data
 
 | Submodule | What it is |
 |---|---|
+| `q.data.clean` | canonicalize and validate OHLCV frames, normalize timestamps, resolve duplicates, and detect regular-frequency gaps |
 | `q.data.datasets` | prepackaged sample OHLCV data (AAPL, SPY, BTC-USD), works offline |
 | `q.data.local` (`q.data.load`/`q.data.save`) | load/save local parquet or csv files |
 | `q.data.sources` | downloadable market data vendors and generic backends, one submodule each |
+
+## Cleaning market data
+
+`q.data.clean.canonicalize_ohlcv` converts common column names such as
+`Ticker` and `Date` to the canonical `symbol` and `datetime` names, coerces
+OHLCV values to numeric types, normalizes timestamps to UTC, keeps the last
+duplicate entity/time observation, sorts each entity, and validates OHLCV
+price and volume invariants.
+
+```python
+clean = q.data.clean.canonicalize_ohlcv(raw_prices)
+gaps = q.data.clean.detect_gaps(clean, "1D")
+```
+
+The individual `normalize_timestamps`, `deduplicate`, `detect_gaps`, and
+`validate_ohlcv` operations are available when a pipeline needs explicit
+control. Gap detection follows a regular pandas frequency; exchange-session
+semantics remain the responsibility of `q.calendar`.
 
 Pages:
 

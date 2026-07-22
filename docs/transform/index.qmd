@@ -3,9 +3,8 @@ title: Transformations
 ---
 
 `q.transform` owns stateful transformations learned at the model-training
-boundary. The namespace is intentionally separate from `q.feature`: feature
-values may be materialized for all dates, while fitted transformations must
-learn only from fit partitions.
+boundary. Deterministic model-input calculations may run for all dates, while
+fitted transformations must learn only from fit partitions.
 
 Split-aware inputs use [`q.dataset`](../dataset/index.qmd): transforms discover
 allowed fit rows from partition roles rather than assuming a partition name.

@@ -12,7 +12,14 @@ under this subpackage.
     spy = q.data.datasets.load("spy")  # prepackaged, works offline
 """
 
-from qrt.data import datasets, sources
+from qrt.data import clean, datasets, sources
 from qrt.data.local import load, load_ohlc_timeseries_range, save
 
-__all__ = ["datasets", "load", "load_ohlc_timeseries_range", "save", "sources"]
+__all__ = [
+    "clean",
+    "datasets",
+    "load",
+    "load_ohlc_timeseries_range",
+    "save",
+    "sources",
+]

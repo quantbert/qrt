@@ -113,29 +113,6 @@ def test_sma():
     assert out.iloc[-1] == 3.5
 
 
-def test_lags_series():
-    s = pd.Series([1.0, 2.0, 3.0, 4.0], name="close")
-    out = q.feature.ops.lags(s, 2)
-    assert list(out.columns) == ["close_lag1", "close_lag2"]
-    assert out["close_lag1"].iloc[-1] == 3.0
-    assert out["close_lag2"].iloc[-1] == 2.0
-
-
-def test_lags_dataframe_explicit_periods():
-    df = pd.DataFrame({"a": [1.0, 2.0, 3.0], "b": [10.0, 20.0, 30.0]})
-    out = q.feature.ops.lags(df, [1, 2])
-    assert list(out.columns) == ["a_lag1", "a_lag2", "b_lag1", "b_lag2"]
-    assert out["b_lag2"].iloc[-1] == 10.0
-
-
-def test_pct_rank():
-    s = pd.Series([1.0, 2.0, 3.0, 4.0, 2.0])
-    out = q.feature.ops.pct_rank(s, 3)
-    assert out.iloc[:2].isna().all()
-    assert out.iloc[2] == pytest.approx(100.0)
-    assert out.iloc[-1] == pytest.approx(100 / 3)
-
-
 def test_log_preserves_pandas_series():
     values = pd.Series([1.0, math.e], index=pd.date_range("2025-01-01", periods=2))
     out = q.utils.log(values)
