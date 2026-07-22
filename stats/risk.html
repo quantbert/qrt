@@ -848,8 +848,14 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#tail-measures" id="toc-tail-measures" class="nav-link active" data-scroll-target="#tail-measures">Tail measures</a></li>
-  <li><a href="#lower-partial-moments" id="toc-lower-partial-moments" class="nav-link" data-scroll-target="#lower-partial-moments">Lower partial moments</a></li>
+  <li><a href="#historical-value-at-risk" id="toc-historical-value-at-risk" class="nav-link active" data-scroll-target="#historical-value-at-risk">Historical Value at Risk</a></li>
+  <li><a href="#historical-expected-shortfall" id="toc-historical-expected-shortfall" class="nav-link" data-scroll-target="#historical-expected-shortfall">Historical Expected Shortfall</a></li>
+  <li><a href="#gaussian-var-and-expected-shortfall" id="toc-gaussian-var-and-expected-shortfall" class="nav-link" data-scroll-target="#gaussian-var-and-expected-shortfall">Gaussian VaR and Expected Shortfall</a></li>
+  <li><a href="#tail-conditional-expectation" id="toc-tail-conditional-expectation" class="nav-link" data-scroll-target="#tail-conditional-expectation">Tail Conditional Expectation</a></li>
+  <li><a href="#entropic-value-at-risk" id="toc-entropic-value-at-risk" class="nav-link" data-scroll-target="#entropic-value-at-risk">Entropic Value at Risk</a></li>
+  <li><a href="#maximum-observed-dollar-loss" id="toc-maximum-observed-dollar-loss" class="nav-link" data-scroll-target="#maximum-observed-dollar-loss">Maximum Observed Dollar Loss</a></li>
+  <li><a href="#lower-partial-moment" id="toc-lower-partial-moment" class="nav-link" data-scroll-target="#lower-partial-moment">Lower Partial Moment</a></li>
+  <li><a href="#choosing-a-measure" id="toc-choosing-a-measure" class="nav-link" data-scroll-target="#choosing-a-measure">Choosing a measure</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/stats/risk.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/stats/risk.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -875,7 +881,7 @@ window.Quarto = {
 </header>
 
 
-<p><code>q.stats</code> estimates downside and tail risk from periodic returns. Every risk estimator returns a non-negative loss magnitude: <code>0.05</code> means a 5% loss. Estimator families are explicit in their names so historical and Gaussian assumptions cannot be confused.</p>
+<p>The functions demonstrated below (that live in <code>q.stats</code>) estimate downside and tail risk from periodic returns. Every risk estimator returns a non-negative loss magnitude: <code>0.05</code> means a 5% loss. Estimator families are explicit in their names so historical and Gaussian assumptions cannot be confused.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>historical_var <span class="op">=</span> q.stats.historical_value_at_risk(returns, confidence<span class="op">=</span><span class="fl">0.95</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>historical_es <span class="op">=</span> q.stats.historical_expected_shortfall(returns, confidence<span class="op">=</span><span class="fl">0.95</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>gaussian_var <span class="op">=</span> q.stats.gaussian_value_at_risk(returns, confidence<span class="op">=</span><span class="fl">0.95</span>)</span>
@@ -884,24 +890,127 @@ window.Quarto = {
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>tce <span class="op">=</span> q.stats.tail_conditional_expectation(returns, confidence<span class="op">=</span><span class="fl">0.95</span>)</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>maximum_loss <span class="op">=</span> q.stats.maximum_observed_dollar_loss(returns, notional<span class="op">=</span><span class="dv">1_000_000</span>)</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>lpm_2 <span class="op">=</span> q.stats.lower_partial_moment(returns, threshold<span class="op">=</span><span class="fl">0.0</span>, order<span class="op">=</span><span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<section id="tail-measures" class="level2">
-<h2 class="anchored" data-anchor-id="tail-measures">Tail measures</h2>
-<ul>
-<li><code>historical_value_at_risk</code> is the empirical loss quantile.</li>
-<li><code>historical_expected_shortfall</code> averages the worst tail probability, including fractional boundary mass for finite samples.</li>
-<li><code>gaussian_value_at_risk</code> and <code>gaussian_expected_shortfall</code> use the sample mean and standard deviation under a normal-distribution assumption.</li>
-<li><code>tail_conditional_expectation</code> averages observations at or beyond historical VaR. It can differ from historical expected shortfall when samples have ties or the tail probability is not an integer number of observations.</li>
-<li><code>entropic_value_at_risk</code> minimizes the entropic upper bound with a stable log-sum-exp calculation.</li>
-<li><code>maximum_observed_dollar_loss</code> multiplies the largest observed one-period loss by a positive notional. It is historical, not a stress scenario.</li>
-</ul>
+<p>The input frequency defines the horizon. A result calculated from daily returns is a one-day risk estimate; a result calculated from weekly returns is a one-week estimate. These functions do not scale a result to another horizon.</p>
+<div class="callout callout-style-default callout-important callout-titled" title="How to read confidence">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>How to read confidence
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A 95% Value at Risk of 2% is best read as: <strong>2% is the estimated 95th percentile of one-period losses.</strong> Under the estimator’s assumptions, losses should exceed 2% in roughly 5% of periods. It does not mean that 2% is the largest possible loss, nor does it guarantee that exactly 5% of future periods will breach it.</p>
+</div>
+</div>
+<section id="historical-value-at-risk" class="level2">
+<h2 class="anchored" data-anchor-id="historical-value-at-risk">Historical Value at Risk</h2>
+<p><a href="https://en.wikipedia.org/wiki/Value_at_risk"><code>historical_value_at_risk</code></a> finds the requested loss percentile directly from the observed return history. It answers: <strong>where does the worst 5% of the observed distribution begin?</strong></p>
+<blockquote class="blockquote">
+<p>If daily historical VaR at 95% is 2%, the estimated one-day loss threshold is 2%: about 5% of periods in a comparable loss distribution are expected to lose 2% or more.</p>
+</blockquote>
+<p>This is useful for setting a simple loss limit, comparing strategies on a common confidence level, and locating the start of the tail. It makes no normal distribution assumption, but it assumes the available history is relevant to the future. It says nothing about how large a loss can become after the threshold is crossed.</p>
 </section>
-<section id="lower-partial-moments" class="level2">
-<h2 class="anchored" data-anchor-id="lower-partial-moments">Lower partial moments</h2>
-<p><code>lower_partial_moment</code> calculates</p>
+<section id="historical-expected-shortfall" class="level2">
+<h2 class="anchored" data-anchor-id="historical-expected-shortfall">Historical Expected Shortfall</h2>
+<p><a href="https://en.wikipedia.org/wiki/Expected_shortfall"><code>historical_expected_shortfall</code></a> averages the worst <code>1 - confidence</code> share of observed losses. It answers: <strong>when we are already in the bad tail, how much do we lose on average?</strong></p>
+<blockquote class="blockquote">
+<p>If daily historical expected shortfall at 95% is 3.5%, the average loss among the worst 5% of one-day outcomes is estimated to be 3.5%.</p>
+</blockquote>
+<p>Expected shortfall adds the severity information that VaR omits. It is useful when two strategies have similar VaR but one has much larger losses beyond that point. The implementation includes fractional boundary mass, so the requested tail always represents exactly <code>1 - confidence</code> of a finite sample.</p>
+</section>
+<section id="gaussian-var-and-expected-shortfall" class="level2">
+<h2 class="anchored" data-anchor-id="gaussian-var-and-expected-shortfall">Gaussian VaR and Expected Shortfall</h2>
+<p><a href="https://en.wikipedia.org/wiki/Value_at_risk"><code>gaussian_value_at_risk</code></a> and <a href="https://en.wikipedia.org/wiki/Expected_shortfall"><code>gaussian_expected_shortfall</code></a> estimate the same threshold and tail-average concepts after fitting a <a href="https://en.wikipedia.org/wiki/Normal_distribution">normal distribution</a> from the sample mean and standard deviation.</p>
+<blockquote class="blockquote">
+<p>A 95% Gaussian VaR of 1.8% means that the fitted normal model places 95% of one-period losses below 1.8% and 5% at or above it. A 95% Gaussian expected shortfall of 2.3% means the fitted model’s average loss within that worst 5% is 2.3%.</p>
+</blockquote>
+<p>These estimators produce smooth estimates and can be useful with limited data or for model-based comparisons. Financial returns often have skewness, fat tails, and changing volatility, however, so a Gaussian model can understate extreme risk. Compare it with the historical estimates rather than treating the normal assumption as fact.</p>
+</section>
+<section id="tail-conditional-expectation" class="level2">
+<h2 class="anchored" data-anchor-id="tail-conditional-expectation">Tail Conditional Expectation</h2>
+<p><a href="https://en.wikipedia.org/wiki/Expected_shortfall"><code>tail_conditional_expectation</code></a> first finds historical VaR, then averages every observed loss at or beyond that threshold. It answers the same practical question as expected shortfall: <strong>what was the average loss when the VaR boundary was reached or breached?</strong></p>
+<blockquote class="blockquote">
+<p>If 95% historical VaR is 2% and tail conditional expectation is 3.7%, the observations that lost at least 2% lost 3.7% on average.</p>
+</blockquote>
+<p>Unlike <code>historical_expected_shortfall</code>, this function includes all observations tied at the VaR threshold. The two measures are often equal for continuous data, but can differ when returns are rounded, repeated, or the tail contains a fractional observation. Prefer historical expected shortfall when you need an exact fixed-probability tail; use TCE when “all observations beyond this boundary” is the intended set.</p>
+</section>
+<section id="entropic-value-at-risk" class="level2">
+<h2 class="anchored" data-anchor-id="entropic-value-at-risk">Entropic Value at Risk</h2>
+<p><a href="https://en.wikipedia.org/wiki/Entropic_value_at_risk"><code>entropic_value_at_risk</code></a> (EVaR) uses the exponential moments of the loss distribution to calculate a conservative upper bound on VaR. It gives more influence to severe losses and answers: <strong>what loss bound is implied when increasingly bad outcomes receive exponentially more weight?</strong></p>
+<blockquote class="blockquote">
+<p>If daily EVaR at 95% is 4.1%, the entropic bound for the 95% one-day loss quantile is 4.1%. This is a conservative risk bound, not a statement that the average bad-tail loss is 4.1%.</p>
+</blockquote>
+<p>EVaR is useful when a coherent, tail-sensitive risk limit is preferred to a plain quantile. It is generally at least as large as VaR for the same empirical distribution and confidence. Its conservatism can make it less intuitive than VaR or expected shortfall, and its estimate still depends on the observed loss distribution.</p>
+</section>
+<section id="maximum-observed-dollar-loss" class="level2">
+<h2 class="anchored" data-anchor-id="maximum-observed-dollar-loss">Maximum Observed Dollar Loss</h2>
+<p><code>maximum_observed_dollar_loss</code> converts the worst observed one-period percentage loss into currency using the supplied notional.</p>
+<blockquote class="blockquote">
+<p>If the worst daily return was -6% and the notional is $1,000,000, maximum observed dollar loss is $60,000.</p>
+</blockquote>
+<p>This gives an immediate historical worst-case amount for sizing and review. It is not a probabilistic estimate, a portfolio revaluation, or a stress test: a future loss can exceed the worst loss in the sample. See <a href="https://en.wikipedia.org/wiki/Drawdown_(economics)">maximum drawdown</a> for the different concept of the largest cumulative peak-to-trough decline.</p>
+</section>
+<section id="lower-partial-moment" class="level2">
+<h2 class="anchored" data-anchor-id="lower-partial-moment">Lower Partial Moment</h2>
+<p><a href="https://en.wikipedia.org/wiki/Downside_risk"><code>lower_partial_moment</code></a> measures how often and by how much returns fall below a chosen target <span class="math inline">\(\tau\)</span>:</p>
 <p><span class="math display">\[
 E[\max(\tau-R, 0)^n],
 \]</span></p>
-<p>where <span class="math inline">\(\tau\)</span> is the threshold and <span class="math inline">\(n\)</span> is the order. Order zero is shortfall probability, order one is mean shortfall magnitude including non-shortfall periods as zeros, and order two is downside semivariance around the threshold.</p>
+<p>where <span class="math inline">\(n\)</span> controls how strongly large shortfalls are penalized.</p>
+<ul>
+<li>Order 0 is the probability of missing the target. A value of 0.30 means 30% of periods returned less than <span class="math inline">\(\tau\)</span>.</li>
+<li>Order 1 is average shortfall across all periods, counting periods above the target as zero. A value of 0.006 means an average target shortfall of 0.6% per period.</li>
+<li>Order 2 is downside semivariance around the target. Large misses receive disproportionately more weight; its units are squared returns, so compare it across strategies rather than reading it directly as a percentage.</li>
+</ul>
+<p>Lower partial moments are useful when risk means “failing to reach my target” rather than merely having volatile returns. Setting <span class="math inline">\(\tau=0\)</span> measures downside relative to break-even; setting it to a required return measures failure relative to that objective. Order 2 is related to <a href="https://en.wikipedia.org/wiki/Variance#Semivariance">semivariance</a>.</p>
+</section>
+<section id="choosing-a-measure" class="level2">
+<h2 class="anchored" data-anchor-id="choosing-a-measure">Choosing a measure</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Question</th>
+<th>Measure</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Where does the bad tail begin in observed data?</td>
+<td>Historical VaR</td>
+</tr>
+<tr class="even">
+<td>How severe is the worst fixed share of observed outcomes?</td>
+<td>Historical expected shortfall</td>
+</tr>
+<tr class="odd">
+<td>What do those quantities look like under a normal model?</td>
+<td>Gaussian VaR / expected shortfall</td>
+</tr>
+<tr class="even">
+<td>What happened in every observation at or beyond the VaR boundary?</td>
+<td>Tail conditional expectation</td>
+</tr>
+<tr class="odd">
+<td>What conservative tail-sensitive bound can I use?</td>
+<td>EVaR</td>
+</tr>
+<tr class="even">
+<td>What was the worst observed loss in currency?</td>
+<td>Maximum observed dollar loss</td>
+</tr>
+<tr class="odd">
+<td>How often and how badly did returns miss a target?</td>
+<td>Lower partial moment</td>
+</tr>
+</tbody>
+</table>
+<p>All of these are estimates, not guarantees. Use enough data to represent different market regimes, report the input horizon and confidence with every result, and supplement distribution estimates with scenario and stress tests.</p>
 <p>These functions describe a return distribution. Holdings-aware component and marginal risk, stress scenarios, and liquidity adjustments belong to <code>q.portfolio</code>.</p>
 
 
