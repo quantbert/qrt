@@ -706,30 +706,19 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../risk/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">q.risk — Risk</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-15" role="navigation" aria-expanded="false" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-15" class="collapse list-unstyled sidebar-section depth1 ">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../risk/roadmap.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Roadmap</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
             <a href="../stats/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">q.stats — Statistics</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-16" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-15" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-16" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-15" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats/risk.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Risk estimators</span></a>
+  </div>
+</li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../stats/performance.html" class="sidebar-item-text sidebar-link">
@@ -766,11 +755,11 @@ ul.task-list li input[type="checkbox"] {
       <div class="sidebar-item-container"> 
             <a href="../utils/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">q.utils — Utilities</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-17" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-16" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-17" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-16" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../utils/roadmap.html" class="sidebar-item-text sidebar-link">
@@ -795,7 +784,8 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#return-stream-statistics" id="toc-return-stream-statistics" class="nav-link active" data-scroll-target="#return-stream-statistics">Return-stream statistics</a></li>
+  <li><a href="#risk-estimators" id="toc-risk-estimators" class="nav-link active" data-scroll-target="#risk-estimators">Risk estimators</a></li>
+  <li><a href="#return-stream-statistics" id="toc-return-stream-statistics" class="nav-link" data-scroll-target="#return-stream-statistics">Return-stream statistics</a></li>
   <li><a href="#famafrench-factor-analytics" id="toc-famafrench-factor-analytics" class="nav-link" data-scroll-target="#famafrench-factor-analytics">Fama–French factor analytics</a>
   <ul class="collapse">
   <li><a href="#regression-correctness-and-numerical-robustness" id="toc-regression-correctness-and-numerical-robustness" class="nav-link" data-scroll-target="#regression-correctness-and-numerical-robustness">Regression correctness and numerical robustness</a></li>
@@ -832,6 +822,13 @@ ul.task-list li input[type="checkbox"] {
 
 
 <p>Only open work is listed here. Completed items are removed.</p>
+<section id="risk-estimators" class="level2">
+<h2 class="anchored" data-anchor-id="risk-estimators">Risk estimators</h2>
+<ul class="task-list">
+<li><label><input type="checkbox">Filtered historical simulation</label></li>
+<li><label><input type="checkbox">Additional parametric loss distributions</label></li>
+</ul>
+</section>
 <section id="return-stream-statistics" class="level2">
 <h2 class="anchored" data-anchor-id="return-stream-statistics">Return-stream statistics</h2>
 <p>Stateless analytics for periodic return streams (no plotting dependency), plus an optional bound <code>q.stats.returns(...)</code> object for chaining stats and plots. Consumed by <code>q.plot</code> for rendering.</p>
