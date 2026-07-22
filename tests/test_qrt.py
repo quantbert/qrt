@@ -165,6 +165,12 @@ def test_metrics_builds_full_quantstats_table():
     # vs. Benchmark rows are strategy-only
     assert pd.isna(frame.loc[("vs. Benchmark", "Beta"), "SPY"])
     assert frame.loc[("vs. Benchmark", "Beta"), "strategy"] == pytest.approx(2.0)
+    assert frame.loc[("Risk", "Historical VaR (95%)"), "strategy"] == pytest.approx(
+        q.stats.historical_value_at_risk(returns)
+    )
+    assert frame.loc[("Risk", "Historical Expected Shortfall (95%)"), "strategy"] == pytest.approx(
+        q.stats.historical_expected_shortfall(returns)
+    )
 
     basic = q.stats.metrics(returns, benchmark, mode="basic")
     assert len(basic) < len(frame)
@@ -282,8 +288,10 @@ def test_distribution_shape_and_risk_measures():
     assert q.stats.skew(returns) == pytest.approx(returns.skew())
     assert q.stats.kurtosis(returns) == pytest.approx(returns.kurtosis())
     assert q.stats.ulcer_index(returns) >= 0
-    assert q.stats.value_at_risk(returns) < 0
-    assert q.stats.conditional_value_at_risk(returns) <= q.stats.value_at_risk(returns)
+    assert q.stats.historical_value_at_risk(returns) >= 0
+    assert q.stats.historical_expected_shortfall(returns) >= q.stats.historical_value_at_risk(returns)
+    assert q.stats.gaussian_value_at_risk(returns) >= 0
+    assert q.stats.gaussian_expected_shortfall(returns) >= q.stats.gaussian_value_at_risk(returns)
     assert q.stats.risk_of_ruin(returns) >= 0
     assert q.stats.tail_ratio(returns) > 0
     assert 0.0 <= q.stats.risk_of_ruin(returns) <= 1.0

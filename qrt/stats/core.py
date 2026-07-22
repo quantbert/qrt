@@ -9,33 +9,11 @@ import pandas as pd
 from scipy.stats import norm
 from scipy.stats import t as t_dist
 
+from qrt.stats._returns import ReturnType, _simple_returns
+from qrt.stats.risk import historical_expected_shortfall, historical_value_at_risk
+
 if TYPE_CHECKING:
     from plotly.graph_objects import Figure
-
-ReturnType = Literal["simple", "log"]
-
-
-def _simple_returns(
-    returns: pd.Series, return_type: ReturnType = "simple", name: str = "returns"
-) -> pd.Series:
-    """Validate returns and convert log returns to simple returns when needed."""
-    if not isinstance(returns, pd.Series):
-        raise TypeError("returns must be a pandas Series")
-    if not pd.api.types.is_numeric_dtype(returns):
-        raise TypeError("returns must contain numeric values")
-    if return_type not in ("simple", "log"):
-        raise ValueError("return_type must be either 'simple' or 'log'")
-
-    series = returns.astype(float).dropna().rename(returns.name or name)
-    if series.empty:
-        raise ValueError("returns must contain at least one non-null value")
-    if not np.isfinite(series.to_numpy()).all():
-        raise ValueError("returns must not contain infinite values")
-
-    simple = np.expm1(series) if return_type == "log" else series
-    if (simple < -1.0).any():
-        raise ValueError("simple returns must be greater than or equal to -1")
-    return simple
 
 
 def infer_periods_per_year(index: pd.Index) -> int:
@@ -988,7 +966,7 @@ _METRICS_BASIC_ROWS = frozenset(
         "Risk-Free Rate", "Time in Market",
         "Cumulative Return", "CAGR",
         "Sharpe", "Sortino", "Calmar", "Omega",
-        "Volatility (ann.)", "Skew", "Kurtosis", "Daily Value-at-Risk", "Expected Shortfall (cVaR)",
+        "Volatility (ann.)", "Skew", "Kurtosis", "Historical VaR (95%)", "Historical Expected Shortfall (95%)",
         "Max Drawdown", "Longest DD Days", "Recovery Factor",
         "Payoff Ratio", "Profit Factor", "Tail Ratio",
         "MTD", "3M", "6M", "YTD", "1Y", "3Y (ann.)", "5Y (ann.)", "10Y (ann.)", "All-time (ann.)",
@@ -1069,8 +1047,8 @@ def metrics(
             ("Risk", "Volatility (ann.)"): volatility(series, periods_per_year=periods),
             ("Risk", "Skew"): skew(series),
             ("Risk", "Kurtosis"): kurtosis(series),
-            ("Risk", "Daily Value-at-Risk"): value_at_risk(series),
-            ("Risk", "Expected Shortfall (cVaR)"): conditional_value_at_risk(series),
+            ("Risk", "Historical VaR (95%)"): historical_value_at_risk(series),
+            ("Risk", "Historical Expected Shortfall (95%)"): historical_expected_shortfall(series),
             ("Risk", "Kelly Criterion"): kelly_criterion(series),
             ("Risk", "Risk of Ruin"): risk_of_ruin(series),
             ("Drawdown", "Max Drawdown"): max_drawdown(series),
@@ -1910,56 +1888,6 @@ def ulcer_performance_index(
     return _cagr(excess, periods) / ulcer if ulcer else float("nan")
 
 
-def value_at_risk(
-    returns: pd.Series,
-    *,
-    return_type: ReturnType = "simple",
-    confidence: float = 0.95,
-) -> float:
-    """Calculate the parametric (variance-covariance) Value at Risk.
-
-    [Value at Risk](https://en.wikipedia.org/wiki/Value_at_risk) assumes normally distributed
-    returns and estimates the maximum expected loss over one period at the given confidence level
-    from the sample mean and standard deviation.
-
-    Args:
-        returns: Periodic return series (simple or log, per ``return_type``).
-        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
-        confidence: Confidence level, e.g. ``0.95`` for a 95% VaR. Defaults to ``0.95``.
-
-    Returns:
-        Value at Risk (a negative number representing a loss).
-    """
-    series = _simple_returns(returns, return_type)
-    return float(norm.ppf(1.0 - confidence, series.mean(), series.std(ddof=1)))
-
-
-def conditional_value_at_risk(
-    returns: pd.Series,
-    *,
-    return_type: ReturnType = "simple",
-    confidence: float = 0.95,
-) -> float:
-    """Calculate the historical Conditional Value at Risk (Expected Shortfall).
-
-    [Expected Shortfall](https://en.wikipedia.org/wiki/Expected_shortfall) is the average return
-    among periods that fell below the :func:`value_at_risk` threshold — the expected loss *given*
-    that a tail event occurred, which VaR alone doesn't capture.
-
-    Args:
-        returns: Periodic return series (simple or log, per ``return_type``).
-        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
-        confidence: Confidence level, e.g. ``0.95`` for a 95% CVaR. Defaults to ``0.95``.
-
-    Returns:
-        Conditional Value at Risk (a negative number representing an expected loss).
-    """
-    series = _simple_returns(returns, return_type)
-    threshold = value_at_risk(series, return_type="simple", confidence=confidence)
-    tail = series[series < threshold]
-    return float(tail.mean()) if len(tail) else threshold
-
-
 def serenity_index(
     returns: pd.Series,
     *,
@@ -1988,7 +1916,7 @@ def serenity_index(
     std_returns = series.std(ddof=1) if len(series) > 1 else float("nan")
     if not std_returns or not np.isfinite(std_returns):
         return float("nan")
-    pitfall = -conditional_value_at_risk(drawdown, return_type="simple") / std_returns
+    pitfall = historical_expected_shortfall(drawdown) / std_returns
     ulcer = float(np.sqrt((drawdown**2).mean()))
     denominator = ulcer * pitfall
     return (series.sum() - rf) / denominator if denominator else float("nan")

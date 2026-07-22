@@ -22,8 +22,7 @@ items are removed from these pages.
 | `q.model` | Model utilities and selection | [View roadmap](model/roadmap.qmd) |
 | `q.plot` | Plotting and reports | [View roadmap](plot/roadmap.qmd) |
 | `q.portfolio` | Portfolio analysis | [View roadmap](portfolio/roadmap.qmd) |
-| `q.risk` | Downside and tail-risk estimation | [View roadmap](risk/roadmap.qmd) |
-| `q.stats` | Return-stream and factor statistics | [View roadmap](stats/roadmap.qmd) |
+| `q.stats` | Return-stream, risk, and factor statistics | [View roadmap](stats/roadmap.qmd) |
 | `q.utils` | Shared utilities | [View roadmap](utils/roadmap.qmd) |
 
 ## Project-wide work

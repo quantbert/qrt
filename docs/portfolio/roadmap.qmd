@@ -7,5 +7,8 @@ Only open work is listed here. Completed items are removed.
 ## Planned
 
 - [ ] Attribution and risk decomposition
+- [ ] Component and marginal risk contributions
+- [ ] Scenario and stress-test losses
+- [ ] Liquidity-adjusted risk measures
 - [ ] Exposure and turnover analysis
 - [ ] Portfolio optimization (skfolio/Riskfolio-style)

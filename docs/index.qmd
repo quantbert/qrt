@@ -28,13 +28,12 @@ digraph research_flow {
     model [label="q.model\nTrain models"]
     signal [label="q.signal\nExpress intent"]
     portfolio [label="q.portfolio\nConstruct positions"]
-    risk [label="q.risk\nEstimate prospective risk"]
     bt [label="q.bt\nSimulate execution"]
-    stats [label="q.stats / q.plot\nEvaluate results"]
+    stats [label="q.stats / q.plot\nAnalyze risk and results"]
 
     { rank=same; data; calendar; indicator; cross_section }
     { rank=same; signal; model; transform; dataset; label }
-    { rank=same; portfolio; risk; bt; stats }
+    { rank=same; portfolio; bt; stats }
 
     signal -> model -> transform -> dataset -> label [style=invis, weight=100]
 
@@ -42,7 +41,6 @@ digraph research_flow {
     cross_section -> label
     label -> dataset -> transform -> model -> signal [constraint=false, weight=0]
     signal -> portfolio
-    risk -> portfolio [constraint=false]
     portfolio -> bt -> stats
 }
 ```
@@ -201,16 +199,6 @@ attribution, and rebalance decisions.
 Boundary: signals state preferences; portfolio logic resolves those preferences
 against capital, risk, and constraints to produce target positions.
 
-### `q.risk`: estimate downside and tail risk
-
-`q.risk` owns loss-distribution measures used before or during portfolio
-construction. Historical VaR, CVaR, EVaR, TCE, worst-case dollar risk, and
-lower partial moments are expressed as non-negative loss magnitudes.
-
-Boundary: risk estimators quantify possible losses; `q.portfolio` decides how
-positions should change in response. Realized performance reporting remains in
-`q.stats`.
-
 ### `q.bt`: simulate decisions
 
 `q.bt` owns event progression, order handling, fills, fees, slippage, and the
@@ -221,8 +209,14 @@ not become the canonical implementation of indicators or statistics.
 
 ### `q.stats` and `q.plot`: evaluate results
 
-`q.stats` computes return-stream, benchmark, risk, rolling, trade, and factor
-analytics. `q.plot` renders those results and market/trade visualizations.
+`q.stats` computes return-stream, loss-distribution, benchmark, rolling, trade,
+and factor analytics. Risk estimators use explicit historical or parametric
+names and return non-negative loss magnitudes. `q.plot` renders those results
+and market/trade visualizations.
+
+Boundary: `q.stats` describes return distributions and realized results;
+holdings-aware risk contributions, stress scenarios, and portfolio responses
+belong to `q.portfolio`.
 
 Boundary: these modules analyze or present outcomes. They do not mutate the
 strategy, refit its model, or create a new feature store as a side effect.

@@ -525,7 +525,7 @@ _METRIC_PCT_ROWS = frozenset(
         "Risk-Free Rate", "Time in Market",
         "Cumulative Return", "CAGR", "Expected Daily", "Expected Monthly", "Expected Yearly",
         "Prob. Sharpe Ratio",
-        "Volatility (ann.)", "Daily Value-at-Risk", "Expected Shortfall (cVaR)", "Kelly Criterion", "Risk of Ruin",
+        "Volatility (ann.)", "Historical VaR (95%)", "Historical Expected Shortfall (95%)", "Kelly Criterion", "Risk of Ruin",
         "Max Drawdown", "Avg. Drawdown",
         "MTD", "3M", "6M", "YTD", "1Y", "3Y (ann.)", "5Y (ann.)", "10Y (ann.)", "All-time (ann.)",
         "Best Day", "Worst Day", "Best Month", "Worst Month", "Best Year", "Worst Year",

@@ -75,6 +75,14 @@ website:
                   href: indicator/qrt/ema.ipynb
                 - text: "Mean absolute deviation (MADEV)"
                   href: indicator/qrt/madev.ipynb
+                - text: "Simple returns"
+                  href: indicator/qrt/returns.ipynb
+                - text: "Price momentum"
+                  href: indicator/qrt/momentum.ipynb
+                - text: "Rolling volatility"
+                  href: indicator/qrt/rolling_volatility.ipynb
+                - text: "Relative volume"
+                  href: indicator/qrt/volume_ratio.ipynb
                 - text: "Volume spike ratio"
                   href: indicator/qrt/volume_spike_ratio.ipynb
                 - text: "Price spikes"
@@ -217,14 +225,11 @@ website:
           contents:
             - text: "Roadmap"
               href: portfolio/roadmap.qmd
-        - section: "q.risk — Risk"
-          href: risk/index.qmd
-          contents:
-            - text: "Roadmap"
-              href: risk/roadmap.qmd
         - section: "q.stats — Statistics"
           href: stats/index.qmd
           contents:
+            - text: "Risk estimators"
+              href: stats/risk.qmd
             - text: "Performance & benchmark"
               href: stats/performance.ipynb
             - text: "Rolling & calendar returns"
@@ -275,11 +280,6 @@ quartodoc:
       contents:
         - name: cross_section
           include_imports: true
-    - title: q.risk
-      desc: "Downside and tail-risk estimators expressed as loss magnitudes."
-      contents:
-        - name: risk
-          include_imports: true
     - title: q.label
       desc: "Future-aware financial labels, event detection, and overlap-aware sample weights."
       contents:
@@ -311,7 +311,7 @@ quartodoc:
       contents:
         - signal
     - title: q.stats
-      desc: "Reusable return-stream and classification statistics, including performance, rolling diagnostics, and multiclass evaluation curves (no plotting dependency)."
+      desc: "Reusable return-stream, risk, and classification statistics, including performance, tail-loss estimators, rolling diagnostics, and multiclass evaluation curves (no plotting dependency)."
       contents:
         - name: stats
           include_imports: true

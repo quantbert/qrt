@@ -4,6 +4,11 @@ title: q.stats Roadmap
 
 Only open work is listed here. Completed items are removed.
 
+## Risk estimators
+
+- [ ] Filtered historical simulation
+- [ ] Additional parametric loss distributions
+
 ## Return-stream statistics
 
 Stateless analytics for periodic return streams (no plotting dependency),

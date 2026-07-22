@@ -1,5 +1,6 @@
 """Aligned machine-learning datasets and split metadata."""
 
+import warnings
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -257,7 +258,14 @@ class Dataset:
 
         Only load files from trusted sources because joblib uses pickle.
         """
-        payload = joblib.load(path)
+        with warnings.catch_warnings():
+            warnings.filterwarnings(
+                "ignore",
+                message="Setting the shape on a NumPy array has been deprecated",
+                category=DeprecationWarning,
+                module=r"joblib\.numpy_pickle",
+            )
+            payload = joblib.load(path)
         if not isinstance(payload, dict) or "X" not in payload:
             raise TypeError("serialized object is not a Dataset payload")
         schemes = {}

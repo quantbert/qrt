@@ -14,6 +14,8 @@ their Plotly visualizations on the
 
 Pages:
 
+- [Risk estimators](risk.qmd) — historical, Gaussian, and entropic tail-loss
+  measures with a consistent non-negative loss convention.
 - [Performance & benchmark](performance.ipynb) — headline metrics
   (CAGR, Sharpe, Max Drawdown, ...) and benchmark-relative alpha/beta.
 - [Rolling & calendar](rolling.ipynb) — rolling diagnostics and year-by-month

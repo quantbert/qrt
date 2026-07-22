@@ -1,3 +1,5 @@
+import warnings
+
 import pandas as pd
 import pytest
 from sklearn.model_selection import TimeSeriesSplit as SklearnTimeSeriesSplit
@@ -216,7 +218,9 @@ def test_split_diagnostics_audit_and_serialization_round_trip(dataset, tmp_path)
     audit = q.dataset.audit_splits(split_dataset, "purged_walk_forward")
     path = tmp_path / "dataset.joblib"
     split_dataset.save(path)
-    restored = q.dataset.Dataset.load(path)
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", DeprecationWarning)
+        restored = q.dataset.Dataset.load(path)
 
     assert diagnostics["rows"].sum() == len(dataset)
     assert audit["passed"].all()

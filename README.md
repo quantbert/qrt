@@ -55,12 +55,11 @@ q.plot.plot(strategy, benchmark=benchmark)      # interactive equity + drawdown 
 | `q.dataset` | aligned model inputs, targets, weights, metadata, and split schemes |
 | `q.transform` | fitted model-input transformations *(planned)* |
 | `q.signal` | investment intent derived from measurements, factors, models, and rules *(planned)* |
-| `q.stats` | return-stream & trade-level statistics: performance, alpha/beta, Monte Carlo, variance/noise testing |
+| `q.stats` | return-stream, risk, and trade-level statistics: explicit historical/Gaussian tail estimators, performance, alpha/beta, and robustness tests |
 | `q.plot` | interactive Plotly charts and performance reports, for both return streams and trade logs |
 | `q.model` | sklearn-compatible position-array helpers and optional PyTorch utilities |
 | `q.bt` | event-driven backtesting *(planned)* |
 | `q.portfolio` | portfolio construction and analysis *(planned)* |
-| `q.risk` | VaR, CVaR, EVaR, TCE, worst-case dollar risk, and lower partial moments |
 
 ## Warning ⚠️
 
