@@ -474,172 +474,224 @@
     ]
   },
   {
-    "objectID": "indicator/qrt/rsnhbp.html",
-    "href": "indicator/qrt/rsnhbp.html",
-    "title": "Relative-strength new high before price",
+    "objectID": "indicator/qrt/sma.html",
+    "href": "indicator/qrt/sma.html",
+    "title": "Simple moving average (SMA)",
     "section": "",
-    "text": "q.indicator.rsnhbp flags dates when relative strength reaches a new trailing high but the asset price does not. Current observations are compared with highs formed from prior dates only.\nThis example computes AAPL relative strength against SPY and marks 60-session relative-strength breakouts that precede an AAPL price breakout.\nimport pandas as pd\n\nimport qrt as q\n\nprices = pd.concat(\n    {\n        \"AAPL\": q.data.datasets.load(\"aapl\")[\"close\"],\n        \"SPY\": q.data.datasets.load(\"spy\")[\"close\"],\n    },\n    axis=1,\n    join=\"inner\",\n).dropna()\nend = prices.index.max()\nprices = prices.loc[end - pd.DateOffset(years=5) :]\nstrength = q.indicator.relative_strength(prices[\"AAPL\"], prices[\"SPY\"], lookback=63)\nstrength.tail()\n\ndatetime\n2026-07-14    0.117231\n2026-07-15    0.176773\n2026-07-16    0.176675\n2026-07-17    0.206154\n2026-07-20    0.161993\nName: relative_strength, dtype: float64",
+    "text": "q.indicator.sma calculates the arithmetic mean over a trailing window. It accepts one ordered Series, preserves its index, and returns missing values until the window is full.\nThis example compares 50-session averages for AAPL and the SPY benchmark over the latest five shared years in qrt’s bundled data. Both assets are indexed to 100 so their trends and averages are comparable despite different price levels.\nimport pandas as pd\n\nimport qrt as q\n\nprices = pd.concat(\n    {\n        \"AAPL\": q.data.datasets.load(\"aapl\")[\"close\"],\n        \"SPY\": q.data.datasets.load(\"spy\")[\"close\"],\n    },\n    axis=1,\n    join=\"inner\",\n).dropna()\nend = prices.index.max()\nprices = prices.loc[end - pd.DateOffset(years=5) :]\nprices.tail()\n\n\n\n\n\n\n\n\nAAPL\nSPY\n\n\ndatetime\n\n\n\n\n\n\n2026-07-14\n314.859985\n751.830017\n\n\n2026-07-15\n327.500000\n754.809998\n\n\n2026-07-16\n333.260010\n750.719971\n\n\n2026-07-17\n333.739990\n743.289978\n\n\n2026-07-20\n326.589996\n742.090027",
     "crumbs": [
       "Getting Started",
       "q.indicator — Indicators",
       "QRT indicators",
-      "RS new high before price"
+      "Simple moving average (SMA)"
     ]
   },
   {
-    "objectID": "indicator/qrt/rsnhbp.html#calculate-the-indicator",
-    "href": "indicator/qrt/rsnhbp.html#calculate-the-indicator",
-    "title": "Relative-strength new high before price",
+    "objectID": "indicator/qrt/sma.html#calculate-the-indicator",
+    "href": "indicator/qrt/sma.html#calculate-the-indicator",
+    "title": "Simple moving average (SMA)",
     "section": "Calculate the indicator",
-    "text": "Calculate the indicator\nPass the asset price and its already-computed relative-strength series. The boolean output preserves the price index.\n\nwindow = 60\nsignal = q.indicator.rsnhbp(prices[\"AAPL\"], strength, window=window)\nsignal.value_counts()\n\nrs_new_high_before_price\nFalse    1196\nTrue       59\nName: count, dtype: int64",
+    "text": "Calculate the indicator\nCall sma separately for each instrument. The function deliberately does not infer symbol boundaries from a long-form table.\n\nwindow = 50\naverages = prices.apply(lambda series: q.indicator.sma(series, window))\naverages.tail()\n\n\n\n\n\n\n\n\nAAPL\nSPY\n\n\ndatetime\n\n\n\n\n\n\n2026-07-14\n299.549930\n741.394468\n\n\n2026-07-15\n300.502288\n742.114703\n\n\n2026-07-16\n301.635984\n742.805803\n\n\n2026-07-17\n302.632416\n743.233398\n\n\n2026-07-20\n303.419308\n743.436312",
     "crumbs": [
       "Getting Started",
       "q.indicator — Indicators",
       "QRT indicators",
-      "RS new high before price"
+      "Simple moving average (SMA)"
     ]
   },
   {
-    "objectID": "indicator/qrt/rsnhbp.html#compare-with-spy",
-    "href": "indicator/qrt/rsnhbp.html#compare-with-spy",
-    "title": "Relative-strength new high before price",
+    "objectID": "indicator/qrt/sma.html#compare-with-spy",
+    "href": "indicator/qrt/sma.html#compare-with-spy",
+    "title": "Simple moving average (SMA)",
     "section": "Compare with SPY",
-    "text": "Compare with SPY\nAAPL and SPY are indexed to 100 for comparison. Diamond markers identify dates where AAPL’s SPY-relative strength made a new high before AAPL’s own price did.\n\nindexed = prices.div(prices.iloc[0]).mul(100).add_suffix(\" close\")\ncomparison = indexed.assign(**{\"AAPL RS high before price\": indexed[\"AAPL close\"].where(signal)})\nfig = q.plot.col(\n    comparison,\n    title=\"AAPL relative-strength highs before price highs, with SPY\",\n    ylabel=\"Indexed value (start = 100)\",\n)\nfig.data[-1].update(mode=\"markers\", marker={\"size\": 7, \"symbol\": \"diamond\"})\nfig.show(renderer=\"notebook_connected\")",
+    "text": "Compare with SPY\nThe close prices and moving averages use the same initial-price denominator. A value of 120 therefore means 20% above that instrument’s first close in this five-year window.\n\nbase = prices.iloc[0]\ncomparison = pd.concat(\n    [\n        prices.div(base).mul(100).add_suffix(\" close\"),\n        averages.div(base).mul(100).add_suffix(f\" SMA {window}\"),\n    ],\n    axis=1,\n)\nfig = q.plot.col(\n    comparison,\n    title=f\"AAPL and SPY with {window}-session simple moving averages\",\n    ylabel=\"Indexed value (start = 100)\",\n)\nfig.show(renderer=\"notebook_connected\")",
     "crumbs": [
       "Getting Started",
       "q.indicator — Indicators",
       "QRT indicators",
-      "RS new high before price"
+      "Simple moving average (SMA)"
     ]
   },
   {
-    "objectID": "indicator/qrt/rs_phase.html",
-    "href": "indicator/qrt/rs_phase.html",
-    "title": "Relative-strength phase",
+    "objectID": "indicator/qrt/rsma.html",
+    "href": "indicator/qrt/rsma.html",
+    "title": "Relative-strength moving average (RSMA)",
     "section": "",
-    "text": "q.indicator.rs_phase flags dates when relative strength is above a supplied moving average and counts consecutive dates in that state. It returns both rs_phase and rs_phase_days.\nAAPL relative strength is measured against SPY, then compared with its 21-session RSMA over the latest five shared years.\nimport pandas as pd\n\nimport qrt as q\n\nprices = pd.concat(\n    {\n        \"AAPL\": q.data.datasets.load(\"aapl\")[\"close\"],\n        \"SPY\": q.data.datasets.load(\"spy\")[\"close\"],\n    },\n    axis=1,\n    join=\"inner\",\n).dropna()\nend = prices.index.max()\nprices = prices.loc[end - pd.DateOffset(years=5) :]\nstrength = q.indicator.relative_strength(prices[\"AAPL\"], prices[\"SPY\"], lookback=63)\naverage = q.indicator.rsma(strength, window=21)\naverage.tail()\n\ndatetime\n2026-07-14    0.064101\n2026-07-15    0.074344\n2026-07-16    0.083647\n2026-07-17    0.094784\n2026-07-20    0.100894\nName: rsma, dtype: float64",
+    "text": "q.indicator.rsma smooths an existing relative-strength series with either an exponential or simple moving average. It does not calculate relative strength or fetch a benchmark itself.\nHere AAPL relative strength is first measured against SPY, then smoothed with a 21-session exponential average over the latest five shared years.\nimport pandas as pd\n\nimport qrt as q\n\nprices = pd.concat(\n    {\n        \"AAPL\": q.data.datasets.load(\"aapl\")[\"close\"],\n        \"SPY\": q.data.datasets.load(\"spy\")[\"close\"],\n    },\n    axis=1,\n    join=\"inner\",\n).dropna()\nend = prices.index.max()\nprices = prices.loc[end - pd.DateOffset(years=5) :]\nstrength = q.indicator.relative_strength(prices[\"AAPL\"], prices[\"SPY\"], lookback=63)\nstrength.tail()\n\ndatetime\n2026-07-14    0.117231\n2026-07-15    0.176773\n2026-07-16    0.176675\n2026-07-17    0.206154\n2026-07-20    0.161993\nName: relative_strength, dtype: float64",
     "crumbs": [
       "Getting Started",
       "q.indicator — Indicators",
       "QRT indicators",
-      "Relative-strength phase"
+      "Relative-strength moving average"
     ]
   },
   {
-    "objectID": "indicator/qrt/rs_phase.html#calculate-the-indicator",
-    "href": "indicator/qrt/rs_phase.html#calculate-the-indicator",
-    "title": "Relative-strength phase",
+    "objectID": "indicator/qrt/rsma.html#calculate-the-indicator",
+    "href": "indicator/qrt/rsma.html#calculate-the-indicator",
+    "title": "Relative-strength moving average (RSMA)",
     "section": "Calculate the indicator",
-    "text": "Calculate the indicator\nThe moving average is supplied explicitly, so callers can choose its method and window before phase classification.\n\nphase = q.indicator.rs_phase(strength, average)\nphase.tail()\n\n\n\n\n\n\n\n\nrs_phase\nrs_phase_days\n\n\ndatetime\n\n\n\n\n\n\n2026-07-14\nTrue\n8\n\n\n2026-07-15\nTrue\n9\n\n\n2026-07-16\nTrue\n10\n\n\n2026-07-17\nTrue\n11\n\n\n2026-07-20\nTrue\n12",
+    "text": "Calculate the indicator\nUse method=\"exponential\" for an EWM with adjust=False, or method=\"simple\" for a rolling arithmetic mean.\n\nwindow = 21\naverage = q.indicator.rsma(strength, window=window, method=\"exponential\")\naverage.tail()\n\ndatetime\n2026-07-14    0.064101\n2026-07-15    0.074344\n2026-07-16    0.083647\n2026-07-17    0.094784\n2026-07-20    0.100894\nName: rsma, dtype: float64",
     "crumbs": [
       "Getting Started",
       "q.indicator — Indicators",
       "QRT indicators",
-      "Relative-strength phase"
+      "Relative-strength moving average"
     ]
   },
   {
-    "objectID": "indicator/qrt/rs_phase.html#compare-with-spy",
-    "href": "indicator/qrt/rs_phase.html#compare-with-spy",
-    "title": "Relative-strength phase",
+    "objectID": "indicator/qrt/rsma.html#compare-with-spy",
+    "href": "indicator/qrt/rsma.html#compare-with-spy",
+    "title": "Relative-strength moving average (RSMA)",
     "section": "Compare with SPY",
-    "text": "Compare with SPY\nRelative strength and RSMA are measured in percentage points against SPY. The phase-length line resets to zero whenever relative strength is not above its average.\n\ncomparison = pd.DataFrame(\n    {\n        \"AAPL relative strength vs SPY (%)\": strength.mul(100),\n        \"AAPL RSMA (%)\": average.mul(100),\n        \"Phase length (sessions)\": phase[\"rs_phase_days\"],\n    }\n)\nfig = q.plot.col(\n    comparison,\n    title=\"AAPL relative-strength phase versus SPY\",\n    ylabel=\"Percentage points / sessions\",\n)\nfig.show(renderer=\"notebook_connected\")",
+    "text": "Compare with SPY\nBoth lines remain benchmark-relative because the input series measures AAPL returns minus SPY returns.\n\ncomparison = pd.DataFrame(\n    {\n        \"AAPL relative strength vs SPY\": strength.mul(100),\n        f\"{window}-session RSMA\": average.mul(100),\n        \"Equal performance\": 0.0,\n    }\n)\nfig = q.plot.col(\n    comparison,\n    title=\"AAPL relative strength and its moving average versus SPY\",\n    ylabel=\"Return difference (percentage points)\",\n)\nfig.show(renderer=\"notebook_connected\")",
     "crumbs": [
       "Getting Started",
       "q.indicator — Indicators",
       "QRT indicators",
-      "Relative-strength phase"
+      "Relative-strength moving average"
     ]
   },
   {
-    "objectID": "indicator/qrt/relative_strength.html",
-    "href": "indicator/qrt/relative_strength.html",
-    "title": "Relative strength",
+    "objectID": "indicator/qrt/rs_days.html",
+    "href": "indicator/qrt/rs_days.html",
+    "title": "Relative-strength days during corrections",
     "section": "",
-    "text": "q.indicator.relative_strength subtracts a benchmark’s lookback return from an asset’s lookback return. Positive values mean the asset outperformed the benchmark over that window; negative values mean it underperformed.\nThis example measures AAPL against SPY over 63-session lookbacks during the latest five shared years. The function aligns SPY to AAPL’s index without filling missing dates.\nimport pandas as pd\n\nimport qrt as q\n\nprices = pd.concat(\n    {\n        \"AAPL\": q.data.datasets.load(\"aapl\")[\"close\"],\n        \"SPY\": q.data.datasets.load(\"spy\")[\"close\"],\n    },\n    axis=1,\n    join=\"inner\",\n).dropna()\nend = prices.index.max()\nprices = prices.loc[end - pd.DateOffset(years=5) :]\nprices.tail()\n\n\n\n\n\n\n\n\nAAPL\nSPY\n\n\ndatetime\n\n\n\n\n\n\n2026-07-14\n314.859985\n751.830017\n\n\n2026-07-15\n327.500000\n754.809998\n\n\n2026-07-16\n333.260010\n750.719971\n\n\n2026-07-17\n333.739990\n743.289978\n\n\n2026-07-20\n326.589996\n742.090027",
+    "text": "q.indicator.rs_days counts recent periods where relative strength is positive while the benchmark is in a correction. A correction is defined as the benchmark falling below a configurable fraction of its rolling high.\nThis example counts AAPL’s positive relative-strength days while SPY is at least 5% below its 60-session high.\nimport pandas as pd\n\nimport qrt as q\n\nprices = pd.concat(\n    {\n        \"AAPL\": q.data.datasets.load(\"aapl\")[\"close\"],\n        \"SPY\": q.data.datasets.load(\"spy\")[\"close\"],\n    },\n    axis=1,\n    join=\"inner\",\n).dropna()\nend = prices.index.max()\nprices = prices.loc[end - pd.DateOffset(years=5) :]\nstrength = q.indicator.relative_strength(prices[\"AAPL\"], prices[\"SPY\"], lookback=21)\nstrength.tail()\n\ndatetime\n2026-07-14    0.043351\n2026-07-15    0.104698\n2026-07-16    0.127166\n2026-07-17    0.122123\n2026-07-20    0.099426\nName: relative_strength, dtype: float64",
     "crumbs": [
       "Getting Started",
       "q.indicator — Indicators",
       "QRT indicators",
-      "Relative strength"
+      "Relative-strength days"
     ]
   },
   {
-    "objectID": "indicator/qrt/relative_strength.html#calculate-the-indicator",
-    "href": "indicator/qrt/relative_strength.html#calculate-the-indicator",
-    "title": "Relative strength",
+    "objectID": "indicator/qrt/rs_days.html#calculate-the-indicator",
+    "href": "indicator/qrt/rs_days.html#calculate-the-indicator",
+    "title": "Relative-strength days during corrections",
     "section": "Calculate the indicator",
-    "text": "Calculate the indicator\nPass the asset and benchmark explicitly. lookback=63 is approximately one trading quarter for daily observations.\n\nlookback = 63\nstrength = q.indicator.relative_strength(\n    prices[\"AAPL\"],\n    prices[\"SPY\"],\n    lookback=lookback,\n)\nstrength.tail()\n\ndatetime\n2026-07-14    0.117231\n2026-07-15    0.176773\n2026-07-16    0.176675\n2026-07-17    0.206154\n2026-07-20    0.161993\nName: relative_strength, dtype: float64",
+    "text": "Calculate the indicator\nThe relative-strength series and SPY prices are explicit inputs. correction_threshold=0.95 means 5% below the rolling high.\n\nwindow = 60\nthreshold = 0.95\ndays = q.indicator.rs_days(\n    strength,\n    prices[\"SPY\"],\n    window=window,\n    correction_threshold=threshold,\n)\ndays.tail()\n\ndatetime\n2026-07-14    0.0\n2026-07-15    0.0\n2026-07-16    0.0\n2026-07-17    0.0\n2026-07-20    0.0\nName: rs_days, dtype: float64",
     "crumbs": [
       "Getting Started",
       "q.indicator — Indicators",
       "QRT indicators",
-      "Relative strength"
+      "Relative-strength days"
     ]
   },
   {
-    "objectID": "indicator/qrt/relative_strength.html#compare-with-spy",
-    "href": "indicator/qrt/relative_strength.html#compare-with-spy",
-    "title": "Relative strength",
+    "objectID": "indicator/qrt/rs_days.html#compare-with-spy",
+    "href": "indicator/qrt/rs_days.html#compare-with-spy",
+    "title": "Relative-strength days during corrections",
     "section": "Compare with SPY",
-    "text": "Compare with SPY\nSPY is already part of the indicator calculation. The zero line separates AAPL outperformance from underperformance.\n\ncomparison = pd.DataFrame(\n    {\n        \"AAPL relative strength vs SPY\": strength.mul(100),\n        \"Equal performance\": 0.0,\n    }\n)\nfig = q.plot.col(\n    comparison,\n    title=f\"AAPL relative strength versus SPY ({lookback} sessions)\",\n    ylabel=\"Return difference (percentage points)\",\n)\nfig.show(renderer=\"notebook_connected\")",
+    "text": "Compare with SPY\nSPY drawdown shows when the correction condition can be active. The count rises only when AAPL is outperforming during those correction dates.\n\nspy_drawdown = prices[\"SPY\"].div(prices[\"SPY\"].rolling(window).max()).sub(1).mul(100)\ncomparison = pd.DataFrame(\n    {\n        \"AAPL positive RS days\": days,\n        \"SPY drawdown (%)\": spy_drawdown,\n        \"Correction threshold (%)\": (threshold - 1) * 100,\n    }\n)\nfig = q.plot.col(\n    comparison,\n    title=\"AAPL relative-strength days during SPY corrections\",\n    ylabel=\"Sessions / percent\",\n)\nfig.show(renderer=\"notebook_connected\")",
     "crumbs": [
       "Getting Started",
       "q.indicator — Indicators",
       "QRT indicators",
-      "Relative strength"
+      "Relative-strength days"
     ]
   },
   {
-    "objectID": "indicator/qrt/realized_variance.html",
-    "href": "indicator/qrt/realized_variance.html",
-    "title": "Realized variance",
+    "objectID": "indicator/qrt/returns.html",
+    "href": "indicator/qrt/returns.html",
+    "title": "qrt",
     "section": "",
-    "text": "q.indicator.realized_variance sums squared returns in one finite return window. The function returns a scalar; callers choose the sampling frequency and rolling or session boundary.\nHere it is applied to trailing 21-session daily log-return windows for AAPL and SPY over five years. For production intraday realized variance, pass intraday returns grouped by the required market session.\nimport pandas as pd\n\nimport qrt as q\n\nprices = pd.concat(\n    {\n        \"AAPL\": q.data.datasets.load(\"aapl\")[\"close\"],\n        \"SPY\": q.data.datasets.load(\"spy\")[\"close\"],\n    },\n    axis=1,\n    join=\"inner\",\n).dropna()\nend = prices.index.max()\nprices = prices.loc[end - pd.DateOffset(years=5) :]\nreturns = pd.DataFrame({symbol: pd.Series(q.indicator.log_returns(prices[symbol]), index=prices.index[1:]) for symbol in prices})\nreturns.tail()\n\n\n\n\n\n\n\n\nAAPL\nSPY\n\n\ndatetime\n\n\n\n\n\n\n2026-07-14\n-0.007751\n0.003544\n\n\n2026-07-15\n0.039360\n0.003956\n\n\n2026-07-16\n0.017435\n-0.005433\n\n\n2026-07-17\n0.001439\n-0.009946\n\n\n2026-07-20\n-0.021657\n-0.001616",
+    "text": "Back to top",
     "crumbs": [
       "Getting Started",
       "q.indicator — Indicators",
       "QRT indicators",
-      "Realized variance"
+      "Simple returns"
     ]
   },
   {
-    "objectID": "indicator/qrt/realized_variance.html#calculate-the-indicator",
-    "href": "indicator/qrt/realized_variance.html#calculate-the-indicator",
-    "title": "Realized variance",
+    "objectID": "indicator/qrt/realized_volatility.html",
+    "href": "indicator/qrt/realized_volatility.html",
+    "title": "Realized volatility measures by session",
+    "section": "",
+    "text": "q.indicator.realized_volatility groups ordered sampled prices by an explicit session label and returns realized variance, quarticity, bipower variation, MedRV, and MinRV for each session. It accepts one instrument per call.\nQrt’s offline sample data is daily, so this example uses calendar months as aggregation sessions and daily closes as samples. For production exchange-session estimates, pass intraday sampled prices and actual exchange session labels.\nimport pandas as pd\n\nimport qrt as q\n\nprices = pd.concat(\n    {\n        \"AAPL\": q.data.datasets.load(\"aapl\")[\"close\"],\n        \"SPY\": q.data.datasets.load(\"spy\")[\"close\"],\n    },\n    axis=1,\n    join=\"inner\",\n).dropna()\nend = prices.index.max()\nprices = prices.loc[end - pd.DateOffset(years=5) :]\nprices.tail()\n\n\n\n\n\n\n\n\nAAPL\nSPY\n\n\ndatetime\n\n\n\n\n\n\n2026-07-14\n314.859985\n751.830017\n\n\n2026-07-15\n327.500000\n754.809998\n\n\n2026-07-16\n333.260010\n750.719971\n\n\n2026-07-17\n333.739990\n743.289978\n\n\n2026-07-20\n326.589996\n742.090027",
+    "crumbs": [
+      "Getting Started",
+      "q.indicator — Indicators",
+      "QRT indicators",
+      "Realized volatility by session"
+    ]
+  },
+  {
+    "objectID": "indicator/qrt/realized_volatility.html#calculate-the-indicator",
+    "href": "indicator/qrt/realized_volatility.html#calculate-the-indicator",
+    "title": "Realized volatility measures by session",
     "section": "Calculate the indicator",
-    "text": "Calculate the indicator\nA single call reduces one return window to one realized-variance value.\n\nsample = returns[\"AAPL\"].iloc[-21:]\nq.indicator.realized_variance(sample)\n\n0.011193334284305313",
+    "text": "Calculate the indicator\nThe input names its observation time, positive sampled price, and session explicitly. Each session needs at least four prices.\n\ndef monthly_observations(series: pd.Series) -&gt; pd.DataFrame:\n    return pd.DataFrame(\n        {\n            \"time\": series.index,\n            \"price\": series.to_numpy(),\n            \"session\": series.index.to_period(\"M\").to_timestamp(),\n        }\n    )\n\nmeasures = {\n    symbol: q.indicator.realized_volatility(monthly_observations(prices[symbol]))\n    for symbol in prices\n}\nmeasures[\"AAPL\"].tail()\n\n\n\n\n\n\n\n\nrealized_variance\nrealized_quarticity\nbipower_variation\nmed_rv\nmin_rv\n\n\nsession\n\n\n\n\n\n\n\n\n\n2026-03-01\n0.003049\n0.000009\n0.002772\n0.002734\n0.002805\n\n\n2026-04-01\n0.004531\n0.000017\n0.004979\n0.006940\n0.005671\n\n\n2026-05-01\n0.002200\n0.000005\n0.002029\n0.001866\n0.001786\n\n\n2026-06-01\n0.009816\n0.000135\n0.008642\n0.008157\n0.007483\n\n\n2026-07-01\n0.005034\n0.000031\n0.003378\n0.002468\n0.002255",
     "crumbs": [
       "Getting Started",
       "q.indicator — Indicators",
       "QRT indicators",
-      "Realized variance"
+      "Realized volatility by session"
     ]
   },
   {
-    "objectID": "indicator/qrt/realized_variance.html#compare-with-spy",
-    "href": "indicator/qrt/realized_variance.html#compare-with-spy",
-    "title": "Realized variance",
+    "objectID": "indicator/qrt/realized_volatility.html#compare-with-spy",
+    "href": "indicator/qrt/realized_volatility.html#compare-with-spy",
+    "title": "Realized volatility measures by session",
     "section": "Compare with SPY",
-    "text": "Compare with SPY\nApplying the scalar estimator to each trailing window creates a time series. Values are multiplied by 10,000 to express squared decimal returns on a percentage scale.\n\nwindow = 21\ncomparison = pd.DataFrame(\n    {\n        symbol: returns[symbol].rolling(window).apply(q.indicator.realized_variance, raw=True)\n        for symbol in returns\n    }\n).mul(10_000)\ncomparison.columns = [f\"{symbol} realized variance\" for symbol in comparison]\nfig = q.plot.col(\n    comparison,\n    title=f\"AAPL and SPY trailing {window}-session realized variance\",\n    ylabel=\"Realized variance (×10,000)\",\n)\nfig.show(renderer=\"notebook_connected\")",
+    "text": "Compare with SPY\nThe function returns all five measures. The chart selects realized variance for a direct AAPL/SPY comparison; inspect either returned frame to use the other columns.\n\ncomparison = pd.DataFrame(\n    {\n        f\"{symbol} realized variance\": frame[\"realized_variance\"]\n        for symbol, frame in measures.items()\n    }\n).mul(10_000)\nfig = q.plot.col(\n    comparison,\n    title=\"AAPL and SPY monthly realized variance from daily samples\",\n    ylabel=\"Realized variance (×10,000)\",\n)\nfig.show(renderer=\"notebook_connected\")",
     "crumbs": [
       "Getting Started",
       "q.indicator — Indicators",
       "QRT indicators",
-      "Realized variance"
+      "Realized volatility by session"
     ]
   },
   {
-    "objectID": "indicator/qrt/price_spikes.html",
-    "href": "indicator/qrt/price_spikes.html",
-    "title": "Price spikes",
+    "objectID": "indicator/qrt/realized_quarticity.html",
+    "href": "indicator/qrt/realized_quarticity.html",
+    "title": "Realized quarticity",
     "section": "",
-    "text": "q.indicator.price_spikes flags an absolute close-to-close move above a multiple of simple rolling average true range, then classifies its volume confirmation.\nprice_spike_event uses 0 for no spike, 1 for a spike with high relative volume, and 2 for a spike without high relative volume. The explicit high, low, close, and volume inputs must describe one instrument and have identical indexes.\n\nimport pandas as pd\n\nimport qrt as q\n\ndata = q.data.datasets.load(\"aapl\")\nend = data.index.max()\ndata = data.loc[end - pd.DateOffset(years=5) :].copy()\nresult = q.indicator.price_spikes(\n    data[\"high\"], data[\"low\"], data[\"close\"], data[\"volume\"]\n)\nevents = data[[\"close\", \"volume\"]].join(result)\nevents.loc[events[\"price_spike_event\"].ne(0)].tail(10)\n\n\n\n\n\n\n\n\nclose\nvolume\nprice_spike_event\nrelative_volume\n\n\ndatetime\n\n\n\n\n\n\n\n\n2025-08-06\n212.407333\n108483100\n1\n1.993069\n\n\n2025-08-08\n228.443726\n113854000\n1\n1.884262\n\n\n2025-09-10\n226.150192\n83440800\n1\n1.709741\n\n\n2025-09-22\n255.357559\n105517400\n1\n1.791227\n\n\n2025-10-10\n244.578064\n61999100\n2\n1.125452\n\n\n2025-10-20\n261.500153\n90483000\n1\n1.961588\n\n\n2026-01-20\n246.242508\n80267500\n1\n1.743424\n\n\n2026-02-02\n269.509277\n73913400\n2\n1.373737\n\n\n2026-02-12\n261.489105\n81077200\n2\n1.375667\n\n\n2026-06-25\n275.149994\n107013700\n1\n1.900583\n\n\n\n\n\n\n\n\nimport plotly.graph_objects as go\n\nfigure = go.Figure()\nfigure.add_trace(go.Scatter(x=events.index, y=events[\"close\"], name=\"AAPL close\", line={\"color\": \"#2457a7\"}))\nfor code, name, color in [(1, \"High-volume spike\", \"#16856b\"), (2, \"Low-volume spike\", \"#d04a35\")]:\n    selected = events.loc[events[\"price_spike_event\"].eq(code)]\n    figure.add_trace(\n        go.Scatter(\n            x=selected.index,\n            y=selected[\"close\"],\n            name=name,\n            mode=\"markers\",\n            marker={\"color\": color, \"size\": 8},\n        )\n    )\nfigure.update_layout(title=\"AAPL close-to-close spikes\", yaxis_title=\"Close\", hovermode=\"x unified\")\nfigure.show(renderer=\"notebook_connected\")\n\n                            \n                                            \n\n\n\n\n\n Back to top",
+    "text": "q.indicator.realized_quarticity estimates integrated quarticity from one finite return window using \\(\\frac{n}{3}\\sum r_i^4\\). Its fourth-power sensitivity makes large returns especially influential.\nThis notebook applies the scalar estimator to trailing 21-session daily log-return windows for AAPL and SPY over five years.\nimport pandas as pd\n\nimport qrt as q\n\nprices = pd.concat(\n    {\n        \"AAPL\": q.data.datasets.load(\"aapl\")[\"close\"],\n        \"SPY\": q.data.datasets.load(\"spy\")[\"close\"],\n    },\n    axis=1,\n    join=\"inner\",\n).dropna()\nend = prices.index.max()\nprices = prices.loc[end - pd.DateOffset(years=5) :]\nreturns = pd.DataFrame({symbol: pd.Series(q.indicator.log_returns(prices[symbol]), index=prices.index[1:]) for symbol in prices})\nreturns.tail()\n\n\n\n\n\n\n\n\nAAPL\nSPY\n\n\ndatetime\n\n\n\n\n\n\n2026-07-14\n-0.007751\n0.003544\n\n\n2026-07-15\n0.039360\n0.003956\n\n\n2026-07-16\n0.017435\n-0.005433\n\n\n2026-07-17\n0.001439\n-0.009946\n\n\n2026-07-20\n-0.021657\n-0.001616",
     "crumbs": [
       "Getting Started",
       "q.indicator — Indicators",
       "QRT indicators",
-      "Price spikes"
+      "Realized quarticity"
+    ]
+  },
+  {
+    "objectID": "indicator/qrt/realized_quarticity.html#calculate-the-indicator",
+    "href": "indicator/qrt/realized_quarticity.html#calculate-the-indicator",
+    "title": "Realized quarticity",
+    "section": "Calculate the indicator",
+    "text": "Calculate the indicator\nA single call reduces one return window to one realized-quarticity value.\n\nsample = returns[\"AAPL\"].iloc[-21:]\nq.indicator.realized_quarticity(sample)\n\n0.00017607127563396842",
+    "crumbs": [
+      "Getting Started",
+      "q.indicator — Indicators",
+      "QRT indicators",
+      "Realized quarticity"
+    ]
+  },
+  {
+    "objectID": "indicator/qrt/realized_quarticity.html#compare-with-spy",
+    "href": "indicator/qrt/realized_quarticity.html#compare-with-spy",
+    "title": "Realized quarticity",
+    "section": "Compare with SPY",
+    "text": "Compare with SPY\nApplying the estimator to each trailing window creates a dated comparison. The \\(10^8\\) multiplier keeps the small fourth-power values readable without changing their relative shape.\n\nwindow = 21\ncomparison = pd.DataFrame(\n    {\n        symbol: returns[symbol].rolling(window).apply(q.indicator.realized_quarticity, raw=True)\n        for symbol in returns\n    }\n).mul(100_000_000)\ncomparison.columns = [f\"{symbol} realized quarticity\" for symbol in comparison]\nfig = q.plot.col(\n    comparison,\n    title=f\"AAPL and SPY trailing {window}-session realized quarticity\",\n    ylabel=\"Realized quarticity (×100,000,000)\",\n)\nfig.show(renderer=\"notebook_connected\")",
+    "crumbs": [
+      "Getting Started",
+      "q.indicator — Indicators",
+      "QRT indicators",
+      "Realized quarticity"
+    ]
+  },
+  {
+    "objectID": "indicator/qrt/momentum.html",
+    "href": "indicator/qrt/momentum.html",
+    "title": "qrt",
+    "section": "",
+    "text": "Back to top",
+    "crumbs": [
+      "Getting Started",
+      "q.indicator — Indicators",
+      "QRT indicators",
+      "Price momentum"
     ]
   },
   {
@@ -2887,198 +2939,198 @@
     ]
   },
   {
-    "objectID": "indicator/qrt/realized_quarticity.html",
-    "href": "indicator/qrt/realized_quarticity.html",
-    "title": "Realized quarticity",
+    "objectID": "indicator/qrt/price_spikes.html",
+    "href": "indicator/qrt/price_spikes.html",
+    "title": "Price spikes",
     "section": "",
-    "text": "q.indicator.realized_quarticity estimates integrated quarticity from one finite return window using \\(\\frac{n}{3}\\sum r_i^4\\). Its fourth-power sensitivity makes large returns especially influential.\nThis notebook applies the scalar estimator to trailing 21-session daily log-return windows for AAPL and SPY over five years.\nimport pandas as pd\n\nimport qrt as q\n\nprices = pd.concat(\n    {\n        \"AAPL\": q.data.datasets.load(\"aapl\")[\"close\"],\n        \"SPY\": q.data.datasets.load(\"spy\")[\"close\"],\n    },\n    axis=1,\n    join=\"inner\",\n).dropna()\nend = prices.index.max()\nprices = prices.loc[end - pd.DateOffset(years=5) :]\nreturns = pd.DataFrame({symbol: pd.Series(q.indicator.log_returns(prices[symbol]), index=prices.index[1:]) for symbol in prices})\nreturns.tail()\n\n\n\n\n\n\n\n\nAAPL\nSPY\n\n\ndatetime\n\n\n\n\n\n\n2026-07-14\n-0.007751\n0.003544\n\n\n2026-07-15\n0.039360\n0.003956\n\n\n2026-07-16\n0.017435\n-0.005433\n\n\n2026-07-17\n0.001439\n-0.009946\n\n\n2026-07-20\n-0.021657\n-0.001616",
+    "text": "q.indicator.price_spikes flags an absolute close-to-close move above a multiple of simple rolling average true range, then classifies its volume confirmation.\nprice_spike_event uses 0 for no spike, 1 for a spike with high relative volume, and 2 for a spike without high relative volume. The explicit high, low, close, and volume inputs must describe one instrument and have identical indexes.\n\nimport pandas as pd\n\nimport qrt as q\n\ndata = q.data.datasets.load(\"aapl\")\nend = data.index.max()\ndata = data.loc[end - pd.DateOffset(years=5) :].copy()\nresult = q.indicator.price_spikes(\n    data[\"high\"], data[\"low\"], data[\"close\"], data[\"volume\"]\n)\nevents = data[[\"close\", \"volume\"]].join(result)\nevents.loc[events[\"price_spike_event\"].ne(0)].tail(10)\n\n\n\n\n\n\n\n\nclose\nvolume\nprice_spike_event\nrelative_volume\n\n\ndatetime\n\n\n\n\n\n\n\n\n2025-08-06\n212.407333\n108483100\n1\n1.993069\n\n\n2025-08-08\n228.443726\n113854000\n1\n1.884262\n\n\n2025-09-10\n226.150192\n83440800\n1\n1.709741\n\n\n2025-09-22\n255.357559\n105517400\n1\n1.791227\n\n\n2025-10-10\n244.578064\n61999100\n2\n1.125452\n\n\n2025-10-20\n261.500153\n90483000\n1\n1.961588\n\n\n2026-01-20\n246.242508\n80267500\n1\n1.743424\n\n\n2026-02-02\n269.509277\n73913400\n2\n1.373737\n\n\n2026-02-12\n261.489105\n81077200\n2\n1.375667\n\n\n2026-06-25\n275.149994\n107013700\n1\n1.900583\n\n\n\n\n\n\n\n\nimport plotly.graph_objects as go\n\nfigure = go.Figure()\nfigure.add_trace(go.Scatter(x=events.index, y=events[\"close\"], name=\"AAPL close\", line={\"color\": \"#2457a7\"}))\nfor code, name, color in [(1, \"High-volume spike\", \"#16856b\"), (2, \"Low-volume spike\", \"#d04a35\")]:\n    selected = events.loc[events[\"price_spike_event\"].eq(code)]\n    figure.add_trace(\n        go.Scatter(\n            x=selected.index,\n            y=selected[\"close\"],\n            name=name,\n            mode=\"markers\",\n            marker={\"color\": color, \"size\": 8},\n        )\n    )\nfigure.update_layout(title=\"AAPL close-to-close spikes\", yaxis_title=\"Close\", hovermode=\"x unified\")\nfigure.show(renderer=\"notebook_connected\")\n\n                            \n                                            \n\n\n\n\n\n Back to top",
     "crumbs": [
       "Getting Started",
       "q.indicator — Indicators",
       "QRT indicators",
-      "Realized quarticity"
+      "Price spikes"
     ]
   },
   {
-    "objectID": "indicator/qrt/realized_quarticity.html#calculate-the-indicator",
-    "href": "indicator/qrt/realized_quarticity.html#calculate-the-indicator",
-    "title": "Realized quarticity",
-    "section": "Calculate the indicator",
-    "text": "Calculate the indicator\nA single call reduces one return window to one realized-quarticity value.\n\nsample = returns[\"AAPL\"].iloc[-21:]\nq.indicator.realized_quarticity(sample)\n\n0.00017607127563396842",
-    "crumbs": [
-      "Getting Started",
-      "q.indicator — Indicators",
-      "QRT indicators",
-      "Realized quarticity"
-    ]
-  },
-  {
-    "objectID": "indicator/qrt/realized_quarticity.html#compare-with-spy",
-    "href": "indicator/qrt/realized_quarticity.html#compare-with-spy",
-    "title": "Realized quarticity",
-    "section": "Compare with SPY",
-    "text": "Compare with SPY\nApplying the estimator to each trailing window creates a dated comparison. The \\(10^8\\) multiplier keeps the small fourth-power values readable without changing their relative shape.\n\nwindow = 21\ncomparison = pd.DataFrame(\n    {\n        symbol: returns[symbol].rolling(window).apply(q.indicator.realized_quarticity, raw=True)\n        for symbol in returns\n    }\n).mul(100_000_000)\ncomparison.columns = [f\"{symbol} realized quarticity\" for symbol in comparison]\nfig = q.plot.col(\n    comparison,\n    title=f\"AAPL and SPY trailing {window}-session realized quarticity\",\n    ylabel=\"Realized quarticity (×100,000,000)\",\n)\nfig.show(renderer=\"notebook_connected\")",
-    "crumbs": [
-      "Getting Started",
-      "q.indicator — Indicators",
-      "QRT indicators",
-      "Realized quarticity"
-    ]
-  },
-  {
-    "objectID": "indicator/qrt/realized_volatility.html",
-    "href": "indicator/qrt/realized_volatility.html",
-    "title": "Realized volatility measures by session",
+    "objectID": "indicator/qrt/realized_variance.html",
+    "href": "indicator/qrt/realized_variance.html",
+    "title": "Realized variance",
     "section": "",
-    "text": "q.indicator.realized_volatility groups ordered sampled prices by an explicit session label and returns realized variance, quarticity, bipower variation, MedRV, and MinRV for each session. It accepts one instrument per call.\nQrt’s offline sample data is daily, so this example uses calendar months as aggregation sessions and daily closes as samples. For production exchange-session estimates, pass intraday sampled prices and actual exchange session labels.\nimport pandas as pd\n\nimport qrt as q\n\nprices = pd.concat(\n    {\n        \"AAPL\": q.data.datasets.load(\"aapl\")[\"close\"],\n        \"SPY\": q.data.datasets.load(\"spy\")[\"close\"],\n    },\n    axis=1,\n    join=\"inner\",\n).dropna()\nend = prices.index.max()\nprices = prices.loc[end - pd.DateOffset(years=5) :]\nprices.tail()\n\n\n\n\n\n\n\n\nAAPL\nSPY\n\n\ndatetime\n\n\n\n\n\n\n2026-07-14\n314.859985\n751.830017\n\n\n2026-07-15\n327.500000\n754.809998\n\n\n2026-07-16\n333.260010\n750.719971\n\n\n2026-07-17\n333.739990\n743.289978\n\n\n2026-07-20\n326.589996\n742.090027",
+    "text": "q.indicator.realized_variance sums squared returns in one finite return window. The function returns a scalar; callers choose the sampling frequency and rolling or session boundary.\nHere it is applied to trailing 21-session daily log-return windows for AAPL and SPY over five years. For production intraday realized variance, pass intraday returns grouped by the required market session.\nimport pandas as pd\n\nimport qrt as q\n\nprices = pd.concat(\n    {\n        \"AAPL\": q.data.datasets.load(\"aapl\")[\"close\"],\n        \"SPY\": q.data.datasets.load(\"spy\")[\"close\"],\n    },\n    axis=1,\n    join=\"inner\",\n).dropna()\nend = prices.index.max()\nprices = prices.loc[end - pd.DateOffset(years=5) :]\nreturns = pd.DataFrame({symbol: pd.Series(q.indicator.log_returns(prices[symbol]), index=prices.index[1:]) for symbol in prices})\nreturns.tail()\n\n\n\n\n\n\n\n\nAAPL\nSPY\n\n\ndatetime\n\n\n\n\n\n\n2026-07-14\n-0.007751\n0.003544\n\n\n2026-07-15\n0.039360\n0.003956\n\n\n2026-07-16\n0.017435\n-0.005433\n\n\n2026-07-17\n0.001439\n-0.009946\n\n\n2026-07-20\n-0.021657\n-0.001616",
     "crumbs": [
       "Getting Started",
       "q.indicator — Indicators",
       "QRT indicators",
-      "Realized volatility by session"
+      "Realized variance"
     ]
   },
   {
-    "objectID": "indicator/qrt/realized_volatility.html#calculate-the-indicator",
-    "href": "indicator/qrt/realized_volatility.html#calculate-the-indicator",
-    "title": "Realized volatility measures by session",
+    "objectID": "indicator/qrt/realized_variance.html#calculate-the-indicator",
+    "href": "indicator/qrt/realized_variance.html#calculate-the-indicator",
+    "title": "Realized variance",
     "section": "Calculate the indicator",
-    "text": "Calculate the indicator\nThe input names its observation time, positive sampled price, and session explicitly. Each session needs at least four prices.\n\ndef monthly_observations(series: pd.Series) -&gt; pd.DataFrame:\n    return pd.DataFrame(\n        {\n            \"time\": series.index,\n            \"price\": series.to_numpy(),\n            \"session\": series.index.to_period(\"M\").to_timestamp(),\n        }\n    )\n\nmeasures = {\n    symbol: q.indicator.realized_volatility(monthly_observations(prices[symbol]))\n    for symbol in prices\n}\nmeasures[\"AAPL\"].tail()\n\n\n\n\n\n\n\n\nrealized_variance\nrealized_quarticity\nbipower_variation\nmed_rv\nmin_rv\n\n\nsession\n\n\n\n\n\n\n\n\n\n2026-03-01\n0.003049\n0.000009\n0.002772\n0.002734\n0.002805\n\n\n2026-04-01\n0.004531\n0.000017\n0.004979\n0.006940\n0.005671\n\n\n2026-05-01\n0.002200\n0.000005\n0.002029\n0.001866\n0.001786\n\n\n2026-06-01\n0.009816\n0.000135\n0.008642\n0.008157\n0.007483\n\n\n2026-07-01\n0.005034\n0.000031\n0.003378\n0.002468\n0.002255",
+    "text": "Calculate the indicator\nA single call reduces one return window to one realized-variance value.\n\nsample = returns[\"AAPL\"].iloc[-21:]\nq.indicator.realized_variance(sample)\n\n0.011193334284305313",
     "crumbs": [
       "Getting Started",
       "q.indicator — Indicators",
       "QRT indicators",
-      "Realized volatility by session"
+      "Realized variance"
     ]
   },
   {
-    "objectID": "indicator/qrt/realized_volatility.html#compare-with-spy",
-    "href": "indicator/qrt/realized_volatility.html#compare-with-spy",
-    "title": "Realized volatility measures by session",
+    "objectID": "indicator/qrt/realized_variance.html#compare-with-spy",
+    "href": "indicator/qrt/realized_variance.html#compare-with-spy",
+    "title": "Realized variance",
     "section": "Compare with SPY",
-    "text": "Compare with SPY\nThe function returns all five measures. The chart selects realized variance for a direct AAPL/SPY comparison; inspect either returned frame to use the other columns.\n\ncomparison = pd.DataFrame(\n    {\n        f\"{symbol} realized variance\": frame[\"realized_variance\"]\n        for symbol, frame in measures.items()\n    }\n).mul(10_000)\nfig = q.plot.col(\n    comparison,\n    title=\"AAPL and SPY monthly realized variance from daily samples\",\n    ylabel=\"Realized variance (×10,000)\",\n)\nfig.show(renderer=\"notebook_connected\")",
+    "text": "Compare with SPY\nApplying the scalar estimator to each trailing window creates a time series. Values are multiplied by 10,000 to express squared decimal returns on a percentage scale.\n\nwindow = 21\ncomparison = pd.DataFrame(\n    {\n        symbol: returns[symbol].rolling(window).apply(q.indicator.realized_variance, raw=True)\n        for symbol in returns\n    }\n).mul(10_000)\ncomparison.columns = [f\"{symbol} realized variance\" for symbol in comparison]\nfig = q.plot.col(\n    comparison,\n    title=f\"AAPL and SPY trailing {window}-session realized variance\",\n    ylabel=\"Realized variance (×10,000)\",\n)\nfig.show(renderer=\"notebook_connected\")",
     "crumbs": [
       "Getting Started",
       "q.indicator — Indicators",
       "QRT indicators",
-      "Realized volatility by session"
+      "Realized variance"
     ]
   },
   {
-    "objectID": "indicator/qrt/rs_days.html",
-    "href": "indicator/qrt/rs_days.html",
-    "title": "Relative-strength days during corrections",
+    "objectID": "indicator/qrt/relative_strength.html",
+    "href": "indicator/qrt/relative_strength.html",
+    "title": "Relative strength",
     "section": "",
-    "text": "q.indicator.rs_days counts recent periods where relative strength is positive while the benchmark is in a correction. A correction is defined as the benchmark falling below a configurable fraction of its rolling high.\nThis example counts AAPL’s positive relative-strength days while SPY is at least 5% below its 60-session high.\nimport pandas as pd\n\nimport qrt as q\n\nprices = pd.concat(\n    {\n        \"AAPL\": q.data.datasets.load(\"aapl\")[\"close\"],\n        \"SPY\": q.data.datasets.load(\"spy\")[\"close\"],\n    },\n    axis=1,\n    join=\"inner\",\n).dropna()\nend = prices.index.max()\nprices = prices.loc[end - pd.DateOffset(years=5) :]\nstrength = q.indicator.relative_strength(prices[\"AAPL\"], prices[\"SPY\"], lookback=21)\nstrength.tail()\n\ndatetime\n2026-07-14    0.043351\n2026-07-15    0.104698\n2026-07-16    0.127166\n2026-07-17    0.122123\n2026-07-20    0.099426\nName: relative_strength, dtype: float64",
+    "text": "q.indicator.relative_strength subtracts a benchmark’s lookback return from an asset’s lookback return. Positive values mean the asset outperformed the benchmark over that window; negative values mean it underperformed.\nThis example measures AAPL against SPY over 63-session lookbacks during the latest five shared years. The function aligns SPY to AAPL’s index without filling missing dates.\nimport pandas as pd\n\nimport qrt as q\n\nprices = pd.concat(\n    {\n        \"AAPL\": q.data.datasets.load(\"aapl\")[\"close\"],\n        \"SPY\": q.data.datasets.load(\"spy\")[\"close\"],\n    },\n    axis=1,\n    join=\"inner\",\n).dropna()\nend = prices.index.max()\nprices = prices.loc[end - pd.DateOffset(years=5) :]\nprices.tail()\n\n\n\n\n\n\n\n\nAAPL\nSPY\n\n\ndatetime\n\n\n\n\n\n\n2026-07-14\n314.859985\n751.830017\n\n\n2026-07-15\n327.500000\n754.809998\n\n\n2026-07-16\n333.260010\n750.719971\n\n\n2026-07-17\n333.739990\n743.289978\n\n\n2026-07-20\n326.589996\n742.090027",
     "crumbs": [
       "Getting Started",
       "q.indicator — Indicators",
       "QRT indicators",
-      "Relative-strength days"
+      "Relative strength"
     ]
   },
   {
-    "objectID": "indicator/qrt/rs_days.html#calculate-the-indicator",
-    "href": "indicator/qrt/rs_days.html#calculate-the-indicator",
-    "title": "Relative-strength days during corrections",
+    "objectID": "indicator/qrt/relative_strength.html#calculate-the-indicator",
+    "href": "indicator/qrt/relative_strength.html#calculate-the-indicator",
+    "title": "Relative strength",
     "section": "Calculate the indicator",
-    "text": "Calculate the indicator\nThe relative-strength series and SPY prices are explicit inputs. correction_threshold=0.95 means 5% below the rolling high.\n\nwindow = 60\nthreshold = 0.95\ndays = q.indicator.rs_days(\n    strength,\n    prices[\"SPY\"],\n    window=window,\n    correction_threshold=threshold,\n)\ndays.tail()\n\ndatetime\n2026-07-14    0.0\n2026-07-15    0.0\n2026-07-16    0.0\n2026-07-17    0.0\n2026-07-20    0.0\nName: rs_days, dtype: float64",
+    "text": "Calculate the indicator\nPass the asset and benchmark explicitly. lookback=63 is approximately one trading quarter for daily observations.\n\nlookback = 63\nstrength = q.indicator.relative_strength(\n    prices[\"AAPL\"],\n    prices[\"SPY\"],\n    lookback=lookback,\n)\nstrength.tail()\n\ndatetime\n2026-07-14    0.117231\n2026-07-15    0.176773\n2026-07-16    0.176675\n2026-07-17    0.206154\n2026-07-20    0.161993\nName: relative_strength, dtype: float64",
     "crumbs": [
       "Getting Started",
       "q.indicator — Indicators",
       "QRT indicators",
-      "Relative-strength days"
+      "Relative strength"
     ]
   },
   {
-    "objectID": "indicator/qrt/rs_days.html#compare-with-spy",
-    "href": "indicator/qrt/rs_days.html#compare-with-spy",
-    "title": "Relative-strength days during corrections",
+    "objectID": "indicator/qrt/relative_strength.html#compare-with-spy",
+    "href": "indicator/qrt/relative_strength.html#compare-with-spy",
+    "title": "Relative strength",
     "section": "Compare with SPY",
-    "text": "Compare with SPY\nSPY drawdown shows when the correction condition can be active. The count rises only when AAPL is outperforming during those correction dates.\n\nspy_drawdown = prices[\"SPY\"].div(prices[\"SPY\"].rolling(window).max()).sub(1).mul(100)\ncomparison = pd.DataFrame(\n    {\n        \"AAPL positive RS days\": days,\n        \"SPY drawdown (%)\": spy_drawdown,\n        \"Correction threshold (%)\": (threshold - 1) * 100,\n    }\n)\nfig = q.plot.col(\n    comparison,\n    title=\"AAPL relative-strength days during SPY corrections\",\n    ylabel=\"Sessions / percent\",\n)\nfig.show(renderer=\"notebook_connected\")",
+    "text": "Compare with SPY\nSPY is already part of the indicator calculation. The zero line separates AAPL outperformance from underperformance.\n\ncomparison = pd.DataFrame(\n    {\n        \"AAPL relative strength vs SPY\": strength.mul(100),\n        \"Equal performance\": 0.0,\n    }\n)\nfig = q.plot.col(\n    comparison,\n    title=f\"AAPL relative strength versus SPY ({lookback} sessions)\",\n    ylabel=\"Return difference (percentage points)\",\n)\nfig.show(renderer=\"notebook_connected\")",
     "crumbs": [
       "Getting Started",
       "q.indicator — Indicators",
       "QRT indicators",
-      "Relative-strength days"
+      "Relative strength"
     ]
   },
   {
-    "objectID": "indicator/qrt/rsma.html",
-    "href": "indicator/qrt/rsma.html",
-    "title": "Relative-strength moving average (RSMA)",
+    "objectID": "indicator/qrt/rolling_volatility.html",
+    "href": "indicator/qrt/rolling_volatility.html",
+    "title": "qrt",
     "section": "",
-    "text": "q.indicator.rsma smooths an existing relative-strength series with either an exponential or simple moving average. It does not calculate relative strength or fetch a benchmark itself.\nHere AAPL relative strength is first measured against SPY, then smoothed with a 21-session exponential average over the latest five shared years.\nimport pandas as pd\n\nimport qrt as q\n\nprices = pd.concat(\n    {\n        \"AAPL\": q.data.datasets.load(\"aapl\")[\"close\"],\n        \"SPY\": q.data.datasets.load(\"spy\")[\"close\"],\n    },\n    axis=1,\n    join=\"inner\",\n).dropna()\nend = prices.index.max()\nprices = prices.loc[end - pd.DateOffset(years=5) :]\nstrength = q.indicator.relative_strength(prices[\"AAPL\"], prices[\"SPY\"], lookback=63)\nstrength.tail()\n\ndatetime\n2026-07-14    0.117231\n2026-07-15    0.176773\n2026-07-16    0.176675\n2026-07-17    0.206154\n2026-07-20    0.161993\nName: relative_strength, dtype: float64",
+    "text": "Back to top",
     "crumbs": [
       "Getting Started",
       "q.indicator — Indicators",
       "QRT indicators",
-      "Relative-strength moving average"
+      "Rolling volatility"
     ]
   },
   {
-    "objectID": "indicator/qrt/rsma.html#calculate-the-indicator",
-    "href": "indicator/qrt/rsma.html#calculate-the-indicator",
-    "title": "Relative-strength moving average (RSMA)",
-    "section": "Calculate the indicator",
-    "text": "Calculate the indicator\nUse method=\"exponential\" for an EWM with adjust=False, or method=\"simple\" for a rolling arithmetic mean.\n\nwindow = 21\naverage = q.indicator.rsma(strength, window=window, method=\"exponential\")\naverage.tail()\n\ndatetime\n2026-07-14    0.064101\n2026-07-15    0.074344\n2026-07-16    0.083647\n2026-07-17    0.094784\n2026-07-20    0.100894\nName: rsma, dtype: float64",
-    "crumbs": [
-      "Getting Started",
-      "q.indicator — Indicators",
-      "QRT indicators",
-      "Relative-strength moving average"
-    ]
-  },
-  {
-    "objectID": "indicator/qrt/rsma.html#compare-with-spy",
-    "href": "indicator/qrt/rsma.html#compare-with-spy",
-    "title": "Relative-strength moving average (RSMA)",
-    "section": "Compare with SPY",
-    "text": "Compare with SPY\nBoth lines remain benchmark-relative because the input series measures AAPL returns minus SPY returns.\n\ncomparison = pd.DataFrame(\n    {\n        \"AAPL relative strength vs SPY\": strength.mul(100),\n        f\"{window}-session RSMA\": average.mul(100),\n        \"Equal performance\": 0.0,\n    }\n)\nfig = q.plot.col(\n    comparison,\n    title=\"AAPL relative strength and its moving average versus SPY\",\n    ylabel=\"Return difference (percentage points)\",\n)\nfig.show(renderer=\"notebook_connected\")",
-    "crumbs": [
-      "Getting Started",
-      "q.indicator — Indicators",
-      "QRT indicators",
-      "Relative-strength moving average"
-    ]
-  },
-  {
-    "objectID": "indicator/qrt/sma.html",
-    "href": "indicator/qrt/sma.html",
-    "title": "Simple moving average (SMA)",
+    "objectID": "indicator/qrt/rs_phase.html",
+    "href": "indicator/qrt/rs_phase.html",
+    "title": "Relative-strength phase",
     "section": "",
-    "text": "q.indicator.sma calculates the arithmetic mean over a trailing window. It accepts one ordered Series, preserves its index, and returns missing values until the window is full.\nThis example compares 50-session averages for AAPL and the SPY benchmark over the latest five shared years in qrt’s bundled data. Both assets are indexed to 100 so their trends and averages are comparable despite different price levels.\nimport pandas as pd\n\nimport qrt as q\n\nprices = pd.concat(\n    {\n        \"AAPL\": q.data.datasets.load(\"aapl\")[\"close\"],\n        \"SPY\": q.data.datasets.load(\"spy\")[\"close\"],\n    },\n    axis=1,\n    join=\"inner\",\n).dropna()\nend = prices.index.max()\nprices = prices.loc[end - pd.DateOffset(years=5) :]\nprices.tail()\n\n\n\n\n\n\n\n\nAAPL\nSPY\n\n\ndatetime\n\n\n\n\n\n\n2026-07-14\n314.859985\n751.830017\n\n\n2026-07-15\n327.500000\n754.809998\n\n\n2026-07-16\n333.260010\n750.719971\n\n\n2026-07-17\n333.739990\n743.289978\n\n\n2026-07-20\n326.589996\n742.090027",
+    "text": "q.indicator.rs_phase flags dates when relative strength is above a supplied moving average and counts consecutive dates in that state. It returns both rs_phase and rs_phase_days.\nAAPL relative strength is measured against SPY, then compared with its 21-session RSMA over the latest five shared years.\nimport pandas as pd\n\nimport qrt as q\n\nprices = pd.concat(\n    {\n        \"AAPL\": q.data.datasets.load(\"aapl\")[\"close\"],\n        \"SPY\": q.data.datasets.load(\"spy\")[\"close\"],\n    },\n    axis=1,\n    join=\"inner\",\n).dropna()\nend = prices.index.max()\nprices = prices.loc[end - pd.DateOffset(years=5) :]\nstrength = q.indicator.relative_strength(prices[\"AAPL\"], prices[\"SPY\"], lookback=63)\naverage = q.indicator.rsma(strength, window=21)\naverage.tail()\n\ndatetime\n2026-07-14    0.064101\n2026-07-15    0.074344\n2026-07-16    0.083647\n2026-07-17    0.094784\n2026-07-20    0.100894\nName: rsma, dtype: float64",
     "crumbs": [
       "Getting Started",
       "q.indicator — Indicators",
       "QRT indicators",
-      "Simple moving average (SMA)"
+      "Relative-strength phase"
     ]
   },
   {
-    "objectID": "indicator/qrt/sma.html#calculate-the-indicator",
-    "href": "indicator/qrt/sma.html#calculate-the-indicator",
-    "title": "Simple moving average (SMA)",
+    "objectID": "indicator/qrt/rs_phase.html#calculate-the-indicator",
+    "href": "indicator/qrt/rs_phase.html#calculate-the-indicator",
+    "title": "Relative-strength phase",
     "section": "Calculate the indicator",
-    "text": "Calculate the indicator\nCall sma separately for each instrument. The function deliberately does not infer symbol boundaries from a long-form table.\n\nwindow = 50\naverages = prices.apply(lambda series: q.indicator.sma(series, window))\naverages.tail()\n\n\n\n\n\n\n\n\nAAPL\nSPY\n\n\ndatetime\n\n\n\n\n\n\n2026-07-14\n299.549930\n741.394468\n\n\n2026-07-15\n300.502288\n742.114703\n\n\n2026-07-16\n301.635984\n742.805803\n\n\n2026-07-17\n302.632416\n743.233398\n\n\n2026-07-20\n303.419308\n743.436312",
+    "text": "Calculate the indicator\nThe moving average is supplied explicitly, so callers can choose its method and window before phase classification.\n\nphase = q.indicator.rs_phase(strength, average)\nphase.tail()\n\n\n\n\n\n\n\n\nrs_phase\nrs_phase_days\n\n\ndatetime\n\n\n\n\n\n\n2026-07-14\nTrue\n8\n\n\n2026-07-15\nTrue\n9\n\n\n2026-07-16\nTrue\n10\n\n\n2026-07-17\nTrue\n11\n\n\n2026-07-20\nTrue\n12",
     "crumbs": [
       "Getting Started",
       "q.indicator — Indicators",
       "QRT indicators",
-      "Simple moving average (SMA)"
+      "Relative-strength phase"
     ]
   },
   {
-    "objectID": "indicator/qrt/sma.html#compare-with-spy",
-    "href": "indicator/qrt/sma.html#compare-with-spy",
-    "title": "Simple moving average (SMA)",
+    "objectID": "indicator/qrt/rs_phase.html#compare-with-spy",
+    "href": "indicator/qrt/rs_phase.html#compare-with-spy",
+    "title": "Relative-strength phase",
     "section": "Compare with SPY",
-    "text": "Compare with SPY\nThe close prices and moving averages use the same initial-price denominator. A value of 120 therefore means 20% above that instrument’s first close in this five-year window.\n\nbase = prices.iloc[0]\ncomparison = pd.concat(\n    [\n        prices.div(base).mul(100).add_suffix(\" close\"),\n        averages.div(base).mul(100).add_suffix(f\" SMA {window}\"),\n    ],\n    axis=1,\n)\nfig = q.plot.col(\n    comparison,\n    title=f\"AAPL and SPY with {window}-session simple moving averages\",\n    ylabel=\"Indexed value (start = 100)\",\n)\nfig.show(renderer=\"notebook_connected\")",
+    "text": "Compare with SPY\nRelative strength and RSMA are measured in percentage points against SPY. The phase-length line resets to zero whenever relative strength is not above its average.\n\ncomparison = pd.DataFrame(\n    {\n        \"AAPL relative strength vs SPY (%)\": strength.mul(100),\n        \"AAPL RSMA (%)\": average.mul(100),\n        \"Phase length (sessions)\": phase[\"rs_phase_days\"],\n    }\n)\nfig = q.plot.col(\n    comparison,\n    title=\"AAPL relative-strength phase versus SPY\",\n    ylabel=\"Percentage points / sessions\",\n)\nfig.show(renderer=\"notebook_connected\")",
     "crumbs": [
       "Getting Started",
       "q.indicator — Indicators",
       "QRT indicators",
-      "Simple moving average (SMA)"
+      "Relative-strength phase"
+    ]
+  },
+  {
+    "objectID": "indicator/qrt/rsnhbp.html",
+    "href": "indicator/qrt/rsnhbp.html",
+    "title": "Relative-strength new high before price",
+    "section": "",
+    "text": "q.indicator.rsnhbp flags dates when relative strength reaches a new trailing high but the asset price does not. Current observations are compared with highs formed from prior dates only.\nThis example computes AAPL relative strength against SPY and marks 60-session relative-strength breakouts that precede an AAPL price breakout.\nimport pandas as pd\n\nimport qrt as q\n\nprices = pd.concat(\n    {\n        \"AAPL\": q.data.datasets.load(\"aapl\")[\"close\"],\n        \"SPY\": q.data.datasets.load(\"spy\")[\"close\"],\n    },\n    axis=1,\n    join=\"inner\",\n).dropna()\nend = prices.index.max()\nprices = prices.loc[end - pd.DateOffset(years=5) :]\nstrength = q.indicator.relative_strength(prices[\"AAPL\"], prices[\"SPY\"], lookback=63)\nstrength.tail()\n\ndatetime\n2026-07-14    0.117231\n2026-07-15    0.176773\n2026-07-16    0.176675\n2026-07-17    0.206154\n2026-07-20    0.161993\nName: relative_strength, dtype: float64",
+    "crumbs": [
+      "Getting Started",
+      "q.indicator — Indicators",
+      "QRT indicators",
+      "RS new high before price"
+    ]
+  },
+  {
+    "objectID": "indicator/qrt/rsnhbp.html#calculate-the-indicator",
+    "href": "indicator/qrt/rsnhbp.html#calculate-the-indicator",
+    "title": "Relative-strength new high before price",
+    "section": "Calculate the indicator",
+    "text": "Calculate the indicator\nPass the asset price and its already-computed relative-strength series. The boolean output preserves the price index.\n\nwindow = 60\nsignal = q.indicator.rsnhbp(prices[\"AAPL\"], strength, window=window)\nsignal.value_counts()\n\nrs_new_high_before_price\nFalse    1196\nTrue       59\nName: count, dtype: int64",
+    "crumbs": [
+      "Getting Started",
+      "q.indicator — Indicators",
+      "QRT indicators",
+      "RS new high before price"
+    ]
+  },
+  {
+    "objectID": "indicator/qrt/rsnhbp.html#compare-with-spy",
+    "href": "indicator/qrt/rsnhbp.html#compare-with-spy",
+    "title": "Relative-strength new high before price",
+    "section": "Compare with SPY",
+    "text": "Compare with SPY\nAAPL and SPY are indexed to 100 for comparison. Diamond markers identify dates where AAPL’s SPY-relative strength made a new high before AAPL’s own price did.\n\nindexed = prices.div(prices.iloc[0]).mul(100).add_suffix(\" close\")\ncomparison = indexed.assign(**{\"AAPL RS high before price\": indexed[\"AAPL close\"].where(signal)})\nfig = q.plot.col(\n    comparison,\n    title=\"AAPL relative-strength highs before price highs, with SPY\",\n    ylabel=\"Indexed value (start = 100)\",\n)\nfig.data[-1].update(mode=\"markers\", marker={\"size\": 7, \"symbol\": \"diamond\"})\nfig.show(renderer=\"notebook_connected\")",
+    "crumbs": [
+      "Getting Started",
+      "q.indicator — Indicators",
+      "QRT indicators",
+      "RS new high before price"
+    ]
+  },
+  {
+    "objectID": "indicator/qrt/volume_ratio.html",
+    "href": "indicator/qrt/volume_ratio.html",
+    "title": "qrt",
+    "section": "",
+    "text": "Back to top",
+    "crumbs": [
+      "Getting Started",
+      "q.indicator — Indicators",
+      "QRT indicators",
+      "Relative volume"
     ]
   },
   {

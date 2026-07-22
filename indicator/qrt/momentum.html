@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Feature selection – qrt</title>
+<title>momentum – qrt</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -26,25 +26,25 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../">
-<link href="../transform/roadmap.html" rel="next">
-<link href="../transform/reduction.html" rel="prev">
-<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-234273dcd3ff8f4bdb782b4fb3f12a13.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../indicator/qrt/rolling_volatility.html" rel="next">
+<link href="../../indicator/qrt/returns.html" rel="prev">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-234273dcd3ff8f4bdb782b4fb3f12a13.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -74,7 +74,7 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
-<link rel="stylesheet" href="../reference/_styles-quartodoc.css">
+<link rel="stylesheet" href="../../reference/_styles-quartodoc.css">
 </head>
 
 <body class="nav-sidebar docked nav-fixed quarto-light">
@@ -84,7 +84,7 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">qrt — Quant Research Tools</span>
     </a>
   </div>
@@ -95,15 +95,15 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="../index.html" aria-current="page"> 
+    <a class="nav-link active" href="../../index.html" aria-current="page"> 
 <span class="menu-text">Getting Started</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../reference/index.html"> 
+    <a class="nav-link" href="../../reference/index.html"> 
 <span class="menu-text">API Reference</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../roadmap.html"> 
+    <a class="nav-link" href="../../roadmap.html"> 
 <span class="menu-text">Roadmap</span></a>
   </li>  
 </ul>
@@ -118,7 +118,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../transform/index.html">q.transform — Transformations</a></li><li class="breadcrumb-item"><a href="../transform/selection.html">Selection</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../indicator/index.html">q.indicator — Indicators</a></li><li class="breadcrumb-item"><a href="../../indicator/qrt/sma.html">QRT indicators</a></li><li class="breadcrumb-item"><a href="../../indicator/qrt/momentum.html">Price momentum</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -132,13 +132,13 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../index.html" class="sidebar-item-text sidebar-link">
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Getting Started</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../bt/index.html" class="sidebar-item-text sidebar-link">
+            <a href="../../bt/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">q.bt — Backtesting</span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
@@ -147,7 +147,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../bt/roadmap.html" class="sidebar-item-text sidebar-link">
+  <a href="../../bt/roadmap.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Roadmap</span></a>
   </div>
 </li>
@@ -155,7 +155,7 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../data/index.html" class="sidebar-item-text sidebar-link">
+            <a href="../../data/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">q.data — Data</span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
@@ -164,31 +164,31 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../data/datasets.html" class="sidebar-item-text sidebar-link">
+  <a href="../../data/datasets.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Sample datasets</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../data/schemas.html" class="sidebar-item-text sidebar-link">
+  <a href="../../data/schemas.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Data schemas</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../data/local.html" class="sidebar-item-text sidebar-link">
+  <a href="../../data/local.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Local files</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../data/sources.html" class="sidebar-item-text sidebar-link">
+  <a href="../../data/sources.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Market data sources</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../data/roadmap.html" class="sidebar-item-text sidebar-link">
+  <a href="../../data/roadmap.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Roadmap</span></a>
   </div>
 </li>
@@ -196,145 +196,145 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../indicator/index.html" class="sidebar-item-text sidebar-link">
+            <a href="../../indicator/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">q.indicator — Indicators</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
  <span class="menu-text">QRT indicators</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 ">  
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../indicator/qrt/sma.html" class="sidebar-item-text sidebar-link">
+  <a href="../../indicator/qrt/sma.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Simple moving average (SMA)</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../indicator/qrt/ema.html" class="sidebar-item-text sidebar-link">
+  <a href="../../indicator/qrt/ema.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Exponential moving average (EMA)</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../indicator/qrt/madev.html" class="sidebar-item-text sidebar-link">
+  <a href="../../indicator/qrt/madev.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Mean absolute deviation (MADEV)</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../indicator/qrt/returns.html" class="sidebar-item-text sidebar-link">
+  <a href="../../indicator/qrt/returns.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Simple returns</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../indicator/qrt/momentum.html" class="sidebar-item-text sidebar-link">
+  <a href="../../indicator/qrt/momentum.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Price momentum</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../indicator/qrt/rolling_volatility.html" class="sidebar-item-text sidebar-link">
+  <a href="../../indicator/qrt/rolling_volatility.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Rolling volatility</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../indicator/qrt/volume_ratio.html" class="sidebar-item-text sidebar-link">
+  <a href="../../indicator/qrt/volume_ratio.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Relative volume</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../indicator/qrt/volume_spike_ratio.html" class="sidebar-item-text sidebar-link">
+  <a href="../../indicator/qrt/volume_spike_ratio.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Volume spike ratio</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../indicator/qrt/price_spikes.html" class="sidebar-item-text sidebar-link">
+  <a href="../../indicator/qrt/price_spikes.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Price spikes</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../indicator/qrt/log_returns.html" class="sidebar-item-text sidebar-link">
+  <a href="../../indicator/qrt/log_returns.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Log returns</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../indicator/qrt/realized_variance.html" class="sidebar-item-text sidebar-link">
+  <a href="../../indicator/qrt/realized_variance.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Realized variance</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../indicator/qrt/realized_quarticity.html" class="sidebar-item-text sidebar-link">
+  <a href="../../indicator/qrt/realized_quarticity.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Realized quarticity</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../indicator/qrt/bipower_variation.html" class="sidebar-item-text sidebar-link">
+  <a href="../../indicator/qrt/bipower_variation.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Bipower variation</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../indicator/qrt/med_rv.html" class="sidebar-item-text sidebar-link">
+  <a href="../../indicator/qrt/med_rv.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Median realized volatility</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../indicator/qrt/min_rv.html" class="sidebar-item-text sidebar-link">
+  <a href="../../indicator/qrt/min_rv.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Minimum realized volatility</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../indicator/qrt/realized_volatility.html" class="sidebar-item-text sidebar-link">
+  <a href="../../indicator/qrt/realized_volatility.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Realized volatility by session</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../indicator/qrt/relative_strength.html" class="sidebar-item-text sidebar-link">
+  <a href="../../indicator/qrt/relative_strength.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Relative strength</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../indicator/qrt/rsma.html" class="sidebar-item-text sidebar-link">
+  <a href="../../indicator/qrt/rsma.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Relative-strength moving average</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../indicator/qrt/rs_days.html" class="sidebar-item-text sidebar-link">
+  <a href="../../indicator/qrt/rs_days.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Relative-strength days</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../indicator/qrt/rs_phase.html" class="sidebar-item-text sidebar-link">
+  <a href="../../indicator/qrt/rs_phase.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Relative-strength phase</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../indicator/qrt/rsnhbp.html" class="sidebar-item-text sidebar-link">
+  <a href="../../indicator/qrt/rsnhbp.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">RS new high before price</span></a>
   </div>
 </li>
@@ -342,19 +342,19 @@ ul.task-list li input[type="checkbox"] {
   </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../indicator/talib.html" class="sidebar-item-text sidebar-link">
+  <a href="../../indicator/talib.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">TA-Lib</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../indicator/pandas_ta.html" class="sidebar-item-text sidebar-link">
+  <a href="../../indicator/pandas_ta.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">pandas-ta-classic</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../indicator/roadmap.html" class="sidebar-item-text sidebar-link">
+  <a href="../../indicator/roadmap.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Roadmap</span></a>
   </div>
 </li>
@@ -362,7 +362,7 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../cross_section/index.html" class="sidebar-item-text sidebar-link">
+            <a href="../../cross_section/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">q.cross_section — Cross-sectional analysis</span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
@@ -371,7 +371,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../cross_section/roadmap.html" class="sidebar-item-text sidebar-link">
+  <a href="../../cross_section/roadmap.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Roadmap</span></a>
   </div>
 </li>
@@ -379,7 +379,7 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../label/index.html" class="sidebar-item-text sidebar-link">
+            <a href="../../label/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">q.label — Financial labels</span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
@@ -388,103 +388,103 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../label/cusum_filter.html" class="sidebar-item-text sidebar-link">
+  <a href="../../label/cusum_filter.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">CUSUM event filter</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../label/vertical_barriers.html" class="sidebar-item-text sidebar-link">
+  <a href="../../label/vertical_barriers.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Vertical barriers</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../label/fixed_horizon.html" class="sidebar-item-text sidebar-link">
+  <a href="../../label/fixed_horizon.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Fixed-horizon labels</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../label/triple_barrier.html" class="sidebar-item-text sidebar-link">
+  <a href="../../label/triple_barrier.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Triple-barrier labels</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../label/meta_label.html" class="sidebar-item-text sidebar-link">
+  <a href="../../label/meta_label.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Meta-labels</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../label/trend_scanning.html" class="sidebar-item-text sidebar-link">
+  <a href="../../label/trend_scanning.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Trend-scanning labels</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../label/prune_labels.html" class="sidebar-item-text sidebar-link">
+  <a href="../../label/prune_labels.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Rare-label pruning</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../label/concurrency.html" class="sidebar-item-text sidebar-link">
+  <a href="../../label/concurrency.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Label concurrency</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../label/indicator_matrix.html" class="sidebar-item-text sidebar-link">
+  <a href="../../label/indicator_matrix.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Event indicator matrix</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../label/average_uniqueness.html" class="sidebar-item-text sidebar-link">
+  <a href="../../label/average_uniqueness.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Average label uniqueness</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../label/sequential_bootstrap.html" class="sidebar-item-text sidebar-link">
+  <a href="../../label/sequential_bootstrap.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Sequential bootstrap</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../label/purging_metadata.html" class="sidebar-item-text sidebar-link">
+  <a href="../../label/purging_metadata.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Purging and embargo metadata</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../label/sample_weights.html" class="sidebar-item-text sidebar-link">
+  <a href="../../label/sample_weights.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Return-attribution weights</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../label/time_decay.html" class="sidebar-item-text sidebar-link">
+  <a href="../../label/time_decay.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Linear time decay</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../label/class_balance_weights.html" class="sidebar-item-text sidebar-link">
+  <a href="../../label/class_balance_weights.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Class-balance weights</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../label/combine_weights.html" class="sidebar-item-text sidebar-link">
+  <a href="../../label/combine_weights.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Combine sample weights</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../label/roadmap.html" class="sidebar-item-text sidebar-link">
+  <a href="../../label/roadmap.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Roadmap</span></a>
   </div>
 </li>
@@ -492,7 +492,7 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../dataset/index.html" class="sidebar-item-text sidebar-link">
+            <a href="../../dataset/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">q.dataset — ML datasets</span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
@@ -501,13 +501,13 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../dataset/splitting.html" class="sidebar-item-text sidebar-link">
+  <a href="../../dataset/splitting.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Splitting datasets</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../dataset/roadmap.html" class="sidebar-item-text sidebar-link">
+  <a href="../../dataset/roadmap.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Roadmap</span></a>
   </div>
 </li>
@@ -515,52 +515,52 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../transform/index.html" class="sidebar-item-text sidebar-link">
+            <a href="../../transform/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">q.transform — Transformations</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../transform/impute.html" class="sidebar-item-text sidebar-link">
+  <a href="../../transform/impute.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Missing data</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../transform/scale.html" class="sidebar-item-text sidebar-link">
+  <a href="../../transform/scale.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Scaling</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../transform/outlier.html" class="sidebar-item-text sidebar-link">
+  <a href="../../transform/outlier.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Outliers</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../transform/encode.html" class="sidebar-item-text sidebar-link">
+  <a href="../../transform/encode.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Encoding</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../transform/reduction.html" class="sidebar-item-text sidebar-link">
+  <a href="../../transform/reduction.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Reduction</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../transform/selection.html" class="sidebar-item-text sidebar-link active">
+  <a href="../../transform/selection.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Selection</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../transform/roadmap.html" class="sidebar-item-text sidebar-link">
+  <a href="../../transform/roadmap.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Roadmap</span></a>
   </div>
 </li>
@@ -568,7 +568,7 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../calendar/index.html" class="sidebar-item-text sidebar-link">
+            <a href="../../calendar/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">q.calendar — Market time</span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
@@ -577,7 +577,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../calendar/roadmap.html" class="sidebar-item-text sidebar-link">
+  <a href="../../calendar/roadmap.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Roadmap</span></a>
   </div>
 </li>
@@ -585,7 +585,7 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../signal/index.html" class="sidebar-item-text sidebar-link">
+            <a href="../../signal/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">q.signal — Signals</span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
@@ -594,7 +594,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../signal/roadmap.html" class="sidebar-item-text sidebar-link">
+  <a href="../../signal/roadmap.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Roadmap</span></a>
   </div>
 </li>
@@ -602,7 +602,7 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../model/index.html" class="sidebar-item-text sidebar-link">
+            <a href="../../model/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">q.model — Models</span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
@@ -611,7 +611,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../model/roadmap.html" class="sidebar-item-text sidebar-link">
+  <a href="../../model/roadmap.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Roadmap</span></a>
   </div>
 </li>
@@ -619,7 +619,7 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../env/index.html" class="sidebar-item-text sidebar-link">
+            <a href="../../env/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">q.env — Environment</span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
@@ -628,7 +628,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../env/roadmap.html" class="sidebar-item-text sidebar-link">
+  <a href="../../env/roadmap.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Roadmap</span></a>
   </div>
 </li>
@@ -636,7 +636,7 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../plot/index.html" class="sidebar-item-text sidebar-link">
+            <a href="../../plot/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">q.plot — Plotting</span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
@@ -645,43 +645,43 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-13" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../plot/classification.html" class="sidebar-item-text sidebar-link">
+  <a href="../../plot/classification.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Classification curves</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../plot/returns.html" class="sidebar-item-text sidebar-link">
+  <a href="../../plot/returns.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Return charts</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../plot/report.html" class="sidebar-item-text sidebar-link">
+  <a href="../../plot/report.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Tearsheet report</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../plot/simulation.html" class="sidebar-item-text sidebar-link">
+  <a href="../../plot/simulation.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Simulation tests</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../plot/trades.html" class="sidebar-item-text sidebar-link">
+  <a href="../../plot/trades.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Trade logs</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../plot/saving.html" class="sidebar-item-text sidebar-link">
+  <a href="../../plot/saving.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Saving figures</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../plot/roadmap.html" class="sidebar-item-text sidebar-link">
+  <a href="../../plot/roadmap.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Roadmap</span></a>
   </div>
 </li>
@@ -689,7 +689,7 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../portfolio/index.html" class="sidebar-item-text sidebar-link">
+            <a href="../../portfolio/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">q.portfolio — Portfolio</span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-14" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
@@ -698,7 +698,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-14" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../portfolio/roadmap.html" class="sidebar-item-text sidebar-link">
+  <a href="../../portfolio/roadmap.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Roadmap</span></a>
   </div>
 </li>
@@ -706,7 +706,7 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../risk/index.html" class="sidebar-item-text sidebar-link">
+            <a href="../../risk/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">q.risk — Risk</span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-15" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
@@ -715,7 +715,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-15" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../risk/roadmap.html" class="sidebar-item-text sidebar-link">
+  <a href="../../risk/roadmap.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Roadmap</span></a>
   </div>
 </li>
@@ -723,7 +723,7 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../stats/index.html" class="sidebar-item-text sidebar-link">
+            <a href="../../stats/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">q.stats — Statistics</span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-16" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
@@ -732,31 +732,31 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-16" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../stats/performance.html" class="sidebar-item-text sidebar-link">
+  <a href="../../stats/performance.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Performance &amp; benchmark</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../stats/rolling.html" class="sidebar-item-text sidebar-link">
+  <a href="../../stats/rolling.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Rolling &amp; calendar returns</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../stats/factors.html" class="sidebar-item-text sidebar-link">
+  <a href="../../stats/factors.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Factor analytics</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../stats/chained.html" class="sidebar-item-text sidebar-link">
+  <a href="../../stats/chained.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Chained API</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../stats/roadmap.html" class="sidebar-item-text sidebar-link">
+  <a href="../../stats/roadmap.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Roadmap</span></a>
   </div>
 </li>
@@ -764,7 +764,7 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../utils/index.html" class="sidebar-item-text sidebar-link">
+            <a href="../../utils/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">q.utils — Utilities</span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-17" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
@@ -773,7 +773,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-17" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../utils/roadmap.html" class="sidebar-item-text sidebar-link">
+  <a href="../../utils/roadmap.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Roadmap</span></a>
   </div>
 </li>
@@ -781,7 +781,7 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../roadmap.html" class="sidebar-item-text sidebar-link">
+  <a href="../../roadmap.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Roadmap</span></a>
   </div>
 </li>
@@ -794,29 +794,11 @@ ul.task-list li input[type="checkbox"] {
         
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../transform/index.html">q.transform — Transformations</a></li><li class="breadcrumb-item"><a href="../transform/selection.html">Selection</a></li></ol></nav>
-<div class="quarto-title">
-<h1 class="title">Feature selection</h1>
-</div>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../indicator/index.html">q.indicator — Indicators</a></li><li class="breadcrumb-item"><a href="../../indicator/qrt/sma.html">QRT indicators</a></li><li class="breadcrumb-item"><a href="../../indicator/qrt/momentum.html">Price momentum</a></li></ol></nav></header>
 
 
 
-<div class="quarto-title-meta">
 
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
-<p><code>q.transform.selection</code> is reserved for methods that select existing features without projecting them, including variance filters, mutual information, and recursive selection.</p>
-<p>The namespace is currently empty. Learned selectors must be fitted only on fit partitions.</p>
 
 
 
@@ -1223,13 +1205,13 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../transform/reduction.html" class="pagination-link" aria-label="Reduction">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Reduction</span>
+      <a href="../../indicator/qrt/returns.html" class="pagination-link" aria-label="Simple returns">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Simple returns</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../transform/roadmap.html" class="pagination-link" aria-label="Roadmap">
-        <span class="nav-page-text">Roadmap</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../indicator/qrt/rolling_volatility.html" class="pagination-link" aria-label="Rolling volatility">
+        <span class="nav-page-text">Rolling volatility</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -1238,4 +1220,4 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/transform/selection.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/transform/selection.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.dev/quantbert/qrt/blob/main/indicator/qrt/momentum.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/indicator/qrt/momentum.ipynb" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
