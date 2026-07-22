@@ -68,7 +68,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../reference/feature.html" rel="next">
+<link href="../reference/risk.html" rel="next">
 <link href="../reference/indicator.pandas_ta.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -220,7 +220,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
- <span class="menu-text">q.feature</span></a>
+ <span class="menu-text">q.risk</span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -228,14 +228,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/feature.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">feature</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/feature.ops.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">feature.ops</span></a>
+  <a href="../reference/risk.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">risk</span></a>
   </div>
 </li>
       </ul>
@@ -418,6 +412,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../reference/data.clean.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">data.clean</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../reference/data.local.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">data.local</span></a>
   </div>
@@ -533,6 +533,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#qrt.cross_section.compute_elo" id="toc-qrt.cross_section.compute_elo" class="nav-link" data-scroll-target="#qrt.cross_section.compute_elo">compute_elo</a></li>
   <li><a href="#qrt.cross_section.group_weighted_return" id="toc-qrt.cross_section.group_weighted_return" class="nav-link" data-scroll-target="#qrt.cross_section.group_weighted_return">group_weighted_return</a></li>
+  <li><a href="#qrt.cross_section.neutralize" id="toc-qrt.cross_section.neutralize" class="nav-link" data-scroll-target="#qrt.cross_section.neutralize">neutralize</a></li>
+  <li><a href="#qrt.cross_section.percentile_rank" id="toc-qrt.cross_section.percentile_rank" class="nav-link" data-scroll-target="#qrt.cross_section.percentile_rank">percentile_rank</a></li>
+  <li><a href="#qrt.cross_section.rank" id="toc-qrt.cross_section.rank" class="nav-link" data-scroll-target="#qrt.cross_section.rank">rank</a></li>
+  <li><a href="#qrt.cross_section.relative_strength" id="toc-qrt.cross_section.relative_strength" class="nav-link" data-scroll-target="#qrt.cross_section.relative_strength">relative_strength</a></li>
+  <li><a href="#qrt.cross_section.zscore" id="toc-qrt.cross_section.zscore" class="nav-link" data-scroll-target="#qrt.cross_section.zscore">zscore</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -566,6 +571,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="even">
 <td><a href="#qrt.cross_section.group_weighted_return">group_weighted_return</a></td>
 <td>Calculate weighted simple returns for groups of assets.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.cross_section.neutralize">neutralize</a></td>
+<td>Return weighted least-squares residuals after removing exposures.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.cross_section.percentile_rank">percentile_rank</a></td>
+<td>Return cross-sectional ranks scaled to the interval <code>(0, 1]</code>.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.cross_section.rank">rank</a></td>
+<td>Rank assets within a snapshot or each row of a time-by-asset panel.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.cross_section.relative_strength">relative_strength</a></td>
+<td>Rank trailing asset returns cross-sectionally for every timestamp.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.cross_section.zscore">zscore</a></td>
+<td>Standardize values against their cross-sectional mean and deviation.</td>
 </tr>
 </tbody>
 </table>
@@ -884,9 +909,49 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-
-
 </section>
+</section>
+<section id="qrt.cross_section.neutralize" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.cross_section.neutralize">neutralize</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>cross_section.neutralize(values, exposures, <span class="op">*</span>, weights<span class="op">=</span><span class="va">None</span>, add_intercept<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return weighted least-squares residuals after removing exposures.</p>
+<p>Numeric exposures are used directly. Categorical exposures are expanded into dummy variables, making sector or industry neutralization explicit. Rows containing missing values remain missing in the returned Series.</p>
+</section>
+<section id="qrt.cross_section.percentile_rank" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.cross_section.percentile_rank">percentile_rank</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>cross_section.percentile_rank(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    values,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    axis<span class="op">=</span><span class="st">'columns'</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    method<span class="op">=</span><span class="st">'average'</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    ascending<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return cross-sectional ranks scaled to the interval <code>(0, 1]</code>.</p>
+</section>
+<section id="qrt.cross_section.rank" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.cross_section.rank">rank</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>cross_section.rank(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    values,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    axis<span class="op">=</span><span class="st">'columns'</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    method<span class="op">=</span><span class="st">'average'</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    ascending<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    na_option<span class="op">=</span><span class="st">'keep'</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Rank assets within a snapshot or each row of a time-by-asset panel.</p>
+</section>
+<section id="qrt.cross_section.relative_strength" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.cross_section.relative_strength">relative_strength</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>cross_section.relative_strength(prices, <span class="op">*</span>, lookback<span class="op">=</span><span class="dv">21</span>, method<span class="op">=</span><span class="st">'average'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Rank trailing asset returns cross-sectionally for every timestamp.</p>
+<p>The input must be a time-by-asset price matrix. Output values are percentile ranks in <code>(0, 1]</code>; larger values indicate stronger trailing performance relative to the contemporaneous universe.</p>
+</section>
+<section id="qrt.cross_section.zscore" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.cross_section.zscore">zscore</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>cross_section.zscore(values, <span class="op">*</span>, axis<span class="op">=</span><span class="st">'columns'</span>, ddof<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Standardize values against their cross-sectional mean and deviation.</p>
+
+
 </section>
 </section>
 </section>
@@ -1299,8 +1364,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../reference/feature.html" class="pagination-link" aria-label="feature">
-        <span class="nav-page-text">feature</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../reference/risk.html" class="pagination-link" aria-label="risk">
+        <span class="nav-page-text">risk</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

@@ -184,7 +184,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
- <span class="menu-text">q.feature</span></a>
+ <span class="menu-text">q.risk</span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -192,14 +192,8 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/feature.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">feature</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/feature.ops.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">feature.ops</span></a>
+  <a href="../reference/risk.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">risk</span></a>
   </div>
 </li>
       </ul>
@@ -382,6 +376,12 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../reference/data.clean.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">data.clean</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../reference/data.local.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">data.local</span></a>
   </div>
@@ -495,7 +495,7 @@ ul.task-list li input[type="checkbox"] {
   <ul class="collapse">
   <li><a href="#q.indicator" id="toc-q.indicator" class="nav-link" data-scroll-target="#q.indicator">q.indicator</a></li>
   <li><a href="#q.cross_section" id="toc-q.cross_section" class="nav-link" data-scroll-target="#q.cross_section">q.cross_section</a></li>
-  <li><a href="#q.feature" id="toc-q.feature" class="nav-link" data-scroll-target="#q.feature">q.feature</a></li>
+  <li><a href="#q.risk" id="toc-q.risk" class="nav-link" data-scroll-target="#q.risk">q.risk</a></li>
   <li><a href="#q.label" id="toc-q.label" class="nav-link" data-scroll-target="#q.label">q.label</a></li>
   <li><a href="#q.dataset" id="toc-q.dataset" class="nav-link" data-scroll-target="#q.dataset">q.dataset</a></li>
   <li><a href="#q.transform" id="toc-q.transform" class="nav-link" data-scroll-target="#q.transform">q.transform</a></li>
@@ -551,18 +551,14 @@ ul.task-list li input[type="checkbox"] {
 </tbody>
 </table>
 </section>
-<section id="q.feature" class="level2">
-<h2 class="anchored" data-anchor-id="q.feature">q.feature</h2>
-<p>Named, versioned feature definitions, computation, and materialization.</p>
+<section id="q.risk" class="level2">
+<h2 class="anchored" data-anchor-id="q.risk">q.risk</h2>
+<p>Downside and tail-risk estimators expressed as loss magnitudes.</p>
 <table class="caption-top table">
 <tbody>
 <tr class="odd">
-<td><a href="../reference/feature.html#qrt.feature">feature</a></td>
-<td>Named, versioned feature definitions and materialization.</td>
-</tr>
-<tr class="even">
-<td><a href="../reference/feature.ops.html#qrt.feature.ops">feature.ops</a></td>
-<td>Generic operations used to construct feature columns.</td>
+<td><a href="../reference/risk.html#qrt.risk">risk</a></td>
+<td>Prospective and tail-risk estimators expressed as positive losses.</td>
 </tr>
 </tbody>
 </table>
@@ -689,26 +685,30 @@ ul.task-list li input[type="checkbox"] {
 <td>Data access: loading/saving local files, downloading from market data</td>
 </tr>
 <tr class="even">
+<td><a href="../reference/data.clean.html#qrt.data.clean">data.clean</a></td>
+<td>Deterministic cleaning and validation for market-data frames.</td>
+</tr>
+<tr class="odd">
 <td><a href="../reference/data.local.html#qrt.data.local">data.local</a></td>
 <td>Local file loading and saving (parquet, csv, …) plus raw trade</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="../reference/data.datasets.html#qrt.data.datasets">data.datasets</a></td>
 <td>Prepackaged sample datasets shipped with qrt for offline use – handy</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="../reference/data.sources.html#qrt.data.sources">data.sources</a></td>
 <td>Data sources: network vendors, databases, and other backends – each</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="../reference/data.sources.yfinance.html#qrt.data.sources.yfinance">data.sources.yfinance</a></td>
 <td>Yahoo Finance market data source (stocks, ETFs, indices).</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="../reference/data.sources.binance.html#qrt.data.sources.binance">data.sources.binance</a></td>
 <td>Binance futures market data source.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="../reference/data.sources.duckdb.html#qrt.data.sources.duckdb">data.sources.duckdb</a></td>
 <td>Generic DuckDB-backed data source.</td>
 </tr>

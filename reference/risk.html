@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>feature.ops – qrt</title>
+<title>risk – qrt</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -69,7 +69,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
 <link href="../reference/label.html" rel="next">
-<link href="../reference/feature.html" rel="prev">
+<link href="../reference/cross_section.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -108,6 +108,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../reference/_styles-quartodoc.css">
 </head>
@@ -153,7 +182,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/feature.html">q.feature</a></li><li class="breadcrumb-item"><a href="../reference/feature.ops.html">feature.ops</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/risk.html">q.risk</a></li><li class="breadcrumb-item"><a href="../reference/risk.html">risk</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -220,7 +249,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
- <span class="menu-text">q.feature</span></a>
+ <span class="menu-text">q.risk</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -228,14 +257,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/feature.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">feature</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/feature.ops.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">feature.ops</span></a>
+  <a href="../reference/risk.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">risk</span></a>
   </div>
 </li>
       </ul>
@@ -418,6 +441,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../reference/data.clean.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">data.clean</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../reference/data.local.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">data.local</span></a>
   </div>
@@ -527,27 +556,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#qrt.feature.ops" id="toc-qrt.feature.ops" class="nav-link active" data-scroll-target="#qrt.feature.ops">feature.ops</a>
+  <li><a href="#qrt.risk" id="toc-qrt.risk" class="nav-link active" data-scroll-target="#qrt.risk">risk</a>
   <ul class="collapse">
   <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions">Functions</a>
   <ul class="collapse">
-  <li><a href="#qrt.feature.ops.lags" id="toc-qrt.feature.ops.lags" class="nav-link" data-scroll-target="#qrt.feature.ops.lags">lags</a></li>
-  <li><a href="#qrt.feature.ops.pct_rank" id="toc-qrt.feature.ops.pct_rank" class="nav-link" data-scroll-target="#qrt.feature.ops.pct_rank">pct_rank</a></li>
+  <li><a href="#qrt.risk.conditional_value_at_risk" id="toc-qrt.risk.conditional_value_at_risk" class="nav-link" data-scroll-target="#qrt.risk.conditional_value_at_risk">conditional_value_at_risk</a></li>
+  <li><a href="#qrt.risk.entropic_value_at_risk" id="toc-qrt.risk.entropic_value_at_risk" class="nav-link" data-scroll-target="#qrt.risk.entropic_value_at_risk">entropic_value_at_risk</a></li>
+  <li><a href="#qrt.risk.lower_partial_moment" id="toc-qrt.risk.lower_partial_moment" class="nav-link" data-scroll-target="#qrt.risk.lower_partial_moment">lower_partial_moment</a></li>
+  <li><a href="#qrt.risk.tail_conditional_expectation" id="toc-qrt.risk.tail_conditional_expectation" class="nav-link" data-scroll-target="#qrt.risk.tail_conditional_expectation">tail_conditional_expectation</a></li>
+  <li><a href="#qrt.risk.value_at_risk" id="toc-qrt.risk.value_at_risk" class="nav-link" data-scroll-target="#qrt.risk.value_at_risk">value_at_risk</a></li>
+  <li><a href="#qrt.risk.worst_case_dollar_risk" id="toc-qrt.risk.worst_case_dollar_risk" class="nav-link" data-scroll-target="#qrt.risk.worst_case_dollar_risk">worst_case_dollar_risk</a></li>
   </ul></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/feature.ops.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/feature.ops.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/risk.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/risk.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/feature.html">q.feature</a></li><li class="breadcrumb-item"><a href="../reference/feature.ops.html">feature.ops</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/risk.html">q.risk</a></li><li class="breadcrumb-item"><a href="../reference/risk.html">risk</a></li></ol></nav></header>
 
 
 
 
-<section id="qrt.feature.ops" class="level1">
-<h1>feature.ops</h1>
-<p><code>feature.ops</code></p>
-<p>Generic operations used to construct feature columns.</p>
+<section id="qrt.risk" class="level1">
+<h1>risk</h1>
+<p><code>risk</code></p>
+<p>Prospective and tail-risk estimators expressed as positive losses.</p>
 <section id="functions" class="level2">
 <h2 class="anchored" data-anchor-id="functions">Functions</h2>
 <table class="caption-top table">
@@ -559,24 +592,62 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#qrt.feature.ops.lags">lags</a></td>
-<td>Create lagged copies of a Series or DataFrame.</td>
+<td><a href="#qrt.risk.conditional_value_at_risk">conditional_value_at_risk</a></td>
+<td>Calculate historical CVaR from the worst <code>1 - confidence</code> tail.</td>
 </tr>
 <tr class="even">
-<td><a href="#qrt.feature.ops.pct_rank">pct_rank</a></td>
-<td>Calculate each value’s percentile rank in a trailing window.</td>
+<td><a href="#qrt.risk.entropic_value_at_risk">entropic_value_at_risk</a></td>
+<td>Calculate EVaR by minimizing its entropic upper bound.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.risk.lower_partial_moment">lower_partial_moment</a></td>
+<td>Calculate <span class="math inline">\(E[\max(threshold - return, 0)^{order}]\)</span>.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.risk.tail_conditional_expectation">tail_conditional_expectation</a></td>
+<td>Return the mean observed loss at or beyond historical VaR.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.risk.value_at_risk">value_at_risk</a></td>
+<td>Calculate historical Value at Risk as a positive loss magnitude.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.risk.worst_case_dollar_risk">worst_case_dollar_risk</a></td>
+<td>Scale the worst observed one-period loss by a positive notional.</td>
 </tr>
 </tbody>
 </table>
-<section id="qrt.feature.ops.lags" class="level3">
-<h3 class="anchored" data-anchor-id="qrt.feature.ops.lags">lags</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>feature.ops.lags(data, lags)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Create lagged copies of a Series or DataFrame.</p>
+<section id="qrt.risk.conditional_value_at_risk" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.risk.conditional_value_at_risk">conditional_value_at_risk</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>risk.conditional_value_at_risk(returns, <span class="op">*</span>, confidence<span class="op">=</span><span class="fl">0.95</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Calculate historical CVaR from the worst <code>1 - confidence</code> tail.</p>
+<p>A fractional boundary observation is included when the requested tail mass is not an integer number of observations.</p>
 </section>
-<section id="qrt.feature.ops.pct_rank" class="level3">
-<h3 class="anchored" data-anchor-id="qrt.feature.ops.pct_rank">pct_rank</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>feature.ops.pct_rank(series, window<span class="op">=</span><span class="dv">60</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Calculate each value’s percentile rank in a trailing window.</p>
+<section id="qrt.risk.entropic_value_at_risk" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.risk.entropic_value_at_risk">entropic_value_at_risk</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>risk.entropic_value_at_risk(returns, <span class="op">*</span>, confidence<span class="op">=</span><span class="fl">0.95</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Calculate EVaR by minimizing its entropic upper bound.</p>
+<p>For losses <span class="math inline">\(L\)</span> and confidence <span class="math inline">\(c\)</span>, EVaR is <span class="math inline">\(\inf_{z&gt;0}(\log E[e^{zL}] - \log(1-c)) / z\)</span>.</p>
+</section>
+<section id="qrt.risk.lower_partial_moment" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.risk.lower_partial_moment">lower_partial_moment</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>risk.lower_partial_moment(returns, <span class="op">*</span>, threshold<span class="op">=</span><span class="fl">0.0</span>, order<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Calculate <span class="math inline">\(E[\max(threshold - return, 0)^{order}]\)</span>.</p>
+</section>
+<section id="qrt.risk.tail_conditional_expectation" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.risk.tail_conditional_expectation">tail_conditional_expectation</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>risk.tail_conditional_expectation(returns, <span class="op">*</span>, confidence<span class="op">=</span><span class="fl">0.95</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return the mean observed loss at or beyond historical VaR.</p>
+</section>
+<section id="qrt.risk.value_at_risk" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.risk.value_at_risk">value_at_risk</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>risk.value_at_risk(returns, <span class="op">*</span>, confidence<span class="op">=</span><span class="fl">0.95</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Calculate historical Value at Risk as a positive loss magnitude.</p>
+</section>
+<section id="qrt.risk.worst_case_dollar_risk" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.risk.worst_case_dollar_risk">worst_case_dollar_risk</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>risk.worst_case_dollar_risk(returns, <span class="op">*</span>, notional<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Scale the worst observed one-period loss by a positive notional.</p>
 
 
 </section>
@@ -986,8 +1057,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../reference/feature.html" class="pagination-link" aria-label="feature">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">feature</span>
+      <a href="../reference/cross_section.html" class="pagination-link" aria-label="cross_section">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">cross_section</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
@@ -1001,4 +1072,4 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/feature.ops.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/feature.ops.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/risk.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/risk.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
