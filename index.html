@@ -106,6 +106,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
 
 <link rel="stylesheet" href="reference/_styles-quartodoc.css">
@@ -867,7 +870,12 @@ Warning
 </div>
 <section id="the-research-flow" class="level2">
 <h2 class="anchored" data-anchor-id="the-research-flow">The research flow</h2>
-<pre class="mermaid"><code>flowchart TD
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
     data["q.data&lt;br/&gt;Acquire observations"]
     calendar["q.calendar&lt;br/&gt;Apply market-time semantics"]
     indicator["q.indicator&lt;br/&gt;Measure one instrument"]
@@ -886,40 +894,46 @@ Warning
     label --&gt; dataset --&gt; transform --&gt; model --&gt; signal --&gt; portfolio --&gt; bt --&gt; stats
 
     classDef datasetObject fill:#e8f2ec,stroke:#24704a,stroke-width:2px,color:#153d29
-    class dataset datasetObject</code></pre>
+    class dataset datasetObject
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
 <p>The flow describes ownership, not a requirement that every workflow invoke every namespace. Most blocks classify operations by what they do. <code>q.dataset</code> is the deliberate exception: it is the aligned object carrying features, targets, weights, event metadata, and split assignments across the fitted transformation and model-training boundary.</p>
 <p>An SMA can become a stored model feature, a chart overlay, or an online rule input; it remains an indicator in all three cases.</p>
 </section>
 <section id="quickstart" class="level2">
 <h2 class="anchored" data-anchor-id="quickstart">Quickstart</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> add pyqrt</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> add pyqrt</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Optional provider catalogs and PyTorch helpers</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> add <span class="st">"pyqrt[indicators]"</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> add <span class="st">"pyqrt[torch]"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> qrt <span class="im">as</span> q</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Optional provider catalogs and PyTorch helpers</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> add <span class="st">"pyqrt[indicators]"</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> add <span class="st">"pyqrt[torch]"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> qrt <span class="im">as</span> q</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>aapl <span class="op">=</span> q.data.sources.yfinance.read(</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"AAPL"</span>, <span class="st">"2024-01-01"</span>, <span class="st">"2025-01-01"</span>, <span class="st">"1d"</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>source <span class="op">=</span> aapl.rename_axis(<span class="st">"datetime"</span>).reset_index().assign(symbol<span class="op">=</span><span class="st">"AAPL"</span>)</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># A reusable market measurement</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>sma_20 <span class="op">=</span> q.indicator.sma(aapl[<span class="st">"close"</span>], <span class="dv">20</span>)</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># A versioned model input computed independently per symbol</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>sma_feature <span class="op">=</span> q.feature.Feature(</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">"sma_20"</span>,</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    function<span class="op">=</span>q.indicator.sma,</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    inputs<span class="op">=</span>{<span class="st">"series"</span>: <span class="st">"close"</span>},</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    params<span class="op">=</span>{<span class="st">"window"</span>: <span class="dv">20</span>},</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    entity_keys<span class="op">=</span>(<span class="st">"symbol"</span>,),</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    timestamp<span class="op">=</span><span class="st">"datetime"</span>,</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    lookback<span class="op">=</span><span class="dv">20</span>,</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    available_at<span class="op">=</span><span class="st">"bar_close"</span>,</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>features <span class="op">=</span> q.feature.FeatureSet([sma_feature], name<span class="op">=</span><span class="st">"daily_prices"</span>)</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>feature_frame <span class="op">=</span> q.feature.compute(features, source)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>aapl <span class="op">=</span> q.data.sources.yfinance.read(</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"AAPL"</span>, <span class="st">"2024-01-01"</span>, <span class="st">"2025-01-01"</span>, <span class="st">"1d"</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>source <span class="op">=</span> aapl.rename_axis(<span class="st">"datetime"</span>).reset_index().assign(symbol<span class="op">=</span><span class="st">"AAPL"</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># A reusable market measurement</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>sma_20 <span class="op">=</span> q.indicator.sma(aapl[<span class="st">"close"</span>], <span class="dv">20</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># A versioned model input computed independently per symbol</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>sma_feature <span class="op">=</span> q.feature.Feature(</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">"sma_20"</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    function<span class="op">=</span>q.indicator.sma,</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    inputs<span class="op">=</span>{<span class="st">"series"</span>: <span class="st">"close"</span>},</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    params<span class="op">=</span>{<span class="st">"window"</span>: <span class="dv">20</span>},</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    entity_keys<span class="op">=</span>(<span class="st">"symbol"</span>,),</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    timestamp<span class="op">=</span><span class="st">"datetime"</span>,</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    lookback<span class="op">=</span><span class="dv">20</span>,</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    available_at<span class="op">=</span><span class="st">"bar_close"</span>,</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>features <span class="op">=</span> q.feature.FeatureSet([sma_feature], name<span class="op">=</span><span class="st">"daily_prices"</span>)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>feature_frame <span class="op">=</span> q.feature.compute(features, source)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="namespace-roles" class="level2">
 <h2 class="anchored" data-anchor-id="namespace-roles">Namespace roles</h2>
@@ -1008,11 +1022,11 @@ Warning
 </section>
 <section id="development" class="level2">
 <h2 class="anchored" data-anchor-id="development">Development</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> install   <span class="co"># sync core and development dependencies</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> test      <span class="co"># run the full test suite</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> stubs     <span class="co"># regenerate provider-wrapper type stubs</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> datasets  <span class="co"># refresh bundled sample datasets and demo trades</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> docs      <span class="co"># build references and serve docs locally</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> install   <span class="co"># sync core and development dependencies</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> test      <span class="co"># run the full test suite</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> stubs     <span class="co"># regenerate provider-wrapper type stubs</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> datasets  <span class="co"># refresh bundled sample datasets and demo trades</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> docs      <span class="co"># build references and serve docs locally</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>See the <a href="./roadmap.html">Roadmap</a> for planned work and each namespace’s page for its current API.</p>
 
 

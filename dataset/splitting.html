@@ -860,13 +860,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>We use roughly two years from the end of the bundled SPY daily history. Features are backward-looking; the target is the sign of the next five-session return. <code>label_end_time</code> records each target’s horizon for purging.</p>
 <div id="2e6ef35e" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-22T10:54:03.766072Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-22T10:54:03.765923Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-22T10:54:03.792969Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-22T10:54:03.792664Z&quot;}}" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>spy <span class="op">=</span> q.data.datasets.load(<span class="st">"spy"</span>).tail(<span class="dv">520</span>).copy()</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>returns <span class="op">=</span> spy[<span class="st">"close"</span>].pct_change()</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>returns <span class="op">=</span> q.indicator.returns(spy[<span class="st">"close"</span>], periods<span class="op">=</span><span class="dv">1</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>features <span class="op">=</span> pd.DataFrame(</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    {</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"return_1d"</span>: returns,</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"momentum_20d"</span>: spy[<span class="st">"close"</span>].pct_change(<span class="dv">20</span>),</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"volatility_20d"</span>: returns.rolling(<span class="dv">20</span>).std(),</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"volume_ratio_20d"</span>: spy[<span class="st">"volume"</span>] <span class="op">/</span> spy[<span class="st">"volume"</span>].rolling(<span class="dv">20</span>).median(),</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"momentum_20d"</span>: q.indicator.momentum(spy[<span class="st">"close"</span>], window<span class="op">=</span><span class="dv">20</span>),</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"volatility_20d"</span>: q.indicator.rolling_volatility(returns, window<span class="op">=</span><span class="dv">20</span>),</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"volume_ratio_20d"</span>: q.indicator.volume_ratio(spy[<span class="st">"volume"</span>], window<span class="op">=</span><span class="dv">20</span>),</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    },</span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span>spy.index,</span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>).dropna()</span>
