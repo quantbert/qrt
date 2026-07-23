@@ -182,6 +182,16 @@ Boundary: `q.dataset` defines aligned row partitions;
 features but does not fetch market data, define split metadata, or express
 trading intent.
 
+### `q.ray`: distribute research workloads
+
+`q.ray` lazily exposes Ray for distributed data processing, model training,
+hyperparameter tuning, serving, and reinforcement learning. Importing QRT does
+not import Ray until the namespace is used.
+
+Boundary: Ray controls execution and resource allocation. The owning QRT
+modules still define the financial calculation, aligned dataset, model, and
+evaluation semantics that run on that infrastructure.
+
 ### `q.signal`: express investment intent
 
 `q.signal` is reserved for turning indicators, factors, model predictions, or

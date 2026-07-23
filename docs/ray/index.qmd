@@ -1,0 +1,68 @@
+---
+title: q.ray — Distributed computing
+---
+
+`q.ray` is QRT's lazy gateway to [Ray](https://docs.ray.io/). It exposes Ray's
+core API and the provider packages installed with QRT while avoiding Ray's
+startup cost during a plain `import qrt`.
+
+```python
+import qrt as q
+
+q.ray.init()
+
+@q.ray.remote
+def square(value):
+    return value**2
+
+results = q.ray.get([square.remote(value) for value in range(4)])
+q.ray.shutdown()
+```
+
+## Available APIs
+
+| Namespace | Use |
+|---|---|
+| `q.ray.data` | Distributed ingestion and tabular transforms |
+| `q.ray.train` | Distributed model training and checkpoints |
+| `q.ray.tune` | Hyperparameter search and schedulers |
+| `q.ray.serve` | Online model and application serving |
+| `q.ray.rllib` | Reinforcement learning |
+
+Core Ray attributes such as `q.ray.init`, `q.ray.remote`, `q.ray.get`, and
+`q.ray.shutdown` are delegated lazily as well. Accessing the first attribute
+imports Ray; calling `q.ray.init()` starts or connects to a Ray runtime.
+
+Framework-specific packages keep their canonical Ray imports. For example,
+QRT exposes `q.ray.train`, while PyTorch's trainer and model-preparation helper
+come from `ray.train.torch`:
+
+```python
+from ray.train.torch import TorchTrainer, prepare_model
+```
+
+Install QRT's PyTorch extra for that integration:
+
+```bash
+uv add "pyqrt[torch]"
+```
+
+See the [Ray Train tutorial](train.qmd) for a complete local example.
+
+## Runtime lifecycle
+
+Use `q.ray.init()` once in a script or notebook session. Ray can also connect
+to an existing cluster by address; configuration and authentication are Ray
+runtime concerns.
+
+```python
+q.ray.init(address="auto")
+```
+
+Call `q.ray.shutdown()` when an interactive session no longer needs the local
+runtime. Tasks submitted to Ray must receive serializable arguments, and code
+used by remote workers must be importable in each worker environment.
+
+The facade does not change Ray's behavior or compatibility guarantees. Refer
+to the [Ray documentation](https://docs.ray.io/en/latest/) for cluster setup,
+resource scheduling, fault tolerance, and provider-specific APIs.

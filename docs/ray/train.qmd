@@ -1,0 +1,126 @@
+---
+title: Ray Train tutorial
+---
+
+[Ray Train](https://docs.ray.io/en/latest/train/train.html) runs a training
+function on a configurable group of workers. This tutorial trains one PyTorch
+model with two local CPU workers and a sharded Ray Dataset.
+
+## Install
+
+Ray and its Train and Data providers are included with QRT. The example also
+uses QRT's optional PyTorch dependency:
+
+```bash
+uv add "pyqrt[torch]"
+```
+
+## Create a distributed dataset
+
+Start a local Ray runtime and convert a pandas frame into a Ray Dataset. In a
+real workflow, construct the frame from an already prepared training partition;
+do not fit transforms or choose rows independently inside each worker.
+
+```python
+import numpy as np
+import pandas as pd
+import qrt as q
+
+q.ray.init()
+
+frame = pd.DataFrame({"feature": np.linspace(-1.0, 1.0, 256)})
+frame["target"] = 3.0 * frame["feature"] + 0.5
+train_dataset = q.ray.data.from_pandas(frame)
+```
+
+## Define the worker function
+
+Ray executes `train_loop_per_worker` in a separate process on every worker.
+Imports needed by the worker therefore belong inside the function. Ray shards
+the named `train` dataset across workers, and `prepare_model` wraps the model
+for distributed gradient synchronization.
+
+```python
+def train_loop_per_worker(config):
+    import torch
+    import qrt as q
+    from ray.train.torch import prepare_model
+
+    model = prepare_model(torch.nn.Linear(1, 1))
+    optimizer = torch.optim.SGD(model.parameters(), lr=config["learning_rate"])
+    train_shard = q.ray.train.get_dataset_shard("train")
+
+    for epoch in range(config["epochs"]):
+        total_loss = 0.0
+        batches = 0
+
+        for batch in train_shard.iter_torch_batches(batch_size=32):
+            features = batch["feature"].float().reshape(-1, 1)
+            targets = batch["target"].float().reshape(-1, 1)
+
+            optimizer.zero_grad()
+            loss = torch.nn.functional.mse_loss(model(features), targets)
+            loss.backward()
+            optimizer.step()
+
+            total_loss += loss.item()
+            batches += 1
+
+        q.ray.train.report(
+            {"epoch": epoch + 1, "loss": total_loss / batches}
+        )
+
+    return {"epoch": epoch + 1, "loss": total_loss / batches}
+```
+
+Every worker must call `q.ray.train.report` the same number of times. Ray uses
+these reports for progress tracking. The return value from rank 0 is exposed on
+the result after training.
+
+## Run the trainer
+
+`ScalingConfig` controls worker count and accelerator resources. Start with CPU
+workers locally, then set `use_gpu=True` only when every worker can reserve a
+GPU.
+
+```python
+from ray.train.torch import TorchTrainer
+
+trainer = TorchTrainer(
+    train_loop_per_worker=train_loop_per_worker,
+    train_loop_config={"epochs": 10, "learning_rate": 0.1},
+    scaling_config=q.ray.train.ScalingConfig(
+        num_workers=2,
+        use_gpu=False,
+    ),
+    datasets={"train": train_dataset},
+)
+
+result = trainer.fit()
+print(result.return_value["loss"])
+
+q.ray.shutdown()
+```
+
+`trainer.fit()` blocks until training finishes or fails. The returned result
+contains the rank 0 return value, checkpoint information, and error state.
+Wrap runtime use in `try`/`finally` when cleanup must happen after failures:
+
+```python
+q.ray.init()
+try:
+    result = trainer.fit()
+finally:
+    q.ray.shutdown()
+```
+
+## Scale beyond the laptop
+
+The worker function does not change when moving to a cluster. Connect with
+`q.ray.init(address="auto")`, ensure the project and dependencies are available
+on every worker, and adjust `ScalingConfig` to resources the cluster can
+actually reserve.
+
+For market models, preserve the temporal split before conversion to a Ray
+Dataset. Ray distributes computation; it does not prevent leakage from fitting
+on future rows or mixing evaluation data into the training partition.

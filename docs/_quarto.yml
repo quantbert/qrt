@@ -202,6 +202,11 @@ website:
           contents:
             - text: "Roadmap"
               href: model/roadmap.qmd
+        - section: "q.ray — Distributed computing"
+          href: ray/index.qmd
+          contents:
+            - text: "Ray Train tutorial"
+              href: ray/train.qmd
         - section: "q.env — Environment"
           href: env/index.ipynb
           contents:
