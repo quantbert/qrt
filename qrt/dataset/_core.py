@@ -11,6 +11,39 @@ import joblib
 import pandas as pd
 
 Target = pd.Series | pd.DataFrame
+_COMPONENTS = ("X", "y", "sample_weight", "metadata")
+
+
+def _to_pandas(
+    components: Mapping[str, pd.Series | pd.DataFrame | None],
+    selected: str | Sequence[str],
+    *,
+    start: Any = None,
+    end: Any = None,
+) -> pd.DataFrame:
+    names = (selected,) if isinstance(selected, str) else tuple(selected)
+    if not names:
+        raise ValueError("components must contain at least one component name")
+    unknown = set(names) - set(_COMPONENTS)
+    if unknown:
+        raise ValueError(f"unknown dataset components: {sorted(unknown)}")
+
+    frames = []
+    for name in names:
+        value = components[name]
+        if value is None:
+            continue
+        if isinstance(value, pd.Series):
+            value = value.to_frame(name=value.name or name)
+        frames.append(value)
+    if not frames:
+        raise ValueError("none of the selected components are present")
+
+    result = pd.concat(frames, axis="columns", sort=False)
+    duplicates = result.columns[result.columns.duplicated()].unique().tolist()
+    if duplicates:
+        raise ValueError(f"dataset components contain duplicate columns: {duplicates}")
+    return result.loc[start:end]
 
 
 def _frozen_mapping(values: Mapping[str, Any]) -> Mapping[str, Any]:
@@ -155,6 +188,26 @@ class DatasetView:
         if self.dataset.metadata is None:
             return None
         return self.dataset.metadata.loc[self.index]
+
+    def to_pandas(
+        self,
+        components: str | Sequence[str] = _COMPONENTS,
+        *,
+        start: Any = None,
+        end: Any = None,
+    ) -> pd.DataFrame:
+        """Return selected partition components as one optionally bounded frame."""
+        return _to_pandas(
+            {
+                "X": self.X,
+                "y": self.y,
+                "sample_weight": self.sample_weight,
+                "metadata": self.metadata,
+            },
+            components,
+            start=start,
+            end=end,
+        )
 
     def __len__(self) -> int:
         return int(self.split.membership.eq(self.partition.name).sum())
@@ -356,6 +409,26 @@ class Dataset:
     def is_split(self) -> bool:
         """Return whether at least one split scheme is attached."""
         return bool(self.splits)
+
+    def to_pandas(
+        self,
+        components: str | Sequence[str] = _COMPONENTS,
+        *,
+        start: Any = None,
+        end: Any = None,
+    ) -> pd.DataFrame:
+        """Return selected aligned components as one optionally bounded frame."""
+        return _to_pandas(
+            {
+                "X": self.X,
+                "y": self.y,
+                "sample_weight": self.sample_weight,
+                "metadata": self.metadata,
+            },
+            components,
+            start=start,
+            end=end,
+        )
 
     def _validate_index(self, name: str, index: pd.Index) -> None:
         if not index.equals(self.index):

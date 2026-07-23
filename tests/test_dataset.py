@@ -37,6 +37,41 @@ def test_dataset_keeps_all_components_aligned_without_requiring_a_split(dataset)
     assert dict(dataset.splits) == {}
 
 
+def test_dataset_to_pandas_combines_selected_components_and_index_span(dataset):
+    result = dataset.to_pandas(
+        components=("X", "y", "metadata"),
+        start="2024-01-02",
+        end="2024-01-04",
+    )
+
+    expected = pd.concat(
+        [dataset.X, dataset.y, dataset.metadata], axis="columns", sort=False
+    ).loc["2024-01-02":"2024-01-04"]
+    pd.testing.assert_frame_equal(result, expected)
+
+
+def test_dataset_view_to_pandas_materializes_only_partition_rows(dataset):
+    split = dataset.split(q.dataset.TemporalSplit(train_size=3, test_size=2))
+
+    result = split.train.to_pandas(("X", "sample_weight"))
+
+    expected = pd.concat(
+        [dataset.X.iloc[:3], dataset.sample_weight.iloc[:3]],
+        axis="columns",
+        sort=False,
+    )
+    pd.testing.assert_frame_equal(result, expected)
+
+
+def test_dataset_to_pandas_skips_absent_components_and_rejects_duplicate_columns():
+    features = pd.DataFrame({"value": [1.0, 2.0]})
+    pd.testing.assert_frame_equal(q.dataset.Dataset(features).to_pandas(), features)
+
+    duplicate_target = pd.Series([0, 1], name="value")
+    with pytest.raises(ValueError, match="duplicate columns"):
+        q.dataset.Dataset(features, y=duplicate_target).to_pandas()
+
+
 def test_dataset_aligns_components_on_named_keys():
     datetimes = pd.to_datetime(["2024-01-01", "2024-01-02"])
     features = pd.DataFrame(

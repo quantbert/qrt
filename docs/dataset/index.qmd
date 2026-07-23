@@ -53,6 +53,29 @@ Omit `metadata` when no downstream operation needs extra row context:
 dataset = q.dataset.Dataset(X=feature_frame, y=labels)
 ```
 
+### Combined frames
+
+Use `to_pandas()` to combine the available aligned components into one pandas
+DataFrame. The name makes the concrete return type explicit; `materialize`
+would suggest that `Dataset` is lazy, but its components are already in memory.
+
+```python
+complete = dataset.to_pandas()
+
+features_and_target = dataset.to_pandas(
+    components=("X", "y"),
+    start="2023-01-01",
+    end="2023-12-31",
+)
+```
+
+`components` accepts `"X"`, `"y"`, `"sample_weight"`, and `"metadata"`.
+Missing optional components are skipped, and `start` and `end` are inclusive
+index bounds. Partition views provide the same method, so
+`split.train.to_pandas()` combines only training rows. Output column names must
+be unique across the selected components; select fewer components or rename
+overlapping columns before combining them.
+
 Splits are optional, so the same object can be used for exploration, inference,
 or unsupervised learning before any partitioning is needed:
 
