@@ -71,6 +71,19 @@ assert 'qrt.indicator.pandas_ta' not in sys.modules
     subprocess.run([sys.executable, "-c", code], check=True)
 
 
+def test_ray_namespace_is_lazy_and_delegates_to_ray():
+    code = """
+import sys
+import qrt as q
+assert 'ray' not in sys.modules
+assert q.ray.__all__ == ['data', 'rllib', 'serve', 'train', 'tune']
+assert q.ray.__version__
+assert 'ray' in sys.modules
+"""
+
+    subprocess.run([sys.executable, "-c", code], check=True)
+
+
 def test_indicator_and_cross_section_boundaries():
     series = pd.Series([1.0, 2.0, 3.0, 4.0], name="close")
 
