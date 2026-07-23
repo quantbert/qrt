@@ -3,6 +3,8 @@ title: q.dataset Roadmap
 ---
 
 No open work is currently listed. The initial dataset lifecycle now includes
-fixed temporal partitions, sklearn-backed expanding and rolling folds,
-label-horizon purging, row/session and timedelta embargoes, persistence,
-diagnostics, leakage audits, and split-aware transformation pipelines.
+strict index or named-key assembly, optional named partitions, fixed temporal
+partitions, sklearn-backed expanding and rolling folds, dataset-bound fold
+facades, label-horizon purging, row/session and timedelta embargoes,
+persistence, diagnostics, leakage audits, and split-aware transformation
+pipelines.

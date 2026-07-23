@@ -1,4 +1,8 @@
-"""Sample uniqueness and weighting from overlapping label intervals."""
+"""Sample uniqueness and weighting from overlapping label intervals.
+
+Event-level outputs preserve the event start time as their pandas index so
+weights and metadata align directly with event-indexed labels and features.
+"""
 
 from __future__ import annotations
 

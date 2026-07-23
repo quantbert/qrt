@@ -76,7 +76,7 @@ source = aapl.rename_axis("datetime").reset_index().assign(symbol="AAPL")
 model_inputs = aapl[["close"]].assign(
     sma_20=q.indicator.sma(aapl["close"], 20),
 ).dropna()
-dataset = q.dataset.build(features=model_inputs)
+dataset = q.dataset.Dataset(X=model_inputs)
 ```
 
 ## Namespace roles

@@ -1,3 +1,5 @@
 """Numeric feature normalization."""
 
-__all__ = []
+from sklearn.preprocessing import StandardScaler
+
+__all__ = ["StandardScaler"]

@@ -10,12 +10,12 @@ import qrt as q
 @pytest.fixture
 def dataset():
     index = pd.date_range("2024-01-01", periods=5, name="event_time")
-    return q.dataset.build(
-        features=pd.DataFrame(
+    return q.dataset.Dataset(
+        X=pd.DataFrame(
             {"momentum": [0.1, 0.2, -0.1, 0.3, 0.0]}, index=index
         ),
-        labels=pd.Series([1, 1, 0, 1, 0], index=index, name="target"),
-        sample_weights=pd.Series(
+        y=pd.Series([1, 1, 0, 1, 0], index=index, name="target"),
+        sample_weight=pd.Series(
             [1.0, 0.8, 1.2, 1.0, 0.9], index=index, name="sample_weight"
         ),
         metadata=pd.DataFrame(
@@ -28,12 +28,81 @@ def dataset():
     )
 
 
-def test_build_keeps_all_components_aligned_without_requiring_a_split(dataset):
+def test_dataset_keeps_all_components_aligned_without_requiring_a_split(dataset):
     pd.testing.assert_index_equal(dataset.X.index, dataset.y.index)
     pd.testing.assert_index_equal(dataset.X.index, dataset.sample_weight.index)
     pd.testing.assert_index_equal(dataset.X.index, dataset.metadata.index)
     assert len(dataset) == 5
+    assert not dataset.is_split
     assert dict(dataset.splits) == {}
+
+
+def test_dataset_aligns_components_on_named_keys():
+    datetimes = pd.to_datetime(["2024-01-01", "2024-01-02"])
+    features = pd.DataFrame(
+        {
+            "symbol": ["A", "B"],
+            "datetime": datetimes,
+            "momentum": [0.1, 0.2],
+        }
+    )
+    labels = pd.DataFrame(
+        {
+            "symbol": ["B", "A"],
+            "datetime": datetimes[::-1],
+            "target": [1, 0],
+        }
+    )
+    keyed_index = pd.MultiIndex.from_arrays(
+        [["B", "A"], datetimes[::-1]], names=["symbol", "datetime"]
+    )
+    sample_weights = pd.Series([2.0, 1.0], index=keyed_index, name="weight")
+    metadata = pd.DataFrame(
+        {
+            "symbol": ["B", "A"],
+            "datetime": datetimes[::-1],
+            "sector": ["finance", "technology"],
+        }
+    )
+
+    result = q.dataset.Dataset(
+        X=features,
+        y=labels,
+        sample_weight=sample_weights,
+        metadata=metadata,
+        on=["symbol", "datetime"],
+    )
+
+    expected_index = pd.MultiIndex.from_frame(features[["symbol", "datetime"]])
+    pd.testing.assert_index_equal(result.index, expected_index)
+    pd.testing.assert_frame_equal(result.X, features.set_index(["symbol", "datetime"]))
+    assert result.y["target"].tolist() == [0, 1]
+    assert result.sample_weight.tolist() == [1.0, 2.0]
+    assert result.metadata["sector"].tolist() == ["technology", "finance"]
+
+
+def test_dataset_on_rejects_duplicate_or_mismatched_keys():
+    duplicate_features = pd.DataFrame(
+        {"symbol": ["A", "A"], "datetime": [1, 1], "value": [1.0, 2.0]}
+    )
+    with pytest.raises(ValueError, match="X keys must be unique"):
+        q.dataset.Dataset(
+            X=duplicate_features,
+            on=["symbol", "datetime"],
+        )
+
+    features = pd.DataFrame(
+        {"symbol": ["A", "B"], "datetime": [1, 2], "value": [1.0, 2.0]}
+    )
+    labels = pd.DataFrame(
+        {"symbol": ["A", "C"], "datetime": [1, 3], "target": [0, 1]}
+    )
+    with pytest.raises(ValueError, match="y keys must exactly match"):
+        q.dataset.Dataset(
+            X=features,
+            y=labels,
+            on=["symbol", "datetime"],
+        )
 
 
 def test_dataset_rejects_components_with_different_or_duplicate_indexes():
@@ -41,9 +110,9 @@ def test_dataset_rejects_components_with_different_or_duplicate_indexes():
     features = pd.DataFrame({"x": [1.0, 2.0]}, index=index)
 
     with pytest.raises(ValueError, match="exactly the same index"):
-        q.dataset.build(
-            features=features,
-            labels=pd.Series([0, 1], index=pd.RangeIndex(1, 3)),
+        q.dataset.Dataset(
+            X=features,
+            y=pd.Series([0, 1], index=pd.RangeIndex(1, 3)),
         )
     with pytest.raises(ValueError, match="must be unique"):
         q.dataset.Dataset(pd.DataFrame({"x": [1.0, 2.0]}, index=[0, 0]))
@@ -68,6 +137,9 @@ def test_with_split_returns_aligned_partition_views_without_mutating_source(data
     result = dataset.with_split(split)
 
     assert dict(dataset.splits) == {}
+    assert result.is_split
+    assert tuple(result.partitions) == ("train", "validation", "test")
+    assert result["train"].index.equals(result.train.index)
     assert result.train.dataset is result
     assert result.train.split.fit_partitions == ("train",)
     assert result.train.index.tolist() == dataset.index[:2].tolist()
@@ -109,6 +181,15 @@ def test_named_scheme_supports_arbitrary_partitions_and_folds(dataset):
 
     result = dataset.with_split(scheme)
 
+    assert list(scheme) == [first, second]
+    assert [fold.name for fold in result.splits["walk_forward"]] == [
+        "fold_1",
+        "fold_2",
+    ]
+    bound_fold = result.splits["walk_forward"]["fold_2"]
+    assert isinstance(bound_fold, q.dataset.Fold)
+    assert tuple(bound_fold.partitions) == ("estimation", "calibration", "live")
+    assert bound_fold["calibration"].index.tolist() == [dataset.index[3]]
     assert result.splits["walk_forward"].metadata["method"] == "expanding"
     assert first.fit_partitions == ("estimation", "calibration")
     assert result.partition(
@@ -135,14 +216,47 @@ def test_temporal_split_creates_conventional_views_and_excludes_later_rows():
     index = pd.date_range("2024-01-01", periods=8)
     dataset = q.dataset.Dataset(pd.DataFrame({"x": range(8)}, index=index))
 
-    result = q.dataset.TemporalSplit(
-        train_end=index[2], validation_end=index[4], test_end=index[6]
-    ).apply(dataset)
+    result = dataset.split(
+        q.dataset.TemporalSplit(
+            train_end=index[2], validation_end=index[4], test_end=index[6]
+        )
+    )
 
     assert result.train.index.tolist() == index[:3].tolist()
     assert result.validation.index.tolist() == index[3:5].tolist()
     assert result.test.index.tolist() == index[5:7].tolist()
     assert result.partition("excluded").index.tolist() == [index[7]]
+
+
+def test_temporal_split_accepts_proportional_sizes_and_infers_remainder():
+    index = pd.date_range("2024-01-01", periods=20)
+    dataset = q.dataset.Dataset(pd.DataFrame({"x": range(20)}, index=index))
+
+    result = dataset.split(
+        q.dataset.TemporalSplit(
+            train_size=0.70,
+            validation_size=0.15,
+            test_size=0.15,
+        )
+    )
+    inferred = dataset.split(
+        q.dataset.TemporalSplit(train_size=14, validation_size=3)
+    )
+
+    assert result.train.index.tolist() == index[:14].tolist()
+    assert result.validation.index.tolist() == index[14:17].tolist()
+    assert result.test.index.tolist() == index[17:].tolist()
+    assert inferred.test.index.tolist() == index[17:].tolist()
+    assert result.train.split.metadata["train_end"] == index[13]
+
+
+def test_temporal_split_size_mode_rejects_ambiguous_or_invalid_sizes(dataset):
+    with pytest.raises(ValueError, match="boundaries and sizes cannot be combined"):
+        q.dataset.TemporalSplit(train_end=dataset.index[1], test_size=2).split(dataset)
+    with pytest.raises(ValueError, match="float sizes must sum to 1"):
+        q.dataset.TemporalSplit(train_size=0.7, test_size=0.2).split(dataset)
+    with pytest.raises(ValueError, match="cannot be mixed"):
+        q.dataset.TemporalSplit(train_size=3, test_size=0.4).split(dataset)
 
 
 def test_time_series_split_matches_sklearn_and_supports_rolling_windows():
@@ -172,8 +286,8 @@ def test_time_series_split_matches_sklearn_and_supports_rolling_windows():
 
 def test_purged_time_series_split_removes_overlapping_labels_and_embargo_rows():
     index = pd.date_range("2024-01-01", periods=12)
-    dataset = q.dataset.build(
-        features=pd.DataFrame({"x": range(12)}, index=index),
+    dataset = q.dataset.Dataset(
+        X=pd.DataFrame({"x": range(12)}, index=index),
         metadata=pd.DataFrame(
             {"label_end_time": index + pd.Timedelta(days=2)}, index=index
         ),
@@ -193,8 +307,8 @@ def test_purged_time_series_split_removes_overlapping_labels_and_embargo_rows():
 
 def test_purged_time_series_split_accepts_timedelta_embargo():
     index = pd.date_range("2024-01-01", periods=12)
-    dataset = q.dataset.build(
-        features=pd.DataFrame({"x": range(12)}, index=index),
+    dataset = q.dataset.Dataset(
+        X=pd.DataFrame({"x": range(12)}, index=index),
         metadata=pd.DataFrame({"label_end_time": index}, index=index),
     )
 

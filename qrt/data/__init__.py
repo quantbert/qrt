@@ -2,6 +2,9 @@
 sources, and prepackaged sample datasets -- everything data-related lives
 under this subpackage.
 
+Time-series OHLCV frames use their pandas index as observation-row identity;
+downstream measurements preserve it for pandas alignment.
+
     import qrt as q
 
     df = q.data.load("ohlc.parquet")

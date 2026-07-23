@@ -11,6 +11,10 @@ title: Data
 | `q.data.local` (`q.data.load`/`q.data.save`) | load/save local parquet or csv files |
 | `q.data.sources` | downloadable market data vendors and generic backends, one submodule each |
 
+For time-series OHLCV tables, the pandas index identifies observation rows,
+normally by `datetime`. Downstream indicators preserve this index, so columns
+computed from the same observations align naturally in pandas operations.
+
 ## Cleaning market data
 
 `q.data.clean.canonicalize_ohlcv` converts common column names such as

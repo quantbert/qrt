@@ -2,8 +2,16 @@
 title: Feature scaling
 ---
 
-`q.transform.scale` is reserved for min-max, standard, robust, max-absolute, and
-related numeric scaling.
+`q.transform.scale` provides sklearn-compatible numeric scaling transformers.
+Use them inside `q.transform.Pipeline` so learned parameters are fitted only on
+fit partitions:
 
-The namespace is currently empty. Learned scaling parameters must be fitted
-only on fit partitions.
+```python
+pipeline = q.transform.Pipeline(
+	[("scale", q.transform.scale.StandardScaler())]
+)
+scaled = pipeline.fit_transform(dataset)
+```
+
+`StandardScaler` is provided by scikit-learn and exposed through the QRT
+namespace for a consistent public API.

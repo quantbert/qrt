@@ -2,9 +2,25 @@
 title: Missing data
 ---
 
-`q.transform.impute` is reserved for fitted missing-data handling, including
-simple imputers, KNN, and MICE.
+`q.transform.impute` provides sklearn-compatible fitted missing-data handling:
 
-The namespace is currently empty. Fitted imputers must learn only from fit
-partitions. Deterministic gap detection and data canonicalization belong in
-`q.data`.
+| Transformer | Purpose |
+|---|---|
+| `SimpleImputer` | Univariate constant or summary-statistic imputation |
+| `KNNImputer` | Nearest-neighbor imputation |
+| `IterativeImputer` | Multivariate chained-equation imputation (MICE) |
+| `MissingIndicator` | Binary missing-value indicators |
+
+Use these transformers inside `q.transform.Pipeline` so learned imputation
+state is fitted only on fit partitions:
+
+```python
+pipeline = q.transform.Pipeline(
+	[("impute", q.transform.impute.SimpleImputer(strategy="median"))]
+)
+imputed = pipeline.fit_transform(dataset)
+```
+
+The transformers are provided by scikit-learn and exposed through the QRT
+namespace for a consistent public API. Deterministic gap detection and data
+canonicalization belong in `q.data`.

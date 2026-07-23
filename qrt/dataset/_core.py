@@ -1,11 +1,11 @@
 """Aligned machine-learning datasets and split metadata."""
 
 import warnings
-from collections.abc import Mapping, Sequence
+from collections.abc import Iterator, Mapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
 from types import MappingProxyType
-from typing import Any
+from typing import Any, Protocol
 
 import joblib
 import pandas as pd
@@ -106,6 +106,18 @@ class SplitScheme:
                 return split
         raise KeyError(f"unknown split {fold!r}")
 
+    def __iter__(self) -> Iterator[Split]:
+        return iter(self.splits)
+
+    def __len__(self) -> int:
+        return len(self.splits)
+
+
+class DatasetSplitter(Protocol):
+    """Structural interface implemented by dataset splitters."""
+
+    def split(self, dataset: "Dataset") -> Split | SplitScheme: ...
+
 
 class DatasetView:
     """A partition-backed view over one aligned :class:`Dataset`."""
@@ -148,8 +160,137 @@ class DatasetView:
         return int(self.split.membership.eq(self.partition.name).sum())
 
 
+class Fold:
+    """A dataset facade bound to one split within a split scheme."""
+
+    def __init__(
+        self,
+        dataset: "Dataset",
+        scheme: SplitScheme,
+        split: Split,
+    ) -> None:
+        self.dataset = dataset
+        self.scheme = scheme
+        self.split = split
+
+    @property
+    def name(self) -> str:
+        """Return this fold's split name."""
+        return self.split.name
+
+    @property
+    def X(self) -> pd.DataFrame:
+        """Return the complete feature frame governed by this fold."""
+        return self.dataset.X
+
+    @property
+    def y(self) -> Target | None:
+        """Return the complete aligned target governed by this fold."""
+        return self.dataset.y
+
+    @property
+    def sample_weight(self) -> pd.Series | None:
+        """Return the complete aligned sample weights governed by this fold."""
+        return self.dataset.sample_weight
+
+    @property
+    def metadata(self) -> pd.DataFrame | None:
+        """Return the complete row metadata governed by this fold."""
+        return self.dataset.metadata
+
+    @property
+    def index(self) -> pd.Index:
+        """Return the parent dataset's canonical row index."""
+        return self.dataset.index
+
+    @property
+    def is_split(self) -> bool:
+        """Return ``True`` because this facade is bound to one split."""
+        return True
+
+    @property
+    def partitions(self) -> Mapping[str, DatasetView]:
+        """Return named partition views for this fold."""
+        return MappingProxyType(
+            {
+                partition.name: DatasetView(self.dataset, self.split, partition)
+                for partition in self.split.partitions
+            }
+        )
+
+    def partition(self, name: str) -> DatasetView:
+        """Return one named partition view from this fold."""
+        return DatasetView(self.dataset, self.split, self.split.partition(name))
+
+    @property
+    def train(self) -> DatasetView:
+        """Return this fold's conventional ``train`` partition."""
+        return self.partition("train")
+
+    @property
+    def validation(self) -> DatasetView:
+        """Return this fold's conventional ``validation`` partition."""
+        return self.partition("validation")
+
+    @property
+    def test(self) -> DatasetView:
+        """Return this fold's conventional ``test`` partition."""
+        return self.partition("test")
+
+    def __getitem__(self, name: str) -> DatasetView:
+        return self.partition(name)
+
+    def __len__(self) -> int:
+        return len(self.dataset)
+
+
+class _BoundSplitScheme:
+    """A split scheme whose iteration produces dataset-bound folds."""
+
+    def __init__(self, dataset: "Dataset", scheme: SplitScheme) -> None:
+        self.dataset = dataset
+        self.scheme = scheme
+
+    @property
+    def name(self) -> str:
+        return self.scheme.name
+
+    @property
+    def metadata(self) -> Mapping[str, Any]:
+        return self.scheme.metadata
+
+    @property
+    def splits(self) -> Sequence[Split]:
+        return self.scheme.splits
+
+    def split(self, fold: int | str = 0) -> Split:
+        """Return the raw split definition by position or name."""
+        return self.scheme.split(fold)
+
+    def fold(self, fold: int | str = 0) -> Fold:
+        """Return a dataset facade bound to one split."""
+        return Fold(self.dataset, self.scheme, self.scheme.split(fold))
+
+    def __iter__(self) -> Iterator[Fold]:
+        for split in self.scheme:
+            yield Fold(self.dataset, self.scheme, split)
+
+    def __getitem__(self, fold: int | str) -> Fold:
+        return self.fold(fold)
+
+    def __len__(self) -> int:
+        return len(self.scheme)
+
+
 class Dataset:
-    """One aligned collection of model inputs, targets, weights, and metadata."""
+    """One aligned collection of model inputs, targets, weights, and metadata.
+
+    The pandas index is the dataset's row identity: ``X``, ``y``,
+    ``sample_weight``, and ``metadata`` must describe the same indexed rows.
+    When ``on`` is provided, each component must expose those keys either as
+    DataFrame columns or as its complete named index. Key columns become the
+    canonical dataset index, and component rows are reordered to ``X`` order.
+    """
 
     def __init__(
         self,
@@ -158,10 +299,24 @@ class Dataset:
         sample_weight: pd.Series | None = None,
         metadata: pd.DataFrame | None = None,
         *,
-        splits: Mapping[str, SplitScheme] | None = None,
+        on: str | Sequence[str] | None = None,
+        splits: Mapping[str, SplitScheme | _BoundSplitScheme] | None = None,
     ) -> None:
         if not isinstance(X, pd.DataFrame):
             raise TypeError("X must be a pandas DataFrame")
+        if on is not None:
+            keys = (on,) if isinstance(on, str) else tuple(on)
+            if not keys or any(not isinstance(key, str) or not key for key in keys):
+                raise ValueError("on must contain at least one non-empty key name")
+            if len(keys) != len(set(keys)):
+                raise ValueError("on key names must be unique")
+
+            X = _with_key_index("X", X, keys)
+            y = _align_on_keys("y", y, keys, X.index)
+            sample_weight = _align_on_keys(
+                "sample_weight", sample_weight, keys, X.index
+            )
+            metadata = _align_on_keys("metadata", metadata, keys, X.index)
         if not X.index.is_unique:
             raise ValueError("dataset index must be unique")
         self.X = X
@@ -170,18 +325,37 @@ class Dataset:
             "sample_weight", sample_weight, (pd.Series,)
         )
         self.metadata = self._validate_aligned("metadata", metadata, (pd.DataFrame,))
-        schemes = dict(splits or {})
-        for name, scheme in schemes.items():
+        schemes = {}
+        for name, candidate in dict(splits or {}).items():
+            scheme = (
+                candidate.scheme
+                if isinstance(candidate, _BoundSplitScheme)
+                else candidate
+            )
+            if not isinstance(scheme, SplitScheme):
+                raise TypeError("splits must contain SplitScheme values")
             if name != scheme.name:
                 raise ValueError("split scheme mapping keys must match scheme names")
             for split in scheme.splits:
                 self._validate_index("split membership", split.membership.index)
-        self.splits = MappingProxyType(schemes)
+            schemes[name] = scheme
+        self._split_schemes = MappingProxyType(schemes)
+        self.splits = MappingProxyType(
+            {
+                name: _BoundSplitScheme(self, scheme)
+                for name, scheme in schemes.items()
+            }
+        )
 
     @property
     def index(self) -> pd.Index:
         """Return the canonical row index shared by every dataset component."""
         return self.X.index
+
+    @property
+    def is_split(self) -> bool:
+        """Return whether at least one split scheme is attached."""
+        return bool(self.splits)
 
     def _validate_index(self, name: str, index: pd.Index) -> None:
         if not index.equals(self.index):
@@ -203,7 +377,7 @@ class Dataset:
             if isinstance(split, SplitScheme)
             else SplitScheme([split], name="default")
         )
-        schemes = dict(self.splits)
+        schemes = dict(self._split_schemes)
         schemes[scheme.name] = scheme
         return Dataset(
             self.X,
@@ -212,6 +386,13 @@ class Dataset:
             self.metadata,
             splits=schemes,
         )
+
+    def split(self, splitter: DatasetSplitter) -> "Dataset":
+        """Return a dataset with the split or scheme produced by ``splitter``."""
+        result = splitter.split(self)
+        if not isinstance(result, (Split, SplitScheme)):
+            raise TypeError("splitter.split() must return a Split or SplitScheme")
+        return self.with_split(result)
 
     def save(self, path: str | Path) -> None:
         """Serialize the aligned dataset and all split metadata with joblib."""
@@ -308,6 +489,21 @@ class Dataset:
         split = self.splits[scheme].split(fold)
         return DatasetView(self, split, split.partition(name))
 
+    def fold(
+        self,
+        scheme: str,
+        fold: int | str = 0,
+    ) -> Fold:
+        """Return a dataset facade bound to one fold in ``scheme``."""
+        if scheme not in self.splits:
+            raise KeyError(f"unknown split scheme {scheme!r}")
+        return self.splits[scheme].fold(fold)
+
+    @property
+    def partitions(self) -> Mapping[str, DatasetView]:
+        """Return named views from the first split of the default scheme."""
+        return self.fold("default").partitions
+
     @property
     def train(self) -> DatasetView:
         """Return the default split's conventional ``train`` partition."""
@@ -323,16 +519,40 @@ class Dataset:
         """Return the default split's conventional ``test`` partition."""
         return self.partition("test")
 
+    def __getitem__(self, name: str) -> DatasetView:
+        return self.partition(name)
+
     def __len__(self) -> int:
         return len(self.X)
 
 
-def build(
-    *,
-    features: pd.DataFrame,
-    labels: Target | None = None,
-    sample_weights: pd.Series | None = None,
-    metadata: pd.DataFrame | None = None,
-) -> Dataset:
-    """Assemble already-aligned research outputs into a :class:`Dataset`."""
-    return Dataset(features, labels, sample_weights, metadata)
+def _with_key_index(
+    name: str,
+    value: pd.Series | pd.DataFrame,
+    keys: tuple[str, ...],
+) -> pd.Series | pd.DataFrame:
+    if isinstance(value, pd.DataFrame) and all(key in value.columns for key in keys):
+        keyed = value.set_index(list(keys))
+    elif tuple(value.index.names) == keys:
+        keyed = value.copy()
+    else:
+        raise ValueError(
+            f"{name} must contain key columns {list(keys)!r} or use them as its index"
+        )
+    if not keyed.index.is_unique:
+        raise ValueError(f"{name} keys must be unique")
+    return keyed
+
+
+def _align_on_keys(
+    name: str,
+    value: pd.Series | pd.DataFrame | None,
+    keys: tuple[str, ...],
+    index: pd.Index,
+) -> pd.Series | pd.DataFrame | None:
+    if value is None:
+        return None
+    keyed = _with_key_index(name, value, keys)
+    if len(index.difference(keyed.index)) or len(keyed.index.difference(index)):
+        raise ValueError(f"{name} keys must exactly match feature keys")
+    return keyed.reindex(index)

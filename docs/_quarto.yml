@@ -162,6 +162,10 @@ website:
         - section: "q.dataset — ML datasets"
           href: dataset/index.qmd
           contents:
+            - text: "Temporal split"
+              href: dataset/temporal_split.ipynb
+            - text: "Time-series split"
+              href: dataset/time_series_split.ipynb
             - text: "Splitting datasets"
               href: dataset/splitting.ipynb
             - text: "Roadmap"

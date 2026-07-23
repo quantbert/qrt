@@ -20,9 +20,36 @@ TRANSFORM_NAMESPACES = [
 
 
 def test_transform_namespaces_are_lightweight_packages():
+    expected_exports = {
+        "encode": [],
+        "impute": [
+            "IterativeImputer",
+            "KNNImputer",
+            "MissingIndicator",
+            "SimpleImputer",
+        ],
+        "outlier": [],
+        "reduction": [],
+        "scale": ["StandardScaler"],
+        "selection": [],
+    }
+
     for name in TRANSFORM_NAMESPACES:
         namespace = getattr(q.transform, name)
-        assert namespace.__all__ == []
+        assert namespace.__all__ == expected_exports[name]
+
+
+def test_imputation_transformers_are_available_from_q_transform():
+    assert q.transform.impute.SimpleImputer(strategy="median").strategy == "median"
+    assert isinstance(q.transform.impute.KNNImputer(), q.transform.impute.KNNImputer)
+    assert isinstance(
+        q.transform.impute.IterativeImputer(),
+        q.transform.impute.IterativeImputer,
+    )
+    assert isinstance(
+        q.transform.impute.MissingIndicator(),
+        q.transform.impute.MissingIndicator,
+    )
 
 
 def test_preprocess_namespace_is_removed():

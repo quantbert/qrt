@@ -23,6 +23,13 @@ All functions operate on one ordered instrument at a time, preserve event
 timestamps, and reject duplicate or unsorted indexes. For panel data, group by
 `symbol` explicitly and label each history independently.
 
+Event-level tables use the event **start** time as their pandas index, named
+`event_time`. That index is the row key: labels, sample weights, metadata, and
+features selected at the same event times align automatically in pandas joins
+and are validated as the same rows by `q.dataset.Dataset`. Outcome times such
+as `touch_time` and `end_time` remain columns because they describe when an
+event resolves, not which row it is.
+
 ## Function map
 
 ### Event selection and time limits
@@ -128,7 +135,7 @@ later. Events whose vertical horizon extends beyond available data are dropped
 by default; set `drop_censored=False` to retain them with a missing label and a
 `"censored"` barrier.
 
-The result is indexed by `event_time` and contains:
+The result is indexed by event start time, named `event_time`, and contains:
 
 | Column | Meaning |
 |---|---|

@@ -72,7 +72,9 @@ def vertical_barriers(
             observation.
 
     Returns:
-        Series indexed by event time and containing vertical-barrier times.
+        Series indexed by event start time, named ``event_time``, and
+        containing vertical-barrier times. The index is the pandas alignment
+        key for other event-indexed objects.
     """
     validate_index(observations, "observations")
     event_times = event_index(events, observations)
@@ -150,7 +152,9 @@ def fixed_horizon(
         drop_censored: Drop events whose horizon extends past available data.
 
     Returns:
-        DataFrame with end time, realized return, threshold, and label.
+        DataFrame indexed by event start time, named ``event_time``, with end
+        time, realized return, threshold, and label. The index aligns rows with
+        event-time features and metadata in pandas operations.
     """
     close = numeric_series(prices, "prices", positive=True)
     _validate_drop_censored(drop_censored)
@@ -239,9 +243,10 @@ def triple_barrier(
         drop_censored: Drop events without a complete vertical horizon.
 
     Returns:
-        Event-indexed DataFrame describing barriers, realized returns, and
-        labels. Side-aware results also include ``side`` and
-        ``adjusted_return``.
+        DataFrame indexed by event start time, named ``event_time``, describing
+        barriers, realized returns, and labels. The index aligns rows with
+        event-time features and metadata in pandas operations. Side-aware
+        results also include ``side`` and ``adjusted_return``.
     """
     close = numeric_series(prices, "prices", positive=True)
     _validate_drop_censored(drop_censored)

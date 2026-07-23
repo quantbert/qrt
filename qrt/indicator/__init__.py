@@ -2,7 +2,8 @@
 
 Native indicators are flat under ``q.indicator``. Provider catalogs remain
 explicit as ``q.indicator.talib`` and ``q.indicator.pandas_ta`` and are imported
-only when accessed.
+only when accessed. Indicator outputs preserve their input pandas index so
+derived columns align by observation when assigned or joined.
 """
 
 from importlib import import_module

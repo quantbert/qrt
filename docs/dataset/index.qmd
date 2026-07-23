@@ -7,44 +7,135 @@ under one canonical pandas index. It is the object that flows from feature and
 label research into fitted transformations and models; it is not another data
 acquisition stage.
 
+The index is row identity, not just a display label. `X`, `y`, `sample_weight`,
+and `metadata` must describe the same indexed rows, so pandas joins and dataset
+partitioning stay synchronized. For event-based labels, this canonical index is
+typically the label table's `event_time` index.
+
 This singular namespace is distinct from `q.data.datasets`, which contains
 bundled sample market data.
 
 ## Build an aligned dataset
 
 ```python
-dataset = q.dataset.build(
-    features=feature_frame,
-    labels=labels,
-    sample_weights=weights,
+dataset = q.dataset.Dataset(
+    X=feature_frame,
+    y=labels,
+    sample_weight=weights,
     metadata=event_metadata,
+    on=["symbol", "datetime"],
 )
 ```
 
-Splits are optional. Construction rejects mismatched or duplicate indexes
-instead of silently reindexing components, so features, labels, weights, and
-event metadata cannot drift apart.
+With `on=`, key columns become the canonical index and differently ordered
+components are aligned to feature order. Every component must contain the same
+unique key set. Without `on=`, components must already have exactly equal,
+unique indexes.
+
+### Row metadata
+
+`metadata` is an optional DataFrame for row-aligned context that should travel
+with a sample but should not be passed to a model as a feature or target. Common
+examples are a label's end time, event identifiers, symbols, or values retained
+for diagnostics and attribution. Partition and fold views subset metadata with
+`X`, keeping that context attached to the same rows.
+
+Most splitters do not require metadata. `TemporalSplit` and `TimeSeriesSplit`
+use only the ordered dataset index. `PurgedTimeSeriesSplit` is the important
+exception: it reads the column named by `label_end` (default
+`"label_end_time"`) from `dataset.metadata` to exclude training labels whose
+lifetimes overlap the test period. `audit_splits` uses the same column when it
+is available to check for label-horizon leakage.
+
+Omit `metadata` when no downstream operation needs extra row context:
+
+```python
+dataset = q.dataset.Dataset(X=feature_frame, y=labels)
+```
+
+Splits are optional, so the same object can be used for exploration, inference,
+or unsupervised learning before any partitioning is needed:
+
+```python
+dataset.is_split
+# False
+```
 
 ## Fixed temporal partitions
 
 ```python
-dataset = q.dataset.TemporalSplit(
-    train_end="2022-12-31",
-    validation_end="2023-12-31",
-    test_end="2024-12-31",
-).apply(dataset)
+dataset = dataset.split(
+    q.dataset.TemporalSplit(
+        train_end="2022-12-31",
+        validation_end="2023-12-31",
+        test_end="2024-12-31",
+    )
+)
+
+dataset.is_split
+# True
+
+dataset.partitions.keys()
+# dict_keys(['train', 'validation', 'test', 'excluded'])
 
 model.fit(
-    dataset.train.X,
-    dataset.train.y,
-    sample_weight=dataset.train.sample_weight,
+    dataset["train"].X,
+    dataset["train"].y,
+    sample_weight=dataset["train"].sample_weight,
 )
 predictions = model.predict(dataset.test.X)
 ```
 
+Partitions can instead be specified as proportions or exact row counts:
+
+```python
+dataset = dataset.split(
+    q.dataset.TemporalSplit(
+        train_size=0.70,
+        validation_size=0.15,
+        test_size=0.15,
+    )
+)
+```
+
+Size-based partitions are contiguous and consume the full ordered dataset. One
+of `train_size` or `test_size` may be omitted to receive the remaining rows.
+
 Rows outside the requested boundaries receive the explicit `excluded` role,
 preserving complete row membership without exposing those rows to fitting or
 evaluation.
+
+### Views and mutability
+
+Attaching a split creates a lightweight view over the dataset: the returned
+`Dataset` has new partition membership, but its complete `X`, `y`,
+`sample_weight`, and `metadata` objects are shared with the source dataset.
+The split does not copy these components.
+
+Consequently, mutating a shared component in place is visible through both
+datasets:
+
+```python
+source = q.dataset.Dataset(X=feature_frame, y=labels)
+split = source.split(q.dataset.TemporalSplit(train_end="2022-12-31"))
+
+source.X.loc[date, "momentum"] = 0.0
+split.X.loc[date, "momentum"]
+# 0.0
+```
+
+Replacing a component, such as assigning a new DataFrame to `source.X`, only
+changes that `Dataset` object; it does not update `split.X`. Partition accessors
+such as `split.train.X` select rows on demand and generally return a materialized
+pandas object, so they should not be used to mutate the complete dataset.
+
+For predictable experiments, treat a dataset and its components as immutable
+after attaching splits. Create a new `Dataset` when features, targets, weights,
+or metadata must change.
+
+The executable [Temporal split tutorial](temporal_split.ipynb) begins with the
+minimum `train_end` call and progressively demonstrates validation, bounded
+test periods, excluded rows, and split naming.
 
 ## Expanding and rolling folds
 
@@ -55,20 +146,32 @@ scikit-learn semantics. Omit `max_train_size` for expanding windows or set it
 for rolling windows.
 
 ```python
-expanding = q.dataset.TimeSeriesSplit(
-    n_splits=5,
-    test_size=63,
-    gap=5,
-).apply(dataset)
+expanding = dataset.split(
+    q.dataset.TimeSeriesSplit(
+        n_splits=5,
+        test_size=63,
+        gap=5,
+    )
+)
 
-rolling = q.dataset.TimeSeriesSplit(
-    n_splits=5,
-    test_size=63,
-    gap=5,
-    max_train_size=504,
-    name="rolling",
-).apply(expanding)
+rolling = expanding.split(
+    q.dataset.TimeSeriesSplit(
+        n_splits=5,
+        test_size=63,
+        gap=5,
+        max_train_size=504,
+        name="rolling",
+    )
+)
 ```
+
+Raw `SplitScheme` values are iterable over their `Split` definitions. Once a
+scheme is attached to a dataset, iterating `dataset.splits["rolling"]` yields
+dataset-bound `Fold` facades with named partition views.
+
+The executable [Time-series split tutorial](time_series_split.ipynb) starts
+with the five-fold expanding defaults, then changes `n_splits`, `test_size`,
+`gap`, `max_train_size`, and `name` one at a time.
 
 ## Purging and embargo
 
@@ -78,12 +181,14 @@ session-indexed dataset those rows are trading sessions. Timedelta strings such
 as `"5D"` provide calendar-time embargoes.
 
 ```python
-purged = q.dataset.PurgedTimeSeriesSplit(
-    n_splits=5,
-    test_size=63,
-    label_end="label_end_time",
-    embargo=5,
-).apply(dataset)
+purged = dataset.split(
+    q.dataset.PurgedTimeSeriesSplit(
+        n_splits=5,
+        test_size=63,
+        label_end="label_end_time",
+        embargo=5,
+    )
+)
 
 q.dataset.split_diagnostics(purged, "purged_walk_forward", "fold_1")
 q.dataset.audit_splits(purged, "purged_walk_forward")
@@ -96,20 +201,25 @@ partition roles. It fits only from role-`fit` rows, transforms the complete
 feature frame, and preserves targets, weights, metadata, and split schemes.
 
 ```python
-from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import StandardScaler
-
 pipeline = q.transform.Pipeline(
     [
-        ("impute", SimpleImputer(strategy="median")),
-        ("scale", StandardScaler()),
+        ("impute", q.transform.impute.SimpleImputer(strategy="median")),
+        ("scale", q.transform.scale.StandardScaler()),
     ]
 )
-processed = pipeline.fit_transform(purged, scheme="purged_walk_forward")
+for fold in purged.splits["purged_walk_forward"]:
+    processed = pipeline.fit_transform(fold)
+    model.fit(
+        processed.train.X,
+        processed.train.y,
+        sample_weight=processed.train.sample_weight,
+    )
 ```
 
-Fitting records the source scheme, fold, partitions, row count, and boundaries
-in `pipeline.fit_provenance_`.
+Each transformed result remains bound to the same fold. Fitting records the
+source scheme, fold, fit-role partitions, row count, and boundaries in
+`pipeline.fit_provenance_`. Passing a `Dataset` instead uses its default scheme
+and transforms every partition with state learned only from fit-role rows.
 
 ## Persistence
 

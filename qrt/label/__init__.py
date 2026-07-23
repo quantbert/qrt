@@ -2,6 +2,9 @@
 
 Labeling functions intentionally inspect observations after each event. They
 produce model targets and must not be used as point-in-time input features.
+Event-indexed outputs use the event start time as their pandas index, named
+``event_time``. This index is the row key for aligning labels, weights,
+metadata, and event-time features in pandas operations and :class:`Dataset`.
 """
 
 from qrt.label._barriers import fixed_horizon, triple_barrier, vertical_barriers

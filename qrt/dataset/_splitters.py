@@ -1,6 +1,8 @@
 """Temporal splitters that produce aligned :mod:`qrt.dataset` schemes."""
 
 from dataclasses import dataclass
+from math import isclose
+from numbers import Integral, Real
 from typing import Any
 
 import numpy as np
@@ -27,29 +29,52 @@ def _membership(index: pd.Index) -> pd.Series:
 
 @dataclass(frozen=True)
 class TemporalSplit:
-    """Create one train/validation/test assignment from ordered boundaries.
+    """Create one ordered train/validation/test assignment.
 
     Args:
-        train_end: Inclusive end of the training partition.
+        train_end: Inclusive end of the training partition. Alternatively, use
+            the size arguments to assign partitions by row count or proportion.
         validation_end: Inclusive end of validation. Omit validation by leaving
             this as ``None``.
         test_end: Inclusive end of test. Rows after it are excluded. By default,
             test extends to the end of the dataset.
         name: Split name.
+        train_size: Training row count or proportion.
+        validation_size: Validation row count or proportion. Leaving it unset
+            omits validation in size mode.
+        test_size: Test row count or proportion. When either ``train_size`` or
+            ``test_size`` is unset, it receives the remaining rows.
     """
 
-    train_end: Any
+    train_end: Any | None = None
     validation_end: Any | None = None
     test_end: Any | None = None
     name: str = "default"
+    train_size: int | float | None = None
+    validation_size: int | float | None = None
+    test_size: int | float | None = None
 
     def split(self, dataset: Dataset) -> Split:
-        """Return the boundary assignment for ``dataset``."""
+        """Return the ordered assignment for ``dataset``."""
         index = _ordered_index(dataset)
+        sizes = (self.train_size, self.validation_size, self.test_size)
+        if any(size is not None for size in sizes):
+            if any(
+                boundary is not None
+                for boundary in (self.train_end, self.validation_end, self.test_end)
+            ):
+                raise ValueError("boundaries and sizes cannot be combined")
+            return self._split_by_size(index)
+        if self.train_end is None:
+            raise ValueError("train_end or train_size/test_size must be provided")
         if self.validation_end is not None and self.validation_end <= self.train_end:
             raise ValueError("validation_end must be after train_end")
         if self.test_end is not None:
-            previous = self.validation_end or self.train_end
+            previous = (
+                self.validation_end
+                if self.validation_end is not None
+                else self.train_end
+            )
             if self.test_end <= previous:
                 raise ValueError("test_end must be after preceding boundaries")
 
@@ -75,6 +100,94 @@ class TemporalSplit:
                 "train_end": self.train_end,
                 "validation_end": self.validation_end,
                 "test_end": self.test_end,
+            },
+        )
+
+    def _split_by_size(self, index: pd.Index) -> Split:
+        sizes = {
+            "train": self.train_size,
+            "test": self.test_size,
+        }
+        if self.validation_size is not None:
+            sizes["validation"] = self.validation_size
+        if self.train_size is None and self.test_size is None:
+            raise ValueError("train_size or test_size must be provided")
+
+        provided = [size for size in sizes.values() if size is not None]
+        if any(isinstance(size, bool) or not isinstance(size, Real) for size in provided):
+            raise ValueError("sizes must be positive integers or proportions")
+        integer_sizes = all(isinstance(size, Integral) for size in provided)
+        if not integer_sizes and any(isinstance(size, Integral) for size in provided):
+            raise ValueError("integer row counts and float proportions cannot be mixed")
+
+        total = len(index) if integer_sizes else 1.0
+        if integer_sizes:
+            if any(size <= 0 for size in provided):
+                raise ValueError("integer sizes must be positive")
+        elif any(size <= 0 or size >= 1 for size in provided):
+            raise ValueError("float sizes must be between 0 and 1")
+
+        missing = [name for name, size in sizes.items() if size is None]
+        explicit_total = sum(provided)
+        if len(missing) == 1:
+            remainder = total - explicit_total
+            if remainder <= 0:
+                raise ValueError("sizes must leave rows for every partition")
+            sizes[missing[0]] = remainder
+        elif integer_sizes:
+            if explicit_total != total:
+                raise ValueError("integer sizes must sum to the dataset length")
+        elif not isclose(explicit_total, total):
+            raise ValueError("float sizes must sum to 1")
+
+        ordered_names = ["train"]
+        if self.validation_size is not None:
+            ordered_names.append("validation")
+        ordered_names.append("test")
+        counts = {}
+        consumed = 0
+        cumulative = 0.0
+        for position, partition in enumerate(ordered_names):
+            if position == len(ordered_names) - 1:
+                count = len(index) - consumed
+            elif integer_sizes:
+                count = int(sizes[partition])
+            else:
+                cumulative += float(sizes[partition])
+                count = int(np.floor(cumulative * len(index))) - consumed
+            if count <= 0:
+                raise ValueError("dataset is too small for the requested sizes")
+            counts[partition] = count
+            consumed += count
+
+        membership = _membership(index)
+        start = 0
+        partitions = [_TRAIN]
+        for partition in ordered_names:
+            stop = start + counts[partition]
+            membership.iloc[start:stop] = partition
+            start = stop
+            if partition == "validation":
+                partitions.append(_VALIDATION)
+        partitions.extend([_TEST, _EXCLUDED])
+        train_end = index[counts["train"] - 1]
+        validation_end = (
+            index[counts["train"] + counts["validation"] - 1]
+            if "validation" in counts
+            else None
+        )
+        return Split(
+            membership,
+            partitions,
+            name=self.name,
+            metadata={
+                "method": "temporal",
+                "train_end": train_end,
+                "validation_end": validation_end,
+                "test_end": index[-1],
+                "train_size": self.train_size,
+                "validation_size": self.validation_size,
+                "test_size": self.test_size,
             },
         )
 

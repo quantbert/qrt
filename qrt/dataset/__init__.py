@@ -1,6 +1,13 @@
 """Aligned datasets that bridge feature and label research with model fitting."""
 
-from qrt.dataset._core import Dataset, DatasetView, Partition, Split, SplitScheme, build
+from qrt.dataset._core import (
+	Dataset,
+	DatasetView,
+	Fold,
+	Partition,
+	Split,
+	SplitScheme,
+)
 from qrt.dataset._splitters import (
 	PurgedTimeSeriesSplit,
 	TemporalSplit,
@@ -12,6 +19,7 @@ from qrt.dataset._splitters import (
 __all__ = [
 	"Dataset",
 	"DatasetView",
+	"Fold",
 	"Partition",
 	"PurgedTimeSeriesSplit",
 	"Split",
@@ -19,6 +27,5 @@ __all__ = [
 	"TemporalSplit",
 	"TimeSeriesSplit",
 	"audit_splits",
-	"build",
 	"split_diagnostics",
 ]

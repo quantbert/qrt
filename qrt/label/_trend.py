@@ -81,8 +81,10 @@ def trend_scanning(
         drop_censored: Drop events for which no requested horizon is complete.
 
     Returns:
-        DataFrame containing the selected end time, horizon, slope, t-value,
-        realized return, and directional label.
+        DataFrame indexed by event start time, named ``event_time``, containing
+        the selected end time, horizon, slope, t-value, realized return, and
+        directional label. The index aligns rows with other event-indexed
+        objects.
     """
     if not isinstance(log_prices, bool):
         raise TypeError("log_prices must be a boolean")
