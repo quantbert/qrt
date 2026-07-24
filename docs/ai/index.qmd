@@ -1,0 +1,74 @@
+---
+title: "q.ai — Generative AI"
+---
+
+`q.ai` is QRT's curated generative-AI workbench. It keeps provider and engine
+classes behind QRT-owned contracts while preserving model, prompt, schema,
+source, usage, and adapter lineage.
+
+## Install
+
+```bash
+uv add "pyqrt[ai]"          # hosted inference, LanceDB, RAG, agents, evals
+uv add "pyqrt[ai-local]"    # Transformers, PEFT, local embeddings, Outlines
+uv add "pyqrt[ai-document]" # Docling ingestion
+uv add "pyqrt[ai-all]"      # complete non-server workbench
+```
+
+Serving engines such as vLLM, SGLang, and llama.cpp belong in a dedicated
+inference environment.
+
+## Generate and extract
+
+```python
+import qrt as q
+
+client = q.ai.Client(
+    providers={
+        "local": q.ai.OpenAICompatibleProvider(
+            base_url="http://127.0.0.1:8000/v1"
+        )
+    }
+)
+
+result = client.generate(
+    model="local/filings-adapter",
+    messages=[q.ai.UserMessage("Summarize the liquidity discussion.")],
+)
+print(result.text)
+print(result.provenance)
+```
+
+`Client.extract` sends a strict JSON Schema where the backend supports it and
+always validates the returned value with Pydantic.
+
+## Knowledge workflows
+
+LanceDB is the vector source of truth. DuckDB's `lance` extension can attach the
+same directory for SQL joins, vector search, full-text search, and hybrid search
+without copying tables through Arrow. Calling `q.ai.vector.attach_to_duckdb`
+installs and loads the extension, then attaches the Lance namespace.
+
+Every indexed source requires both `published_at` and `ingested_at`. An `as_of`
+query filters publication time before vector results are returned.
+
+## Safety defaults
+
+- Provider secrets use non-revealing Pydantic secret fields.
+- Raw provider responses are opt-in and excluded from serialization.
+- Local file and byte references are inert; provider transport does not read or
+  upload them.
+- Tool execution is allowlisted and validates both input and output.
+- Local model weights load only inside an explicit `TransformersEngine` context.
+- LiteLLM retries are disabled because QRT owns retry and resume policy.
+
+## Experiment tracking
+
+AI operations join an active `q.experiment` run or use the tracker configured on
+`Client`. Only model identity, hashes, usage, cost, and provenance are recorded;
+prompt and output content remain redacted. Exact cache and resume manifests stay
+under `q.ai.storage` because they have different correctness and retention
+semantics from experiment tracking.
+
+See the [implementation roadmap](roadmap.qmd) for current coverage and the next
+production milestones.

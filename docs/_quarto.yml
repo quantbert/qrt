@@ -64,6 +64,16 @@ website:
               href: data/sources.ipynb
             - text: "Roadmap"
               href: data/roadmap.qmd
+        - section: "q.ai — Generative AI"
+          href: ai/index.qmd
+          contents:
+            - text: "Roadmap"
+              href: ai/roadmap.qmd
+        - section: "q.experiment — Experiment tracking"
+          href: experiment/index.qmd
+          contents:
+            - text: "Roadmap"
+              href: experiment/roadmap.qmd
         - section: "q.indicator — Indicators"
           href: indicator/index.ipynb
           contents:
@@ -207,6 +217,11 @@ website:
           contents:
             - text: "Ray Train tutorial"
               href: ray/train.qmd
+        - section: "q.gym — Financial RL"
+          href: gym/index.qmd
+          contents:
+            - text: "Roadmap"
+              href: gym/roadmap.qmd
         - section: "q.env — Environment"
           href: env/index.ipynb
           contents:
@@ -215,6 +230,8 @@ website:
         - section: "q.plot — Plotting"
           href: plot/index.qmd
           contents:
+            - text: "Feature relationships"
+              href: plot/correlation.ipynb
             - text: "Classification curves"
               href: plot/classification.ipynb
             - text: "Return charts"
@@ -239,6 +256,8 @@ website:
           contents:
             - text: "Risk estimators"
               href: stats/risk.qmd
+            - text: "Netto Number"
+              href: stats/netto-number.qmd
             - text: "Performance & benchmark"
               href: stats/performance.ipynb
             - text: "Rolling & calendar returns"
@@ -275,6 +294,30 @@ quartodoc:
   css: reference/_styles-quartodoc.css
   parser: google
   sections:
+    - title: q.experiment
+      desc: "Backend-neutral experiment runs, parameters, metrics, datasets, models, and artifacts with local and MLflow tracking."
+      contents:
+        - name: experiment
+          include_imports: true
+    - title: q.ai
+      desc: "Generation, structured extraction, embeddings, retrieval, agents, batch inference, evaluation, local models, and serving specifications."
+      contents:
+        - name: ai
+          include_imports: true
+        - ai.client
+        - ai.types
+        - ai.embeddings
+        - ai.vector
+        - ai.rag
+        - ai.prompts
+        - ai.tools
+        - ai.agents
+        - ai.batch
+        - ai.evals
+        - ai.tokenize
+        - ai.local
+        - ai.serve
+        - ai.finetune
     - title: q.indicator
       desc: "Single-instrument market measurements and explicit provider catalogs."
       contents:
@@ -354,6 +397,12 @@ quartodoc:
       desc: "Environment variables, runtime inspection, hardware reports, and declarative requirements."
       contents:
         - env
+    - title: q.gym
+      desc: "Gymnasium-compatible financial environments for reinforcement learning."
+      contents:
+        - name: gym
+          include_imports: true
+        - gym.core
     - title: q.utils
       desc: "Shared utilities."
       contents:

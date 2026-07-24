@@ -1,8 +1,10 @@
 # qrt — Quant Research Tools
 
-**One consistent `import qrt as q` API over the fragmented quant Python ecosystem** —
-market data, technical indicators, return statistics, and interactive plotting,
-wired together so the output of one is the input of the next.
+**One consistent `import qrt as q` API for the fragmented quantitative Python ecosystem.**
+
+`qrt` is a curated, batteries-included research toolkit for quantitative finance. It brings together market data, technical indicators, return and risk analytics, finance- and ML-aware visualizations, machine learning workflows, and generative AI tools under one coherent API.
+
+Spend less time connecting libraries and more time researching, testing, and building quantitative strategies.
 
 ```python
 import qrt as q
@@ -48,6 +50,7 @@ q.plot.plot(strategy, benchmark=benchmark)      # interactive equity + drawdown 
 |---|---|
 | `q.data` | local parquet/csv I/O, market data sources (Yahoo Finance, Binance, DuckDB), bundled sample datasets |
 | `q.env` | explicit `.env` loading and environment-variable access |
+| `q.gym` | Gymnasium-compatible financial reinforcement-learning environments |
 | `q.calendar` | exchange sessions, closures, and market-time semantics |
 | `q.indicator` | native single-instrument measurements plus explicit TA-Lib and pandas-ta-classic providers |
 | `q.cross_section` | cross-sectional ranks, neutralization, relative strength, grouped returns, and Elo |

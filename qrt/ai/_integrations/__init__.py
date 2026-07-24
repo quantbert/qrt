@@ -1,0 +1,1 @@
+"""Private adapters for curated QRT AI integrations."""

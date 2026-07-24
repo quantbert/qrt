@@ -10,8 +10,11 @@ items are removed from these pages.
 | Area | Scope | Roadmap |
 |---|---|---|
 | `q.bt` | Backtesting | [View roadmap](bt/roadmap.qmd) |
+| `q.ai` | Generative-AI research workflows | [View roadmap](ai/roadmap.qmd) |
+| `q.experiment` | Experiment runs, metrics, lineage, and artifacts | [View roadmap](experiment/roadmap.qmd) |
 | `q.data` | Data access and datasets | [View roadmap](data/roadmap.qmd) |
 | `q.env` | Environment configuration | [View roadmap](env/roadmap.qmd) |
+| `q.gym` | Financial reinforcement learning | [View roadmap](gym/roadmap.qmd) |
 | `q.calendar` | Exchange sessions and market time | [View roadmap](calendar/roadmap.qmd) |
 | `q.indicator` | Single-instrument market measurements | [View roadmap](indicator/roadmap.qmd) |
 | `q.cross_section` | Cross-sectional characteristics | [View roadmap](cross_section/roadmap.qmd) |
@@ -32,6 +35,9 @@ items are removed from these pages.
 - [ ] `q.load_settings("settings.json")` — project-level defaults (rolling
   window, annualization, theme) that override library defaults without
   cluttering call sites
+- [ ] Evaluate and adopt [FireDucks](https://fireducks-dev.github.io/) as a
+  drop-in replacement for the pandas backend, subject to API-compatibility and
+  performance benchmarking across qrt workflows
 
 ## Ideas
 
@@ -45,8 +51,6 @@ on that module's roadmap; the items below would introduce or span namespaces.
   timestamp alignment using `exchange-calendars`
 - [ ] `q.optimize` — mean-variance, risk-parity, minimum-variance, and constrained
   portfolio optimization
-- [ ] `q.experiment` — record parameters, dataset fingerprints, random seeds,
-  metrics, and artifacts for reproducible research
 - [ ] `q.validate` — validate OHLCV/trade schemas, timestamps, missing sessions,
   suspicious returns, and look-ahead risks
 - [ ] `q.execution` — shared fee, slippage, spread, order-sizing, and fill models

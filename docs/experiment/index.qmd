@@ -1,0 +1,93 @@
+---
+title: "q.experiment — Experiment tracking"
+---
+
+`q.experiment` records reproducible research through a backend-neutral QRT API.
+The local backend uses DuckDB for run metadata and a normal directory tree for
+artifacts. MLflow is the preferred service integration.
+
+## Local runs
+
+The local tracker requires no optional dependencies:
+
+```python
+import qrt as q
+
+tracker = q.experiment.LocalTracker(".qrt/experiments")
+
+with tracker.run("volatility-targeting", tags={"team": "research"}) as run:
+    run.log_params(window=20, target_volatility=0.10, seed=7)
+    run.log_metrics(sharpe=1.25, turnover=0.18)
+    run.log_dataset(
+        "daily-prices",
+        fingerprint="sha256:...",
+        source="warehouse/prices",
+        metadata={"as_of": "2026-06-30"},
+    )
+    run.log_artifact("reports/tearsheet.html")
+```
+
+An exception marks the run `FAILED`. Normal exit marks it `FINISHED`. Active
+runs use a context variable, so async tasks and threads do not share mutable
+process-global run state accidentally.
+
+## MLflow
+
+```bash
+uv add "pyqrt[experiment]"
+```
+
+```python
+tracker = q.experiment.MLflowTracker(
+    tracking_uri="https://mlflow.internal",
+    experiment="qrt-research",
+)
+
+with tracker.run("filing-extractor-v4") as run:
+    run.log_params(model="filings-v4", prompt="risk-v6")
+    run.log_metrics(schema_validity=0.99, field_accuracy=0.94)
+```
+
+::: {.callout-note title="QRT uses mlflow-skinny"}
+The `pyqrt[experiment]` extra installs the official **`mlflow-skinny` package**:
+a lightweight MLflow package without SQL storage, the MLflow server, the MLflow
+UI, or data-science dependencies and framework-specific model flavors.
+:::
+
+`mlflow-skinny` provides the tracking client used by `MLflowTracker` to connect
+to an existing MLflow tracking service. Installing `pyqrt[experiment]` does not
+install or start an MLflow server and does not provide a local SQL-backed MLflow
+tracking store or UI.
+
+Full MLflow currently requires `pandas<3`, while QRT requires pandas 3. QRT
+therefore logs model identity, lineage, and files through its neutral
+`log_model` contract instead of depending on MLflow's framework-specific model
+flavors. Advanced users can access `tracker.backend_client` directly.
+
+Use an HTTP tracking server or database-backed tracking URI in production.
+MLflow's filesystem tracking backend is in maintenance mode.
+
+## AI integration
+
+An AI call joins the active experiment automatically:
+
+```python
+with tracker.run("filing-study") as run:
+    result = client.extract(
+        model="research/filings-v4",
+        input=filing_text,
+        output=FilingAnalysis,
+    )
+```
+
+Alternatively, configure `q.ai.Client(tracker=tracker)` to create one run per
+standalone inference operation. QRT logs model identity, hashes, structured
+mechanism, usage, cost, and provenance. Prompt and output content remain
+redacted.
+
+## Ownership
+
+- `q.experiment` owns research runs, parameters, metrics, datasets, models, and artifacts.
+- `q.ai.storage` continues to own exact inference cache and batch-resume state.
+- Domain modules emit records into the active run without depending on MLflow.
+- MLflow remains replaceable behind QRT's tracking contract.

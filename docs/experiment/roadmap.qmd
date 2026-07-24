@@ -1,0 +1,27 @@
+---
+title: "q.experiment roadmap"
+---
+
+## Implemented
+
+- [x] Context-managed runs with `RUNNING`, `FINISHED`, and `FAILED` lifecycle states.
+- [x] Context-local active-run propagation.
+- [x] Backend-neutral parameters, metrics, tags, artifacts, datasets, models, and structured records.
+- [x] Local DuckDB metadata and copied-file artifact backend.
+- [x] MLflow 3 tracking through `mlflow-skinny`, without SQL storage, server,
+  UI, data-science dependencies, or framework-specific model flavors.
+- [x] Explicit access to the underlying MLflow client.
+- [x] Redacted `q.ai` inference provenance and usage integration.
+- [x] Optional `pyqrt[experiment]` installation profile.
+
+## Next
+
+- [ ] Run search, comparison, and dataframe reporting APIs for the local backend.
+- [ ] Parent/child run relationships for batch rows, evaluation suites, and distributed jobs.
+- [ ] Dataset schema and split fingerprints shared with `q.dataset`.
+- [ ] Model registry references, aliases, promotion policy, and deployment handoff.
+- [ ] `q.model`, `q.bt`, and `q.ray` emitters using the same active-run contract.
+- [ ] OpenTelemetry trace/span correlation without recording content.
+- [ ] Artifact retention, remote object storage, and cleanup policies.
+- [ ] Authentication/connectivity diagnostics for MLflow servers.
+- [ ] MLflow HTTP-server contract tests and version compatibility matrix.

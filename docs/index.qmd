@@ -6,6 +6,9 @@ QRT is a collection of quantitative-research tools with explicit boundaries
 between market data, measurements, model inputs, training transforms,
 investment intent, portfolio construction, simulation, and evaluation.
 
+Review dependencies here: https://pydeps.com/project/pyqrt/
+
+
 ::: {.callout-warning}
 QRT is in alpha. Public APIs can still change while the architecture settles.
 :::

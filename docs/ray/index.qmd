@@ -49,6 +49,10 @@ uv add "pyqrt[torch]"
 
 See the [Ray Train tutorial](train.qmd) for a complete local example.
 
+RLlib consumes the standard Gymnasium environment provided by `q.gym` without
+an adapter. See [Financial reinforcement learning](../gym/index.qmd#training-with-rllib)
+for a local PPO configuration.
+
 ## Runtime lifecycle
 
 Use `q.ray.init()` once in a script or notebook session. Ray can also connect

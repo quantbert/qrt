@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterable, Sequence
+from collections.abc import Iterable, Mapping, Sequence
 from fnmatch import fnmatch
 from pathlib import Path
 from typing import TYPE_CHECKING, Literal
 
 import numpy as np
 import pandas as pd
+import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
@@ -166,6 +167,111 @@ def line(
     _base_layout(figure, title=chart_title, height=height)
     _set_date_range(figure, frame.index)
     figure.update_yaxes(title_text=yaxis_title)
+    return figure
+
+
+def correlation(
+    data: pd.DataFrame,
+    columns: str | Iterable[str] | None = None,
+    *,
+    color: str | None = None,
+    color_discrete_sequence: Sequence[str] | None = None,
+    color_discrete_map: Mapping[object, str] | None = None,
+    color_continuous_scale: str | Sequence[str] = "RdYlGn",
+    hover_data: Iterable[str] | None = None,
+    labels: dict[str, str] | None = None,
+    triangle: Literal["lower", "upper", "full"] = "lower",
+    title: str = "Feature relationships",
+    height: int | None = None,
+) -> Figure:
+    """Create an interactive scatterplot matrix for feature correlation analysis.
+
+    Linked selection highlights the same observations in every panel. A categorical
+    ``color`` is useful for market regimes, assets, or model classes; a numeric color
+    can encode forward return, volatility, or another continuous outcome. Numeric
+    colors that span zero automatically center the continuous scale at zero.
+
+    Args:
+        data: Observations in rows and features in columns.
+        columns: Numeric feature name(s) or shell-style pattern(s). By default,
+            all numeric columns except ``color`` are included.
+        color: Optional column used to color observations.
+        color_discrete_sequence: Colors assigned in order to categorical values.
+            Defaults to the QRT categorical palette.
+        color_discrete_map: Exact categorical value-to-color assignments. Useful
+            for stable semantic colors such as red for ``"risk-off"``.
+        color_continuous_scale: Plotly color-scale name or explicit color sequence
+            for numeric values. Defaults to ``"RdYlGn"``.
+        hover_data: Additional columns shown on hover, such as symbol or regime.
+        labels: Optional mapping from column names to display labels.
+        triangle: Matrix panels to display: ``"lower"``, ``"upper"``, or
+            ``"full"``.
+        title: Figure title.
+        height: Figure height in pixels. Inferred from the feature count by default.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
+    if not isinstance(data, pd.DataFrame):
+        raise TypeError("data must be a pandas DataFrame")
+    if color is not None and color not in data.columns:
+        raise KeyError(f"Color column {color!r} is not present in data")
+    if triangle not in {"lower", "upper", "full"}:
+        raise ValueError("triangle must be 'lower', 'upper', or 'full'")
+
+    selected_columns: str | Iterable[str]
+    if columns is None:
+        selected_columns = [column for column in data.select_dtypes(include="number").columns if column != color]
+    else:
+        selected_columns = columns
+    frame = _as_frame(data, selected_columns)
+    if len(frame.columns) < 2:
+        raise ValueError("correlation requires at least two numeric feature columns")
+
+    extra_hover = list(hover_data or ())
+    missing_hover = [column for column in extra_hover if column not in data.columns]
+    if missing_hover:
+        raise KeyError(f"Hover columns are not present in data: {missing_hover}")
+
+    plot_data = data.copy()
+    index_column = "__qrt_index__"
+    while index_column in plot_data.columns:
+        index_column = f"_{index_column}"
+    plot_data[index_column] = data.index
+    display_labels = dict(labels or {})
+    display_labels[index_column] = data.index.name or "index"
+
+    color_options: dict[str, object] = {
+        "color_discrete_sequence": list(color_discrete_sequence or _QUANT_COLORS)
+    }
+    if color_discrete_map is not None:
+        color_options["color_discrete_map"] = dict(color_discrete_map)
+    if color is not None and pd.api.types.is_numeric_dtype(data[color]) and not pd.api.types.is_bool_dtype(data[color]):
+        color_options["color_continuous_scale"] = color_continuous_scale
+        finite_color = pd.to_numeric(data[color], errors="coerce").replace([np.inf, -np.inf], np.nan).dropna()
+        if not finite_color.empty and finite_color.min() < 0 < finite_color.max():
+            color_options["color_continuous_midpoint"] = 0.0
+
+    figure = px.scatter_matrix(
+        plot_data,
+        dimensions=list(frame.columns),
+        color=color,
+        hover_name=index_column,
+        hover_data=extra_hover,
+        labels=display_labels,
+        title=title,
+        **color_options,
+    )
+    figure.update_traces(
+        diagonal_visible=False,
+        showlowerhalf=triangle in {"lower", "full"},
+        showupperhalf=triangle in {"upper", "full"},
+        marker={"size": 6, "opacity": 0.72, "line": {"width": 0.35, "color": "white"}},
+    )
+    chart_height = height or min(1200, max(500, 170 * len(frame.columns)))
+    _base_layout(figure, title=title, height=chart_height, time_axis=False)
+    figure.update_layout(dragmode="select", hovermode="closest")
+    figure.update_xaxes(showgrid=True, gridcolor="#E5E7EB", zeroline=False)
     return figure
 
 

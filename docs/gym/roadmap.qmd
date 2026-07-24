@@ -1,0 +1,13 @@
+---
+title: q.gym Roadmap
+---
+
+Only open work is listed here. Completed items are removed.
+
+## Planned
+
+- [ ] Multi-asset portfolio actions and observations
+- [ ] Pluggable spread, slippage, latency, and partial-fill models
+- [ ] Leverage, concentration, and turnover constraints
+- [ ] Walk-forward train/evaluation episode schemes
+- [ ] RLlib training and evaluation tutorial with checkpointing

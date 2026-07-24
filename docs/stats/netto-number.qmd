@@ -1,0 +1,529 @@
+---
+title: The Netto Number
+---
+
+The Netto Number combines a risk budget chosen before an evaluation period
+with the adverse path realized during that period. It asks a different question
+from Sharpe, Sortino, or Calmar:
+
+> How much profit did this strategy produce relative to both the risk capacity
+> it was granted and the downside it actually used?
+
+QRT implements the calculation as `q.stats.netto_number`. The function is a
+small scalar primitive; the important work is defining its three inputs with a
+consistent mandate, horizon, unit, and adverse-excursion convention.
+
+::: {.callout-important title="Status of the metric"}
+The Netto Number is a practitioner-designed framework associated with trader
+and author John Netto. Its economic intuition is useful, but it is not a
+canonical academic standard and there is no broad public evidence that it
+universally predicts investment skill better than established measures. Use it
+as an additional risk-budget-aware diagnostic, not as a replacement for return,
+drawdown, tail-risk, turnover, and benchmark analysis.
+:::
+
+## Origin and development
+
+John Netto developed the modern Netto Number within his broader
+Unit-of-Risk (UoR) framework. His 2016 book
+[*The Global Macro Edge: Maximizing Return Per Unit-of-Risk*](https://books.google.com/books?id=lriIvgAACAAJ)
+frames investment performance around return earned under a predetermined risk
+budget. A [chapter excerpt hosted by CQG](https://news.cqg.com/sites/default/files/docs/The%20Global%20Macro%20Edge%20Chapter%205%20-%20Pages%201%20-%206%20CQG%20Excerpt.pdf)
+describes the Netto Number as the most important UoR ratio and links it to the
+Risk Factor Compensation System presented later in the book.
+
+The idea was subsequently discussed in public trading presentations and
+interviews. A 2017
+[MoneyShow presentation](https://www.moneyshow.com/video/10761/)
+describes the measure as a way to compare returns by manager and by unit of
+risk. In a separate
+[Cannon Trading interview](https://www.cannontrading.com/traders-interview/john-netto),
+Netto describes evaluating a strategy, index, portfolio, or trade relative to a
+predetermined risk budget rather than only in nominal terms. These materials
+also connect the ratio to manager incentive design.
+
+That compensation use is the historical motivation, not a restriction on the
+mathematics. The formula can be applied to any well-defined decision unit with
+an ex-ante risk budget and a realized P&L path: a trade, strategy, portfolio,
+model checkpoint, or reinforcement-learning episode.
+
+The public evidence base is concentrated in Netto's own book, excerpts,
+presentations, and interviews. The framework should therefore be described as
+a proprietary or bespoke practitioner metric, not as a finance law or a
+peer-reviewed theorem.
+
+## Definition
+
+Let:
+
+- $P$ be net realized profit over the evaluation period.
+- $U$ be Unit-of-Risk: a positive loss budget fixed before the period.
+- $A$ be maximum adverse excursion, expressed as a non-negative loss magnitude.
+
+The framework first defines a Risk Factor as the arithmetic mean of planned
+risk and realized adversity:
+
+$$
+\operatorname{RF} = \frac{U + A}{2}.
+$$
+
+The Netto Number is profit divided by that Risk Factor:
+
+$$
+\operatorname{NN}
+= \frac{P}{\operatorname{RF}}
+= \frac{2P}{U + A}.
+$$
+
+A value of $1$ means profit equals the blended Risk Factor. A value above $1$
+means profit exceeded it. Zero means the period broke even, and a negative
+value means the strategy lost money. There is no universal threshold that
+separates a good value from a bad one; interpretation depends on a consistently
+defined mandate and peer group.
+
+::: {.callout-warning title="Negative-profit inversion"}
+The raw ratio is not a risk-monotonic optimization objective for losing
+outcomes. Holding $P$ and $U$ fixed:
+
+$$
+\frac{\partial \operatorname{NN}}{\partial A}
+= -\frac{2P}{(U+A)^2}.
+$$
+
+For $P>0$, more adversity lowers the score as intended. For $P<0$, the
+derivative is positive: more adversity moves the negative score toward zero.
+With $P=-0.10$ and $U=1$, increasing $A$ from $0.10$ to $0.90$ changes the
+score from approximately $-0.182$ to $-0.105$. A maximizer would prefer the
+worse path.
+
+This is a mathematical property of the original formula, not an implementation
+error in QRT. The value remains valid as descriptive reporting, but must not be
+the sole reward, loss, or policy-ranking criterion when outcomes can be
+negative.
+:::
+
+### Published-style example
+
+For $P=\$100{,}000$, $U=\$1{,}000{,}000$, and $A=\$500{,}000$:
+
+$$
+\operatorname{RF}
+= \frac{\$1{,}000{,}000 + \$500{,}000}{2}
+= \$750{,}000,
+$$
+
+and:
+
+$$
+\operatorname{NN}
+= \frac{\$100{,}000}{\$750{,}000}
+\approx 0.1333.
+$$
+
+```python
+import qrt as q
+
+q.stats.netto_number(
+    100_000,
+    unit_of_risk=1_000_000,
+    max_adverse_excursion=500_000,
+)
+```
+
+The ratio is scale-invariant. Dividing every input by the same starting capital
+produces the same result:
+
+```python
+q.stats.netto_number(
+    0.10,
+    unit_of_risk=1.00,
+    max_adverse_excursion=0.50,
+)
+```
+
+Both calls return approximately `0.1333`.
+
+## Input contract in QRT
+
+`q.stats.netto_number` deliberately accepts three explicit scalar inputs rather
+than a return series:
+
+```python
+q.stats.netto_number(
+    profit,
+    unit_of_risk=unit_of_risk,
+    max_adverse_excursion=max_adverse_excursion,
+)
+```
+
+The contract is strict:
+
+- `profit` must be finite and may be positive, zero, or negative.
+- `unit_of_risk` must be finite and strictly positive.
+- `max_adverse_excursion` must be finite and non-negative.
+- All values must cover the same object and evaluation period.
+- All values must use the same units.
+
+Currency amounts and fractions of starting capital are both valid. Mixing them
+is not. For example, a dollar profit cannot be combined with a percentage risk
+budget.
+
+The function is not automatically included in `q.stats.performance` or
+`q.stats.metrics`. A return stream contains no authoritative record of the
+risk budget committed before trading, so QRT will not infer one after the fact.
+
+## Adverse excursion is not automatically max drawdown
+
+The most important implementation choice is the meaning of $A$.
+
+QRT's `q.stats.max_drawdown` is the largest peak-to-trough decline from a
+running equity high. Public Netto material also uses language such as maximum
+negative drawdown or adverse excursion, with examples centered on loss of
+starting principal. Under a principal-relative convention, giving back profit
+while remaining above starting equity does not increase $A$; under standard
+maximum drawdown, it does.
+
+Consider an equity path that rises from `1.00` to `1.30` and then falls to
+`1.05`:
+
+- Principal-relative adverse excursion is `0.00`; equity never fell below its
+  starting value.
+- Peak-to-trough maximum drawdown is about `0.1923`; equity fell roughly 19.23%
+  from `1.30` to `1.05`.
+
+Those conventions answer different questions and can produce materially
+different Netto Numbers. QRT therefore requires the loss magnitude explicitly.
+
+For a principal-relative convention on a periodic return stream:
+
+```python
+equity = (1.0 + returns).cumprod()
+profit = equity.iloc[-1] - 1.0
+principal_adverse_excursion = max(0.0, 1.0 - equity.min())
+
+score = q.stats.netto_number(
+    profit,
+    unit_of_risk=0.10,
+    max_adverse_excursion=principal_adverse_excursion,
+)
+```
+
+If a research mandate intentionally defines adversity as standard maximum
+drawdown, make that variant explicit:
+
+```python
+score = q.stats.netto_number(
+    profit,
+    unit_of_risk=0.10,
+    max_adverse_excursion=abs(q.stats.max_drawdown(returns)),
+)
+```
+
+Report this as a "peak-to-trough Netto variant" rather than silently implying
+that it is the only definition.
+
+## Where it can be applied
+
+The metric is not inherently a single-asset or portfolio measure. Its scope is
+determined by the scope of its inputs.
+
+| Evaluation unit | Profit | Unit-of-Risk | Adverse excursion |
+|---|---|---|---|
+| Single trade | Net trade P&L | Pre-trade loss budget | Trade MAE |
+| Single-asset strategy | Strategy-period P&L | Strategy risk budget | Strategy equity adversity |
+| Multi-asset portfolio | Portfolio P&L | Portfolio mandate budget | Portfolio equity adversity |
+| Model checkpoint | Validation/test P&L | Fixed evaluation budget | Evaluation-path adversity |
+| RL episode | Terminal account P&L | Episode loss budget | Episode account adversity |
+
+A raw asset does not possess an intrinsic Unit-of-Risk. AAPL, gold, or a futures
+contract has returns and drawdowns, but the investor, strategy, or mandate must
+supply the risk budget. Consequently, comparisons are meaningful only when the
+budgets were fixed using comparable governance.
+
+## Quant-research adaptations
+
+### Strategy and hyperparameter evaluation
+
+The Netto Number can complement model diagnostics when every candidate is
+evaluated on the same data split, horizon, execution model, and risk budget.
+For profitable candidates it rewards profit while retaining information about
+the capital flexibility granted before the run. It must not be the sole ranking
+objective across losing candidates because of the negative-profit inversion.
+
+A useful experiment table should retain the components, not only the ratio:
+
+| Field | Why retain it |
+|---|---|
+| `profit` | Distinguishes genuine profit from denominator effects |
+| `unit_of_risk` | Makes the ex-ante mandate auditable |
+| `max_adverse_excursion` | Exposes realized path stress |
+| `netto_number` | Provides the combined comparison score |
+| `max_drawdown` | Preserves conventional peak-to-trough risk |
+| `turnover` and costs | Detects impractical high-churn policies |
+| tail metrics | Detects risks hidden by one worst-path statistic |
+
+Do not optimize the raw ratio over many configurations and then report the best
+value on the same sample. Prefer a monotonic objective or explicit constraints,
+retain the Netto Number as a diagnostic, lock the policy and risk convention,
+and report once on untouched test data.
+
+### Reinforcement-learning evaluation
+
+::: {.callout-important title="Should I use the Netto Number in RL?"}
+**Yes, but do not use the original Netto Number as the agent's main reward.**
+
+Use it to **measure and audit** an RL agent:
+
+- calculate it after each episode as a performance diagnostic;
+- compare profit with both the risk budget and the adversity experienced;
+- monitor whether the agent used or breached its risk budget;
+- report it alongside return, drawdown, tail loss, turnover, and costs.
+
+Do not use it by itself to teach the agent or select the best checkpoint. During
+a losing episode, a worse adverse excursion can produce a numerically higher
+Netto Number. An optimizer could therefore learn the wrong preference.
+
+For training, use a reward that always prefers more profit and less risk, such
+as net log return with monotonic drawdown penalties, or maximize return subject
+to explicit drawdown and tail-loss constraints. In short: **use the original
+Netto Number to evaluate the agent, not as its primary learning signal.**
+:::
+
+For a financial Gymnasium environment, calculate the metric from account equity
+rather than from the return of one quoted asset. Let $V_0$ be starting account
+value, $V_T$ terminal value, and $V_t$ the account path. A normalized episode
+definition is:
+
+$$
+P = \frac{V_T}{V_0} - 1,
+\qquad
+A = \max\left(0, 1 - \min_t \frac{V_t}{V_0}\right),
+$$
+
+with a fixed normalized budget $U$, such as `0.10` for 10% of starting capital.
+The raw Netto Number then describes the episode under that account-level risk
+mandate. Do not use it by itself to rank arbitrary episodes or checkpoints.
+
+Use it for descriptive episode reporting alongside:
+
+- terminal return and net P&L;
+- risk-budget utilization and breach rate;
+- peak-to-trough drawdown and drawdown duration;
+- expected shortfall and worst-decile outcomes;
+- turnover, costs, and exposure.
+
+It is a poor direct per-step reward. The denominator changes only when a new
+adverse extreme occurs, the full score is unknown until the episode ends, and
+the negative-profit inversion compounds the usual ratio-reward incentives for
+inactivity, early stopping, tiny exposure, or other reward hacking.
+
+#### Experimental monotonic adaptation
+
+A Netto-inspired terminal score can retain separate planned- and realized-risk
+terms without dividing negative profit by risk. Let $p_T=V_T/V_0-1$, let $u$
+be the normalized risk budget, and let $D_T$ be a chosen non-negative drawdown
+measure. One candidate is:
+
+$$
+S_T = \log(1+p_T)
+- \lambda_N \log\left(1 + \frac{u+D_T}{2}\right),
+\qquad p_T>-1,\ \lambda_N>0.
+$$
+
+It is monotonic in the intended directions:
+
+$$
+\frac{\partial S_T}{\partial p_T}=\frac{1}{1+p_T}>0,
+\qquad
+\frac{\partial S_T}{\partial D_T}
+=-\frac{\lambda_N}{2\left(1+(u+D_T)/2\right)}<0.
+$$
+
+This is a QRT research adaptation, not John Netto's formula and not currently
+implemented as a public statistic. Its weighting, drawdown convention, and
+out-of-sample value require empirical validation before it becomes an API.
+
+For dense feedback, define running peak $H_t=\max_{s\le t}V_s$, current
+drawdown $d_t=1-V_t/H_t$, and running maximum drawdown
+$D_t=\max_{s\le t}d_s$. A candidate training reward is:
+
+$$
+r_t = \Delta\log V_t
+- \lambda_1 d_t
+- \lambda_2(D_t-D_{t-1})
++ \beta\,\mathbf{1}_{t=T}\tanh(S_T/\tau).
+$$
+
+If account equity $V_t$ already includes fees, spread, slippage, and financing,
+do not subtract those costs again. If it is a gross equity process, subtract an
+explicit cost term once. The terminal bonus should be treated as an ablation,
+not assumed to improve learning. Log-return rewards also require $V_t>0$; the
+environment must define liquidation and termination behavior before equity can
+reach zero.
+
+#### State augmentation
+
+Drawdown and terminal trajectory scores are path-dependent. An observation
+containing only market features and current positions does not make their
+reward dynamics Markov. Include sufficient account state, for example:
+
+$$
+\left[
+V_t/V_0,\ H_t/V_0,\ d_t,\ D_t,\ u,\
+\operatorname{remaining\ episode\ time}
+\right],
+$$
+
+alongside positions and market features. The budget need only be observed when
+it varies across episodes. This state summarizes the history needed to update
+the drawdown terms; more general non-Markovian objectives may require a
+trajectory-aware method.
+
+When comparing RL agents, keep episode length and market windows aligned. A
+short policy should not appear superior merely because it had less time to
+encounter adversity.
+
+For outer-loop selection, aggregate the experimental monotonic score $S_T$, not
+the raw Netto Number, across a fixed panel of market episodes and random seeds.
+Report at least the median, lower quartile, and risk-budget breach rate. A mean
+alone can be dominated by a few favorable trajectories. Keep a final market
+window untouched by reward and hyperparameter selection.
+
+#### Evaluation protocol
+
+A useful ablation compares:
+
+| Configuration | Training objective |
+|---|---|
+| Baseline | Net log return |
+| Drawdown additive | Log return minus current/new-drawdown penalties |
+| Original Netto | Exact terminal ratio, included to expose failure modes rather than as a production default |
+| Monotonic adaptation | Dense reward plus bounded $S_T$ terminal bonus |
+| Constrained | Return objective with drawdown and tail-loss constraints |
+
+Evaluate every configuration with metrics not all directly optimized: net
+return, maximum drawdown, drawdown duration, Sortino, Calmar, expected
+shortfall, worst-decile return, turnover, costs, budget-breach probability,
+regime stability, and seed stability. Explicitly probe late risk-taking during
+losing episodes, inactivity, episode-boundary liquidation, leverage artifacts,
+and frequent small gains paired with rare catastrophic losses.
+
+### Risk constraints and budget consumption
+
+The ratio is most informative when Unit-of-Risk is a real constraint rather
+than a label added after observing performance. A trading environment can track
+principal-relative budget utilization:
+
+$$
+b_t = \frac{\max\left(0, V_0 - \min_{\tau \le t} V_\tau\right)}{U_{\$}}.
+$$
+
+Here $U_{\$}$ is the dollar loss budget. The environment may terminate an
+episode or force liquidation when $b_t \ge 1$. This operational rule makes the
+ex-ante input auditable and prevents researchers from changing the denominator
+after seeing the path.
+
+A cleaner alternative to combining every preference in one scalar reward is a
+constrained problem:
+
+$$
+\max_\pi\ \mathbb{E}_\pi\left[\log\frac{V_T}{V_0}\right]
+$$
+
+subject to, for example:
+
+$$
+\mathbb{E}_\pi[D_T] \le d_{\max},
+\qquad
+\operatorname{CVaR}_\alpha(-p_T) \le L_{\max}.
+$$
+
+This separates compound-wealth growth from drawdown and tail-loss limits. The
+constraint estimator, confidence level, and enforcement algorithm still need
+careful validation; writing a constraint does not make finite-sample risk
+estimates reliable automatically.
+
+## Comparison with familiar metrics
+
+| Metric | Numerator | Risk denominator | Ex-ante input? | Main question |
+|---|---|---|---|---|
+| Sharpe | Mean excess return | Return volatility | No | Return per unit of total variability |
+| Sortino | Mean excess return | Downside deviation | No | Return per unit of harmful variability |
+| Calmar | CAGR | Peak-to-trough max drawdown | No | Annualized growth per worst drawdown |
+| Recovery factor | Total return | Peak-to-trough max drawdown | No | Total gain per worst drawdown |
+| Netto Number | Net profit | Mean of risk budget and adverse excursion | Yes | Profit relative to granted and realized risk |
+
+The ex-ante term is the distinctive feature. It is also the source of the
+metric's main governance burden: a subjective or movable budget destroys
+comparability.
+
+## Limitations and failure modes
+
+### The 50/50 weighting is a design choice
+
+The arithmetic mean gives equal weight to Unit-of-Risk and realized adversity.
+Public descriptions provide the rule, but not a general statistical derivation
+showing that equal weights are optimal. Researchers should treat it as a stated
+utility choice and test whether it adds out-of-sample information.
+
+### The budget can be gamed
+
+A budget chosen after the result, changed during the period, or defined
+inconsistently across candidates makes the ratio arbitrary. Record the budget,
+unit, horizon, adversity convention, and breach rule before evaluation begins.
+
+### Horizon and path conventions matter
+
+Scores from a week and a year are not directly comparable. Neither are scores
+based on principal shortfall and peak-to-trough drawdown. Reset rules, capital
+flows, leverage, fees, and whether unrealized P&L is marked to market must also
+match.
+
+### One path statistic cannot describe tail risk
+
+Maximum adverse excursion records one extreme. It does not reveal loss
+frequency, duration, liquidity, gaps, skew, or the distribution beyond the
+observed path. Pair the score with expected shortfall, drawdown duration,
+stress tests, and simulation where appropriate.
+
+### Small denominators and inactive policies
+
+A very small risk budget and near-zero adverse excursion can create a large
+ratio from modest profit. In RL, an agent may also avoid trading to protect its
+denominator. Always inspect absolute profit, exposure, turnover, and the two
+denominator components.
+
+### It is not independently validated as a universal ranking rule
+
+The formula has clear economic intuition but a limited public empirical
+literature. Before using it as a production objective, test whether it improves
+future outcomes relative to simpler baselines such as total return under a hard
+risk constraint, Calmar, or a multi-objective return/drawdown criterion.
+
+## Recommended reporting standard
+
+A reproducible Netto Number should be accompanied by:
+
+1. Evaluation object and exact start/end timestamps.
+2. Profit unit and treatment of fees, financing, and cash flows.
+3. Unit-of-Risk value, when it was fixed, and who or what set it.
+4. Adverse-excursion definition and whether P&L was marked to market.
+5. Starting capital and normalization convention.
+6. Budget-breach and episode-termination rules.
+7. Profit, Unit-of-Risk, adverse excursion, Risk Factor, and final ratio.
+8. Conventional return, drawdown, tail-risk, exposure, and turnover metrics.
+9. Whether the ratio was descriptive only or used in any selection objective.
+
+With those controls, the Netto Number is a useful bridge between performance
+measurement and risk-budget governance. Without them, its apparent precision
+can hide arbitrary inputs.
+
+## Sources and further reading
+
+- John Netto, [*The Global Macro Edge: Maximizing Return Per Unit-of-Risk*](https://books.google.com/books?id=lriIvgAACAAJ), 2016.
+- CQG, [excerpt from Chapter 5 of *The Global Macro Edge*](https://news.cqg.com/sites/default/files/docs/The%20Global%20Macro%20Edge%20Chapter%205%20-%20Pages%201%20-%206%20CQG%20Excerpt.pdf).
+- MoneyShow, ["John Netto, The Protean Trader, explains the Netto Number"](https://www.moneyshow.com/video/10761/), 2017.
+- Cannon Trading, [interview with John Netto](https://www.cannontrading.com/traders-interview/john-netto), discussing predetermined risk budgets across trades, strategies, indices, and portfolios.
+- Wang et al., ["DeepTrader: A Deep Reinforcement Learning Approach for Risk-Return Balanced Portfolio Management with Market Conditions Embedding"](https://doi.org/10.1609/aaai.v35i1.16144), 2021. The method includes negative maximum drawdown as a reward in one of its policy components.
+- Gaon and Brafman, ["Reinforcement Learning with Non-Markovian Rewards"](https://doi.org/10.1609/aaai.v34i04.5814), 2020. This provides general background on RL when rewards depend on history rather than only the latest state and action.
+- Coache and Jaimungal, ["Reinforcement Learning with Dynamic Convex Risk Measures"](https://doi.org/10.1111/mafi.12388), published online in 2023 and in *Mathematical Finance* in 2024. The paper develops time-consistent policy-gradient and actor-critic methods and includes financial applications.

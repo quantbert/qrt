@@ -73,6 +73,67 @@ def test_maximum_observed_dollar_loss_scales_the_worst_loss():
     ) == pytest.approx(100_000)
 
 
+def test_netto_number_matches_published_example_and_is_scale_invariant():
+    dollars = q.stats.netto_number(
+        100_000,
+        unit_of_risk=1_000_000,
+        max_adverse_excursion=500_000,
+    )
+    fractions = q.stats.netto_number(
+        0.10,
+        unit_of_risk=1.0,
+        max_adverse_excursion=0.5,
+    )
+
+    assert dollars == pytest.approx(2 * 100_000 / 1_500_000)
+    assert fractions == pytest.approx(dollars)
+
+
+def test_netto_number_preserves_profit_sign():
+    assert q.stats.netto_number(
+        0.0, unit_of_risk=0.10, max_adverse_excursion=0.0
+    ) == 0.0
+    assert q.stats.netto_number(
+        -0.05, unit_of_risk=0.10, max_adverse_excursion=0.08
+    ) < 0.0
+
+
+def test_netto_number_can_rank_worse_adversity_higher_for_a_loss():
+    less_adverse = q.stats.netto_number(
+        -0.10, unit_of_risk=1.0, max_adverse_excursion=0.10
+    )
+    more_adverse = q.stats.netto_number(
+        -0.10, unit_of_risk=1.0, max_adverse_excursion=0.90
+    )
+
+    assert more_adverse > less_adverse
+
+
+@pytest.mark.parametrize(
+    ("kwargs", "error", "message"),
+    [
+        ({"profit": np.nan}, ValueError, "profit must be finite"),
+        ({"unit_of_risk": 0.0}, ValueError, "unit_of_risk must be positive"),
+        (
+            {"max_adverse_excursion": -0.01},
+            ValueError,
+            "max_adverse_excursion must be non-negative",
+        ),
+        ({"profit": [0.1]}, TypeError, "profit must be a scalar"),
+    ],
+)
+def test_netto_number_rejects_invalid_inputs(kwargs, error, message):
+    inputs = {
+        "profit": 0.10,
+        "unit_of_risk": 0.20,
+        "max_adverse_excursion": 0.05,
+    }
+    inputs.update(kwargs)
+
+    with pytest.raises(error, match=message):
+        q.stats.netto_number(**inputs)
+
+
 def test_lower_partial_moments_support_probability_and_magnitude():
     returns = pd.Series([-0.02, -0.01, 0.01, 0.02])
 

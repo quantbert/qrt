@@ -1,0 +1,89 @@
+---
+title: "q.ai roadmap"
+---
+
+This checklist tracks durable behavior, not package names. A checked item has a
+public implementation and deterministic contract test in this repository.
+
+## Stage 0: package foundation
+
+- [x] Single-source `qrt.__version__` from installed package metadata.
+- [x] Lazy root namespace loading with preserved `dir()` discovery.
+- [x] Shared actionable optional-dependency error helper.
+- [x] Standard, local, document, and aggregate installation profiles.
+- [ ] Subprocess tests for every optional profile in a clean wheel environment.
+
+## Stage 1: inference core
+
+- [x] Immutable `Client`, provider, deployment, retry, media, and redaction contracts.
+- [x] Direction-specific input blocks and forward-compatible output blocks.
+- [x] Explicit model references, aliases, longest provider-prefix resolution, and LoRA lineage.
+- [x] LiteLLM sync/async generation and OpenAI-compatible endpoints.
+- [x] Lifecycle-aware sync/async text streaming with final results and cancellation state.
+- [x] Usage, finish reason, request identity, hashes, and inference provenance.
+- [x] Opt-in non-serializable raw provider response.
+- [x] Pydantic structured extraction with distinct parse and validation errors.
+- [ ] QRT transport retry with jitter, rate-limit policy, and pre-output stream retry.
+- [ ] Tool-call delta assembly and sanitized partial results after provider failure.
+- [ ] Native-schema capability matrix and prompted repair requests with separate usage.
+- [ ] Audio/file transfer resolvers with root/domain/size allowlists.
+
+## Stage 2: embeddings, vector storage, and RAG
+
+- [x] Hosted LiteLLM embedding result contract.
+- [x] Lazy sentence-transformers backend with BGE small as the local default.
+- [x] LanceDB create/open/add/delete/vector-search adapter.
+- [x] Required publication and ingestion timestamps with strict `as_of` filtering.
+- [x] DuckDB Lance extension installation/loading and namespace attachment.
+- [x] LlamaIndex sentence chunking, stable chunk IDs, retrieval, context assembly, and sources.
+- [x] Docling document-to-source adapter.
+- [ ] BGE reranker adapter and provider rerank API.
+- [ ] Lance full-text/hybrid search in the public vector contract.
+- [ ] Qdrant and pgvector supported adapters.
+- [ ] Effective-period policy, access metadata enforcement, and strict backend filter verification.
+- [ ] Financial PDF/table/scan benchmark for the preferred Docling configuration.
+
+## Stage 3: prompts, tools, agents, and evaluation
+
+- [x] Versioned deterministic prompts and rendered-content hashes.
+- [x] Typed tool schemas, allowlisted registry, timeouts, and validated results.
+- [x] Pydantic AI-backed typed agents with request, tool-call, and token limits.
+- [x] QRT evaluation cases, scorers, reports, and Pydantic Evals conversion.
+- [ ] Filing-plus-price reference agent with retrieval citations and historical price policy.
+- [ ] Hard pre-request monetary agent budget using provider price events.
+- [ ] Agent trajectory records, resume/inspection, and OpenTelemetry hooks.
+- [ ] Built-in schema, field, citation support, retrieval recall, and latency/cost scorers.
+
+## Stage 4: batch and durable runs
+
+- [x] pandas, Arrow, iterable, and Pydantic-record inputs with unique stable keys.
+- [x] Row-aligned successes, failures, usage, and targeted resume.
+- [x] Exact content-addressed cache identities.
+- [x] DuckDB run/cache catalog and Parquet result/failure/usage artifacts.
+- [ ] Configurable async concurrency, rate limits, ordering, back-pressure, and checkpoints.
+- [ ] Dataset partition identities and atomic recovery after process interruption.
+- [ ] `q.ray` Ray Data execution over the same run records.
+- [ ] Explicit semantic-cache policy and evaluation gates.
+
+## Stage 5: local models, serving, and adaptation
+
+- [x] Explicit Transformers engine lifecycle and named PEFT adapter switching.
+- [x] vLLM, SGLang, and llama.cpp command specifications and health checks.
+- [x] vLLM multi-LoRA deployments addressed as stable served model IDs.
+- [x] LoRA/QLoRA training configuration with model/tokenizer/dataset lineage.
+- [x] Hugging Face and tiktoken exact tokenization contracts.
+- [ ] Chat-template message generation and canonical QRT result conversion in-process.
+- [ ] Outlines direct-logit structured decoding adapter.
+- [ ] TRL training execution, checkpoint publishing, and evaluation handoff.
+- [ ] Ray Train and Ray Serve adapters under `q.ray`.
+- [ ] Server model/capability discovery and container configuration generation.
+- [ ] GigaToken equivalence and throughput benchmark before experimental adoption.
+
+## Quality gates
+
+- [x] Deterministic offline contract tests for core, transport translation, RAG, tools, batch, and specs.
+- [ ] Fake OpenAI-compatible HTTP server covering disconnects, cancellation, and malformed events.
+- [ ] Opt-in hosted provider, vLLM base/LoRA, Transformers/PEFT, Docling, and remote vector CI.
+- [ ] Secret-leak, SSRF/media-policy, unauthorized tool/model loading, and retention tests.
+- [ ] Dependency matrix across supported Python versions and all installation profiles.
+- [ ] Representative accuracy, latency, throughput, memory, and cost benchmark suite.

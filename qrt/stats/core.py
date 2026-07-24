@@ -2205,6 +2205,73 @@ def recovery_factor(
     return float(abs(total_return) / abs(max_drawdown)) if max_drawdown else float("nan")
 
 
+def netto_number(
+    profit: float,
+    *,
+    unit_of_risk: float,
+    max_adverse_excursion: float,
+) -> float:
+    r"""Calculate profit relative to planned risk and realized adverse excursion.
+
+    The Netto Number combines an ex-ante risk budget with an ex-post loss
+    magnitude:
+
+    $$
+    \operatorname{Netto Number}
+    = \frac{\text{Profit}}{(\text{Unit-of-Risk} + \text{MAE}) / 2}
+    = \frac{2\,\text{Profit}}{\text{Unit-of-Risk} + \text{MAE}}.
+    $$
+
+    All three inputs must describe the same strategy and evaluation period in
+    the same units, either currency amounts or fractions of starting capital.
+    ``max_adverse_excursion`` is supplied explicitly because its original
+    principal-relative convention is not necessarily the same as the standard
+    peak-to-trough :func:`max_drawdown` calculated from a return stream.
+
+    This ratio is descriptive, not a safe general optimization objective. When
+    ``profit`` is negative, increasing ``max_adverse_excursion`` raises the
+    result toward zero, so a worse losing path can rank above a less adverse
+    one. Preserve the three components and use a risk-monotonic objective for
+    training or policy selection.
+
+    Args:
+        profit: Net realized profit. May be positive, zero, or negative.
+        unit_of_risk: Positive risk budget fixed before the evaluation period.
+        max_adverse_excursion: Largest realized adverse excursion as a
+            non-negative loss magnitude.
+
+    Returns:
+        Profit per blended unit of planned and realized risk.
+
+    Raises:
+        TypeError: If an input is not a scalar.
+        ValueError: If an input is non-finite, ``unit_of_risk`` is not
+            positive, or ``max_adverse_excursion`` is negative.
+    """
+    values = {
+        "profit": profit,
+        "unit_of_risk": unit_of_risk,
+        "max_adverse_excursion": max_adverse_excursion,
+    }
+    normalized: dict[str, float] = {}
+    for name, value in values.items():
+        if isinstance(value, bool) or not np.isscalar(value):
+            raise TypeError(f"{name} must be a scalar")
+        normalized[name] = float(value)
+        if not np.isfinite(normalized[name]):
+            raise ValueError(f"{name} must be finite")
+
+    if normalized["unit_of_risk"] <= 0.0:
+        raise ValueError("unit_of_risk must be positive")
+    if normalized["max_adverse_excursion"] < 0.0:
+        raise ValueError("max_adverse_excursion must be non-negative")
+
+    risk_factor = (
+        normalized["unit_of_risk"] + normalized["max_adverse_excursion"]
+    ) / 2.0
+    return normalized["profit"] / risk_factor
+
+
 def risk_return_ratio(returns: pd.Series, *, return_type: ReturnType = "simple") -> float:
     """Calculate the risk-return ratio: mean return divided by its standard deviation.
 

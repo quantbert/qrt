@@ -19,6 +19,26 @@ TRANSFORM_NAMESPACES = [
 ]
 
 
+def test_root_namespace_is_lazy_and_version_is_single_sourced():
+    code = """
+import importlib.metadata
+import sys
+import qrt
+
+assert qrt.__version__ == importlib.metadata.version('pyqrt')
+assert 'qrt.data' not in sys.modules
+assert 'qrt.indicator' not in sys.modules
+assert 'qrt.model' not in sys.modules
+assert 'qrt.ai' not in sys.modules
+assert 'qrt.gym' not in sys.modules
+assert {'ai', 'data', 'gym', 'indicator', 'log', 'set_seed'} <= set(dir(qrt))
+assert qrt.data.__name__ == 'qrt.data'
+assert 'qrt.data' in sys.modules
+"""
+
+    subprocess.run([sys.executable, "-c", code], check=True)
+
+
 def test_transform_namespaces_are_lightweight_packages():
     expected_exports = {
         "encode": [],

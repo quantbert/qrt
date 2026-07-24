@@ -16,6 +16,8 @@ Pages:
 
 - [Risk estimators](risk.qmd) — historical, Gaussian, and entropic tail-loss
   measures with a consistent non-negative loss convention.
+- [Netto Number](netto-number.qmd) — history, formula, risk-budget semantics,
+  limitations, and adaptations for strategy research and reinforcement learning.
 - [Performance & benchmark](performance.ipynb) — headline metrics
   (CAGR, Sharpe, Max Drawdown, ...) and benchmark-relative alpha/beta.
 - [Rolling & calendar](rolling.ipynb) — rolling diagnostics and year-by-month

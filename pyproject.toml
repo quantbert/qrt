@@ -1,6 +1,6 @@
 [project]
 name = "pyqrt"
-version = "0.0.20"
+version = "0.0.22"
 description = "Quant Research Tools"
 readme = "README.md"
 requires-python = ">=3.13"
@@ -9,6 +9,7 @@ authors = [{ name = "Iman Karimi" }]
 dependencies = [
     "duckdb>=1.5.4",
     "exchange-calendars>=4.13.2",
+    "gymnasium>=1.2",
     "ipykernel>=7.3.0",
     "joblib>=1.5.3",
     "kaleido>=1.0",
@@ -37,6 +38,41 @@ indicators = [
 torch = [
     "torch>=2.13.0",
     "torchinfo>=1.8.0",
+]
+ai = [
+    "lancedb>=0.34.0",
+    "litellm>=1.93.0",
+    "llama-index-core>=0.14.23",
+    "pydantic>=2.13",
+    "pydantic-ai>=2.17.0",
+    "pydantic-evals>=2.17.0",
+]
+ai-local = [
+    "outlines>=1.3.2",
+    "peft>=0.19.1",
+    "sentence-transformers>=5.6.1",
+    "transformers>=5.14.1",
+    "trl>=1.9.0",
+]
+ai-document = [
+    "docling>=2.99.0",
+]
+ai-all = [
+    "docling>=2.99.0",
+    "lancedb>=0.34.0",
+    "litellm>=1.93.0",
+    "llama-index-core>=0.14.23",
+    "outlines>=1.3.2",
+    "peft>=0.19.1",
+    "pydantic>=2.13",
+    "pydantic-ai>=2.17.0",
+    "pydantic-evals>=2.17.0",
+    "sentence-transformers>=5.6.1",
+    "transformers>=5.14.1",
+    "trl>=1.9.0",
+]
+experiment = [
+    "mlflow-skinny>=3",
 ]
 
 [project.urls]

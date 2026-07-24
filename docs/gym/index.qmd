@@ -1,0 +1,91 @@
+---
+title: q.gym — Financial reinforcement learning
+---
+
+`q.gym.FinancialEnv` is a single-asset Gymnasium environment for training and
+evaluating reinforcement-learning agents. An action sets target exposure from
+fully short (`-1`) through flat (`0`) to fully long (`1`). The environment then
+charges proportional turnover cost and realizes the next simple return.
+
+```python
+import numpy as np
+import pandas as pd
+import qrt as q
+
+returns = pd.Series(np.random.default_rng(7).normal(0.0003, 0.01, 1_000))
+features = pd.DataFrame(
+    {
+        "return": returns,
+        "momentum": returns.rolling(20).sum().fillna(0),
+        "volatility": returns.rolling(20).std().fillna(0),
+    }
+)
+
+environment = q.gym.FinancialEnv(
+    returns,
+    features,
+    window_size=20,
+    transaction_cost=0.001,
+    max_drawdown=0.25,
+    episode_length=252,
+    random_start=True,
+)
+
+observation, info = environment.reset(seed=7)
+observation, reward, terminated, truncated, info = environment.step(
+    np.array([0.5], dtype=np.float32)
+)
+```
+
+The observation is a Gymnasium `Dict` with `market` and `account` arrays.
+`market` has shape `(window_size, n_features)` and contains only data available
+before the return being traded. `account` contains current position, equity,
+drawdown, and cumulative execution cost. Reward is the period portfolio return
+after execution cost.
+
+Episodes terminate on insolvency or the configured drawdown constraint. Data or
+episode-length exhaustion is reported as truncation. `environment.account`
+provides the full immutable `q.gym.AccountState` snapshot.
+
+## Training with RLlib
+
+RLlib passes an `EnvContext` mapping to environment constructors. `FinancialEnv`
+accepts that mapping directly, so the class can be supplied to PPO without a
+registration adapter:
+
+```python
+from ray.rllib.algorithms.ppo import PPOConfig
+
+config = (
+    PPOConfig()
+    .environment(
+        q.gym.FinancialEnv,
+        env_config={
+            "returns": returns,
+            "features": features,
+            "window_size": 20,
+            "transaction_cost": 0.001,
+            "max_drawdown": 0.25,
+            "episode_length": 252,
+            "random_start": True,
+        },
+    )
+    .env_runners(num_env_runners=0)
+)
+
+algorithm = config.build_algo()
+result = algorithm.train()
+algorithm.stop()
+```
+
+`num_env_runners=0` keeps sampling local for a prototype. Increase it to run
+environment workers through Ray. In a cluster, the returns and features in
+`env_config` must be serializable and should be small enough to distribute;
+large datasets should instead be loaded from shared storage by each worker.
+
+## Scope
+
+This prototype deliberately models one friction-aware instrument. It does not
+claim exchange-grade fill simulation: actions fill immediately at the period
+boundary, and costs are a fixed proportion of turnover. Multi-asset portfolios,
+configurable execution models, and richer constraints remain future work.
