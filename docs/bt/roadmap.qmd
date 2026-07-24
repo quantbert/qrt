@@ -6,6 +6,7 @@ Only open work is listed here. Completed items are removed.
 
 ## Planned
 
-- [ ] Event-driven backtester for model signals
+- [ ] Event-driven execution kernel shared by batch backtests and `q.gym`
+- [ ] `q.bt.run` adapter for model signals
 - [ ] Transaction costs / slippage models
 - [ ] Trade log output compatible with `q.plot` (tearsheets)

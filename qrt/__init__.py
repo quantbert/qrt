@@ -8,7 +8,34 @@ from __future__ import annotations
 
 import importlib
 from importlib.metadata import PackageNotFoundError, version
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+# Preserve lazy runtime imports while exposing concrete namespace types to static
+# analyzers; otherwise, __getattr__ makes every q.<namespace> resolve as Any.
+if TYPE_CHECKING:
+    from . import (
+        ai as ai,
+        bt as bt,
+        calendar as calendar,
+        cross_section as cross_section,
+        data as data,
+        dataset as dataset,
+        env as env,
+        experiment as experiment,
+        gym as gym,
+        indicator as indicator,
+        label as label,
+        model as model,
+        plot as plot,
+        portfolio as portfolio,
+        ray as ray,
+        signal as signal,
+        stats as stats,
+        transform as transform,
+        utils as utils,
+    )
+    from .utils import log as log
+    from .utils import set_seed as set_seed
 
 
 _NAMESPACES = {

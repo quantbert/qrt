@@ -8,6 +8,7 @@ Only open work is listed here. Completed items are removed.
 
 Opinionated plotting helpers with sensible defaults for quant research.
 
+- [ ] Enhance `q.plot.correlation` diagonal panels — support useful `diagonal="histogram" | "kde" | "summary" | "scatter" | "hidden"` modes instead of only Plotly SPLOM's feature-vs-itself scatter; include categorical regime overlays and finance-relevant distribution context (zero/reference lines, tails, skew, and kurtosis), while preserving linked brushing where feasible or clearly documenting the custom-subplot fallback
 - [ ] Multiclass confusion matrix plot — counts or normalized rates with stable class ordering and readable cell annotations
 - [ ] Quant classification tearsheet — class balance, confusion matrix, per-class precision/recall/F1, ROC/PR curves, probability calibration, turnover, and forward-return outcomes by predicted action
 - [ ] `q.plot.plot(...)` — enriched plot variant with stats and graphical extras:

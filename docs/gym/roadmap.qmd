@@ -6,6 +6,7 @@ Only open work is listed here. Completed items are removed.
 
 ## Planned
 
+- [ ] Make `q.gym` an interactive Gymnasium adapter over the `q.bt` execution kernel
 - [ ] Multi-asset portfolio actions and observations
 - [ ] Pluggable spread, slippage, latency, and partial-fill models
 - [ ] Leverage, concentration, and turnover constraints

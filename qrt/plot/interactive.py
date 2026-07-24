@@ -181,6 +181,15 @@ def correlation(
     hover_data: Iterable[str] | None = None,
     labels: dict[str, str] | None = None,
     triangle: Literal["lower", "upper", "full"] = "lower",
+    diagonal: bool = False,
+    marker_size: float = 7,
+    marker_opacity: float = 0.9,
+    marker_line_width: float = 0.6,
+    marker_line_color: str = "#334155",
+    axis_color: str = "#334155",
+    axis_line_width: float = 1.2,
+    tick_length: float = 5,
+    tick_width: float = 1.2,
     title: str = "Feature relationships",
     height: int | None = None,
 ) -> Figure:
@@ -206,6 +215,15 @@ def correlation(
         labels: Optional mapping from column names to display labels.
         triangle: Matrix panels to display: ``"lower"``, ``"upper"``, or
             ``"full"``.
+        diagonal: Whether to show each feature plotted against itself.
+        marker_size: Marker diameter in pixels.
+        marker_opacity: Marker opacity from 0 (transparent) to 1 (opaque).
+        marker_line_width: Marker outline width in pixels.
+        marker_line_color: Marker outline color.
+        axis_color: Color used for subplot axes, ticks, and tick labels.
+        axis_line_width: Subplot axis-line width in pixels.
+        tick_length: Outward tick length in pixels.
+        tick_width: Tick width in pixels.
         title: Figure title.
         height: Figure height in pixels. Inferred from the feature count by default.
 
@@ -218,6 +236,18 @@ def correlation(
         raise KeyError(f"Color column {color!r} is not present in data")
     if triangle not in {"lower", "upper", "full"}:
         raise ValueError("triangle must be 'lower', 'upper', or 'full'")
+    if marker_size < 0:
+        raise ValueError("marker_size must be non-negative")
+    if not 0 <= marker_opacity <= 1:
+        raise ValueError("marker_opacity must be between 0 and 1")
+    if marker_line_width < 0:
+        raise ValueError("marker_line_width must be non-negative")
+    if axis_line_width < 0:
+        raise ValueError("axis_line_width must be non-negative")
+    if tick_length < 0:
+        raise ValueError("tick_length must be non-negative")
+    if tick_width < 0:
+        raise ValueError("tick_width must be non-negative")
 
     selected_columns: str | Iterable[str]
     if columns is None:
@@ -263,15 +293,80 @@ def correlation(
         **color_options,
     )
     figure.update_traces(
-        diagonal_visible=False,
+        diagonal_visible=diagonal,
         showlowerhalf=triangle in {"lower", "full"},
         showupperhalf=triangle in {"upper", "full"},
-        marker={"size": 6, "opacity": 0.72, "line": {"width": 0.35, "color": "white"}},
+        marker={
+            "size": marker_size,
+            "opacity": marker_opacity,
+            "line": {"width": marker_line_width, "color": marker_line_color},
+        },
     )
     chart_height = height or min(1200, max(500, 170 * len(frame.columns)))
     _base_layout(figure, title=title, height=chart_height, time_axis=False)
+    categorical_color = color is not None and (
+        not pd.api.types.is_numeric_dtype(data[color])
+        or pd.api.types.is_bool_dtype(data[color])
+    )
     figure.update_layout(dragmode="select", hovermode="closest")
-    figure.update_xaxes(showgrid=True, gridcolor="#E5E7EB", zeroline=False)
+    if categorical_color:
+        figure.update_layout(
+            margin={"l": 60, "r": 30, "t": 145, "b": 50},
+            legend={
+                "orientation": "h",
+                "x": 0,
+                "xanchor": "left",
+                "y": 1.04,
+                "yanchor": "bottom",
+            },
+        )
+    axis_style = {
+        "showgrid": True,
+        "gridcolor": "#D1D5DB",
+        "zeroline": False,
+        "showline": False,
+        "mirror": False,
+        "ticks": "outside",
+        "tickcolor": axis_color,
+        "ticklen": tick_length,
+        "tickwidth": tick_width,
+        "tickfont": {"color": axis_color, "size": 11},
+        "title_font": {"color": axis_color},
+    }
+    figure.update_xaxes(**axis_style)
+    figure.update_yaxes(**axis_style)
+
+    grid_gap = 0.1
+    panel_count = len(frame.columns) - (not diagonal and triangle != "full")
+    panel_width = 1.0 / (panel_count + (panel_count - 1) * grid_gap)
+    panel_step = panel_width * (1.0 + grid_gap)
+    figure.update_layout(grid={"xgap": grid_gap, "ygap": grid_gap})
+    for row in range(panel_count):
+        for column in range(panel_count):
+            visible = (
+                triangle == "full"
+                and (diagonal or row != column)
+                or triangle == "lower"
+                and row >= column
+                or triangle == "upper"
+                and row <= column
+            )
+            if not visible:
+                continue
+            x0 = column * panel_step
+            y1 = 1.0 - row * panel_step
+            figure.add_shape(
+                type="rect",
+                xref="paper",
+                yref="paper",
+                x0=x0,
+                x1=x0 + panel_width,
+                y0=y1 - panel_width,
+                y1=y1,
+                line={"color": axis_color, "width": axis_line_width},
+                fillcolor="rgba(0,0,0,0)",
+                layer="between",
+            )
     return figure
 
 
