@@ -532,6 +532,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>data</h1>
 <p><code>data</code></p>
 <p>Data access: loading/saving local files, downloading from market data sources, and prepackaged sample datasets – everything data-related lives under this subpackage.</p>
+<p>Time-series OHLCV frames use their pandas index as observation-row identity; downstream measurements preserve it for pandas alignment.</p>
 <pre><code>import qrt as q
 
 df = q.data.load("ohlc.parquet")

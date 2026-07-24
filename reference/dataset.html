@@ -516,6 +516,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#qrt.dataset.Dataset" id="toc-qrt.dataset.Dataset" class="nav-link" data-scroll-target="#qrt.dataset.Dataset">Dataset</a></li>
   <li><a href="#qrt.dataset.DatasetView" id="toc-qrt.dataset.DatasetView" class="nav-link" data-scroll-target="#qrt.dataset.DatasetView">DatasetView</a></li>
+  <li><a href="#qrt.dataset.Fold" id="toc-qrt.dataset.Fold" class="nav-link" data-scroll-target="#qrt.dataset.Fold">Fold</a></li>
   <li><a href="#qrt.dataset.Partition" id="toc-qrt.dataset.Partition" class="nav-link" data-scroll-target="#qrt.dataset.Partition">Partition</a></li>
   <li><a href="#qrt.dataset.PurgedTimeSeriesSplit" id="toc-qrt.dataset.PurgedTimeSeriesSplit" class="nav-link" data-scroll-target="#qrt.dataset.PurgedTimeSeriesSplit">PurgedTimeSeriesSplit</a></li>
   <li><a href="#qrt.dataset.Split" id="toc-qrt.dataset.Split" class="nav-link" data-scroll-target="#qrt.dataset.Split">Split</a></li>
@@ -526,7 +527,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions">Functions</a>
   <ul class="collapse">
   <li><a href="#qrt.dataset.audit_splits" id="toc-qrt.dataset.audit_splits" class="nav-link" data-scroll-target="#qrt.dataset.audit_splits">audit_splits</a></li>
-  <li><a href="#qrt.dataset.build" id="toc-qrt.dataset.build" class="nav-link" data-scroll-target="#qrt.dataset.build">build</a></li>
   <li><a href="#qrt.dataset.split_diagnostics" id="toc-qrt.dataset.split_diagnostics" class="nav-link" data-scroll-target="#qrt.dataset.split_diagnostics">split_diagnostics</a></li>
   </ul></li>
   </ul></li>
@@ -562,26 +562,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>A partition-backed view over one aligned :class:<code>Dataset</code>.</td>
 </tr>
 <tr class="odd">
+<td><a href="#qrt.dataset.Fold">Fold</a></td>
+<td>A dataset facade bound to one split within a split scheme.</td>
+</tr>
+<tr class="even">
 <td><a href="#qrt.dataset.Partition">Partition</a></td>
 <td>A named subset and its role in model fitting or evaluation.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#qrt.dataset.PurgedTimeSeriesSplit">PurgedTimeSeriesSplit</a></td>
 <td>Walk-forward folds purged by label horizons and optional embargo.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#qrt.dataset.Split">Split</a></td>
 <td>One assignment of dataset rows to named partitions.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#qrt.dataset.SplitScheme">SplitScheme</a></td>
 <td>A named collection of splits, such as the folds of walk-forward CV.</td>
 </tr>
-<tr class="odd">
-<td><a href="#qrt.dataset.TemporalSplit">TemporalSplit</a></td>
-<td>Create one train/validation/test assignment from ordered boundaries.</td>
-</tr>
 <tr class="even">
+<td><a href="#qrt.dataset.TemporalSplit">TemporalSplit</a></td>
+<td>Create one ordered train/validation/test assignment.</td>
+</tr>
+<tr class="odd">
 <td><a href="#qrt.dataset.TimeSeriesSplit">TimeSeriesSplit</a></td>
 <td>Wrap sklearn’s expanding or rolling time-series cross-validator.</td>
 </tr>
@@ -589,8 +593,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="qrt.dataset.Dataset" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.dataset.Dataset">Dataset</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>dataset.Dataset(X, y<span class="op">=</span><span class="va">None</span>, sample_weight<span class="op">=</span><span class="va">None</span>, metadata<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, splits<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>dataset.Dataset(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    X,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    sample_weight<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    metadata<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    on<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    splits<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>One aligned collection of model inputs, targets, weights, and metadata.</p>
+<p>The pandas index is the dataset’s row identity: <code>X</code>, <code>y</code>, <code>sample_weight</code>, and <code>metadata</code> must describe the same indexed rows. When <code>on</code> is provided, each component must expose those keys either as DataFrame columns or as its complete named index. Key columns become the canonical dataset index, and component rows are reordered to <code>X</code> order.</p>
 <section id="attributes" class="level4">
 <h4 class="anchored" data-anchor-id="attributes">Attributes</h4>
 <table class="caption-top table">
@@ -604,6 +617,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td><a href="#qrt.dataset.Dataset.index">index</a></td>
 <td>Return the canonical row index shared by every dataset component.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.dataset.Dataset.is_split">is_split</a></td>
+<td>Return whether at least one split scheme is attached.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.dataset.Dataset.partitions">partitions</a></td>
+<td>Return named views from the first split of the default scheme.</td>
 </tr>
 <tr class="even">
 <td><a href="#qrt.dataset.Dataset.test">test</a></td>
@@ -631,49 +652,76 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
+<td><a href="#qrt.dataset.Dataset.fold">fold</a></td>
+<td>Return a dataset facade bound to one fold in <code>scheme</code>.</td>
+</tr>
+<tr class="even">
 <td><a href="#qrt.dataset.Dataset.load">load</a></td>
 <td>Load a dataset written by :meth:<code>save</code>.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#qrt.dataset.Dataset.partition">partition</a></td>
 <td>Return a row view for one partition in one split scheme.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#qrt.dataset.Dataset.save">save</a></td>
 <td>Serialize the aligned dataset and all split metadata with joblib.</td>
 </tr>
+<tr class="odd">
+<td><a href="#qrt.dataset.Dataset.split">split</a></td>
+<td>Return a dataset with the split or scheme produced by <code>splitter</code>.</td>
+</tr>
 <tr class="even">
+<td><a href="#qrt.dataset.Dataset.to_pandas">to_pandas</a></td>
+<td>Return selected aligned components as one optionally bounded frame.</td>
+</tr>
+<tr class="odd">
 <td><a href="#qrt.dataset.Dataset.with_split">with_split</a></td>
 <td>Return a dataset sharing the same data with an added split scheme.</td>
 </tr>
 </tbody>
 </table>
+<section id="qrt.dataset.Dataset.fold" class="level5">
+<h5 class="anchored" data-anchor-id="qrt.dataset.Dataset.fold">fold</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>dataset.Dataset.fold(scheme, fold<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return a dataset facade bound to one fold in <code>scheme</code>.</p>
+</section>
 <section id="qrt.dataset.Dataset.load" class="level5">
 <h5 class="anchored" data-anchor-id="qrt.dataset.Dataset.load">load</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>dataset.Dataset.load(path)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>dataset.Dataset.load(path)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Load a dataset written by :meth:<code>save</code>.</p>
 <p>Only load files from trusted sources because joblib uses pickle.</p>
 </section>
 <section id="qrt.dataset.Dataset.partition" class="level5">
 <h5 class="anchored" data-anchor-id="qrt.dataset.Dataset.partition">partition</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>dataset.Dataset.partition(name, <span class="op">*</span>, scheme<span class="op">=</span><span class="st">'default'</span>, fold<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>dataset.Dataset.partition(name, <span class="op">*</span>, scheme<span class="op">=</span><span class="st">'default'</span>, fold<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Return a row view for one partition in one split scheme.</p>
 </section>
 <section id="qrt.dataset.Dataset.save" class="level5">
 <h5 class="anchored" data-anchor-id="qrt.dataset.Dataset.save">save</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>dataset.Dataset.save(path)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>dataset.Dataset.save(path)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Serialize the aligned dataset and all split metadata with joblib.</p>
+</section>
+<section id="qrt.dataset.Dataset.split" class="level5">
+<h5 class="anchored" data-anchor-id="qrt.dataset.Dataset.split">split</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>dataset.Dataset.split(splitter)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return a dataset with the split or scheme produced by <code>splitter</code>.</p>
+</section>
+<section id="qrt.dataset.Dataset.to_pandas" class="level5">
+<h5 class="anchored" data-anchor-id="qrt.dataset.Dataset.to_pandas">to_pandas</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>dataset.Dataset.to_pandas(components<span class="op">=</span>_COMPONENTS, <span class="op">*</span>, start<span class="op">=</span><span class="va">None</span>, end<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return selected aligned components as one optionally bounded frame.</p>
 </section>
 <section id="qrt.dataset.Dataset.with_split" class="level5">
 <h5 class="anchored" data-anchor-id="qrt.dataset.Dataset.with_split">with_split</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>dataset.Dataset.with_split(split)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>dataset.Dataset.with_split(split)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Return a dataset sharing the same data with an added split scheme.</p>
 </section>
 </section>
 </section>
 <section id="qrt.dataset.DatasetView" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.dataset.DatasetView">DatasetView</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>dataset.DatasetView(dataset, split, partition)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>dataset.DatasetView(dataset, split, partition)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A partition-backed view over one aligned :class:<code>Dataset</code>.</p>
 <section id="attributes-1" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
@@ -708,23 +756,129 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
+<section id="methods-1" class="level4">
+<h4 class="anchored" data-anchor-id="methods-1">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#qrt.dataset.DatasetView.to_pandas">to_pandas</a></td>
+<td>Return selected partition components as one optionally bounded frame.</td>
+</tr>
+</tbody>
+</table>
+<section id="qrt.dataset.DatasetView.to_pandas" class="level5">
+<h5 class="anchored" data-anchor-id="qrt.dataset.DatasetView.to_pandas">to_pandas</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>dataset.DatasetView.to_pandas(components<span class="op">=</span>_COMPONENTS, <span class="op">*</span>, start<span class="op">=</span><span class="va">None</span>, end<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return selected partition components as one optionally bounded frame.</p>
+</section>
+</section>
+</section>
+<section id="qrt.dataset.Fold" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.dataset.Fold">Fold</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>dataset.Fold(dataset, scheme, split)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A dataset facade bound to one split within a split scheme.</p>
+<section id="attributes-2" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-2">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#qrt.dataset.Fold.X">X</a></td>
+<td>Return the complete feature frame governed by this fold.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.dataset.Fold.index">index</a></td>
+<td>Return the parent dataset’s canonical row index.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.dataset.Fold.is_split">is_split</a></td>
+<td>Return <code>True</code> because this facade is bound to one split.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.dataset.Fold.metadata">metadata</a></td>
+<td>Return the complete row metadata governed by this fold.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.dataset.Fold.name">name</a></td>
+<td>Return this fold’s split name.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.dataset.Fold.partitions">partitions</a></td>
+<td>Return named partition views for this fold.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.dataset.Fold.sample_weight">sample_weight</a></td>
+<td>Return the complete aligned sample weights governed by this fold.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.dataset.Fold.test">test</a></td>
+<td>Return this fold’s conventional <code>test</code> partition.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.dataset.Fold.train">train</a></td>
+<td>Return this fold’s conventional <code>train</code> partition.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.dataset.Fold.validation">validation</a></td>
+<td>Return this fold’s conventional <code>validation</code> partition.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.dataset.Fold.y">y</a></td>
+<td>Return the complete aligned target governed by this fold.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="methods-2" class="level4">
+<h4 class="anchored" data-anchor-id="methods-2">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#qrt.dataset.Fold.partition">partition</a></td>
+<td>Return one named partition view from this fold.</td>
+</tr>
+</tbody>
+</table>
+<section id="qrt.dataset.Fold.partition" class="level5">
+<h5 class="anchored" data-anchor-id="qrt.dataset.Fold.partition">partition</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>dataset.Fold.partition(name)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return one named partition view from this fold.</p>
+</section>
+</section>
 </section>
 <section id="qrt.dataset.Partition" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.dataset.Partition">Partition</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>dataset.Partition(name, role, metadata<span class="op">=</span><span class="bu">dict</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>dataset.Partition(name, role, metadata<span class="op">=</span><span class="bu">dict</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A named subset and its role in model fitting or evaluation.</p>
 </section>
 <section id="qrt.dataset.PurgedTimeSeriesSplit" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.dataset.PurgedTimeSeriesSplit">PurgedTimeSeriesSplit</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>dataset.PurgedTimeSeriesSplit(</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    n_splits<span class="op">=</span><span class="dv">5</span>,</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    max_train_size<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    test_size<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    gap<span class="op">=</span><span class="dv">0</span>,</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">'purged_walk_forward'</span>,</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    label_end<span class="op">=</span><span class="st">'label_end_time'</span>,</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    embargo<span class="op">=</span><span class="dv">0</span>,</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>dataset.PurgedTimeSeriesSplit(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    n_splits<span class="op">=</span><span class="dv">5</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    max_train_size<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    test_size<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    gap<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">'purged_walk_forward'</span>,</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    label_end<span class="op">=</span><span class="st">'label_end_time'</span>,</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    embargo<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Walk-forward folds purged by label horizons and optional embargo.</p>
 <section id="parameters" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h4>
@@ -759,8 +913,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="methods-1" class="level4">
-<h4 class="anchored" data-anchor-id="methods-1">Methods</h4>
+<section id="methods-3" class="level4">
+<h4 class="anchored" data-anchor-id="methods-3">Methods</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -777,17 +931,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="qrt.dataset.PurgedTimeSeriesSplit.split" class="level5">
 <h5 class="anchored" data-anchor-id="qrt.dataset.PurgedTimeSeriesSplit.split">split</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>dataset.PurgedTimeSeriesSplit.split(dataset)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>dataset.PurgedTimeSeriesSplit.split(dataset)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Return sklearn folds after removing overlapping training labels.</p>
 </section>
 </section>
 </section>
 <section id="qrt.dataset.Split" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.dataset.Split">Split</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>dataset.Split(membership, partitions, name<span class="op">=</span><span class="st">'default'</span>, metadata<span class="op">=</span><span class="bu">dict</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>dataset.Split(membership, partitions, name<span class="op">=</span><span class="st">'default'</span>, metadata<span class="op">=</span><span class="bu">dict</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>One assignment of dataset rows to named partitions.</p>
-<section id="attributes-2" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-2">Attributes</h4>
+<section id="attributes-3" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-3">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -803,8 +957,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="methods-2" class="level4">
-<h4 class="anchored" data-anchor-id="methods-2">Methods</h4>
+<section id="methods-4" class="level4">
+<h4 class="anchored" data-anchor-id="methods-4">Methods</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -821,17 +975,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="qrt.dataset.Split.partition" class="level5">
 <h5 class="anchored" data-anchor-id="qrt.dataset.Split.partition">partition</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>dataset.Split.partition(name)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>dataset.Split.partition(name)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Return one partition definition by name.</p>
 </section>
 </section>
 </section>
 <section id="qrt.dataset.SplitScheme" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.dataset.SplitScheme">SplitScheme</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>dataset.SplitScheme(splits, name<span class="op">=</span><span class="st">'default'</span>, metadata<span class="op">=</span><span class="bu">dict</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>dataset.SplitScheme(splits, name<span class="op">=</span><span class="st">'default'</span>, metadata<span class="op">=</span><span class="bu">dict</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A named collection of splits, such as the folds of walk-forward CV.</p>
-<section id="methods-3" class="level4">
-<h4 class="anchored" data-anchor-id="methods-3">Methods</h4>
+<section id="methods-5" class="level4">
+<h4 class="anchored" data-anchor-id="methods-5">Methods</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -848,28 +1002,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="qrt.dataset.SplitScheme.split" class="level5">
 <h5 class="anchored" data-anchor-id="qrt.dataset.SplitScheme.split">split</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>dataset.SplitScheme.split(fold<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>dataset.SplitScheme.split(fold<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Return a split by zero-based fold position or name.</p>
 </section>
 </section>
 </section>
 <section id="qrt.dataset.TemporalSplit" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.dataset.TemporalSplit">TemporalSplit</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>dataset.TemporalSplit(</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    train_end,</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    validation_end<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    test_end<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">'default'</span>,</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Create one train/validation/test assignment from ordered boundaries.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>dataset.TemporalSplit(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    train_end<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    validation_end<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    test_end<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">'default'</span>,</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    train_size<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    validation_size<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    test_size<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create one ordered train/validation/test assignment.</p>
 <section id="parameters-1" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 10%">
-<col style="width: 8%">
+<col style="width: 9%">
+<col style="width: 12%">
 <col style="width: 71%">
-<col style="width: 8%">
+<col style="width: 7%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -882,9 +1039,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td>train_end</td>
-<td>Any</td>
-<td>Inclusive end of the training partition.</td>
-<td><em>required</em></td>
+<td>Any | None</td>
+<td>Inclusive end of the training partition. Alternatively, use the size arguments to assign partitions by row count or proportion.</td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>validation_end</td>
@@ -904,11 +1061,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Split name.</td>
 <td><code>'default'</code></td>
 </tr>
+<tr class="odd">
+<td>train_size</td>
+<td>int | float | None</td>
+<td>Training row count or proportion.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>validation_size</td>
+<td>int | float | None</td>
+<td>Validation row count or proportion. Leaving it unset omits validation in size mode.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>test_size</td>
+<td>int | float | None</td>
+<td>Test row count or proportion. When either <code>train_size</code> or <code>test_size</code> is unset, it receives the remaining rows.</td>
+<td><code>None</code></td>
+</tr>
 </tbody>
 </table>
 </section>
-<section id="methods-4" class="level4">
-<h4 class="anchored" data-anchor-id="methods-4">Methods</h4>
+<section id="methods-6" class="level4">
+<h4 class="anchored" data-anchor-id="methods-6">Methods</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -923,35 +1098,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#qrt.dataset.TemporalSplit.split">split</a></td>
-<td>Return the boundary assignment for <code>dataset</code>.</td>
+<td>Return the ordered assignment for <code>dataset</code>.</td>
 </tr>
 </tbody>
 </table>
 <section id="qrt.dataset.TemporalSplit.apply" class="level5">
 <h5 class="anchored" data-anchor-id="qrt.dataset.TemporalSplit.apply">apply</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>dataset.TemporalSplit.<span class="bu">apply</span>(dataset)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>dataset.TemporalSplit.<span class="bu">apply</span>(dataset)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Return <code>dataset</code> with this split attached as the default scheme.</p>
 </section>
 <section id="qrt.dataset.TemporalSplit.split" class="level5">
 <h5 class="anchored" data-anchor-id="qrt.dataset.TemporalSplit.split">split</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>dataset.TemporalSplit.split(dataset)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Return the boundary assignment for <code>dataset</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>dataset.TemporalSplit.split(dataset)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return the ordered assignment for <code>dataset</code>.</p>
 </section>
 </section>
 </section>
 <section id="qrt.dataset.TimeSeriesSplit" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.dataset.TimeSeriesSplit">TimeSeriesSplit</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>dataset.TimeSeriesSplit(</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    n_splits<span class="op">=</span><span class="dv">5</span>,</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    max_train_size<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    test_size<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    gap<span class="op">=</span><span class="dv">0</span>,</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">'walk_forward'</span>,</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>dataset.TimeSeriesSplit(</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    n_splits<span class="op">=</span><span class="dv">5</span>,</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    max_train_size<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    test_size<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    gap<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">'walk_forward'</span>,</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Wrap sklearn’s expanding or rolling time-series cross-validator.</p>
 <p><code>max_train_size</code> selects a rolling window; leaving it unset produces expanding training windows. <code>gap</code> and <code>test_size</code> retain sklearn’s row semantics. Rows not selected in a fold receive the <code>excluded</code> role.</p>
-<section id="methods-5" class="level4">
-<h4 class="anchored" data-anchor-id="methods-5">Methods</h4>
+<section id="methods-7" class="level4">
+<h4 class="anchored" data-anchor-id="methods-7">Methods</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -972,12 +1147,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="qrt.dataset.TimeSeriesSplit.apply" class="level5">
 <h5 class="anchored" data-anchor-id="qrt.dataset.TimeSeriesSplit.apply">apply</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>dataset.TimeSeriesSplit.<span class="bu">apply</span>(dataset)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>dataset.TimeSeriesSplit.<span class="bu">apply</span>(dataset)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Return <code>dataset</code> with the generated scheme attached.</p>
 </section>
 <section id="qrt.dataset.TimeSeriesSplit.split" class="level5">
 <h5 class="anchored" data-anchor-id="qrt.dataset.TimeSeriesSplit.split">split</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>dataset.TimeSeriesSplit.split(dataset)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>dataset.TimeSeriesSplit.split(dataset)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Return sklearn-generated folds as a QRT split scheme.</p>
 </section>
 </section>
@@ -998,10 +1173,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Audit all folds for ordering and label-horizon leakage.</td>
 </tr>
 <tr class="even">
-<td><a href="#qrt.dataset.build">build</a></td>
-<td>Assemble already-aligned research outputs into a :class:<code>Dataset</code>.</td>
-</tr>
-<tr class="odd">
 <td><a href="#qrt.dataset.split_diagnostics">split_diagnostics</a></td>
 <td>Summarize partition roles, sizes, proportions, and index boundaries.</td>
 </tr>
@@ -1009,18 +1180,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="qrt.dataset.audit_splits" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.dataset.audit_splits">audit_splits</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>dataset.audit_splits(dataset, scheme, <span class="op">*</span>, label_end<span class="op">=</span><span class="st">'label_end_time'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>dataset.audit_splits(dataset, scheme, <span class="op">*</span>, label_end<span class="op">=</span><span class="st">'label_end_time'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Audit all folds for ordering and label-horizon leakage.</p>
 <p>A fold passes when every fit row precedes every evaluate/holdout row and, when label-end metadata exists, each fit label ends before evaluation starts.</p>
 </section>
-<section id="qrt.dataset.build" class="level3">
-<h3 class="anchored" data-anchor-id="qrt.dataset.build">build</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>dataset.build(features, labels<span class="op">=</span><span class="va">None</span>, sample_weights<span class="op">=</span><span class="va">None</span>, metadata<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Assemble already-aligned research outputs into a :class:<code>Dataset</code>.</p>
-</section>
 <section id="qrt.dataset.split_diagnostics" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.dataset.split_diagnostics">split_diagnostics</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>dataset.split_diagnostics(dataset, scheme, fold<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>dataset.split_diagnostics(dataset, scheme, fold<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Summarize partition roles, sizes, proportions, and index boundaries.</p>
 
 

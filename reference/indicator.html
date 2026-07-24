@@ -550,7 +550,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>indicator</h1>
 <p><code>indicator</code></p>
 <p>Stateless market measurements for research, rules, and model inputs.</p>
-<p>Native indicators are flat under <code>q.indicator</code>. Provider catalogs remain explicit as <code>q.indicator.talib</code> and <code>q.indicator.pandas_ta</code> and are imported only when accessed.</p>
+<p>Native indicators are flat under <code>q.indicator</code>. Provider catalogs remain explicit as <code>q.indicator.talib</code> and <code>q.indicator.pandas_ta</code> and are imported only when accessed. Indicator outputs preserve their input pandas index so derived columns align by observation when assigned or joined.</p>
 <section id="functions" class="level2">
 <h2 class="anchored" data-anchor-id="functions">Functions</h2>
 <table class="caption-top table">

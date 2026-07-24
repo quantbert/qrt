@@ -545,7 +545,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>label</h1>
 <p><code>label</code></p>
 <p>Leakage-explicit target construction for financial machine learning.</p>
-<p>Labeling functions intentionally inspect observations after each event. They produce model targets and must not be used as point-in-time input features.</p>
+<p>Labeling functions intentionally inspect observations after each event. They produce model targets and must not be used as point-in-time input features. Event-indexed outputs use the event start time as their pandas index, named <code>event_time</code>. This index is the row key for aligning labels, weights, metadata, and event-time features in pandas operations and :class:<code>Dataset</code>.</p>
 <section id="functions" class="level2">
 <h2 class="anchored" data-anchor-id="functions">Functions</h2>
 <table class="caption-top table">
@@ -1011,9 +1011,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-5">Returns</h4>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 9%">
-<col style="width: 16%">
-<col style="width: 74%">
+<col style="width: 8%">
+<col style="width: 14%">
+<col style="width: 76%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -1026,7 +1026,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td></td>
 <td>pd.DataFrame</td>
-<td>DataFrame with end time, realized return, threshold, and label.</td>
+<td>DataFrame indexed by event start time, named <code>event_time</code>, with end</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>pd.DataFrame</td>
+<td>time, realized return, threshold, and label. The index aligns rows with</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>pd.DataFrame</td>
+<td>event-time features and metadata in pandas operations.</td>
 </tr>
 </tbody>
 </table>
@@ -1604,7 +1614,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <table class="caption-top table">
 <colgroup>
 <col style="width: 8%">
-<col style="width: 15%">
+<col style="width: 14%">
 <col style="width: 76%">
 </colgroup>
 <thead>
@@ -1618,12 +1628,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td></td>
 <td>pd.DataFrame</td>
-<td>DataFrame containing the selected end time, horizon, slope, t-value,</td>
+<td>DataFrame indexed by event start time, named <code>event_time</code>, containing</td>
 </tr>
 <tr class="even">
 <td></td>
 <td>pd.DataFrame</td>
-<td>realized return, and directional label.</td>
+<td>the selected end time, horizon, slope, t-value, realized return, and</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>pd.DataFrame</td>
+<td>directional label. The index aligns rows with other event-indexed</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>pd.DataFrame</td>
+<td>objects.</td>
 </tr>
 </tbody>
 </table>
@@ -1732,8 +1752,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <table class="caption-top table">
 <colgroup>
 <col style="width: 8%">
-<col style="width: 15%">
-<col style="width: 75%">
+<col style="width: 14%">
+<col style="width: 76%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -1746,17 +1766,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td></td>
 <td>pd.DataFrame</td>
-<td>Event-indexed DataFrame describing barriers, realized returns, and</td>
+<td>DataFrame indexed by event start time, named <code>event_time</code>, describing</td>
 </tr>
 <tr class="even">
 <td></td>
 <td>pd.DataFrame</td>
-<td>labels. Side-aware results also include <code>side</code> and</td>
+<td>barriers, realized returns, and labels. The index aligns rows with</td>
 </tr>
 <tr class="odd">
 <td></td>
 <td>pd.DataFrame</td>
-<td><code>adjusted_return</code>.</td>
+<td>event-time features and metadata in pandas operations. Side-aware</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>pd.DataFrame</td>
+<td>results also include <code>side</code> and <code>adjusted_return</code>.</td>
 </tr>
 </tbody>
 </table>
@@ -1810,7 +1835,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-15">Returns</h4>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 9%">
+<col style="width: 8%">
 <col style="width: 12%">
 <col style="width: 78%">
 </colgroup>
@@ -1825,7 +1850,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td></td>
 <td>pd.Series</td>
-<td>Series indexed by event time and containing vertical-barrier times.</td>
+<td>Series indexed by event start time, named <code>event_time</code>, and</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>pd.Series</td>
+<td>containing vertical-barrier times. The index is the pandas alignment</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>pd.Series</td>
+<td>key for other event-indexed objects.</td>
 </tr>
 </tbody>
 </table>
