@@ -217,6 +217,13 @@ website:
           contents:
             - text: "Ray Train tutorial"
               href: ray/train.qmd
+        - section: "SkyPilot — Compute orchestration"
+          href: skypilot/index.qmd
+          contents:
+            - text: "Launch a training run"
+              href: skypilot/training.qmd
+            - text: "VS Code over SSH"
+              href: skypilot/vscode.qmd
         - section: "q.gym — Financial RL"
           href: gym/index.qmd
           contents:

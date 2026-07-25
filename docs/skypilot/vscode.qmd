@@ -1,0 +1,128 @@
+---
+title: Develop with VS Code over SSH
+---
+
+Use a named SkyPilot cluster for interactive QRT development. SkyPilot provisions the machine, synchronizes the local checkout, and adds the cluster name to the local SSH configuration. VS Code Remote - SSH then connects through that generated host entry.
+
+Managed jobs are intentionally not used here: their machines are temporary, automatically cleaned up, and not SSH-accessible as a development workspace.
+
+## Prerequisites
+
+1. Install SkyPilot and configure a provider as described in the [SkyPilot overview](index.qmd#install-the-cli).
+2. Install [Visual Studio Code](https://code.visualstudio.com/) locally.
+3. Install the [Remote - SSH extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh).
+4. Open a local terminal at the QRT repository root and verify provider access:
+
+```bash
+sky check
+```
+
+## 1. Define the development machine
+
+Create `sky-dev.yaml` in the repository root:
+
+```yaml
+name: qrt-development
+
+resources:
+  accelerators: L4:1
+  cpus: 8+
+  memory: 32+
+  disk_size: 100
+  autostop:
+    idle_minutes: 60
+    wait_for: jobs_and_ssh
+
+workdir: .
+
+setup: |
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+  export PATH="$HOME/.local/bin:$PATH"
+  uv sync --frozen --extra torch
+```
+
+Remove `accelerators` for CPU-only work. The default `jobs_and_ssh` behavior prevents autostop while an SSH session is active; the timer starts after SSH sessions and jobs become idle.
+
+## 2. Launch the cluster
+
+Launch a cluster named `qrt-dev`:
+
+```bash
+sky launch -c qrt-dev sky-dev.yaml
+```
+
+SkyPilot prints the selected provider, instance type, and estimated hourly price before creating anything. The first launch provisions the machine, synchronizes the checkout to `~/sky_workdir`, runs `setup`, and writes a local SSH host entry named `qrt-dev`.
+
+Refresh the status and SSH configuration, then test the connection:
+
+```bash
+sky status qrt-dev
+ssh qrt-dev
+```
+
+Exit the shell after the prompt confirms that the host is reachable.
+
+## 3. Connect VS Code
+
+1. Open the VS Code Command Palette.
+2. Run **Remote-SSH: Connect Current Window to Host...**.
+3. Select **qrt-dev**.
+4. After the remote window opens, run **File: Open Folder...**.
+5. Open `~/sky_workdir`.
+
+VS Code installs its remote server and workspace extensions on the cluster. Open a terminal in the remote window and verify the environment:
+
+```bash
+uv run python -c "import qrt; print(qrt.__file__)"
+uv run python -c "import torch; print(torch.cuda.is_available())"
+```
+
+For a CPU-only cluster, omit the Torch check.
+
+## 4. Work without losing changes
+
+`workdir: .` is a one-way synchronization from the local checkout during `sky launch` or `sky exec`. Edits made in the remote VS Code window do not automatically return to the local checkout.
+
+Choose one source-of-truth workflow:
+
+- Use Git remotely: create a branch, commit, and push before stopping or deleting the cluster.
+- Keep the local checkout authoritative: edit locally and rerun `sky launch -c qrt-dev sky-dev.yaml` to resynchronize and rerun setup.
+
+Do not keep the only copy of code, model artifacts, or datasets on the cluster disk. A stopped cluster preserves its attached disk, but `sky down` deletes it.
+
+If only the command changes and the environment is already current, run it on the existing cluster without repeating setup:
+
+```bash
+sky exec qrt-dev --workdir . uv run python scripts/train.py --help
+```
+
+Run `sky launch -c qrt-dev sky-dev.yaml` again when dependencies, mounts, setup commands, or hardware requirements change.
+
+## 5. Stop or delete the cluster
+
+Close the VS Code remote window before changing cluster state.
+
+Stop the VM while preserving its disk for a later session:
+
+```bash
+sky stop qrt-dev
+sky start qrt-dev
+sky status qrt-dev
+```
+
+Stopped instances stop compute billing, but attached disks may still incur storage charges. Spot clusters cannot be stopped.
+
+Delete the cluster and its attached disk when the workspace is no longer needed:
+
+```bash
+sky down qrt-dev
+```
+
+After `sky down`, confirm that the cluster no longer appears in `sky status`. Any remote-only edits or artifacts are unrecoverable after deletion.
+
+## Troubleshooting
+
+- If `qrt-dev` is absent from VS Code, run `sky status qrt-dev` to refresh SkyPilot's SSH configuration, then reload VS Code.
+- If plain `ssh qrt-dev` fails, resolve that before troubleshooting the Remote - SSH extension.
+- If setup changed, rerun `sky launch -c qrt-dev sky-dev.yaml`; `sky exec` deliberately skips setup.
+- If autostop occurred, run `sky start qrt-dev`, followed by `sky status qrt-dev`, before reconnecting.

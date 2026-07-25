@@ -1,0 +1,189 @@
+---
+title: Launch a training run with SkyPilot
+---
+
+This guide submits an existing QRT model-training entry point as a [SkyPilot managed job](https://docs.skypilot.ai/en/latest/examples/managed-jobs.html). Managed jobs provision temporary compute, stream logs, recover from infrastructure failures, and clean up resources when the run finishes.
+
+The Python entry point stays provider-neutral. SkyPilot only wraps the command that already works locally.
+
+## Prerequisites
+
+From the QRT repository root:
+
+1. Install SkyPilot as described in the [SkyPilot overview](index.qmd#install-the-cli).
+2. Configure credentials for at least one provider.
+3. Confirm that SkyPilot can use it:
+
+```bash
+sky check
+```
+
+Before paying for remote compute, run the training command locally. Replace the example path and arguments with those for your experiment:
+
+```bash
+uv run python scripts/train.py \
+  --config configs/model.yml \
+  --output-dir artifacts/model
+```
+
+The command should read its configuration from arguments or environment variables and write outputs to the supplied directory. It should not import SkyPilot or contain provider-specific branches.
+
+## 1. Choose compute
+
+List current accelerator offerings and prices:
+
+```bash
+sky gpus list L4 --all-regions
+```
+
+This tutorial requests one NVIDIA L4 with minimum CPU and memory requirements. Change `accelerators`, or set a specific `infra`, only when the workload requires it. Leaving `infra` unset lets SkyPilot choose among enabled providers.
+
+## 2. Define the job
+
+Create `sky-train.yaml` in the repository root:
+
+```yaml
+name: qrt-model-training
+
+resources:
+  accelerators: L4:1
+  cpus: 8+
+  memory: 32+
+  disk_size: 100
+  max_hourly_cost: 2.00
+
+workdir: .
+
+file_mounts:
+  /mnt/base-model:
+    source: hf://Qwen/Qwen3.5-4B
+    store: hf
+    mode: MOUNT
+  /mnt/data:
+    source: hf://datasets/my-org/my-dataset@main
+    store: hf
+    mode: MOUNT
+  /mnt/checkpoints:
+    source: hf://buckets/my-org/qrt-model-training
+    store: hf
+    mode: MOUNT
+
+setup: |
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+  export PATH="$HOME/.local/bin:$PATH"
+  uv sync --frozen --extra torch --extra experiment
+
+run: |
+  export PATH="$HOME/.local/bin:$PATH"
+  uv run python scripts/train.py \
+    --config configs/model.yml \
+    --output-dir /mnt/checkpoints/model
+```
+
+`workdir: .` uploads the current checkout to `~/sky_workdir`. The `setup` command recreates the locked QRT environment, and `run` invokes the same provider-neutral entry point tested locally. `max_hourly_cost` is a selection constraint, not a total job budget.
+
+The `experiment` extra installs QRT's lightweight MLflow tracking client. If the training code does not need the optional Torch dependencies, use `uv sync --frozen --extra experiment` instead.
+
+::: {.callout-warning}
+Files in the work directory and on the VM disk are ephemeral. A recovered managed job starts on new compute, and completed job resources are deleted. Keep datasets, checkpoints, and final artifacts in persistent storage.
+:::
+
+The [`hf://` SkyPilot storage integration](https://huggingface.co/blog/skypilot-hf-storage) gives each storage role a clear contract:
+
+- `hf://OWNER/MODEL` mounts a Hub model repository read-only.
+- `hf://datasets/OWNER/DATASET@REVISION` mounts a revision-pinned dataset repository read-only.
+- `hf://buckets/OWNER/BUCKET` mounts a Hugging Face Bucket read-write for checkpoints, logs, and final artifacts.
+
+Replace the example organization, repository, revision, and bucket names. Add model and dataset path arguments to `scripts/train.py` when it consumes those mounts directly.
+
+For Hugging Face Storage, `MOUNT` uses the `hf-mount` FUSE backend. Reads are lazy and cached on local disk, so `MOUNT` and `MOUNT_CACHED` have the same caching behavior. A process can start before an entire model or dataset has downloaded. Use `COPY` for read-only inputs when FUSE is unavailable, accepting an up-front full download; use `MOUNT` for checkpoints that must persist while training.
+
+`MOUNT` requires glibc 2.34 or newer and access to `/dev/fuse` in the workload image. Validate both on a smoke cluster before a long run, especially on custom Kubernetes or local AMD images.
+
+The entry point must save checkpoints periodically and resume from the latest valid checkpoint for recovery to avoid restarting training from zero.
+
+Hugging Face does not charge egress for reads, which keeps the same model and dataset portable across compute providers. Writes from the compute provider to Hugging Face Storage can still incur that provider's normal network egress charges. Xet-backed deduplication reduces transferred and stored data when checkpoints or model variants share unchanged chunks.
+
+## 3. Inspect the plan
+
+First test provisioning and setup on an ordinary cluster. This leaves the machine available for SSH debugging if setup fails:
+
+```bash
+sky launch --dryrun sky-train.yaml
+sky launch -c qrt-train-smoke sky-train.yaml
+```
+
+After the smoke run, inspect its logs and remove the cluster:
+
+```bash
+sky logs qrt-train-smoke
+sky down qrt-train-smoke
+```
+
+## 4. Submit the managed run
+
+Launch the production run:
+
+```bash
+export HF_TOKEN=...
+sky jobs launch \
+  -n qrt-model-training \
+  --secret HF_TOKEN \
+  sky-train.yaml
+```
+
+The token must have read access to private model and dataset repositories and write access to the checkpoint bucket. SkyPilot uses the same token whichever compute provider it selects and redacts it from logs and rendered YAML. SkyPilot displays the selected infrastructure and estimated hourly price before provisioning; confirm only after checking both.
+
+QRT prefers MLflow for shared experiment tracking. The training entry point can use the tracking URI from its environment:
+
+```python
+import qrt as q
+
+tracker = q.experiment.MLflowTracker(experiment="qrt-model-training")
+
+with tracker.run("model-training") as run:
+    run.log_params(config="configs/model.yml")
+    # Train and log metrics, datasets, models, and artifacts through run.
+```
+
+The SkyPilot machine must be able to reach the MLflow HTTP tracking server. Pass its URI as ordinary configuration and authentication as a secret instead of committing configuration or credentials to YAML:
+
+```bash
+export HF_TOKEN=...
+export MLFLOW_TRACKING_URI=https://mlflow.internal
+export MLFLOW_TRACKING_TOKEN=...
+sky jobs launch \
+  -n qrt-model-training \
+  --secret HF_TOKEN \
+  --env MLFLOW_TRACKING_URI \
+  --secret MLFLOW_TRACKING_TOKEN \
+  sky-train.yaml
+```
+
+MLflow also supports `MLFLOW_TRACKING_USERNAME` and `MLFLOW_TRACKING_PASSWORD` when the server uses basic authentication. Pass credential values with `--secret`; SkyPilot redacts secrets from logs and rendered YAML. See [q.experiment](../experiment/index.qmd#mlflow) for the complete QRT tracking contract.
+
+Keep secret files and local datasets excluded from `workdir` synchronization.
+
+## 5. Monitor or cancel
+
+The launch command streams logs by default. Later, use the job name or the numeric ID printed at submission:
+
+```bash
+sky jobs queue
+sky jobs logs -n qrt-model-training
+sky jobs logs --controller -n qrt-model-training
+```
+
+The controller log is useful for provisioning and recovery failures; the ordinary log contains setup and training output.
+
+Cancel a run by name when necessary:
+
+```bash
+sky jobs cancel -n qrt-model-training
+```
+
+Managed jobs delete their temporary training clusters after success, failure, or cancellation. Verify that the intended checkpoints, model, metrics, and dataset identifiers reached persistent storage before treating the run as complete.
+
+## Distributed training
+
+SkyPilot can request multiple nodes by adding `num_nodes`, while the training program remains responsible for coordinating them. For Ray-based training, follow the [Ray Train tutorial](../ray/train.qmd) and initialize Ray against the runtime available on those nodes. Do not use SkyPilot as a replacement for `q.ray`, or `q.ray` as a replacement for provisioning.
