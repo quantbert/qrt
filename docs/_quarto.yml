@@ -224,6 +224,8 @@ website:
               href: skypilot/training.qmd
             - text: "VS Code over SSH"
               href: skypilot/vscode.qmd
+            - text: "Local Strix Halo cluster"
+              href: skypilot/strix-halo.qmd
         - section: "q.gym — Financial RL"
           href: gym/index.qmd
           contents:

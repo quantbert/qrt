@@ -2,7 +2,7 @@
 title: SkyPilot
 ---
 
-[SkyPilot](https://docs.skypilot.ai/) provisions compute and launches workloads across clouds, Kubernetes, Slurm, and SSH node pools. It is an external developer tool rather than part of the `qrt` Python package.
+[SkyPilot](https://docs.skypilot.ai/) provisions compute and launches workloads across clouds, Kubernetes, Slurm, and SSH node pools. It is an external developer tool rather than part of the `qrt` Python package. The tutorials exist as a point of reference for QRT users who want to run workloads on on-prem or cloud infrastructure.
 
 Keep the boundary simple:
 
@@ -16,6 +16,7 @@ This keeps a training entry point runnable with the same `uv run ...` command on
 
 - [Launch a training run](training.qmd): submit a repeatable model-training command as a managed job.
 - [Develop with VS Code over SSH](vscode.qmd): launch an interactive machine and open the synchronized QRT checkout remotely.
+- [Build a local Strix Halo cluster](strix-halo.qmd): schedule QRT workloads across a four-node AMD SSH pool.
 
 ## Install the CLI
 

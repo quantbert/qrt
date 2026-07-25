@@ -1,0 +1,264 @@
+---
+title: Build a local Strix Halo cluster
+---
+
+This tutorial turns four existing AMD Strix Halo machines into a fixed-capacity SkyPilot [SSH Node Pool](https://docs.skypilot.ai/en/latest/reference/ssh/ssh.html). SkyPilot installs a lightweight Kubernetes runtime across the hosts, then schedules isolated QRT jobs on their integrated GPUs.
+
+This is an experimental configuration. Strix Halo reports the `gfx1151` target, and compatibility depends on the host kernel, ROCm release, PyTorch build, and container image agreeing on that target. Validate the complete stack on one node before admitting all four machines.
+
+```{mermaid}
+flowchart LR
+  C[Controller<br/>SkyPilot CLI] -->|SSH and TCP 6443| P[SSH Node Pool: strix]
+  P --> N1[Node 1<br/>gfx1151]
+  P --> N2[Node 2<br/>gfx1151]
+  P --> N3[Node 3<br/>gfx1151]
+  P --> N4[Node 4<br/>gfx1151]
+  N1 & N2 & N3 & N4 -->|amd.com/gpu: 1| J[QRT job pods]
+```
+
+## Prerequisites
+
+Use four dedicated, similarly configured Ubuntu hosts. Each host needs:
+
+- a supported recent kernel and ROCm installation that reports `gfx1151` from `rocminfo`;
+- the same SSH user and key-based access from the controller;
+- the SSH user in the `video` and `render` groups;
+- Docker-compatible container support and enough free disk for large ROCm images;
+- unrestricted peer connectivity on the private network, including TCP 6443;
+- `sudo` access, preferably passwordless.
+
+The hosts must not already belong to another Kubernetes cluster. `sky ssh up` installs and owns the pool's Kubernetes runtime, so use separate machines or virtual machines if an existing Kubernetes or Ray deployment already owns these nodes. QRT's `q.ray` API can run inside a SkyPilot allocation, but do not point it at a pre-existing host-level Ray cluster; SkyPilot itself also uses an internal Ray runtime.
+
+From the controller, confirm all four hosts are reachable and have matching GPU targets:
+
+```bash
+for host in 192.168.1.101 192.168.1.102 192.168.1.103 192.168.1.104; do
+  ssh ubuntu@"$host" 'hostname; rocminfo | grep -m1 gfx'
+done
+```
+
+Replace the addresses, user, and key in the rest of the tutorial with values for your network.
+
+## 1. Install the controller
+
+Install SkyPilot as a standalone tool with SSH and Kubernetes support:
+
+```bash
+uv tool install --with pip "skypilot[ssh,kubernetes]"
+sky check ssh
+```
+
+The controller may be a workstation or one of the four hosts, but it must remain available while submitting and monitoring work.
+
+## 2. Bootstrap the SSH pool
+
+Create `~/.sky/ssh_node_pools.yaml`:
+
+```yaml
+strix:
+  user: ubuntu
+  identity_file: ~/.ssh/id_ed25519
+  hosts:
+    - 192.168.1.101
+    - 192.168.1.102
+    - 192.168.1.103
+    - 192.168.1.104
+```
+
+If `sudo` requires a password, use the password field described by the [SSH Node Pool configuration reference](https://docs.skypilot.ai/en/latest/reference/ssh/ssh.html) instead of placing credentials in a repository file.
+
+Bootstrap the runtime and verify that SkyPilot can use it:
+
+```bash
+sky ssh up strix
+sky check ssh
+kubectl get nodes -o wide
+```
+
+All four nodes should reach `Ready`. The bootstrap fails if the machines cannot SSH to one another or if a firewall blocks required cluster traffic.
+
+## 3. Register the integrated GPUs
+
+SkyPilot's current Kubernetes guide recommends the [AMD GPU Operator](https://docs.skypilot.ai/en/latest/reference/kubernetes/amd-gpu.html) for a maintained deployment. For a small lab cluster whose host ROCm drivers are already managed identically, the standalone ROCm device-plugin DaemonSet is a smaller experimental path:
+
+```bash
+kubectl apply -f \
+  https://raw.githubusercontent.com/ROCm/k8s-device-plugin/master/k8s-ds-amdgpu-dp.yaml
+kubectl rollout status daemonset/amdgpu-device-plugin-daemonset \
+  --namespace kube-system
+```
+
+Confirm that every node advertises exactly one schedulable AMD GPU:
+
+```bash
+kubectl get nodes \
+  -o custom-columns=NAME:.metadata.name,GPU:.status.capacity.amd\.com/gpu
+```
+
+Label each GPU node with a lowercase SkyPilot accelerator name:
+
+```bash
+kubectl get nodes -o name | xargs -I{} kubectl label --overwrite \
+  {} skypilot.co/accelerator=strix-halo
+sky gpus list --infra ssh/strix
+```
+
+The inventory should show four `strix-halo` accelerators with one requestable GPU per node.
+
+## 4. Validate a ROCm image
+
+Do not assume that `rocm/pytorch:latest` contains code objects for `gfx1151`. Select and pin an image whose ROCm, Ubuntu, Python, and PyTorch versions match the host support matrix, then test it directly on one node. Set the candidate image to a pinned tag or digest:
+
+```bash
+ROCM_IMAGE='rocm/pytorch:replace-with-validated-tag'
+ssh ubuntu@192.168.1.101 docker run --rm \
+  --device=/dev/kfd --device=/dev/dri --group-add video \
+  "$ROCM_IMAGE" \
+  python -c 'import torch; print(torch.cuda.get_device_name()); print(torch.cuda.is_available())'
+```
+
+Also inspect whether the image's PyTorch library contains the target when debugging `hipErrorNoBinaryForGPU`:
+
+```bash
+ssh ubuntu@192.168.1.101 docker run --rm \
+  "$ROCM_IMAGE" sh -lc \
+  'llvm-readobj --offloading "$(python -c "import torch, pathlib; print(pathlib.Path(torch.__file__).parent / '\''lib/libtorch_hip.so'\'')")" | grep gfx1151'
+```
+
+If the target is absent, choose a supported image or build PyTorch with `PYTORCH_ROCM_ARCH=gfx1151`. Record the immutable image tag or digest that passes both checks.
+
+## 5. Run a smoke job
+
+Create `strix-smoke.yaml`, substituting the validated image:
+
+```yaml
+name: strix-smoke
+
+resources:
+  infra: ssh/strix
+  accelerators: strix-halo:1
+  image_id: "docker:rocm/pytorch:replace-with-validated-tag"
+
+run: |
+  rocminfo | grep -m1 gfx
+  python - <<'PY'
+  import torch
+
+  assert torch.cuda.is_available()
+  tensor = torch.ones(1024, device="cuda")
+  print(torch.cuda.get_device_name())
+  print(tensor.sum().item())
+  PY
+```
+
+Launch it and inspect the allocation:
+
+```bash
+sky launch -c strix-smoke strix-smoke.yaml
+sky logs strix-smoke
+sky down strix-smoke
+```
+
+`sky down` releases this workload allocation. It does not remove the underlying SSH pool runtime.
+
+## 6. Run QRT workloads
+
+For independent experiments, request one node per managed job and launch several detached jobs. The fixed pool schedules up to four concurrently and queues excess work until a GPU is free:
+
+```yaml
+name: qrt-strix-train
+
+resources:
+  infra: ssh/strix
+  accelerators: strix-halo:1
+  image_id: "docker:rocm/pytorch:replace-with-validated-tag"
+
+workdir: .
+
+setup: |
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+  export PATH="$HOME/.local/bin:$PATH"
+  uv sync --frozen --extra torch --extra experiment
+
+run: |
+  export PATH="$HOME/.local/bin:$PATH"
+  uv run python scripts/train.py
+```
+
+```bash
+for seed in 1 2 3 4; do
+  sky jobs launch -d --env SEED="$seed" qrt-strix-train.yaml
+done
+sky jobs queue
+```
+
+Pass `HF_TOKEN` and MLflow credentials as SkyPilot secrets when the training entry point uses the storage and tracking conventions from the [training tutorial](training.qmd). Keep checkpoints and final artifacts outside the hosts because local pool capacity is not durable job storage.
+
+For one four-node PyTorch Distributed Data Parallel job, create `strix-ddp.yaml`:
+
+```yaml
+name: qrt-strix-ddp
+num_nodes: 4
+
+resources:
+  infra: ssh/strix
+  accelerators: strix-halo:1
+  image_id: "docker:rocm/pytorch:replace-with-validated-tag"
+
+workdir: .
+
+setup: |
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+  export PATH="$HOME/.local/bin:$PATH"
+  uv sync --frozen --extra torch
+
+run: |
+  export PATH="$HOME/.local/bin:$PATH"
+  MASTER_ADDR=$(echo "$SKYPILOT_NODE_IPS" | head -n1)
+  torchrun \
+    --nnodes="$SKYPILOT_NUM_NODES" \
+    --nproc-per-node="$SKYPILOT_NUM_GPUS_PER_NODE" \
+    --node-rank="$SKYPILOT_NODE_RANK" \
+    --master-addr="$MASTER_ADDR" \
+    --master-port=8008 \
+    scripts/train.py
+```
+
+```bash
+sky jobs launch strix-ddp.yaml
+```
+
+SkyPilot runs `setup` and `run` on every reserved node. The training entry point must initialize distributed PyTorch and partition its data; `num_nodes: 4` does not make an ordinary single-process program distributed.
+
+## Unified memory
+
+Strix Halo uses unified system memory rather than a discrete, fixed VRAM pool. Linux GPUVM/GTT/TTM configuration controls how much memory ROCm workloads can make useful, and firmware, kernel, and ROCm choices can materially change behavior. Follow AMD's current [Strix Halo optimization guidance](https://rocm.docs.amd.com/en/latest/how-to/system-optimization/strix.html) on every node and validate under realistic load.
+
+SkyPilot's `memory` resource is a scheduler request for node RAM. It does not reserve GPU VRAM or change the host's unified-memory configuration. Leave enough memory for the operating system, Kubernetes, the container runtime, and data-loader workers.
+
+## Recovery and teardown
+
+An SSH pool is fixed capacity: SkyPilot cannot replace a failed local host from a cloud availability zone. Managed Jobs can restart work when capacity returns, but four-node jobs remain blocked until all four labeled GPUs are healthy. Monitor both layers:
+
+```bash
+sky jobs queue
+kubectl get nodes
+kubectl get pods --all-namespaces
+```
+
+Release an individual cluster allocation with `sky down <cluster-name>`. When the entire lab pool is no longer needed, first stop or cancel workloads, then remove the runtime from all hosts:
+
+```bash
+sky jobs cancel --all
+sky ssh down strix
+```
+
+`sky ssh down strix` is destructive to the pool runtime. It does not preserve job-local files, so upload checkpoints and artifacts before teardown.
+
+## Troubleshooting
+
+- If a node has no `amd.com/gpu` capacity, inspect the device-plugin pod on that node and verify `/dev/kfd`, `/dev/dri`, and host ROCm access.
+- If SkyPilot cannot find `strix-halo`, confirm the label spelling is lowercase and rerun `sky check ssh` and `sky gpus list --infra ssh/strix`.
+- If PyTorch raises `hipErrorNoBinaryForGPU`, verify the image contains a `gfx1151` code object; a working host `rocminfo` is not sufficient.
+- If a four-node launch hangs, verify peer routing and TCP 8008 in addition to the Kubernetes control-plane traffic.
+- If using Ray inside the allocation, follow SkyPilot's distributed Ray templates and never run `ray stop`, which can interfere with SkyPilot's internal runtime.
