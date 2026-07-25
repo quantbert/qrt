@@ -736,6 +736,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">VS Code over SSH</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../skypilot/strix-halo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Local Strix Halo cluster</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -967,7 +973,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><a href="https://docs.skypilot.ai/">SkyPilot</a> provisions compute and launches QRT workloads across clouds, Kubernetes, Slurm, and SSH node pools. It is an external developer tool rather than part of the <code>qrt</code> Python package.</p>
+<p><a href="https://docs.skypilot.ai/">SkyPilot</a> provisions compute and launches workloads across clouds, Kubernetes, Slurm, and SSH node pools. It is an external developer tool rather than part of the <code>qrt</code> Python package. The tutorials exist as a point of reference for QRT users who want to run workloads on on-prem or cloud infrastructure.</p>
 <p>Keep the boundary simple:</p>
 <ul>
 <li>QRT code defines data preparation, training, evaluation, and experiment tracking.</li>
@@ -980,6 +986,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li><a href="../skypilot/training.html">Launch a training run</a>: submit a repeatable model-training command as a managed job.</li>
 <li><a href="../skypilot/vscode.html">Develop with VS Code over SSH</a>: launch an interactive machine and open the synchronized QRT checkout remotely.</li>
+<li><a href="../skypilot/strix-halo.html">Build a local Strix Halo cluster</a>: schedule QRT workloads across a four-node AMD SSH pool.</li>
 </ul>
 </section>
 <section id="install-the-cli" class="level2">

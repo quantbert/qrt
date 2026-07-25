@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Time-series split – qrt</title>
+<title>Build a local Strix Halo cluster – qrt</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -61,15 +61,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../dataset/splitting.html" rel="next">
-<link href="../dataset/temporal_split.html" rel="prev">
+<link href="../gym/index.html" rel="next">
+<link href="../skypilot/vscode.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -110,9 +110,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
 <script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
 <link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
-
-<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
 <link rel="stylesheet" href="../reference/_styles-quartodoc.css">
@@ -159,7 +156,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../dataset/index.html">q.dataset — ML datasets</a></li><li class="breadcrumb-item"><a href="../dataset/time_series_split.html">Time-series split</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../skypilot/index.html">SkyPilot — Compute orchestration</a></li><li class="breadcrumb-item"><a href="../skypilot/strix-halo.html">Local Strix Halo cluster</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -569,11 +566,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="sidebar-item-container"> 
             <a href="../dataset/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">q.dataset — ML datasets</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../dataset/temporal_split.html" class="sidebar-item-text sidebar-link">
@@ -582,7 +579,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../dataset/time_series_split.html" class="sidebar-item-text sidebar-link active">
+  <a href="../dataset/time_series_split.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Time-series split</span></a>
   </div>
 </li>
@@ -725,11 +722,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="sidebar-item-container"> 
             <a href="../skypilot/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">SkyPilot — Compute orchestration</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-15" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-15" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-15" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-15" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../skypilot/training.html" class="sidebar-item-text sidebar-link">
@@ -744,7 +741,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../skypilot/strix-halo.html" class="sidebar-item-text sidebar-link">
+  <a href="../skypilot/strix-halo.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Local Strix Halo cluster</span></a>
   </div>
 </li>
@@ -952,26 +949,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#create-a-small-ordered-dataset" id="toc-create-a-small-ordered-dataset" class="nav-link active" data-scroll-target="#create-a-small-ordered-dataset">Create a small ordered dataset</a></li>
-  <li><a href="#start-with-every-default" id="toc-start-with-every-default" class="nav-link" data-scroll-target="#start-with-every-default">1. Start with every default</a>
-  <ul class="collapse">
-  <li><a href="#inspect-every-fold" id="toc-inspect-every-fold" class="nav-link" data-scroll-target="#inspect-every-fold">Inspect every fold</a></li>
-  </ul></li>
-  <li><a href="#change-n_splits" id="toc-change-n_splits" class="nav-link" data-scroll-target="#change-n_splits">2. Change <code>n_splits</code></a></li>
-  <li><a href="#set-test_size-explicitly" id="toc-set-test_size-explicitly" class="nav-link" data-scroll-target="#set-test_size-explicitly">3. Set <code>test_size</code> explicitly</a></li>
-  <li><a href="#add-a-gap" id="toc-add-a-gap" class="nav-link" data-scroll-target="#add-a-gap">4. Add a <code>gap</code></a></li>
-  <li><a href="#set-max_train_size-for-rolling-windows" id="toc-set-max_train_size-for-rolling-windows" class="nav-link" data-scroll-target="#set-max_train_size-for-rolling-windows">5. Set <code>max_train_size</code> for rolling windows</a></li>
-  <li><a href="#use-name-to-keep-multiple-schemes" id="toc-use-name-to-keep-multiple-schemes" class="nav-link" data-scroll-target="#use-name-to-keep-multiple-schemes">6. Use <code>name</code> to keep multiple schemes</a></li>
-  <li><a href="#choosing-settings" id="toc-choosing-settings" class="nav-link" data-scroll-target="#choosing-settings">Choosing settings</a></li>
+  <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link active" data-scroll-target="#prerequisites">Prerequisites</a></li>
+  <li><a href="#install-the-controller" id="toc-install-the-controller" class="nav-link" data-scroll-target="#install-the-controller">1. Install the controller</a></li>
+  <li><a href="#bootstrap-the-ssh-pool" id="toc-bootstrap-the-ssh-pool" class="nav-link" data-scroll-target="#bootstrap-the-ssh-pool">2. Bootstrap the SSH pool</a></li>
+  <li><a href="#register-the-integrated-gpus" id="toc-register-the-integrated-gpus" class="nav-link" data-scroll-target="#register-the-integrated-gpus">3. Register the integrated GPUs</a></li>
+  <li><a href="#validate-a-rocm-image" id="toc-validate-a-rocm-image" class="nav-link" data-scroll-target="#validate-a-rocm-image">4. Validate a ROCm image</a></li>
+  <li><a href="#run-a-smoke-job" id="toc-run-a-smoke-job" class="nav-link" data-scroll-target="#run-a-smoke-job">5. Run a smoke job</a></li>
+  <li><a href="#run-qrt-workloads" id="toc-run-qrt-workloads" class="nav-link" data-scroll-target="#run-qrt-workloads">6. Run QRT workloads</a></li>
+  <li><a href="#unified-memory" id="toc-unified-memory" class="nav-link" data-scroll-target="#unified-memory">Unified memory</a></li>
+  <li><a href="#recovery-and-teardown" id="toc-recovery-and-teardown" class="nav-link" data-scroll-target="#recovery-and-teardown">Recovery and teardown</a></li>
+  <li><a href="#troubleshooting" id="toc-troubleshooting" class="nav-link" data-scroll-target="#troubleshooting">Troubleshooting</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.dev/quantbert/qrt/blob/main/dataset/time_series_split.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/dataset/time_series_split.ipynb" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/skypilot/strix-halo.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/skypilot/strix-halo.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../dataset/index.html">q.dataset — ML datasets</a></li><li class="breadcrumb-item"><a href="../dataset/time_series_split.html">Time-series split</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../skypilot/index.html">SkyPilot — Compute orchestration</a></li><li class="breadcrumb-item"><a href="../skypilot/strix-halo.html">Local Strix Halo cluster</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Time-series split</h1>
+<h1 class="title">Build a local Strix Halo cluster</h1>
 </div>
 
 
@@ -988,876 +984,204 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><code>q.dataset.TimeSeriesSplit</code> creates repeated chronological train/test folds using <code>sklearn.model_selection.TimeSeriesSplit</code>. This notebook starts with every default, then changes one setting at a time to control the number of folds, test-window length, train/test separation, training-window length, and scheme name.</p>
-<section id="create-a-small-ordered-dataset" class="level2">
-<h2 class="anchored" data-anchor-id="create-a-small-ordered-dataset">Create a small ordered dataset</h2>
-<p>A time-series split needs only an ordered <code>Dataset</code>. Targets, weights, and row metadata are optional, so this example uses the final 24 sessions of QRT’s bundled SPY history and one feature column. Twenty-four rows make the default fold sizes easy to inspect.</p>
-<div id="04a2dbed" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T13:51:27.519468Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T13:51:27.519389Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T13:51:28.202357Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T13:51:28.201583Z&quot;}}" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> qrt <span class="im">as</span> q</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<div id="c2bbe6b9" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T13:51:28.204519Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T13:51:28.204370Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T13:51:28.228720Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T13:51:28.228511Z&quot;}}" data-execution_count="2">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>spy <span class="op">=</span> q.data.datasets.load(<span class="st">"spy"</span>).tail(<span class="dv">24</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>dataset <span class="op">=</span> q.dataset.Dataset(X<span class="op">=</span>spy[[<span class="st">"close"</span>]])</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> dataset.index.is_monotonic_increasing</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> dataset.is_split</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>dataset.X</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="2">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">close</th>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">datetime</th>
-<th data-quarto-table-cell-role="th"></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2026-06-18</th>
-<td>746.739990</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">2026-06-22</th>
-<td>744.390015</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2026-06-23</th>
-<td>733.580017</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">2026-06-24</th>
-<td>733.239990</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2026-06-25</th>
-<td>734.299988</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">2026-06-26</th>
-<td>728.989990</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2026-06-29</th>
-<td>741.000000</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">2026-06-30</th>
-<td>746.770020</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2026-07-01</th>
-<td>745.760010</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">2026-07-02</th>
-<td>744.780029</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2026-07-06</th>
-<td>751.280029</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">2026-07-07</th>
-<td>747.710022</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2026-07-08</th>
-<td>745.400024</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">2026-07-09</th>
-<td>751.710022</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2026-07-10</th>
-<td>754.950012</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">2026-07-13</th>
-<td>749.169983</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2026-07-14</th>
-<td>751.830017</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">2026-07-15</th>
-<td>754.809998</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2026-07-16</th>
-<td>750.719971</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">2026-07-17</th>
-<td>743.289978</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2026-07-20</th>
-<td>742.090027</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">2026-07-21</th>
-<td>748.280029</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2026-07-22</th>
-<td>747.409973</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">2026-07-23</th>
-<td>738.179993</td>
-</tr>
-</tbody>
-</table>
-
-</div>
-</div>
-</div>
-</section>
-<section id="start-with-every-default" class="level2">
-<h2 class="anchored" data-anchor-id="start-with-every-default">1. Start with every default</h2>
-<p>The empty constructor creates the simplest expanding walk-forward scheme:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 30%">
-<col style="width: 40%">
-<col style="width: 30%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Parameter</th>
-<th style="text-align: right;">Default</th>
-<th>Effect</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>n_splits</code></td>
-<td style="text-align: right;"><code>5</code></td>
-<td>Creates five chronological folds</td>
-</tr>
-<tr class="even">
-<td><code>max_train_size</code></td>
-<td style="text-align: right;"><code>None</code></td>
-<td>Uses all available earlier rows, so training expands</td>
-</tr>
-<tr class="odd">
-<td><code>test_size</code></td>
-<td style="text-align: right;"><code>None</code></td>
-<td>Lets sklearn infer <code>n_samples // (n_splits + 1)</code> rows</td>
-</tr>
-<tr class="even">
-<td><code>gap</code></td>
-<td style="text-align: right;"><code>0</code></td>
-<td>Places test immediately after train</td>
-</tr>
-<tr class="odd">
-<td><code>name</code></td>
-<td style="text-align: right;"><code>"walk_forward"</code></td>
-<td>Stores the scheme at <code>dataset.splits["walk_forward"]</code></td>
-</tr>
-</tbody>
-</table>
-<div id="a7f4a10c" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T13:51:28.229924Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T13:51:28.229855Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T13:51:28.235241Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T13:51:28.235062Z&quot;}}" data-execution_count="3">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>basic <span class="op">=</span> dataset.split(q.dataset.TimeSeriesSplit())</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>scheme <span class="op">=</span> basic.splits[<span class="st">"walk_forward"</span>]</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>first_fold <span class="op">=</span> scheme[<span class="st">"fold_1"</span>]</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> dataset.is_split</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> basic.is_split</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(scheme) <span class="op">==</span> <span class="dv">5</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(first_fold.test) <span class="op">==</span> <span class="bu">len</span>(dataset) <span class="op">//</span> <span class="dv">6</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> first_fold.train.index.<span class="bu">max</span>() <span class="op">&lt;</span> first_fold.test.index.<span class="bu">min</span>()</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>q.dataset.split_diagnostics(basic, <span class="st">"walk_forward"</span>, <span class="st">"fold_1"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="3">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">role</th>
-<th data-quarto-table-cell-role="th">rows</th>
-<th data-quarto-table-cell-role="th">proportion</th>
-<th data-quarto-table-cell-role="th">start</th>
-<th data-quarto-table-cell-role="th">end</th>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">partition</th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">train</th>
-<td>fit</td>
-<td>4</td>
-<td>0.166667</td>
-<td>2026-06-18</td>
-<td>2026-06-24</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">test</th>
-<td>holdout</td>
-<td>4</td>
-<td>0.166667</td>
-<td>2026-06-25</td>
-<td>2026-06-30</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">excluded</th>
-<td>excluded</td>
-<td>16</td>
-<td>0.666667</td>
-<td>2026-07-01</td>
-<td>2026-07-23</td>
-</tr>
-</tbody>
-</table>
-
-</div>
-</div>
-</div>
-<section id="inspect-every-fold" class="level3">
-<h3 class="anchored" data-anchor-id="inspect-every-fold">Inspect every fold</h3>
-<p>Each default test window contains four rows. Training expands by the previous test window at each step, while observations later than the current test window remain <code>excluded</code> for that fold.</p>
+<p>This tutorial turns four existing AMD Strix Halo machines into a fixed-capacity SkyPilot <a href="https://docs.skypilot.ai/en/latest/reference/ssh/ssh.html">SSH Node Pool</a>. SkyPilot installs a lightweight Kubernetes runtime across the hosts, then schedules isolated QRT jobs on their integrated GPUs.</p>
+<p>This is an experimental configuration. Strix Halo reports the <code>gfx1151</code> target, and compatibility depends on the host kernel, ROCm release, PyTorch build, and container image agreeing on that target. Validate the complete stack on one node before admitting all four machines.</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TB
-    subgraph F1["fold_1"]
-        direction LR
-        F1T["train&lt;br/&gt;rows 1-4"] --&gt; F1E["test&lt;br/&gt;rows 5-8"] --&gt; F1X["excluded&lt;br/&gt;rows 9-24"]
-    end
-    subgraph F2["fold_2"]
-        direction LR
-        F2T["train&lt;br/&gt;rows 1-8"] --&gt; F2E["test&lt;br/&gt;rows 9-12"] --&gt; F2X["excluded&lt;br/&gt;rows 13-24"]
-    end
-    subgraph F3["fold_3"]
-        direction LR
-        F3T["train&lt;br/&gt;rows 1-12"] --&gt; F3E["test&lt;br/&gt;rows 13-16"] --&gt; F3X["excluded&lt;br/&gt;rows 17-24"]
-    end
-    subgraph F4["fold_4"]
-        direction LR
-        F4T["train&lt;br/&gt;rows 1-16"] --&gt; F4E["test&lt;br/&gt;rows 17-20"] --&gt; F4X["excluded&lt;br/&gt;rows 21-24"]
-    end
-    subgraph F5["fold_5"]
-        direction LR
-        F5T["train&lt;br/&gt;rows 1-20"] --&gt; F5E["test&lt;br/&gt;rows 21-24"] --&gt; F5X["excluded&lt;br/&gt;0 rows"]
-    end
-    classDef train fill:#d8f3dc,stroke:#2d6a4f,color:#16382a
-    classDef test fill:#ffefc1,stroke:#9c6b00,color:#4d3500
-    classDef excluded fill:#eceff1,stroke:#6b7280,color:#374151
-    class F1T,F2T,F3T,F4T,F5T train
-    class F1E,F2E,F3E,F4E,F5E test
-    class F1X,F2X,F3X,F4X,F5X excluded
+<pre class="mermaid mermaid-js">flowchart LR
+  C[Controller&lt;br/&gt;SkyPilot CLI] --&gt;|SSH and TCP 6443| P[SSH Node Pool: strix]
+  P --&gt; N1[Node 1&lt;br/&gt;gfx1151]
+  P --&gt; N2[Node 2&lt;br/&gt;gfx1151]
+  P --&gt; N3[Node 3&lt;br/&gt;gfx1151]
+  P --&gt; N4[Node 4&lt;br/&gt;gfx1151]
+  N1 &amp; N2 &amp; N3 &amp; N4 --&gt;|amd.com/gpu: 1| J[QRT job pods]
 </pre>
 </div>
 <p></p></figure><p></p>
 </div>
 </div>
 </div>
-<p>An attached <code>TimeSeriesSplit</code> is a <code>SplitScheme</code>, not the single default split used by <code>TemporalSplit</code>. Iterate <code>dataset.splits["walk_forward"]</code> to receive dataset-bound folds, then access each fold’s lazy <code>.train</code>, <code>.test</code>, or <code>["excluded"]</code> views. With <code>max_train_size=None</code>, the training window grows while the inferred four-row test window stays fixed.</p>
-<div id="a8268480" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T13:51:28.236482Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T13:51:28.236404Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T13:51:28.241664Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T13:51:28.241416Z&quot;}}" data-execution_count="4">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> summarize_folds(split_dataset, scheme_name):</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    rows <span class="op">=</span> []</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> fold <span class="kw">in</span> split_dataset.splits[scheme_name]:</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        rows.append(</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>            {</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>                <span class="st">"fold"</span>: fold.name,</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>                <span class="st">"train_rows"</span>: <span class="bu">len</span>(fold.train),</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>                <span class="st">"train_start"</span>: fold.train.index.<span class="bu">min</span>(),</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>                <span class="st">"train_end"</span>: fold.train.index.<span class="bu">max</span>(),</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>                <span class="st">"test_rows"</span>: <span class="bu">len</span>(fold.test),</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>                <span class="st">"test_start"</span>: fold.test.index.<span class="bu">min</span>(),</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>                <span class="st">"test_end"</span>: fold.test.index.<span class="bu">max</span>(),</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>                <span class="st">"excluded_rows"</span>: <span class="bu">len</span>(fold[<span class="st">"excluded"</span>]),</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>            }</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.DataFrame(rows).set_index(<span class="st">"fold"</span>)</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>default_summary <span class="op">=</span> summarize_folds(basic, <span class="st">"walk_forward"</span>)</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> default_summary[<span class="st">"train_rows"</span>].tolist() <span class="op">==</span> [<span class="dv">4</span>, <span class="dv">8</span>, <span class="dv">12</span>, <span class="dv">16</span>, <span class="dv">20</span>]</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> default_summary[<span class="st">"test_rows"</span>].eq(<span class="dv">4</span>).<span class="bu">all</span>()</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>default_summary</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="4">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">train_rows</th>
-<th data-quarto-table-cell-role="th">train_start</th>
-<th data-quarto-table-cell-role="th">train_end</th>
-<th data-quarto-table-cell-role="th">test_rows</th>
-<th data-quarto-table-cell-role="th">test_start</th>
-<th data-quarto-table-cell-role="th">test_end</th>
-<th data-quarto-table-cell-role="th">excluded_rows</th>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">fold</th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">fold_1</th>
-<td>4</td>
-<td>2026-06-18</td>
-<td>2026-06-24</td>
-<td>4</td>
-<td>2026-06-25</td>
-<td>2026-06-30</td>
-<td>16</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">fold_2</th>
-<td>8</td>
-<td>2026-06-18</td>
-<td>2026-06-30</td>
-<td>4</td>
-<td>2026-07-01</td>
-<td>2026-07-07</td>
-<td>12</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">fold_3</th>
-<td>12</td>
-<td>2026-06-18</td>
-<td>2026-07-07</td>
-<td>4</td>
-<td>2026-07-08</td>
-<td>2026-07-13</td>
-<td>8</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">fold_4</th>
-<td>16</td>
-<td>2026-06-18</td>
-<td>2026-07-13</td>
-<td>4</td>
-<td>2026-07-14</td>
-<td>2026-07-17</td>
-<td>4</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">fold_5</th>
-<td>20</td>
-<td>2026-06-18</td>
-<td>2026-07-17</td>
-<td>4</td>
-<td>2026-07-20</td>
-<td>2026-07-23</td>
-<td>0</td>
-</tr>
-</tbody>
-</table>
-
-</div>
-</div>
-</div>
+<section id="prerequisites" class="level2">
+<h2 class="anchored" data-anchor-id="prerequisites">Prerequisites</h2>
+<p>Use four dedicated, similarly configured Ubuntu hosts. Each host needs:</p>
+<ul>
+<li>a supported recent kernel and ROCm installation that reports <code>gfx1151</code> from <code>rocminfo</code>;</li>
+<li>the same SSH user and key-based access from the controller;</li>
+<li>the SSH user in the <code>video</code> and <code>render</code> groups;</li>
+<li>Docker-compatible container support and enough free disk for large ROCm images;</li>
+<li>unrestricted peer connectivity on the private network, including TCP 6443;</li>
+<li><code>sudo</code> access, preferably passwordless.</li>
+</ul>
+<p>The hosts must not already belong to another Kubernetes cluster. <code>sky ssh up</code> installs and owns the pool’s Kubernetes runtime, so use separate machines or virtual machines if an existing Kubernetes or Ray deployment already owns these nodes. QRT’s <code>q.ray</code> API can run inside a SkyPilot allocation, but do not point it at a pre-existing host-level Ray cluster; SkyPilot itself also uses an internal Ray runtime.</p>
+<p>From the controller, confirm all four hosts are reachable and have matching GPU targets:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> host <span class="kw">in</span> 192.168.1.101 192.168.1.102 192.168.1.103 192.168.1.104<span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ssh</span> ubuntu@<span class="st">"</span><span class="va">$host</span><span class="st">"</span> <span class="st">'hostname; rocminfo | grep -m1 gfx'</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Replace the addresses, user, and key in the rest of the tutorial with values for your network.</p>
 </section>
+<section id="install-the-controller" class="level2">
+<h2 class="anchored" data-anchor-id="install-the-controller">1. Install the controller</h2>
+<p>Install SkyPilot as a standalone tool with SSH and Kubernetes support:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> tool install <span class="at">--with</span> pip <span class="st">"skypilot[ssh,kubernetes]"</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">sky</span> check ssh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The controller may be a workstation or one of the four hosts, but it must remain available while submitting and monitoring work.</p>
 </section>
-<section id="change-n_splits" class="level2">
-<h2 class="anchored" data-anchor-id="change-n_splits">2. Change <code>n_splits</code></h2>
-<p><code>n_splits</code> controls how many train/test evaluations are produced. When <code>test_size</code> remains <code>None</code>, changing the fold count also changes sklearn’s inferred test size. With 24 rows and three folds, each test window contains <code>24 // (3 + 1) = 6</code> rows.</p>
-<div id="90c4fde0" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T13:51:28.243335Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T13:51:28.243288Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T13:51:28.247726Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T13:51:28.247581Z&quot;}}" data-execution_count="5">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>three_folds <span class="op">=</span> dataset.split(q.dataset.TimeSeriesSplit(n_splits<span class="op">=</span><span class="dv">3</span>))</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>three_fold_summary <span class="op">=</span> summarize_folds(three_folds, <span class="st">"walk_forward"</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(three_folds.splits[<span class="st">"walk_forward"</span>]) <span class="op">==</span> <span class="dv">3</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> three_fold_summary[<span class="st">"test_rows"</span>].eq(<span class="dv">6</span>).<span class="bu">all</span>()</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>three_fold_summary</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="5">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">train_rows</th>
-<th data-quarto-table-cell-role="th">train_start</th>
-<th data-quarto-table-cell-role="th">train_end</th>
-<th data-quarto-table-cell-role="th">test_rows</th>
-<th data-quarto-table-cell-role="th">test_start</th>
-<th data-quarto-table-cell-role="th">test_end</th>
-<th data-quarto-table-cell-role="th">excluded_rows</th>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">fold</th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">fold_1</th>
-<td>6</td>
-<td>2026-06-18</td>
-<td>2026-06-26</td>
-<td>6</td>
-<td>2026-06-29</td>
-<td>2026-07-07</td>
-<td>12</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">fold_2</th>
-<td>12</td>
-<td>2026-06-18</td>
-<td>2026-07-07</td>
-<td>6</td>
-<td>2026-07-08</td>
-<td>2026-07-15</td>
-<td>6</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">fold_3</th>
-<td>18</td>
-<td>2026-06-18</td>
-<td>2026-07-15</td>
-<td>6</td>
-<td>2026-07-16</td>
-<td>2026-07-23</td>
-<td>0</td>
-</tr>
-</tbody>
-</table>
-
-</div>
-</div>
-</div>
+<section id="bootstrap-the-ssh-pool" class="level2">
+<h2 class="anchored" data-anchor-id="bootstrap-the-ssh-pool">2. Bootstrap the SSH pool</h2>
+<p>Create <code>~/.sky/ssh_node_pools.yaml</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">strix</span><span class="kw">:</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">user</span><span class="kw">:</span><span class="at"> ubuntu</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">identity_file</span><span class="kw">:</span><span class="at"> ~/.ssh/id_ed25519</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">hosts</span><span class="kw">:</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fl">192.168.1.101</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fl">192.168.1.102</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fl">192.168.1.103</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fl">192.168.1.104</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If <code>sudo</code> requires a password, use the password field described by the <a href="https://docs.skypilot.ai/en/latest/reference/ssh/ssh.html">SSH Node Pool configuration reference</a> instead of placing credentials in a repository file.</p>
+<p>Bootstrap the runtime and verify that SkyPilot can use it:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">sky</span> ssh up strix</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">sky</span> check ssh</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get nodes <span class="at">-o</span> wide</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>All four nodes should reach <code>Ready</code>. The bootstrap fails if the machines cannot SSH to one another or if a firewall blocks required cluster traffic.</p>
 </section>
-<section id="set-test_size-explicitly" class="level2">
-<h2 class="anchored" data-anchor-id="set-test_size-explicitly">3. Set <code>test_size</code> explicitly</h2>
-<p>Set <code>test_size</code> when every evaluation period must contain a specific number of rows. A smaller test window leaves more observations available before the first test fold. The value counts rows, which are trading sessions for this SPY dataset, not calendar days.</p>
-<div id="83dd52d9" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T13:51:28.248979Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T13:51:28.248931Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T13:51:28.253474Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T13:51:28.253267Z&quot;}}" data-execution_count="6">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fixed_test <span class="op">=</span> dataset.split(</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    q.dataset.TimeSeriesSplit(</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        n_splits<span class="op">=</span><span class="dv">3</span>,</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        test_size<span class="op">=</span><span class="dv">3</span>,</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        name<span class="op">=</span><span class="st">"fixed_test"</span>,</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>fixed_test_summary <span class="op">=</span> summarize_folds(fixed_test, <span class="st">"fixed_test"</span>)</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> fixed_test_summary[<span class="st">"test_rows"</span>].eq(<span class="dv">3</span>).<span class="bu">all</span>()</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> fixed_test_summary.loc[<span class="st">"fold_1"</span>, <span class="st">"train_rows"</span>] <span class="op">==</span> <span class="dv">15</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>fixed_test_summary</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="6">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">train_rows</th>
-<th data-quarto-table-cell-role="th">train_start</th>
-<th data-quarto-table-cell-role="th">train_end</th>
-<th data-quarto-table-cell-role="th">test_rows</th>
-<th data-quarto-table-cell-role="th">test_start</th>
-<th data-quarto-table-cell-role="th">test_end</th>
-<th data-quarto-table-cell-role="th">excluded_rows</th>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">fold</th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">fold_1</th>
-<td>15</td>
-<td>2026-06-18</td>
-<td>2026-07-10</td>
-<td>3</td>
-<td>2026-07-13</td>
-<td>2026-07-15</td>
-<td>6</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">fold_2</th>
-<td>18</td>
-<td>2026-06-18</td>
-<td>2026-07-15</td>
-<td>3</td>
-<td>2026-07-16</td>
-<td>2026-07-20</td>
-<td>3</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">fold_3</th>
-<td>21</td>
-<td>2026-06-18</td>
-<td>2026-07-20</td>
-<td>3</td>
-<td>2026-07-21</td>
-<td>2026-07-23</td>
-<td>0</td>
-</tr>
-</tbody>
-</table>
-
-</div>
-</div>
-</div>
+<section id="register-the-integrated-gpus" class="level2">
+<h2 class="anchored" data-anchor-id="register-the-integrated-gpus">3. Register the integrated GPUs</h2>
+<p>SkyPilot’s current Kubernetes guide recommends the <a href="https://docs.skypilot.ai/en/latest/reference/kubernetes/amd-gpu.html">AMD GPU Operator</a> for a maintained deployment. For a small lab cluster whose host ROCm drivers are already managed identically, the standalone ROCm device-plugin DaemonSet is a smaller experimental path:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> apply <span class="at">-f</span> <span class="dt">\</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  https://raw.githubusercontent.com/ROCm/k8s-device-plugin/master/k8s-ds-amdgpu-dp.yaml</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> rollout status daemonset/amdgpu-device-plugin-daemonset <span class="dt">\</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--namespace</span> kube-system</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Confirm that every node advertises exactly one schedulable AMD GPU:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get nodes <span class="dt">\</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-o</span> custom-columns=NAME:.metadata.name,GPU:.status.capacity.amd\.com/gpu</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Label each GPU node with a lowercase SkyPilot accelerator name:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get nodes <span class="at">-o</span> name <span class="kw">|</span> <span class="fu">xargs</span> <span class="at">-I{}</span> kubectl label <span class="at">--overwrite</span> <span class="dt">\</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  {} skypilot.co/accelerator=strix-halo</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="ex">sky</span> gpus list <span class="at">--infra</span> ssh/strix</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The inventory should show four <code>strix-halo</code> accelerators with one requestable GPU per node.</p>
 </section>
-<section id="add-a-gap" class="level2">
-<h2 class="anchored" data-anchor-id="add-a-gap">4. Add a <code>gap</code></h2>
-<p><code>gap</code> removes a fixed number of rows from the end of each training window before test begins. Those rows receive the <code>excluded</code> role for that fold. A gap can protect against short look-ahead effects, but it does not inspect label horizons; use <code>PurgedTimeSeriesSplit</code> when labels can overlap test observations.</p>
-<div id="e40cf5ac" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T13:51:28.255016Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T13:51:28.254843Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T13:51:28.259599Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T13:51:28.259429Z&quot;}}" data-execution_count="7">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>gapped <span class="op">=</span> dataset.split(</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    q.dataset.TimeSeriesSplit(</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        n_splits<span class="op">=</span><span class="dv">3</span>,</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        test_size<span class="op">=</span><span class="dv">3</span>,</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        gap<span class="op">=</span><span class="dv">2</span>,</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        name<span class="op">=</span><span class="st">"gapped"</span>,</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>first_gapped_fold <span class="op">=</span> gapped.splits[<span class="st">"gapped"</span>][<span class="st">"fold_1"</span>]</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>test_start <span class="op">=</span> dataset.index.get_loc(first_gapped_fold.test.index.<span class="bu">min</span>())</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>gap_rows <span class="op">=</span> dataset.index[test_start <span class="op">-</span> <span class="dv">2</span> : test_start]</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> gap_rows.isin(first_gapped_fold[<span class="st">"excluded"</span>].index).<span class="bu">all</span>()</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> first_gapped_fold.train.index.<span class="bu">max</span>() <span class="op">&lt;</span> gap_rows.<span class="bu">min</span>()</span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>membership <span class="op">=</span> gapped.splits[<span class="st">"gapped"</span>].split(<span class="st">"fold_1"</span>).membership</span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>gapped.X.assign(partition<span class="op">=</span>membership)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="7">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">close</th>
-<th data-quarto-table-cell-role="th">partition</th>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">datetime</th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2026-06-18</th>
-<td>746.739990</td>
-<td>train</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">2026-06-22</th>
-<td>744.390015</td>
-<td>train</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2026-06-23</th>
-<td>733.580017</td>
-<td>train</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">2026-06-24</th>
-<td>733.239990</td>
-<td>train</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2026-06-25</th>
-<td>734.299988</td>
-<td>train</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">2026-06-26</th>
-<td>728.989990</td>
-<td>train</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2026-06-29</th>
-<td>741.000000</td>
-<td>train</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">2026-06-30</th>
-<td>746.770020</td>
-<td>train</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2026-07-01</th>
-<td>745.760010</td>
-<td>train</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">2026-07-02</th>
-<td>744.780029</td>
-<td>train</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2026-07-06</th>
-<td>751.280029</td>
-<td>train</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">2026-07-07</th>
-<td>747.710022</td>
-<td>train</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2026-07-08</th>
-<td>745.400024</td>
-<td>train</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">2026-07-09</th>
-<td>751.710022</td>
-<td>excluded</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2026-07-10</th>
-<td>754.950012</td>
-<td>excluded</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">2026-07-13</th>
-<td>749.169983</td>
-<td>test</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2026-07-14</th>
-<td>751.830017</td>
-<td>test</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">2026-07-15</th>
-<td>754.809998</td>
-<td>test</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2026-07-16</th>
-<td>750.719971</td>
-<td>excluded</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">2026-07-17</th>
-<td>743.289978</td>
-<td>excluded</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2026-07-20</th>
-<td>742.090027</td>
-<td>excluded</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">2026-07-21</th>
-<td>748.280029</td>
-<td>excluded</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2026-07-22</th>
-<td>747.409973</td>
-<td>excluded</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">2026-07-23</th>
-<td>738.179993</td>
-<td>excluded</td>
-</tr>
-</tbody>
-</table>
-
-</div>
-</div>
-</div>
+<section id="validate-a-rocm-image" class="level2">
+<h2 class="anchored" data-anchor-id="validate-a-rocm-image">4. Validate a ROCm image</h2>
+<p>Do not assume that <code>rocm/pytorch:latest</code> contains code objects for <code>gfx1151</code>. Select and pin an image whose ROCm, Ubuntu, Python, and PyTorch versions match the host support matrix, then test it directly on one node. Set the candidate image to a pinned tag or digest:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="va">ROCM_IMAGE</span><span class="op">=</span><span class="st">'rocm/pytorch:replace-with-validated-tag'</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> ubuntu@192.168.1.101 docker run <span class="at">--rm</span> <span class="dt">\</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--device</span><span class="op">=</span>/dev/kfd <span class="at">--device</span><span class="op">=</span>/dev/dri <span class="at">--group-add</span> video <span class="dt">\</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"</span><span class="va">$ROCM_IMAGE</span><span class="st">"</span> <span class="dt">\</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  python <span class="at">-c</span> <span class="st">'import torch; print(torch.cuda.get_device_name()); print(torch.cuda.is_available())'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Also inspect whether the image’s PyTorch library contains the target when debugging <code>hipErrorNoBinaryForGPU</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> ubuntu@192.168.1.101 docker run <span class="at">--rm</span> <span class="dt">\</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"</span><span class="va">$ROCM_IMAGE</span><span class="st">"</span> sh <span class="at">-lc</span> <span class="dt">\</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">'llvm-readobj --offloading "$(python -c "import torch, pathlib; print(pathlib.Path(torch.__file__).parent / '</span><span class="dt">\'</span><span class="st">'lib/libtorch_hip.so'</span><span class="dt">\'</span><span class="st">')")" | grep gfx1151'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If the target is absent, choose a supported image or build PyTorch with <code>PYTORCH_ROCM_ARCH=gfx1151</code>. Record the immutable image tag or digest that passes both checks.</p>
 </section>
-<section id="set-max_train_size-for-rolling-windows" class="level2">
-<h2 class="anchored" data-anchor-id="set-max_train_size-for-rolling-windows">5. Set <code>max_train_size</code> for rolling windows</h2>
-<p>The default <code>max_train_size=None</code> keeps all eligible history and produces expanding windows. Set a maximum to keep only the most recent training rows. This converts the same splitter into a rolling-window scheme; older rows remain aligned but are <code>excluded</code> from that fold.</p>
-<div id="414aa13b" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T13:51:28.261092Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T13:51:28.261038Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T13:51:28.265623Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T13:51:28.265373Z&quot;}}" data-execution_count="8">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>rolling <span class="op">=</span> dataset.split(</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    q.dataset.TimeSeriesSplit(</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        n_splits<span class="op">=</span><span class="dv">3</span>,</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        test_size<span class="op">=</span><span class="dv">3</span>,</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        gap<span class="op">=</span><span class="dv">2</span>,</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        max_train_size<span class="op">=</span><span class="dv">6</span>,</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        name<span class="op">=</span><span class="st">"rolling"</span>,</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>rolling_summary <span class="op">=</span> summarize_folds(rolling, <span class="st">"rolling"</span>)</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> rolling.splits[<span class="st">"rolling"</span>].metadata[<span class="st">"method"</span>] <span class="op">==</span> <span class="st">"rolling"</span></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> rolling_summary[<span class="st">"train_rows"</span>].eq(<span class="dv">6</span>).<span class="bu">all</span>()</span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>rolling_summary</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="8">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">train_rows</th>
-<th data-quarto-table-cell-role="th">train_start</th>
-<th data-quarto-table-cell-role="th">train_end</th>
-<th data-quarto-table-cell-role="th">test_rows</th>
-<th data-quarto-table-cell-role="th">test_start</th>
-<th data-quarto-table-cell-role="th">test_end</th>
-<th data-quarto-table-cell-role="th">excluded_rows</th>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">fold</th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">fold_1</th>
-<td>6</td>
-<td>2026-06-30</td>
-<td>2026-07-08</td>
-<td>3</td>
-<td>2026-07-13</td>
-<td>2026-07-15</td>
-<td>15</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">fold_2</th>
-<td>6</td>
-<td>2026-07-06</td>
-<td>2026-07-13</td>
-<td>3</td>
-<td>2026-07-16</td>
-<td>2026-07-20</td>
-<td>15</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">fold_3</th>
-<td>6</td>
-<td>2026-07-09</td>
-<td>2026-07-16</td>
-<td>3</td>
-<td>2026-07-21</td>
-<td>2026-07-23</td>
-<td>15</td>
-</tr>
-</tbody>
-</table>
-
-</div>
-</div>
-</div>
+<section id="run-a-smoke-job" class="level2">
+<h2 class="anchored" data-anchor-id="run-a-smoke-job">5. Run a smoke job</h2>
+<p>Create <code>strix-smoke.yaml</code>, substituting the validated image:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">name</span><span class="kw">:</span><span class="at"> strix-smoke</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">resources</span><span class="kw">:</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">infra</span><span class="kw">:</span><span class="at"> ssh/strix</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">accelerators</span><span class="kw">:</span><span class="at"> strix-halo:1</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">image_id</span><span class="kw">:</span><span class="at"> </span><span class="st">"docker:rocm/pytorch:replace-with-validated-tag"</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="fu">run</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  rocminfo | grep -m1 gfx</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  python - &lt;&lt;'PY'</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  import torch</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>  assert torch.cuda.is_available()</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  tensor = torch.ones(1024, device="cuda")</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  print(torch.cuda.get_device_name())</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  print(tensor.sum().item())</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  PY</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Launch it and inspect the allocation:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">sky</span> launch <span class="at">-c</span> strix-smoke strix-smoke.yaml</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ex">sky</span> logs strix-smoke</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="ex">sky</span> down strix-smoke</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>sky down</code> releases this workload allocation. It does not remove the underlying SSH pool runtime.</p>
 </section>
-<section id="use-name-to-keep-multiple-schemes" class="level2">
-<h2 class="anchored" data-anchor-id="use-name-to-keep-multiple-schemes">6. Use <code>name</code> to keep multiple schemes</h2>
-<p>Unlike <code>TemporalSplit</code>, <code>TimeSeriesSplit.name</code> names the whole multi-fold scheme. Distinct names let one dataset retain several walk-forward designs for comparison. Calling <code>.split(...)</code> returns a new dataset and preserves schemes already attached to the source.</p>
-<div id="5b650794" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T13:51:28.266708Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T13:51:28.266662Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T13:51:28.272189Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T13:51:28.271914Z&quot;}}" data-execution_count="9">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>compared <span class="op">=</span> basic.split(</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    q.dataset.TimeSeriesSplit(</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>        n_splits<span class="op">=</span><span class="dv">3</span>,</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>        test_size<span class="op">=</span><span class="dv">3</span>,</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>        max_train_size<span class="op">=</span><span class="dv">6</span>,</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>        name<span class="op">=</span><span class="st">"rolling"</span>,</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">tuple</span>(compared.splits) <span class="op">==</span> (<span class="st">"walk_forward"</span>, <span class="st">"rolling"</span>)</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> [fold.name <span class="cf">for</span> fold <span class="kw">in</span> compared.splits[<span class="st">"rolling"</span>]] <span class="op">==</span> [</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"fold_1"</span>,</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"fold_2"</span>,</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"fold_3"</span>,</span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(</span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    {</span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>        <span class="st">"expanding_train_rows"</span>: summarize_folds(three_folds, <span class="st">"walk_forward"</span>)[<span class="st">"train_rows"</span>],</span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>        <span class="st">"rolling_train_rows"</span>: summarize_folds(compared, <span class="st">"rolling"</span>)[<span class="st">"train_rows"</span>],</span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="9">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">expanding_train_rows</th>
-<th data-quarto-table-cell-role="th">rolling_train_rows</th>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">fold</th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">fold_1</th>
-<td>6</td>
-<td>6</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">fold_2</th>
-<td>12</td>
-<td>6</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">fold_3</th>
-<td>18</td>
-<td>6</td>
-</tr>
-</tbody>
-</table>
-
-</div>
-</div>
-</div>
+<section id="run-qrt-workloads" class="level2">
+<h2 class="anchored" data-anchor-id="run-qrt-workloads">6. Run QRT workloads</h2>
+<p>For independent experiments, request one node per managed job and launch several detached jobs. The fixed pool schedules up to four concurrently and queues excess work until a GPU is free:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">name</span><span class="kw">:</span><span class="at"> qrt-strix-train</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">resources</span><span class="kw">:</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">infra</span><span class="kw">:</span><span class="at"> ssh/strix</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">accelerators</span><span class="kw">:</span><span class="at"> strix-halo:1</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">image_id</span><span class="kw">:</span><span class="at"> </span><span class="st">"docker:rocm/pytorch:replace-with-validated-tag"</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="fu">workdir</span><span class="kw">:</span><span class="at"> .</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="fu">setup</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  curl -LsSf https://astral.sh/uv/install.sh | sh</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  export PATH="$HOME/.local/bin:$PATH"</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  uv sync --frozen --extra torch --extra experiment</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="fu">run</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  export PATH="$HOME/.local/bin:$PATH"</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  uv run python scripts/train.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> seed <span class="kw">in</span> 1 2 3 4<span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">sky</span> jobs launch <span class="at">-d</span> <span class="at">--env</span> SEED=<span class="st">"</span><span class="va">$seed</span><span class="st">"</span> qrt-strix-train.yaml</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="ex">sky</span> jobs queue</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Pass <code>HF_TOKEN</code> and MLflow credentials as SkyPilot secrets when the training entry point uses the storage and tracking conventions from the <a href="../skypilot/training.html">training tutorial</a>. Keep checkpoints and final artifacts outside the hosts because local pool capacity is not durable job storage.</p>
+<p>For one four-node PyTorch Distributed Data Parallel job, create <code>strix-ddp.yaml</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">name</span><span class="kw">:</span><span class="at"> qrt-strix-ddp</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">num_nodes</span><span class="kw">:</span><span class="at"> </span><span class="dv">4</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">resources</span><span class="kw">:</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">infra</span><span class="kw">:</span><span class="at"> ssh/strix</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">accelerators</span><span class="kw">:</span><span class="at"> strix-halo:1</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">image_id</span><span class="kw">:</span><span class="at"> </span><span class="st">"docker:rocm/pytorch:replace-with-validated-tag"</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="fu">workdir</span><span class="kw">:</span><span class="at"> .</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="fu">setup</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  curl -LsSf https://astral.sh/uv/install.sh | sh</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  export PATH="$HOME/.local/bin:$PATH"</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  uv sync --frozen --extra torch</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="fu">run</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  export PATH="$HOME/.local/bin:$PATH"</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  MASTER_ADDR=$(echo "$SKYPILOT_NODE_IPS" | head -n1)</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>  torchrun \</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>    --nnodes="$SKYPILOT_NUM_NODES" \</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>    --nproc-per-node="$SKYPILOT_NUM_GPUS_PER_NODE" \</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>    --node-rank="$SKYPILOT_NODE_RANK" \</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>    --master-addr="$MASTER_ADDR" \</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>    --master-port=8008 \</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>    scripts/train.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">sky</span> jobs launch strix-ddp.yaml</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>SkyPilot runs <code>setup</code> and <code>run</code> on every reserved node. The training entry point must initialize distributed PyTorch and partition its data; <code>num_nodes: 4</code> does not make an ordinary single-process program distributed.</p>
 </section>
-<section id="choosing-settings" class="level2">
-<h2 class="anchored" data-anchor-id="choosing-settings">Choosing settings</h2>
-<p>Use <code>TimeSeriesSplit</code> when model evaluation should repeat across chronological folds. Start with the defaults, set <code>test_size</code> to match the evaluation horizon, add <code>gap</code> for a fixed row separation, and set <code>max_train_size</code> only when older history should leave the training window. The dataset index must be monotonic increasing. All window parameters count rows, so comparable fold durations require equally spaced observations. For one fixed holdout use <code>TemporalSplit</code>; for label-horizon purging and embargo use <code>PurgedTimeSeriesSplit</code>.</p>
+<section id="unified-memory" class="level2">
+<h2 class="anchored" data-anchor-id="unified-memory">Unified memory</h2>
+<p>Strix Halo uses unified system memory rather than a discrete, fixed VRAM pool. Linux GPUVM/GTT/TTM configuration controls how much memory ROCm workloads can make useful, and firmware, kernel, and ROCm choices can materially change behavior. Follow AMD’s current <a href="https://rocm.docs.amd.com/en/latest/how-to/system-optimization/strix.html">Strix Halo optimization guidance</a> on every node and validate under realistic load.</p>
+<p>SkyPilot’s <code>memory</code> resource is a scheduler request for node RAM. It does not reserve GPU VRAM or change the host’s unified-memory configuration. Leave enough memory for the operating system, Kubernetes, the container runtime, and data-loader workers.</p>
+</section>
+<section id="recovery-and-teardown" class="level2">
+<h2 class="anchored" data-anchor-id="recovery-and-teardown">Recovery and teardown</h2>
+<p>An SSH pool is fixed capacity: SkyPilot cannot replace a failed local host from a cloud availability zone. Managed Jobs can restart work when capacity returns, but four-node jobs remain blocked until all four labeled GPUs are healthy. Monitor both layers:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">sky</span> jobs queue</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get nodes</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get pods <span class="at">--all-namespaces</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Release an individual cluster allocation with <code>sky down &lt;cluster-name&gt;</code>. When the entire lab pool is no longer needed, first stop or cancel workloads, then remove the runtime from all hosts:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">sky</span> jobs cancel <span class="at">--all</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="ex">sky</span> ssh down strix</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>sky ssh down strix</code> is destructive to the pool runtime. It does not preserve job-local files, so upload checkpoints and artifacts before teardown.</p>
+</section>
+<section id="troubleshooting" class="level2">
+<h2 class="anchored" data-anchor-id="troubleshooting">Troubleshooting</h2>
+<ul>
+<li>If a node has no <code>amd.com/gpu</code> capacity, inspect the device-plugin pod on that node and verify <code>/dev/kfd</code>, <code>/dev/dri</code>, and host ROCm access.</li>
+<li>If SkyPilot cannot find <code>strix-halo</code>, confirm the label spelling is lowercase and rerun <code>sky check ssh</code> and <code>sky gpus list --infra ssh/strix</code>.</li>
+<li>If PyTorch raises <code>hipErrorNoBinaryForGPU</code>, verify the image contains a <code>gfx1151</code> code object; a working host <code>rocminfo</code> is not sufficient.</li>
+<li>If a four-node launch hangs, verify peer routing and TCP 8008 in addition to the Kubernetes control-plane traffic.</li>
+<li>If using Ray inside the allocation, follow SkyPilot’s distributed Ray templates and never run <code>ray stop</code>, which can interfere with SkyPilot’s internal runtime.</li>
+</ul>
 
 
 </section>
@@ -2265,13 +1589,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../dataset/temporal_split.html" class="pagination-link" aria-label="Temporal split">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Temporal split</span>
+      <a href="../skypilot/vscode.html" class="pagination-link" aria-label="VS Code over SSH">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">VS Code over SSH</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../dataset/splitting.html" class="pagination-link" aria-label="Splitting datasets">
-        <span class="nav-page-text">Splitting datasets</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../gym/index.html" class="pagination-link" aria-label="q.gym — Financial RL">
+        <span class="nav-page-text">q.gym — Financial RL</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -2280,4 +1604,4 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.dev/quantbert/qrt/blob/main/dataset/time_series_split.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/dataset/time_series_split.ipynb" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/skypilot/strix-halo.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/skypilot/strix-halo.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
