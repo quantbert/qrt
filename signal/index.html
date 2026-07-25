@@ -23,6 +23,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -912,8 +947,18 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#labels-and-signals-are-different" id="toc-labels-and-signals-are-different" class="nav-link active" data-scroll-target="#labels-and-signals-are-different">Labels and signals are different</a></li>
+  <li><a href="#canonical-objects" id="toc-canonical-objects" class="nav-link" data-scroll-target="#canonical-objects">Canonical objects</a></li>
+  <li><a href="#function-map" id="toc-function-map" class="nav-link" data-scroll-target="#function-map">Function map</a></li>
+  <li><a href="#causal-workflow" id="toc-causal-workflow" class="nav-link" data-scroll-target="#causal-workflow">Causal workflow</a></li>
+  <li><a href="#ownership-boundaries" id="toc-ownership-boundaries" class="nav-link" data-scroll-target="#ownership-boundaries">Ownership boundaries</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/signal/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/signal/index.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -937,10 +982,259 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><code>q.signal</code> is reserved for operations that interpret indicators, factors, model predictions, or rules as investment intent. It will own thresholding, normalization, combination, decay, and turnover-aware shaping.</p>
-<p>Signals do not measure markets (<code>q.indicator</code>), compare a universe (<code>q.cross_section</code>), or choose final positions (<code>q.portfolio</code>). The namespace is currently empty.</p>
+<p><code>q.signal</code> turns point-in-time indicators, factors, model predictions, or rules into investment intent. A signal says what the strategy would like to do using information available at that row. It does not describe what happened later.</p>
+<section id="labels-and-signals-are-different" class="level2">
+<h2 class="anchored" data-anchor-id="labels-and-signals-are-different">Labels and signals are different</h2>
+<p>This distinction is a leakage boundary, not just a naming preference.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 23%">
+<col style="width: 23%">
+<col style="width: 30%">
+<col style="width: 23%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Namespace</th>
+<th>Question answered</th>
+<th style="text-align: right;">May inspect future data?</th>
+<th>Typical output</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>q.label</code></td>
+<td>What subsequently happened?</td>
+<td style="text-align: right;">Yes, when constructing targets</td>
+<td>Class, realized return, event outcome, sample weight</td>
+</tr>
+<tr class="even">
+<td><code>q.signal</code></td>
+<td>What do we want to do now?</td>
+<td style="text-align: right;">No</td>
+<td>Score, direction, conviction, desired exposure</td>
+</tr>
+</tbody>
+</table>
+<p><code>q.label</code> supplies targets and training metadata. Target construction may follow prices after an event, so those outputs must never become contemporaneous model features or strategy inputs. <code>q.signal</code> consumes only measurements or predictions available at decision time and produces deployable intent.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<svg width="672" height="480" viewbox="0.00 0.00 162.49 351.60" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 347.6)">
+<title>label_signal_boundary</title>
+<!-- features -->
+<g id="node1" class="node">
+<title>features</title>
+<polygon fill="#edf3fb" stroke="#495057" points="153.95,-343.6 42.87,-343.6 42.87,-307.6 153.95,-307.6 153.95,-343.6"></polygon>
+<text text-anchor="middle" x="98.41" y="-322.6" font-family="Arial" font-size="10.00" fill="#1465b8">Point-in-time features</text>
+</g>
+<!-- labels -->
+<g id="node2" class="node">
+<title>labels</title>
+<polygon fill="#fff1e6" stroke="#495057" points="108.73,-258.8 0.09,-258.8 0.09,-222.8 108.73,-222.8 108.73,-258.8"></polygon>
+<text text-anchor="middle" x="54.41" y="-243.8" font-family="Arial" font-size="10.00" fill="#a04700">q.label</text>
+<text text-anchor="middle" x="54.41" y="-231.8" font-family="Arial" font-size="10.00" fill="#a04700">Future-aware targets</text>
+</g>
+<!-- features&#45;&gt;labels -->
+<g id="edge1" class="edge">
+<title>features-&gt;labels</title>
+<path fill="none" stroke="#495057" d="M73.82,-307.59C68.79,-302.97 64.06,-297.57 60.88,-291.6 56.76,-283.86 54.88,-274.52 54.11,-266.03"></path>
+<polygon fill="#495057" stroke="#495057" points="56.54,-265.69 53.7,-258.85 51.65,-265.98 56.54,-265.69"></polygon>
+<text text-anchor="middle" x="93.67" y="-279" font-family="Times,serif" font-size="14.00"> future path</text>
+</g>
+<!-- model -->
+<g id="node3" class="node">
+<title>model</title>
+<polygon fill="#edf3fb" stroke="#495057" points="135.77,-174 61.05,-174 61.05,-138 135.77,-138 135.77,-174"></polygon>
+<text text-anchor="middle" x="98.41" y="-153" font-family="Arial" font-size="10.00" fill="#1465b8">Model or rule</text>
+</g>
+<!-- features&#45;&gt;model -->
+<g id="edge2" class="edge">
+<title>features-&gt;model</title>
+<path fill="none" stroke="#495057" d="M116.98,-307.25C120.83,-302.58 124.34,-297.24 126.41,-291.6 140.21,-254.01 123.89,-207.87 111.01,-180.54"></path>
+<polygon fill="#495057" stroke="#495057" points="113.1,-179.23 107.83,-174.02 108.69,-181.38 113.1,-179.23"></polygon>
+</g>
+<!-- labels&#45;&gt;model -->
+<g id="edge3" class="edge">
+<title>labels-&gt;model</title>
+<path fill="none" stroke="#495057" d="M63.53,-222.64C70.02,-210.43 78.81,-193.87 85.95,-180.44"></path>
+<polygon fill="#495057" stroke="#495057" points="88.18,-181.47 89.3,-174.13 83.86,-179.17 88.18,-181.47"></polygon>
+<text text-anchor="middle" x="94.99" y="-194.2" font-family="Times,serif" font-size="14.00"> train</text>
+</g>
+<!-- signal -->
+<g id="node4" class="node">
+<title>signal</title>
+<polygon fill="#e8f2ec" stroke="#495057" points="148.28,-105 48.54,-105 48.54,-69 148.28,-69 148.28,-105"></polygon>
+<text text-anchor="middle" x="98.41" y="-90" font-family="Arial" font-size="10.00" fill="#24704a">q.signal</text>
+<text text-anchor="middle" x="98.41" y="-78" font-family="Arial" font-size="10.00" fill="#24704a">Point-in-time intent</text>
+</g>
+<!-- model&#45;&gt;signal -->
+<g id="edge4" class="edge">
+<title>model-&gt;signal</title>
+<path fill="none" stroke="#495057" d="M98.41,-137.75C98.41,-130.07 98.41,-120.89 98.41,-112.52"></path>
+<polygon fill="#495057" stroke="#495057" points="100.86,-112.43 98.41,-105.43 95.96,-112.43 100.86,-112.43"></polygon>
+</g>
+<!-- portfolio -->
+<g id="node5" class="node">
+<title>portfolio</title>
+<polygon fill="#edf3fb" stroke="#495057" points="154.58,-36 42.24,-36 42.24,0 154.58,0 154.58,-36"></polygon>
+<text text-anchor="middle" x="98.41" y="-21" font-family="Arial" font-size="10.00" fill="#1465b8">q.portfolio</text>
+<text text-anchor="middle" x="98.41" y="-9" font-family="Arial" font-size="10.00" fill="#1465b8">Constrained positions</text>
+</g>
+<!-- signal&#45;&gt;portfolio -->
+<g id="edge5" class="edge">
+<title>signal-&gt;portfolio</title>
+<path fill="none" stroke="#495057" d="M98.41,-68.75C98.41,-61.07 98.41,-51.89 98.41,-43.52"></path>
+<polygon fill="#495057" stroke="#495057" points="100.86,-43.43 98.41,-36.43 95.96,-43.43 100.86,-43.43"></polygon>
+</g>
+</g>
+</svg>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="canonical-objects" class="level2">
+<h2 class="anchored" data-anchor-id="canonical-objects">Canonical objects</h2>
+<p>Signals are ordinary pandas objects with a strict orientation:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Shape</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>Series</code></td>
+<td>One asset through ordered decision times</td>
+</tr>
+<tr class="even">
+<td><code>DataFrame</code></td>
+<td>Ordered decision times as rows and assets as columns</td>
+</tr>
+</tbody>
+</table>
+<p>Indexes must be sorted and unique. Asset columns must be unique. Values are numeric; missing values are allowed, but infinities are rejected. <code>q.signal.as_signal</code> validates this contract and returns a float copy.</p>
+</section>
+<section id="function-map" class="level2">
+<h2 class="anchored" data-anchor-id="function-map">Function map</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>q.signal.as_signal</code></td>
+<td>Validate the canonical shape, labels, ordering, and numeric values.</td>
+</tr>
+<tr class="even">
+<td><code>q.signal.threshold</code></td>
+<td>Convert scores into long, flat, and optionally short direction.</td>
+</tr>
+<tr class="odd">
+<td><code>q.signal.hysteresis</code></td>
+<td>Use separate entry and exit levels to prevent unstable threshold crossings.</td>
+</tr>
+<tr class="even">
+<td><code>q.signal.normalize</code></td>
+<td>Normalize each time row by cross-sectional z-score or centered percentile rank.</td>
+</tr>
+<tr class="odd">
+<td><code>q.signal.select</code></td>
+<td>Select exact top and bottom asset counts with deterministic tie handling.</td>
+</tr>
+<tr class="even">
+<td><code>q.signal.neutralize</code></td>
+<td>Remove static asset exposures from every row using <code>q.cross_section.neutralize</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>q.signal.combine</code></td>
+<td>Take an aligned weighted mean of multiple signals, renormalizing around missing inputs.</td>
+</tr>
+<tr class="even">
+<td><code>q.signal.delay</code></td>
+<td>Make row availability explicit; one observation is the safe default.</td>
+</tr>
+<tr class="odd">
+<td><code>q.signal.decay</code></td>
+<td>Exponentially smooth updates using only current and earlier rows.</td>
+</tr>
+<tr class="even">
+<td><code>q.signal.hold</code></td>
+<td>Enforce a minimum number of observations between directional state changes.</td>
+</tr>
+<tr class="odd">
+<td><code>q.signal.cooldown</code></td>
+<td>Exit immediately, then require flat observations before re-entry.</td>
+</tr>
+<tr class="even">
+<td><code>q.signal.limit_turnover</code></td>
+<td>Limit each asset’s change from its previously accepted target.</td>
+</tr>
+<tr class="odd">
+<td><code>q.signal.target_exposure</code></td>
+<td>Map normalized conviction to bounded per-asset desired exposure.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="causal-workflow" class="level2">
+<h2 class="anchored" data-anchor-id="causal-workflow">Causal workflow</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> qrt <span class="im">as</span> q</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>scores <span class="op">=</span> pd.Series(</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    [<span class="fl">0.52</span>, <span class="fl">0.66</span>, <span class="fl">0.58</span>, <span class="fl">0.43</span>, <span class="fl">0.35</span>],</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span>pd.date_range(<span class="st">"2026-01-05"</span>, periods<span class="op">=</span><span class="dv">5</span>, freq<span class="op">=</span><span class="st">"B"</span>),</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">"model_score"</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Enter beyond 0.60/0.40, but wait for 0.50 before exiting either side.</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>intent <span class="op">=</span> q.signal.hysteresis(</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    scores,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    long_enter<span class="op">=</span><span class="fl">0.60</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    long_exit<span class="op">=</span><span class="fl">0.50</span>,</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    short_enter<span class="op">=</span><span class="fl">0.40</span>,</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    short_exit<span class="op">=</span><span class="fl">0.50</span>,</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co"># A score observed at t becomes executable intent at t + 1.</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>available_intent <span class="op">=</span> q.signal.delay(intent)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>stable_intent <span class="op">=</span> q.signal.cooldown(available_intent, periods<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>exposure <span class="op">=</span> q.signal.target_exposure(stable_intent, maximum<span class="op">=</span><span class="fl">0.25</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Pass <code>periods=0</code> to <code>delay</code> only when the score is genuinely known before the same row’s execution decision. The function does not infer whether a close, barrier, vendor timestamp, or model feature was actually available.</p>
+<p>For a cross-sectional strategy, normalize and select before applying timing and exposure controls:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>normalized <span class="op">=</span> q.signal.normalize(predictions, method<span class="op">=</span><span class="st">"percentile"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>direction <span class="op">=</span> q.signal.select(normalized, long_count<span class="op">=</span><span class="dv">10</span>, short_count<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>direction <span class="op">=</span> q.signal.delay(direction)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>exposure_preference <span class="op">=</span> q.signal.target_exposure(direction, maximum<span class="op">=</span><span class="fl">0.02</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="ownership-boundaries" class="level2">
+<h2 class="anchored" data-anchor-id="ownership-boundaries">Ownership boundaries</h2>
+<ul>
+<li><code>q.indicator</code> measures one instrument; it does not decide whether to trade.</li>
+<li><code>q.cross_section</code> compares assets. <code>q.signal.normalize</code> and <code>q.signal.neutralize</code> adapt those measurements to the canonical signal panel.</li>
+<li><code>q.label</code> constructs future-aware targets and training metadata.</li>
+<li><code>q.signal</code> interprets available information as intent.</li>
+<li><code>q.portfolio</code> resolves intent against capital, risk, leverage, net/gross, concentration, and rebalance constraints.</li>
+<li><code>q.bt</code> simulates orders, fills, fees, slippage, and historical state.</li>
+</ul>
+<p><code>target_exposure</code> is deliberately not a portfolio optimizer. It maps a per-asset conviction in <code>[-1, 1]</code> to a bounded desired exposure and leaves cross-asset capital constraints to <code>q.portfolio</code>.</p>
 
 
+</section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -1360,4 +1654,4 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/signal/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/signal/index.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/signal/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/signal/index.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

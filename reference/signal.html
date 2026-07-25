@@ -23,6 +23,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -616,7 +651,25 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#qrt.signal" id="toc-qrt.signal" class="nav-link active" data-scroll-target="#qrt.signal">signal</a></li>
+  <li><a href="#qrt.signal" id="toc-qrt.signal" class="nav-link active" data-scroll-target="#qrt.signal">signal</a>
+  <ul class="collapse">
+  <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions">Functions</a>
+  <ul class="collapse">
+  <li><a href="#qrt.signal.as_signal" id="toc-qrt.signal.as_signal" class="nav-link" data-scroll-target="#qrt.signal.as_signal">as_signal</a></li>
+  <li><a href="#qrt.signal.combine" id="toc-qrt.signal.combine" class="nav-link" data-scroll-target="#qrt.signal.combine">combine</a></li>
+  <li><a href="#qrt.signal.cooldown" id="toc-qrt.signal.cooldown" class="nav-link" data-scroll-target="#qrt.signal.cooldown">cooldown</a></li>
+  <li><a href="#qrt.signal.decay" id="toc-qrt.signal.decay" class="nav-link" data-scroll-target="#qrt.signal.decay">decay</a></li>
+  <li><a href="#qrt.signal.delay" id="toc-qrt.signal.delay" class="nav-link" data-scroll-target="#qrt.signal.delay">delay</a></li>
+  <li><a href="#qrt.signal.hold" id="toc-qrt.signal.hold" class="nav-link" data-scroll-target="#qrt.signal.hold">hold</a></li>
+  <li><a href="#qrt.signal.hysteresis" id="toc-qrt.signal.hysteresis" class="nav-link" data-scroll-target="#qrt.signal.hysteresis">hysteresis</a></li>
+  <li><a href="#qrt.signal.limit_turnover" id="toc-qrt.signal.limit_turnover" class="nav-link" data-scroll-target="#qrt.signal.limit_turnover">limit_turnover</a></li>
+  <li><a href="#qrt.signal.neutralize" id="toc-qrt.signal.neutralize" class="nav-link" data-scroll-target="#qrt.signal.neutralize">neutralize</a></li>
+  <li><a href="#qrt.signal.normalize" id="toc-qrt.signal.normalize" class="nav-link" data-scroll-target="#qrt.signal.normalize">normalize</a></li>
+  <li><a href="#qrt.signal.select" id="toc-qrt.signal.select" class="nav-link" data-scroll-target="#qrt.signal.select">select</a></li>
+  <li><a href="#qrt.signal.target_exposure" id="toc-qrt.signal.target_exposure" class="nav-link" data-scroll-target="#qrt.signal.target_exposure">target_exposure</a></li>
+  <li><a href="#qrt.signal.threshold" id="toc-qrt.signal.threshold" class="nav-link" data-scroll-target="#qrt.signal.threshold">threshold</a></li>
+  </ul></li>
+  </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/signal.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/signal.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -629,10 +682,158 @@ ul.task-list li input[type="checkbox"] {
 <section id="qrt.signal" class="level1">
 <h1>signal</h1>
 <p><code>signal</code></p>
-<p>Investment intent derived from indicators, factors, models, or rules.</p>
-<p>This namespace will own thresholding, normalization, decay, and other operations that turn measurements into directional or sizing intent.</p>
+<p>Point-in-time investment intent derived from scores, models, or rules.</p>
+<p>Signals use only information available at each row. They express desired direction or exposure; they are not future-aware training targets, portfolio allocations, orders, or simulated fills.</p>
+<section id="functions" class="level2">
+<h2 class="anchored" data-anchor-id="functions">Functions</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#qrt.signal.as_signal">as_signal</a></td>
+<td>Validate and copy a canonical QRT signal object.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.signal.combine">combine</a></td>
+<td>Return the aligned weighted mean of multiple signal objects.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.signal.cooldown">cooldown</a></td>
+<td>Require flat observations before re-entering a directional signal.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.signal.decay">decay</a></td>
+<td>Exponentially smooth signal updates using only current and prior rows.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.signal.delay">delay</a></td>
+<td>Delay intent by an explicit number of observations.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.signal.hold">hold</a></td>
+<td>Enforce a minimum observation count between directional state changes.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.signal.hysteresis">hysteresis</a></td>
+<td>Create stable directional intent with separate entry and exit levels.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.signal.limit_turnover">limit_turnover</a></td>
+<td>Limit each row’s per-asset target change from the prior accepted value.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.signal.neutralize">neutralize</a></td>
+<td>Remove static asset exposures from every signal timestamp.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.signal.normalize">normalize</a></td>
+<td>Normalize each timestamp’s scores across the available asset universe.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.signal.select">select</a></td>
+<td>Select exact top and bottom asset counts at every timestamp.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.signal.target_exposure">target_exposure</a></td>
+<td>Map normalized conviction to per-asset desired exposure.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.signal.threshold">threshold</a></td>
+<td>Map scores to long, flat, and optionally short directional intent.</td>
+</tr>
+</tbody>
+</table>
+<section id="qrt.signal.as_signal" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.signal.as_signal">as_signal</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>signal.as_signal(values)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Validate and copy a canonical QRT signal object.</p>
+<p>A Series represents one asset through time. A DataFrame represents a time-by-asset panel. Both forms require an ordered, unique index, numeric values, and finite non-missing observations.</p>
+</section>
+<section id="qrt.signal.combine" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.signal.combine">combine</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>signal.combine(signals, <span class="op">*</span>, weights<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return the aligned weighted mean of multiple signal objects.</p>
+<p>Inputs must have exactly matching types and labels. Missing inputs are ignored per cell and the available non-negative weights are renormalized.</p>
+</section>
+<section id="qrt.signal.cooldown" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.signal.cooldown">cooldown</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>signal.cooldown(values, <span class="op">*</span>, periods)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Require flat observations before re-entering a directional signal.</p>
+<p>Exits are immediate. A direct sign reversal is treated as an exit, and the opposite side may enter only after <code>periods</code> subsequent rows have been kept flat.</p>
+</section>
+<section id="qrt.signal.decay" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.signal.decay">decay</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>signal.decay(values, <span class="op">*</span>, half_life)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Exponentially smooth signal updates using only current and prior rows.</p>
+</section>
+<section id="qrt.signal.delay" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.signal.delay">delay</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>signal.delay(values, periods<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Delay intent by an explicit number of observations.</p>
+<p>The default one-row delay makes a score observed at row <code>t</code> available as intent at row <code>t + 1</code>. A zero delay is allowed only when same-row availability is deliberate.</p>
+</section>
+<section id="qrt.signal.hold" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.signal.hold">hold</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>signal.hold(values, <span class="op">*</span>, periods)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Enforce a minimum observation count between directional state changes.</p>
+<p>Missing proposals remain missing and do not change the held state. A <code>periods</code> value of one permits a change on every adjacent observation.</p>
+</section>
+<section id="qrt.signal.hysteresis" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.signal.hysteresis">hysteresis</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>signal.hysteresis(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    values,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    long_enter,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    long_exit,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    short_enter<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    short_exit<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    initial<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create stable directional intent with separate entry and exit levels.</p>
+<p>Missing scores produce missing output and leave the internal state unchanged. When short levels are supplied, a score may reverse directly from long to short or short to long at the corresponding entry level.</p>
+</section>
+<section id="qrt.signal.limit_turnover" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.signal.limit_turnover">limit_turnover</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>signal.limit_turnover(values, <span class="op">*</span>, max_change, initial<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Limit each row’s per-asset target change from the prior accepted value.</p>
+</section>
+<section id="qrt.signal.neutralize" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.signal.neutralize">neutralize</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>signal.neutralize(values, exposures, <span class="op">*</span>, weights<span class="op">=</span><span class="va">None</span>, add_intercept<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Remove static asset exposures from every signal timestamp.</p>
+<p>This is the time-panel signal adapter over <code>q.cross_section.neutralize</code>. Exposure and optional weight indexes must exactly match the signal’s asset columns.</p>
+</section>
+<section id="qrt.signal.normalize" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.signal.normalize">normalize</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>signal.normalize(values, <span class="op">*</span>, method<span class="op">=</span><span class="st">'zscore'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Normalize each timestamp’s scores across the available asset universe.</p>
+<p><code>"percentile"</code> maps ranks to <code>[-1, 1]</code> with zero for a one-asset cross-section. <code>"zscore"</code> delegates to <code>q.cross_section.zscore</code>.</p>
+</section>
+<section id="qrt.signal.select" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.signal.select">select</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>signal.select(values, <span class="op">*</span>, long_count<span class="op">=</span><span class="dv">1</span>, short_count<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Select exact top and bottom asset counts at every timestamp.</p>
+<p>Ties are resolved stably by the input column order. Missing scores remain missing, selected assets become <code>1</code> or <code>-1</code>, and other valid assets become <code>0</code>.</p>
+</section>
+<section id="qrt.signal.target_exposure" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.signal.target_exposure">target_exposure</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>signal.target_exposure(values, <span class="op">*</span>, maximum<span class="op">=</span><span class="fl">1.0</span>, clip<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Map normalized conviction to per-asset desired exposure.</p>
+<p>Values in <code>[-1, 1]</code> map linearly to <code>[-maximum, maximum]</code>. By default, stronger scores are clipped to that conviction range. This function does not impose portfolio gross, net, leverage, or capital constraints.</p>
+</section>
+<section id="qrt.signal.threshold" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.signal.threshold">threshold</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>signal.threshold(values, <span class="op">*</span>, long_above, short_below<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Map scores to long, flat, and optionally short directional intent.</p>
 
 
+</section>
+</section>
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->

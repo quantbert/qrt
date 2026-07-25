@@ -1260,8 +1260,8 @@ Warning
 </section>
 <section id="q.signal-express-investment-intent" class="level3">
 <h3 class="anchored" data-anchor-id="q.signal-express-investment-intent"><code>q.signal</code>: express investment intent</h3>
-<p><code>q.signal</code> is reserved for turning indicators, factors, model predictions, or rules into directional or sizing intent. Thresholds, normalization, decay, combination, and turnover-aware signal shaping belong here.</p>
-<p>Boundary: an indicator measures and a factor compares; a signal interprets. Signals still do not decide final portfolio weights or simulate fills.</p>
+<p><code>q.signal</code> turns point-in-time indicators, factors, model predictions, or rules into directional or sizing intent. It provides canonical pandas validation, threshold and hysteresis rules, cross-sectional selection, explicit delay, decay, holding and cooldown policies, signal combination, turnover limiting, and bounded desired exposure.</p>
+<p>Boundary: an indicator measures and a factor compares; a signal interprets. Unlike <code>q.label</code> targets, signals never inspect future outcomes. Signals still do not decide final portfolio weights or simulate fills.</p>
 </section>
 <section id="q.portfolio-convert-intent-into-positions" class="level3">
 <h3 class="anchored" data-anchor-id="q.portfolio-convert-intent-into-positions"><code>q.portfolio</code>: convert intent into positions</h3>

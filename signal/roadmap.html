@@ -912,8 +912,15 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#implemented-foundation" id="toc-implemented-foundation" class="nav-link active" data-scroll-target="#implemented-foundation">Implemented foundation</a></li>
+  <li><a href="#planned" id="toc-planned" class="nav-link" data-scroll-target="#planned">Planned</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/signal/roadmap.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/signal/roadmap.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -937,15 +944,28 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<section id="implemented-foundation" class="level2">
+<h2 class="anchored" data-anchor-id="implemented-foundation">Implemented foundation</h2>
 <ul class="task-list">
-<li><label><input type="checkbox">Directional and continuous signal schemas</label></li>
-<li><label><input type="checkbox">Threshold and hysteresis rules</label></li>
-<li><label><input type="checkbox">Cross-sectional normalization and combination</label></li>
-<li><label><input type="checkbox">Signal decay, delay, and availability semantics</label></li>
-<li><label><input type="checkbox">Turnover-aware signal shaping</label></li>
+<li><label><input type="checkbox" checked="">Canonical ordered pandas Series and time-by-asset DataFrame contract</label></li>
+<li><label><input type="checkbox" checked="">Directional threshold and stateful hysteresis rules</label></li>
+<li><label><input type="checkbox" checked="">Cross-sectional normalization, selection, and exposure neutralization</label></li>
+<li><label><input type="checkbox" checked="">Strictly aligned weighted signal combination</label></li>
+<li><label><input type="checkbox" checked="">Causal row delay and exponential decay</label></li>
+<li><label><input type="checkbox" checked="">Minimum holding periods and post-exit cooldowns</label></li>
+<li><label><input type="checkbox" checked="">Per-asset turnover limiting and bounded target-exposure conversion</label></li>
+</ul>
+</section>
+<section id="planned" class="level2">
+<h2 class="anchored" data-anchor-id="planned">Planned</h2>
+<ul class="task-list">
+<li><label><input type="checkbox">Calendar-aware availability and stale-signal policies</label></li>
+<li><label><input type="checkbox">Long-form panel adapters keyed by time and asset</label></li>
+<li><label><input type="checkbox">Signal provenance for model, rule, and parameter lineage</label></li>
 </ul>
 
 
+</section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -1365,4 +1385,4 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/signal/roadmap.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/signal/roadmap.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/signal/roadmap.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/signal/roadmap.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
