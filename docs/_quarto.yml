@@ -232,6 +232,8 @@ website:
           contents:
             - text: "Feature relationships"
               href: plot/correlation.ipynb
+            - text: "Correlation heatmap"
+              href: plot/correlation_heatmap.ipynb
             - text: "Classification curves"
               href: plot/classification.ipynb
             - text: "Return charts"

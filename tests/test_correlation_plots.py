@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import pytest
 from plotly.graph_objects import Figure
@@ -228,3 +229,132 @@ def test_correlation_infers_numeric_features_except_color(feature_data):
 def test_correlation_validates_inputs(feature_data, kwargs, error, message):
     with pytest.raises(error, match=message):
         q.plot.correlation(feature_data, **kwargs)
+
+
+@pytest.fixture
+def wide_feature_data() -> pd.DataFrame:
+    rng = np.random.default_rng(0)
+    trend = rng.normal(size=240)
+    risk = rng.normal(size=240)
+    frame = pd.DataFrame(
+        {
+            "trend_a": trend + 0.05 * rng.normal(size=240),
+            "trend_b": trend + 0.05 * rng.normal(size=240),
+            "risk_a": risk + 0.05 * rng.normal(size=240),
+            "risk_b": risk + 0.05 * rng.normal(size=240),
+        },
+        index=pd.date_range("2024-01-01", periods=240, name="date"),
+    )
+    frame["regime"] = np.where(frame["trend_a"] > 0, "risk-on", "risk-off")
+    return frame
+
+
+def test_correlation_heatmap_pins_scale_and_annotates_small_matrices(wide_feature_data):
+    figure = q.plot.correlation_heatmap(wide_feature_data)
+
+    trace = figure.data[0]
+    assert isinstance(figure, Figure)
+    assert trace.type == "heatmap"
+    assert (trace.zmin, trace.zmid, trace.zmax) == (-1.0, 0.0, 1.0)
+    assert list(trace.x) == list(trace.y) == ["trend_a", "trend_b", "risk_a", "risk_b"]
+    assert trace.colorbar.title.text == "Correlation"
+    assert len(figure.layout.annotations) == 16
+    assert figure.layout.yaxis.autorange == "reversed"
+    assert figure.layout.yaxis.scaleanchor == "x"
+
+
+def test_correlation_heatmap_excludes_non_numeric_columns(wide_feature_data):
+    figure = q.plot.correlation_heatmap(wide_feature_data)
+
+    assert "regime" not in list(figure.data[0].x)
+
+
+def test_correlation_heatmap_annotations_stay_legible_on_dark_cells(wide_feature_data):
+    figure = q.plot.correlation_heatmap(wide_feature_data, columns=["trend_a", "trend_b"])
+
+    colors = {annotation.text: annotation.font.color for annotation in figure.layout.annotations}
+    assert colors["1.00"] == "#F9FAFB"
+
+
+@pytest.mark.parametrize(
+    ("triangle", "diagonal", "expected_cells"),
+    [
+        ("full", True, 16),
+        ("full", False, 12),
+        ("lower", True, 10),
+        ("lower", False, 6),
+        ("upper", True, 10),
+        ("upper", False, 6),
+    ],
+)
+def test_correlation_heatmap_masks_requested_cells(wide_feature_data, triangle, diagonal, expected_cells):
+    figure = q.plot.correlation_heatmap(wide_feature_data, triangle=triangle, diagonal=diagonal)
+
+    assert np.isfinite(np.array(figure.data[0].z, dtype=float)).sum() == expected_cells
+    assert figure.data[0].hoverongaps is False
+
+
+def test_correlation_heatmap_clusters_similar_features_together(wide_feature_data):
+    ordered = q.plot.correlation_heatmap(wide_feature_data, cluster=True)
+
+    names = list(ordered.data[0].x)
+    assert abs(names.index("trend_a") - names.index("trend_b")) == 1
+    assert abs(names.index("risk_a") - names.index("risk_b")) == 1
+
+
+def test_correlation_heatmap_hides_values_when_matrix_is_dense():
+    rng = np.random.default_rng(1)
+    dense = pd.DataFrame(rng.normal(size=(120, 20)), columns=[f"feature_{i:02d}" for i in range(20)])
+
+    inferred = q.plot.correlation_heatmap(dense)
+    forced = q.plot.correlation_heatmap(dense, show_values=True)
+
+    assert inferred.layout.annotations == ()
+    assert len(forced.layout.annotations) == 400
+
+
+def test_correlation_heatmap_supports_rank_methods_and_labels(wide_feature_data):
+    pearson = q.plot.correlation_heatmap(wide_feature_data, method="pearson")
+    spearman = q.plot.correlation_heatmap(
+        wide_feature_data,
+        method="spearman",
+        labels={"trend_a": "Trend A"},
+        colorbar_label="Spearman",
+    )
+
+    assert list(spearman.data[0].x)[0] == "Trend A"
+    assert spearman.data[0].colorbar.title.text == "Spearman"
+    assert np.array(spearman.data[0].z)[0][1] != np.array(pearson.data[0].z)[0][1]
+
+
+def test_correlation_heatmap_sizes_cells_squarely(wide_feature_data):
+    figure = q.plot.correlation_heatmap(wide_feature_data)
+    fixed = q.plot.correlation_heatmap(wide_feature_data, height=700, width=800)
+
+    matrix_width = figure.layout.width - figure.layout.margin.l - figure.layout.margin.r
+    matrix_height = figure.layout.height - figure.layout.margin.t - figure.layout.margin.b
+    assert matrix_width == matrix_height == 320
+    assert (fixed.layout.height, fixed.layout.width) == (700, 800)
+
+
+@pytest.mark.parametrize(
+    ("kwargs", "error", "message"),
+    [
+        ({"columns": ["trend_a"]}, ValueError, "at least two"),
+        ({"method": "linear"}, ValueError, "method must be"),
+        ({"triangle": "left"}, ValueError, "triangle must be"),
+        ({"min_periods": 0}, ValueError, "min_periods"),
+        ({"cell_size": 0}, ValueError, "cell_size"),
+        ({"text_size": -1}, ValueError, "text_size"),
+        ({"width": 0}, ValueError, "width"),
+        ({"height": 0}, ValueError, "height"),
+    ],
+)
+def test_correlation_heatmap_validates_inputs(wide_feature_data, kwargs, error, message):
+    with pytest.raises(error, match=message):
+        q.plot.correlation_heatmap(wide_feature_data, **kwargs)
+
+
+def test_correlation_heatmap_rejects_non_dataframe():
+    with pytest.raises(TypeError, match="DataFrame"):
+        q.plot.correlation_heatmap(pd.Series([1.0, 2.0, 3.0]))

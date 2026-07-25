@@ -5,7 +5,8 @@ title: Plotting
 `q.plot` renders interactive Plotly figures for feature relationships, labels,
 multiclass model evaluation, return streams, and trade logs. `q.plot.correlation`
 creates a linked scatterplot matrix with categorical regime or continuous-outcome
-coloring. `q.plot.labels` overlays long,
+coloring, and `q.plot.correlation_heatmap` condenses a whole feature library into
+a clustered correlation matrix. `q.plot.labels` overlays long,
 hold, and short events on price, with optional outcome-interval shading; see
 the [labeling examples](../label/index.qmd). Classification diagnostics include one-vs-rest
 ROC and precision-recall curves with per-class, micro-average, and macro-average
@@ -21,6 +22,8 @@ Pages:
 
 - [Feature relationships](correlation.ipynb) — linked scatterplot matrices colored
   by market regime, asset, split, or continuous forward outcome.
+- [Correlation heatmap](correlation_heatmap.ipynb) — whole-library correlation
+  matrices with clustered ordering, rank methods, and triangle masking.
 - [Classification curves](classification.ipynb) — multiclass ROC and
   precision-recall curves, plus reusable tidy curve data from `q.stats`.
 - [Return charts](returns.ipynb) — column charts, equity curves, drawdowns,

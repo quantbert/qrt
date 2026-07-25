@@ -19,6 +19,7 @@ import pandas as pd
 from qrt.plot import interactive
 from qrt.plot.interactive import (
     correlation,
+    correlation_heatmap,
     cumulative_returns,
     daily_returns,
     drawdown,
@@ -133,6 +134,7 @@ def tearsheet(returns: pd.Series, **kwargs: object) -> Figure:
 __all__ = [
     "col",
     "correlation",
+    "correlation_heatmap",
     "cumulative_returns",
     "daily_returns",
     "drawdown",

@@ -12,6 +12,8 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+from scipy.cluster.hierarchy import leaves_list, linkage
+from scipy.spatial.distance import squareform
 
 from qrt.stats.core import (
     CovarianceType,
@@ -48,6 +50,16 @@ _QUANT_COLORS = ("#4C78A8", "#F58518", "#54A24B", "#E45756", "#72B7B2", "#B279A2
 def _monthly_heatmap_row_height(n_years: int) -> int:
     """Compact pixel height for a monthly-returns heatmap's plotting area, scaled by year count."""
     return max(280, 28 * n_years + 110)
+
+
+def _cluster_order(matrix: pd.DataFrame) -> list[str]:
+    """Order correlation-matrix labels so that similar columns sit next to each other."""
+    values = np.nan_to_num(matrix.to_numpy(dtype=float), nan=0.0)
+    distances = np.clip((1.0 - values) / 2.0, 0.0, 1.0)
+    distances = (distances + distances.T) / 2.0
+    np.fill_diagonal(distances, 0.0)
+    tree = linkage(squareform(distances, checks=False), method="average", optimal_ordering=True)
+    return [str(matrix.columns[position]) for position in leaves_list(tree)]
 
 
 def _as_frame(data: pd.Series | pd.DataFrame, columns: str | Iterable[str] | None) -> pd.DataFrame:
@@ -398,6 +410,147 @@ def correlation(
                 fillcolor="rgba(0,0,0,0)",
                 layer="between",
             )
+    return figure
+
+
+def correlation_heatmap(
+    data: pd.DataFrame,
+    columns: str | Iterable[str] | None = None,
+    *,
+    method: Literal["pearson", "spearman", "kendall"] = "pearson",
+    min_periods: int | None = None,
+    cluster: bool = False,
+    triangle: Literal["lower", "upper", "full"] = "full",
+    diagonal: bool = True,
+    color_continuous_scale: str | Sequence[str] = "RdBu",
+    show_values: bool | None = None,
+    value_format: str = ".2f",
+    text_size: float = 11,
+    labels: dict[str, str] | None = None,
+    colorbar_label: str = "Correlation",
+    title: str = "Feature correlation",
+    cell_size: float = 34,
+    height: int | None = None,
+    width: int | None = None,
+) -> Figure:
+    """Create an interactive correlation-matrix heatmap.
+
+    The color scale is pinned to ``[-1, 1]`` and centered at zero, so panels stay
+    comparable across feature sets. Wide feature libraries are the main use case:
+    ``cluster=True`` reorders rows and columns by similarity, which groups
+    redundant features into visible blocks instead of scattering them.
+
+    Args:
+        data: Observations in rows and features in columns.
+        columns: Numeric feature name(s) or shell-style pattern(s). Defaults to
+            all numeric columns.
+        method: Correlation method: ``"pearson"``, ``"spearman"``, or
+            ``"kendall"``. Rank methods resist outliers and capture monotonic
+            relationships.
+        min_periods: Minimum overlapping observations required per pair.
+        cluster: Whether to order features by hierarchical clustering so
+            similar features are adjacent.
+        triangle: Matrix cells to display: ``"lower"``, ``"upper"``, or
+            ``"full"``.
+        diagonal: Whether to show the self-correlation diagonal.
+        color_continuous_scale: Plotly color-scale name or explicit color
+            sequence. Defaults to ``"RdBu"``.
+        show_values: Whether to annotate cells with correlation values. Defaults
+            to annotating only matrices small enough to stay readable.
+        value_format: Format specification used for cell annotations.
+        text_size: Annotation font size in pixels.
+        labels: Optional mapping from column names to display labels.
+        colorbar_label: Color-bar title.
+        title: Figure title.
+        cell_size: Target cell size in pixels, used to infer the figure size.
+        height: Figure height in pixels. Inferred from the feature count by default.
+        width: Figure width in pixels. Inferred from the feature count by default.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
+    if not isinstance(data, pd.DataFrame):
+        raise TypeError("data must be a pandas DataFrame")
+    if method not in {"pearson", "spearman", "kendall"}:
+        raise ValueError("method must be 'pearson', 'spearman', or 'kendall'")
+    if triangle not in {"lower", "upper", "full"}:
+        raise ValueError("triangle must be 'lower', 'upper', or 'full'")
+    if min_periods is not None and min_periods < 1:
+        raise ValueError("min_periods must be positive")
+    if cell_size <= 0:
+        raise ValueError("cell_size must be positive")
+    if text_size < 0:
+        raise ValueError("text_size must be non-negative")
+    if width is not None and width <= 0:
+        raise ValueError("width must be positive")
+    if height is not None and height <= 0:
+        raise ValueError("height must be positive")
+
+    selected_columns: str | Iterable[str]
+    selected_columns = list(data.select_dtypes(include="number").columns) if columns is None else columns
+    frame = _as_frame(data, selected_columns)
+    if len(frame.columns) < 2:
+        raise ValueError("correlation_heatmap requires at least two numeric feature columns")
+
+    matrix = frame.corr(method=method, min_periods=min_periods if min_periods is not None else 1)
+    if cluster:
+        order = _cluster_order(matrix)
+        matrix = matrix.loc[order, order]
+
+    feature_count = len(matrix.columns)
+    values = matrix.to_numpy(dtype=float).copy()
+    rows, cols = np.indices(values.shape)
+    masked = (
+        cols > rows if triangle == "lower" else cols < rows if triangle == "upper" else np.zeros(values.shape, dtype=bool)
+    )
+    if not diagonal:
+        masked = masked | (rows == cols)
+    values[masked] = np.nan
+
+    display_labels = dict(labels or {})
+    names = [display_labels.get(str(column), str(column)) for column in matrix.columns]
+
+    figure = go.Figure(
+        go.Heatmap(
+            z=values,
+            x=names,
+            y=names,
+            colorscale=color_continuous_scale,
+            zmin=-1.0,
+            zmid=0.0,
+            zmax=1.0,
+            xgap=1,
+            ygap=1,
+            hoverongaps=False,
+            colorbar={"title": colorbar_label, "tickformat": ".1f"},
+            hovertemplate="%{y}<br>%{x}<br>Correlation %{z:.2f}<extra></extra>",
+        )
+    )
+
+    if show_values if show_values is not None else feature_count <= 15:
+        for row, column in zip(*np.where(np.isfinite(values)), strict=True):
+            value = float(values[row, column])
+            figure.add_annotation(
+                x=names[column],
+                y=names[row],
+                text=format(value, value_format),
+                showarrow=False,
+                # Heatmap traces only accept a single text color, so per-cell annotations
+                # are what keep values legible against dark high-magnitude cells.
+                font={"size": text_size, "color": "#F9FAFB" if abs(value) > 0.6 else "#111827"},
+            )
+
+    label_space = int(min(220, max(80, 7 * max(len(name) for name in names))))
+    margins = {"l": label_space, "r": 130, "t": 90, "b": label_space}
+    matrix_size = min(900, max(320, round(cell_size * feature_count)))
+    _base_layout(figure, title=title, height=height or matrix_size + margins["t"] + margins["b"], time_axis=False)
+    figure.update_layout(
+        width=width or matrix_size + margins["l"] + margins["r"],
+        margin=margins,
+        hovermode="closest",
+    )
+    figure.update_xaxes(showgrid=False, tickangle=-45, ticks="", constrain="domain")
+    figure.update_yaxes(showgrid=False, autorange="reversed", ticks="", title_text="", scaleanchor="x")
     return figure
 
 
