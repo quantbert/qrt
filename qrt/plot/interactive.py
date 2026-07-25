@@ -189,7 +189,7 @@ def correlation(
     color_by: str | None = None,
     color_discrete_sequence: Sequence[str] | None = None,
     color_discrete_map: Mapping[object, str] | None = None,
-    color_continuous_scale: str | Sequence[str] = "RdBu",
+    color_continuous_scale: str | Sequence[str] = "RdYlGn",
     hover_data: Iterable[str] | None = None,
     labels: dict[str, str] | None = None,
     triangle: Literal["lower", "upper", "full"] = "full",
@@ -209,22 +209,27 @@ def correlation(
 ) -> Figure:
     """Create an interactive scatterplot matrix for feature correlation analysis.
 
-    Linked selection highlights the same observations in every panel. A categorical
-    ``color_by`` is useful for market regimes, assets, or model classes; a numeric color
-    can encode forward return, volatility, or another continuous outcome. Numeric
-    colors that span zero automatically center the continuous scale at zero.
+    Linked selection highlights the same observations in every panel. ``color_by``
+    must name a column in ``data``; QRT uses each row's value in that column to
+    determine the point color. Categorical values create discrete groups, while
+    numeric values use a continuous scale. Numeric colors that span zero
+    automatically center the scale at zero.
 
     Args:
         data: Observations in rows and features in columns.
         columns: Numeric feature name(s) or shell-style pattern(s). By default,
             all numeric columns except ``color_by`` are included.
-        color_by: Optional DataFrame column used to color observations.
+        color_by: Exact DataFrame column name used to color observations. QRT
+            does not infer a regime column or calculate category boundaries.
+            String, categorical, and boolean values use discrete colors; numeric
+            values use ``color_continuous_scale``.
         color_discrete_sequence: Colors assigned in order to categorical values.
             Defaults to the QRT categorical palette.
-        color_discrete_map: Exact categorical value-to-color assignments. Useful
-            for stable semantic colors such as red for ``"risk-off"``.
+        color_discrete_map: Exact value-to-color assignments for categories in
+            the ``color_by`` column. Useful for stable semantic colors such as
+            red for ``"risk-off"``.
         color_continuous_scale: Plotly color-scale name or explicit color sequence
-            for numeric values. Defaults to ``"RdBu"``.
+            for numeric values. Defaults to ``"RdYlGn"``.
         hover_data: Additional columns shown on hover, such as symbol or regime.
         labels: Optional mapping from column names to display labels.
         triangle: Matrix panels to display: ``"lower"``, ``"upper"``, or
@@ -422,7 +427,7 @@ def correlation_heatmap(
     cluster: bool = False,
     triangle: Literal["lower", "upper", "full"] = "full",
     diagonal: bool = True,
-    color_continuous_scale: str | Sequence[str] = "RdBu",
+    color_continuous_scale: str | Sequence[str] = "RdYlGn",
     show_values: bool | None = None,
     value_format: str = ".2f",
     text_size: float = 11,
@@ -454,7 +459,7 @@ def correlation_heatmap(
             ``"full"``.
         diagonal: Whether to show the self-correlation diagonal.
         color_continuous_scale: Plotly color-scale name or explicit color
-            sequence. Defaults to ``"RdBu"``.
+            sequence. Defaults to ``"RdYlGn"``.
         show_values: Whether to annotate cells with correlation values. Defaults
             to annotating only matrices small enough to stay readable.
         value_format: Format specification used for cell annotations.

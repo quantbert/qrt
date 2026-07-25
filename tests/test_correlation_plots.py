@@ -100,8 +100,8 @@ def test_correlation_centers_continuous_outcomes_at_zero(feature_data):
 
     assert len(figure.data) == 1
     assert figure.layout.coloraxis.cmid == 0.0
-    assert figure.layout.coloraxis.colorscale[0][1] == "rgb(103,0,31)"
-    assert figure.layout.coloraxis.colorscale[-1][1] == "rgb(5,48,97)"
+    assert figure.layout.coloraxis.colorscale[0][1] == "rgb(165,0,38)"
+    assert figure.layout.coloraxis.colorscale[-1][1] == "rgb(0,104,55)"
     assert figure.data[0].showlowerhalf is True
     assert figure.data[0].showupperhalf is True
     assert figure.data[0].diagonal.visible is True
@@ -256,6 +256,8 @@ def test_correlation_heatmap_pins_scale_and_annotates_small_matrices(wide_featur
     assert isinstance(figure, Figure)
     assert trace.type == "heatmap"
     assert (trace.zmin, trace.zmid, trace.zmax) == (-1.0, 0.0, 1.0)
+    assert trace.colorscale[0][1] == "rgb(165,0,38)"
+    assert trace.colorscale[-1][1] == "rgb(0,104,55)"
     assert list(trace.x) == list(trace.y) == ["trend_a", "trend_b", "risk_a", "risk_b"]
     assert trace.colorbar.title.text == "Correlation"
     assert len(figure.layout.annotations) == 16
