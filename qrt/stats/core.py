@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from typing import TYPE_CHECKING, Literal
 
 import numpy as np
@@ -2480,6 +2481,115 @@ def compare(returns: pd.Series, benchmark: pd.Series, *, return_type: ReturnType
     )
 
 
+def _random_walk_parameter(
+    value: float | Sequence[float],
+    paths: int,
+    name: str,
+    *,
+    non_negative: bool = False,
+) -> np.ndarray:
+    """Broadcast one scalar or validate one value per random-walk path."""
+    try:
+        values = np.asarray(value, dtype=float)
+    except (TypeError, ValueError) as error:
+        raise TypeError(f"{name} must be numeric") from error
+    if values.ndim == 0:
+        values = np.full(paths, float(values))
+    elif values.ndim != 1 or len(values) != paths:
+        raise ValueError(f"{name} must be a scalar or contain one value per path ({paths})")
+    if not np.isfinite(values).all():
+        raise ValueError(f"{name} must contain only finite values")
+    if non_negative and (values < 0).any():
+        raise ValueError(f"{name} must be non-negative")
+    return values
+
+
+def random_walk(
+    periods: int = 252,
+    paths: int = 1,
+    *,
+    start: float = 100.0,
+    drift: float | Sequence[float] = 0.05,
+    volatility: float | Sequence[float] = 0.20,
+    periods_per_year: int = 252,
+    start_date: str | pd.Timestamp | None = None,
+    freq: str = "B",
+    names: Sequence[str] | None = None,
+    seed: int | None = None,
+) -> pd.DataFrame:
+    """Generate synthetic price paths using geometric Brownian motion.
+
+    The process follows ``dS / S = drift * dt + volatility * dW``. Both
+    ``drift`` and ``volatility`` are annualized and may be scalars shared by
+    every path or sequences containing one value per path. Prices remain
+    positive and the first row is exactly ``start``.
+
+    This is a parametric synthetic-data generator, unlike :func:`montecarlo`,
+    which bootstraps an observed return stream. It is useful for examples,
+    tests, and controlled experiments, not for forecasting actual prices.
+
+    Args:
+        periods: Number of price observations, including the starting value.
+        paths: Number of independent paths to generate.
+        start: Positive starting price shared by every path.
+        drift: Annualized continuous drift, scalar or one value per path.
+        volatility: Annualized volatility, scalar or one value per path.
+        periods_per_year: Number of simulation periods per year.
+        start_date: Optional first date. When omitted, the result uses a
+            ``RangeIndex`` named ``"period"``.
+        freq: Pandas date frequency used when ``start_date`` is provided.
+        names: Optional unique path names. Defaults to ``path_1``, ``path_2``, ...
+        seed: Optional random seed for reproducible paths.
+
+    Returns:
+        DataFrame with one synthetic price path per column.
+    """
+    if not isinstance(periods, int) or isinstance(periods, bool) or periods <= 0:
+        raise ValueError("periods must be a positive integer")
+    if not isinstance(paths, int) or isinstance(paths, bool) or paths <= 0:
+        raise ValueError("paths must be a positive integer")
+    try:
+        start_price = float(start)
+    except (TypeError, ValueError) as error:
+        raise ValueError("start must be a positive finite number") from error
+    if not np.isfinite(start_price) or start_price <= 0:
+        raise ValueError("start must be a positive finite number")
+    if (
+        not isinstance(periods_per_year, int)
+        or isinstance(periods_per_year, bool)
+        or periods_per_year <= 0
+    ):
+        raise ValueError("periods_per_year must be a positive integer")
+
+    annual_drift = _random_walk_parameter(drift, paths, "drift")
+    annual_volatility = _random_walk_parameter(
+        volatility, paths, "volatility", non_negative=True
+    )
+
+    if names is None:
+        columns = [f"path_{number}" for number in range(1, paths + 1)]
+    else:
+        if isinstance(names, str) or len(names) != paths:
+            raise ValueError(f"names must contain one name per path ({paths})")
+        columns = [str(name) for name in names]
+        if len(set(columns)) != paths:
+            raise ValueError("names must be unique")
+
+    if start_date is None:
+        index: pd.Index = pd.RangeIndex(periods, name="period")
+    else:
+        index = pd.date_range(start=start_date, periods=periods, freq=freq, name="date")
+
+    rng = np.random.default_rng(seed)
+    shocks = rng.normal(size=(periods - 1, paths))
+    increments = (
+        (annual_drift - 0.5 * annual_volatility**2) / periods_per_year
+        + annual_volatility / np.sqrt(periods_per_year) * shocks
+    )
+    log_paths = np.vstack([np.zeros(paths), np.cumsum(increments, axis=0)])
+    return pd.DataFrame(start_price * np.exp(log_paths), index=index, columns=columns)
+
+
 def _stationary_bootstrap_indices(rng: np.random.Generator, pool_size: int, length: int, block_size: float) -> np.ndarray:
     """Build one circular stationary-bootstrap index sequence of the given ``length``.
 
@@ -3000,7 +3110,7 @@ class Returns:
         from qrt import plot as _plot
 
         dispatch = {
-            "performance": _plot.plot,
+            "performance": _plot.performance,
             "tearsheet": _plot.tearsheet,
             "equity": _plot.equity,
             "drawdown": _plot.drawdown,

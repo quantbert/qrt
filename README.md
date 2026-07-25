@@ -16,7 +16,7 @@ strategy = aapl["close"].pct_change().rename("AAPL")
 benchmark = spy["close"].pct_change().rename("SPY")
 
 q.stats.benchmark_stats(strategy, benchmark)   # alpha, beta, Sharpe, tracking error, ...
-q.plot.plot(strategy, benchmark=benchmark)      # interactive equity + drawdown report
+q.plot.performance(strategy, benchmark=benchmark)  # interactive equity + drawdown report
 ```
 
 ## Why qrt

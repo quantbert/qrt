@@ -4,7 +4,7 @@ The first helpers focus on return streams: quick column charts, equity curves,
 drawdowns, and compact performance tearsheets. Directional label visualization
 and trade-log charts use the same interactive Plotly styling. Implementations
 live in :mod:`qrt.plot.interactive` and are re-exported here; this module only
-adds the ergonomic aliases :func:`col`, :func:`plot`, and :func:`tearsheet`.
+adds the ergonomic aliases :func:`line`, :func:`performance`, and :func:`tearsheet`.
 Return-stream statistics (performance, alpha/beta, rolling diagnostics, ...)
 live in :mod:`qrt.stats`.
 """
@@ -18,6 +18,7 @@ import pandas as pd
 
 from qrt.plot import interactive
 from qrt.plot.interactive import (
+    barchart,
     correlation,
     correlation_heatmap,
     cumulative_returns,
@@ -56,7 +57,7 @@ if TYPE_CHECKING:
     from plotly.graph_objects import Figure
 
 
-def col(
+def line(
     data: pd.Series | pd.DataFrame,
     columns: str | Iterable[str] | None = None,
     *,
@@ -81,7 +82,7 @@ def col(
     return interactive.line(data, columns, title=title, yaxis_title=ylabel, height=height)
 
 
-def plot(
+def performance(
     returns: pd.Series,
     *,
     benchmark: pd.Series | None = None,
@@ -119,20 +120,20 @@ def plot(
 
 
 def tearsheet(returns: pd.Series, **kwargs: object) -> Figure:
-    """Alias for the interactive :func:`plot` performance report.
+    """Alias for the interactive :func:`performance` report.
 
     Args:
         returns: Strategy periodic return series.
-        **kwargs (Any): Forwarded to :func:`plot` (e.g. ``benchmark``, ``title``).
+        **kwargs (Any): Forwarded to :func:`performance` (e.g. ``benchmark``, ``title``).
 
     Returns:
         A Plotly ``Figure``.
     """
-    return plot(returns, **kwargs)  # type: ignore[arg-type]
+    return performance(returns, **kwargs)  # type: ignore[arg-type]
 
 
 __all__ = [
-    "col",
+    "barchart",
     "correlation",
     "correlation_heatmap",
     "cumulative_returns",
@@ -144,6 +145,7 @@ __all__ = [
     "factor_loadings",
     "interactive",
     "labels",
+    "line",
     "mae_mfe",
     "metrics_table",
     "monthly_distribution",
@@ -151,7 +153,7 @@ __all__ = [
     "montecarlo",
     "montecarlo_distribution",
     "noise_test",
-    "plot",
+    "performance",
     "precision_recall",
     "report",
     "return_quantiles",

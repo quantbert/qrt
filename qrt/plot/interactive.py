@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterable, Mapping, Sequence
+from collections.abc import Callable, Iterable, Mapping, Sequence
 from fnmatch import fnmatch
 from pathlib import Path
 from typing import TYPE_CHECKING, Literal
@@ -150,7 +150,7 @@ def line(
 ) -> Figure:
     """Create an interactive line chart from selected Series or DataFrame columns.
 
-    Column selection supports the same shell-style patterns as :func:`qrt.plot.col`.
+    Column selection supports the same shell-style patterns as :func:`qrt.plot.line`.
     The returned Plotly figure supports hover, zoom, pan, and range selection.
 
     Args:
@@ -179,6 +179,113 @@ def line(
     _base_layout(figure, title=chart_title, height=height)
     _set_date_range(figure, frame.index)
     figure.update_yaxes(title_text=yaxis_title)
+    return figure
+
+
+def barchart(
+    data: pd.Series | pd.DataFrame,
+    columns: str | Iterable[str] | None = None,
+    *,
+    aggregate: str | Callable[[pd.Series], float] | None = None,
+    sorted: bool = False,
+    color_scheme: str | Sequence[str] | Mapping[object, str] = "sign",
+    positive_color: str = "#22C55E",
+    negative_color: str = "#EF4444",
+    zero_color: str = "#94A3B8",
+    title: str | None = None,
+    yaxis_title: str | None = None,
+    label_angle: float = -90,
+    height: int = 500,
+) -> Figure:
+    """Plot one scalar value per Series item or selected DataFrame column.
+
+    A one-row DataFrame is plotted directly. For a DataFrame with multiple
+    rows, ``aggregate`` must name a pandas reduction such as ``"sum"``,
+    ``"mean"``, or ``"last"``, or be a callable applied to each column.
+
+    Args:
+        data: Numeric values as a Series, or observations in rows and categories
+            in columns as a DataFrame.
+        columns: DataFrame column name(s) or shell-style pattern(s). Defaults to
+            all numeric columns. Not used for Series input.
+        aggregate: Reduction applied to each selected DataFrame column when the
+            frame has multiple rows. Required for multi-row frames.
+        sorted: Whether to order bars from highest to lowest value.
+        color_scheme: ``"sign"`` for gain/loss colors, a single Plotly color,
+            a sequence cycled across bars, or a category-to-color mapping.
+        positive_color: Color for positive values in the ``"sign"`` scheme.
+        negative_color: Color for negative values in the ``"sign"`` scheme.
+        zero_color: Color for zero values in the ``"sign"`` scheme.
+        title: Figure title. Defaults to the Series name or ``"Bar chart"``.
+        yaxis_title: Y-axis label.
+        label_angle: Category-label angle in degrees. Defaults to ``-90``.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure``.
+    """
+    if isinstance(data, pd.Series):
+        if columns is not None:
+            raise ValueError("columns can only be used with DataFrame input")
+        if not pd.api.types.is_numeric_dtype(data):
+            raise TypeError("Bar values must be numeric")
+        values = data.copy()
+        default_title = str(data.name) if data.name is not None else "Bar chart"
+    elif isinstance(data, pd.DataFrame):
+        frame = _as_frame(data, columns)
+        if frame.empty or not len(frame.columns):
+            raise ValueError("barchart requires at least one value")
+        if len(frame) == 1:
+            values = frame.iloc[0]
+        elif aggregate is None:
+            raise ValueError("aggregate is required for a DataFrame with multiple rows")
+        else:
+            values = frame.aggregate(aggregate)
+        default_title = "Bar chart"
+    else:
+        raise TypeError("data must be a pandas Series or DataFrame")
+
+    if values.empty:
+        raise ValueError("barchart requires at least one value")
+    numeric_values = pd.to_numeric(values, errors="coerce")
+    if not np.isfinite(numeric_values.to_numpy(dtype=float)).all():
+        raise ValueError("Bar values must be finite numbers")
+    values = numeric_values
+    if sorted:
+        values = values.sort_values(ascending=False, kind="stable")
+
+    category_labels = list(values.index)
+    labels = [str(label) for label in category_labels]
+    if isinstance(color_scheme, str) and color_scheme == "sign":
+        colors = [
+            positive_color if value > 0 else negative_color if value < 0 else zero_color
+            for value in values
+        ]
+    elif isinstance(color_scheme, Mapping):
+        missing = [label for label in category_labels if label not in color_scheme]
+        if missing:
+            raise KeyError(f"color_scheme has no colors for: {missing}")
+        colors = [color_scheme[label] for label in category_labels]
+    elif isinstance(color_scheme, str):
+        colors = color_scheme
+    else:
+        palette = list(color_scheme)
+        if not palette:
+            raise ValueError("color_scheme must contain at least one color")
+        colors = [palette[index % len(palette)] for index in range(len(values))]
+
+    figure = go.Figure(
+        go.Bar(
+            x=labels,
+            y=values.to_numpy(dtype=float),
+            marker={"color": colors, "line": {"color": "#FFFFFF", "width": 0.5}},
+            hovertemplate="%{x}<br>%{y:,.4g}<extra></extra>",
+        )
+    )
+    _base_layout(figure, title=title or default_title, height=height, time_axis=False)
+    figure.update_layout(showlegend=False, bargap=0.12)
+    figure.update_xaxes(type="category", tickangle=label_angle, automargin=True)
+    figure.update_yaxes(title_text=yaxis_title, zeroline=True, zerolinecolor="#64748B", zerolinewidth=1.2)
     return figure
 
 

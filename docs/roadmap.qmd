@@ -60,12 +60,7 @@ on that module's roadmap; the items below would introduce or span namespaces.
 
 ### Portable compute orchestration
 
-- [ ] Evaluate [SkyPilot](https://docs.skypilot.ai/) as an external YAML/CLI
-  launcher for provider-neutral model-training jobs. Keep QRT training entry
-  points runnable locally and unaware of the execution environment. Validate
-  both cloud execution and the local Strix Halo machines, including ROCm
-  accelerator discovery and whether SkyPilot can coexist with the existing Ray
-  cluster or needs to manage a separate runtime.
+- [ ] SkyPilot tutorials need actual testing and reviews
 
 ## Inspiration
 

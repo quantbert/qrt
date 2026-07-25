@@ -120,25 +120,25 @@ def test_log_preserves_pandas_series():
     assert out.iloc[1] == pytest.approx(1.0)
 
 
-def test_plot_col_expands_wildcard_columns():
+def test_plot_line_expands_wildcard_columns():
     df = pd.DataFrame({"a_log_ret": [0.01, -0.02], "b_log_ret": [0.02, 0.01], "close": [100, 101]})
-    figure = q.plot.col(df, "*_log_ret")
+    figure = q.plot.line(df, "*_log_ret")
     assert isinstance(figure, PlotlyFigure)
     assert [trace.name for trace in figure.data] == ["a_log_ret", "b_log_ret"]
 
 
-def test_plot_creates_interactive_performance_report():
+def test_performance_plot_creates_interactive_report():
     returns = pd.Series([0.01, -0.02, 0.03], index=pd.date_range("2025-01-01", periods=3), name="strategy")
-    figure = q.plot.plot(returns)
+    figure = q.plot.performance(returns)
     assert isinstance(figure, PlotlyFigure)
     assert [trace.name for trace in figure.data] == ["strategy", "Drawdown"]
     assert figure.layout.title.text == "strategy"
 
 
-def test_plot_accepts_log_returns():
+def test_performance_plot_accepts_log_returns():
     simple_returns = pd.Series([0.01, -0.02, 0.03], name="strategy")
     log_returns = (1.0 + simple_returns).apply(math.log)
-    figure = q.plot.plot(log_returns, return_type="log")
+    figure = q.plot.performance(log_returns, return_type="log")
     assert figure.data[0].y[-1] == pytest.approx((1.0 + simple_returns).prod() - 1.0)
 
 
@@ -629,10 +629,10 @@ def test_plotly_figures_are_available_at_root_and_interactive_namespace():
     benchmark = pd.Series([0.01, -0.01, 0.02], index=index, name="SPY")
     returns = pd.Series([0.02, -0.02, 0.03], index=index, name="strategy")
 
-    line_figure = q.plot.col(pd.concat([returns, benchmark], axis=1))
+    line_figure = q.plot.line(pd.concat([returns, benchmark], axis=1))
     equity_figure = q.plot.equity(returns)
     drawdown_figure = q.plot.drawdown(returns)
-    report_figure = q.plot.plot(returns, benchmark=benchmark)
+    report_figure = q.plot.performance(returns, benchmark=benchmark)
     heatmap_figure = q.plot.monthly_heatmap(returns)
 
     assert isinstance(line_figure, PlotlyFigure)

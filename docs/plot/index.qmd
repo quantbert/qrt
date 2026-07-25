@@ -18,6 +18,23 @@ Return-stream *statistics* (performance, alpha/beta, rolling diagnostics,
 [Return Statistics](../stats/index.qmd). For market measurements, see
 [Indicators](../indicator/index.ipynb).
 
+For a quick ranked comparison of scalar strategy metrics, pass a Series:
+
+```python
+q.plot.barchart(strategy_sharpes, sorted=True, title="Strategy Sharpe ratios")
+```
+
+A DataFrame can select columns by name or wildcard. Multi-row frames require an
+explicit reduction so the chart never guesses what a "total" means:
+
+```python
+q.plot.barchart(asset_returns, columns="*_return", aggregate="sum", sorted=True)
+```
+
+Bars use green/red sign coloring by default. Set `positive_color` and
+`negative_color`, or pass `color_scheme` as one color, a color sequence, or a
+column-name-to-color mapping. Category labels are shown vertically by default.
+
 Pages:
 
 - [Feature relationships](correlation.ipynb) — linked scatterplot matrices colored
@@ -26,6 +43,8 @@ Pages:
   matrices with clustered ordering, rank methods, and triangle masking.
 - [Classification curves](classification.ipynb) — multiclass ROC and
   precision-recall curves, plus reusable tidy curve data from `q.stats`.
+- [Ranked bar charts](barchart.ipynb) — strategy metrics, asset returns,
+  DataFrame column selection, sorting, aggregation, and custom color schemes.
 - [Return charts](returns.ipynb) — column charts, equity curves, drawdowns,
   full performance reports, and monthly heatmaps.
 - [Tearsheet report](report.ipynb) — full quantstats-style strategy tearsheet

@@ -245,6 +245,8 @@ website:
               href: plot/correlation_heatmap.ipynb
             - text: "Classification curves"
               href: plot/classification.ipynb
+            - text: "Ranked bar charts"
+              href: plot/barchart.ipynb
             - text: "Return charts"
               href: plot/returns.ipynb
             - text: "Tearsheet report"
