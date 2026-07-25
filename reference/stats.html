@@ -746,6 +746,7 @@ window.Quarto = {
   <li><a href="#qrt.stats.profit_factor" id="toc-qrt.stats.profit_factor" class="nav-link" data-scroll-target="#qrt.stats.profit_factor">profit_factor</a></li>
   <li><a href="#qrt.stats.profit_ratio" id="toc-qrt.stats.profit_ratio" class="nav-link" data-scroll-target="#qrt.stats.profit_ratio">profit_ratio</a></li>
   <li><a href="#qrt.stats.r_squared" id="toc-qrt.stats.r_squared" class="nav-link" data-scroll-target="#qrt.stats.r_squared">r_squared</a></li>
+  <li><a href="#qrt.stats.random_walk" id="toc-qrt.stats.random_walk" class="nav-link" data-scroll-target="#qrt.stats.random_walk">random_walk</a></li>
   <li><a href="#qrt.stats.rar" id="toc-qrt.stats.rar" class="nav-link" data-scroll-target="#qrt.stats.rar">rar</a></li>
   <li><a href="#qrt.stats.rebase" id="toc-qrt.stats.rebase" class="nav-link" data-scroll-target="#qrt.stats.rebase">rebase</a></li>
   <li><a href="#qrt.stats.recovery_factor" id="toc-qrt.stats.recovery_factor" class="nav-link" data-scroll-target="#qrt.stats.recovery_factor">recovery_factor</a></li>
@@ -1249,130 +1250,134 @@ window.Quarto = {
 <td>Calculate R² (coefficient of determination) between strategy and benchmark returns.</td>
 </tr>
 <tr class="odd">
+<td><a href="#qrt.stats.random_walk">random_walk</a></td>
+<td>Generate synthetic price paths using geometric Brownian motion.</td>
+</tr>
+<tr class="even">
 <td><a href="#qrt.stats.rar">rar</a></td>
 <td>Calculate the Risk-Adjusted Return (CAGR divided by exposure).</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#qrt.stats.rebase">rebase</a></td>
 <td>Rescale a price series to a common starting value.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#qrt.stats.recovery_factor">recovery_factor</a></td>
 <td>Calculate the recovery factor: total return divided by Max Drawdown.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#qrt.stats.remove_outliers">remove_outliers</a></td>
 <td>Return the subset of returns below a given quantile threshold, discarding upper-tail outliers.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#qrt.stats.returns">returns</a></td>
 <td>Bind a return stream (and optional benchmark) for chained stats and plotting.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#qrt.stats.risk_of_ruin">risk_of_ruin</a></td>
 <td>Estimate the risk of ruin.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#qrt.stats.risk_return_ratio">risk_return_ratio</a></td>
 <td>Calculate the risk-return ratio: mean return divided by its standard deviation.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#qrt.stats.rolling_alpha">rolling_alpha</a></td>
 <td>Return annualized rolling Jensen alpha relative to a benchmark.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#qrt.stats.rolling_beta">rolling_beta</a></td>
 <td>Return rolling beta of strategy returns relative to a benchmark.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#qrt.stats.rolling_factor_regression">rolling_factor_regression</a></td>
 <td>Calculate rolling multi-factor OLS betas over a moving window.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#qrt.stats.rolling_sharpe">rolling_sharpe</a></td>
 <td>Return annualized rolling Sharpe ratios over a moving window.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#qrt.stats.rolling_sortino">rolling_sortino</a></td>
 <td>Return annualized rolling Sortino ratios over a moving window.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#qrt.stats.rolling_volatility">rolling_volatility</a></td>
 <td>Return annualized rolling volatility for a periodic return stream.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#qrt.stats.serenity_index">serenity_index</a></td>
 <td>Calculate the Serenity Index.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#qrt.stats.sharpe">sharpe</a></td>
 <td>Calculate the annualized Sharpe ratio of excess returns.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#qrt.stats.skew">skew</a></td>
 <td>Calculate the <a href="https://en.wikipedia.org/wiki/Skewness">skewness</a> of returns.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#qrt.stats.sortino">sortino</a></td>
 <td>Calculate the annualized Sortino ratio of excess returns.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#qrt.stats.tail_conditional_expectation">tail_conditional_expectation</a></td>
 <td>Return the mean observed loss at or beyond historical VaR.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#qrt.stats.tail_ratio">tail_ratio</a></td>
 <td>Calculate the tail ratio between the right and left tails of the return distribution.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#qrt.stats.to_drawdown_series">to_drawdown_series</a></td>
 <td>Convert a return series into its running drawdown series.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#qrt.stats.to_log_returns">to_log_returns</a></td>
 <td>Convert a return series to log (continuously compounded) returns.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#qrt.stats.to_prices">to_prices</a></td>
 <td>Convert a return series into a cumulative price/equity curve.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#qrt.stats.trade_stats">trade_stats</a></td>
 <td>Calculate trade-level statistics from a canonical trades-format log.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#qrt.stats.trades_to_positions">trades_to_positions</a></td>
 <td>Convert a trade log into a signed position series over <code>index</code>.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#qrt.stats.trades_to_returns">trades_to_returns</a></td>
 <td>Convert a trade log into a periodic return stream.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#qrt.stats.treynor_ratio">treynor_ratio</a></td>
 <td>Calculate the annualized Treynor ratio relative to a benchmark.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#qrt.stats.ulcer_index">ulcer_index</a></td>
 <td>Calculate the Ulcer Index.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#qrt.stats.ulcer_performance_index">ulcer_performance_index</a></td>
 <td>Calculate the Ulcer Performance Index (Martin ratio).</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#qrt.stats.variance_test">variance_test</a></td>
 <td>Simulate forward trades with a randomly varied win rate to stress-test a strategy’s edge.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#qrt.stats.volatility">volatility</a></td>
 <td>Calculate annualized <a href="https://en.wikipedia.org/wiki/Volatility_(finance)">volatility</a>.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#qrt.stats.win_rate">win_rate</a></td>
 <td>Calculate the win rate: the share of non-zero-return periods that were positive.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#qrt.stats.worst">worst</a></td>
 <td>Return the single worst (lowest) period return.</td>
 </tr>
@@ -5422,13 +5427,137 @@ window.Quarto = {
 </table>
 </section>
 </section>
-<section id="qrt.stats.rar" class="level3">
-<h3 class="anchored" data-anchor-id="qrt.stats.rar">rar</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb73"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>stats.rar(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>, periods_per_year<span class="op">=</span><span class="va">None</span>, rf<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Calculate the Risk-Adjusted Return (CAGR divided by exposure).</p>
-<p>Divides CAGR by :func:<code>exposure</code> (the fraction of periods actually invested, i.e.&nbsp;with non-zero returns), so a strategy that earns its return while sitting in cash most of the time scores higher than one that needed to be fully invested throughout.</p>
+<section id="qrt.stats.random_walk" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.stats.random_walk">random_walk</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb73"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>stats.random_walk(</span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a>    periods<span class="op">=</span><span class="dv">252</span>,</span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a>    paths<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb73-4"><a href="#cb73-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb73-5"><a href="#cb73-5" aria-hidden="true" tabindex="-1"></a>    start<span class="op">=</span><span class="fl">100.0</span>,</span>
+<span id="cb73-6"><a href="#cb73-6" aria-hidden="true" tabindex="-1"></a>    drift<span class="op">=</span><span class="fl">0.05</span>,</span>
+<span id="cb73-7"><a href="#cb73-7" aria-hidden="true" tabindex="-1"></a>    volatility<span class="op">=</span><span class="fl">0.2</span>,</span>
+<span id="cb73-8"><a href="#cb73-8" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="dv">252</span>,</span>
+<span id="cb73-9"><a href="#cb73-9" aria-hidden="true" tabindex="-1"></a>    start_date<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb73-10"><a href="#cb73-10" aria-hidden="true" tabindex="-1"></a>    freq<span class="op">=</span><span class="st">'B'</span>,</span>
+<span id="cb73-11"><a href="#cb73-11" aria-hidden="true" tabindex="-1"></a>    names<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb73-12"><a href="#cb73-12" aria-hidden="true" tabindex="-1"></a>    seed<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb73-13"><a href="#cb73-13" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Generate synthetic price paths using geometric Brownian motion.</p>
+<p>The process follows <code>dS / S = drift * dt + volatility * dW</code>. Both <code>drift</code> and <code>volatility</code> are annualized and may be scalars shared by every path or sequences containing one value per path. Prices remain positive and the first row is exactly <code>start</code>.</p>
+<p>This is a parametric synthetic-data generator, unlike :func:<code>montecarlo</code>, which bootstraps an observed return stream. It is useful for examples, tests, and controlled experiments, not for forecasting actual prices.</p>
 <section id="parameters-52" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-52">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 19%">
+<col style="width: 60%">
+<col style="width: 7%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>periods</td>
+<td>int</td>
+<td>Number of price observations, including the starting value.</td>
+<td><code>252</code></td>
+</tr>
+<tr class="even">
+<td>paths</td>
+<td>int</td>
+<td>Number of independent paths to generate.</td>
+<td><code>1</code></td>
+</tr>
+<tr class="odd">
+<td>start</td>
+<td>float</td>
+<td>Positive starting price shared by every path.</td>
+<td><code>100.0</code></td>
+</tr>
+<tr class="even">
+<td>drift</td>
+<td>float | Sequence[float]</td>
+<td>Annualized continuous drift, scalar or one value per path.</td>
+<td><code>0.05</code></td>
+</tr>
+<tr class="odd">
+<td>volatility</td>
+<td>float | Sequence[float]</td>
+<td>Annualized volatility, scalar or one value per path.</td>
+<td><code>0.2</code></td>
+</tr>
+<tr class="even">
+<td>periods_per_year</td>
+<td>int</td>
+<td>Number of simulation periods per year.</td>
+<td><code>252</code></td>
+</tr>
+<tr class="odd">
+<td>start_date</td>
+<td>str | pd.Timestamp | None</td>
+<td>Optional first date. When omitted, the result uses a <code>RangeIndex</code> named <code>"period"</code>.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>freq</td>
+<td>str</td>
+<td>Pandas date frequency used when <code>start_date</code> is provided.</td>
+<td><code>'B'</code></td>
+</tr>
+<tr class="odd">
+<td>names</td>
+<td>Sequence[str] | None</td>
+<td>Optional unique path names. Defaults to <code>path_1</code>, <code>path_2</code>, …</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>seed</td>
+<td>int | None</td>
+<td>Optional random seed for reproducible paths.</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-52" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-52">Returns</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 18%">
+<col style="width: 70%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>pd.DataFrame</td>
+<td>DataFrame with one synthetic price path per column.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="qrt.stats.rar" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.stats.rar">rar</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb74"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>stats.rar(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>, periods_per_year<span class="op">=</span><span class="va">None</span>, rf<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Calculate the Risk-Adjusted Return (CAGR divided by exposure).</p>
+<p>Divides CAGR by :func:<code>exposure</code> (the fraction of periods actually invested, i.e.&nbsp;with non-zero returns), so a strategy that earns its return while sitting in cash most of the time scores higher than one that needed to be fully invested throughout.</p>
+<section id="parameters-53" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-53">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 11%">
@@ -5472,8 +5601,8 @@ window.Quarto = {
 </tbody>
 </table>
 </section>
-<section id="returns-52" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-52">Returns</h4>
+<section id="returns-53" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-53">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -5494,11 +5623,11 @@ window.Quarto = {
 </section>
 <section id="qrt.stats.rebase" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.stats.rebase">rebase</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb74"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>stats.rebase(prices, base<span class="op">=</span><span class="fl">100.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb75"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>stats.rebase(prices, base<span class="op">=</span><span class="fl">100.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Rescale a price series to a common starting value.</p>
 <p>Useful for plotting or comparing price series that start on different scales (e.g.&nbsp;a strategy’s equity curve against a benchmark index).</p>
-<section id="parameters-53" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-53">Parameters</h4>
+<section id="parameters-54" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-54">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 8%">
@@ -5530,8 +5659,8 @@ window.Quarto = {
 </tbody>
 </table>
 </section>
-<section id="returns-53" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-53">Returns</h4>
+<section id="returns-54" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-54">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -5552,11 +5681,11 @@ window.Quarto = {
 </section>
 <section id="qrt.stats.recovery_factor" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.stats.recovery_factor">recovery_factor</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb75"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>stats.recovery_factor(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>, rf<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb76"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>stats.recovery_factor(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>, rf<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate the recovery factor: total return divided by Max Drawdown.</p>
 <p>How many multiples of the worst peak-to-trough decline the strategy ultimately earned back — higher values mean faster, more complete recovery from drawdowns.</p>
-<section id="parameters-54" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-54">Parameters</h4>
+<section id="parameters-55" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-55">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 11%">
@@ -5594,8 +5723,8 @@ window.Quarto = {
 </tbody>
 </table>
 </section>
-<section id="returns-54" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-54">Returns</h4>
+<section id="returns-55" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-55">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -5616,10 +5745,10 @@ window.Quarto = {
 </section>
 <section id="qrt.stats.remove_outliers" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.stats.remove_outliers">remove_outliers</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb76"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>stats.remove_outliers(returns, quantile<span class="op">=</span><span class="fl">0.95</span>, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb77"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>stats.remove_outliers(returns, quantile<span class="op">=</span><span class="fl">0.95</span>, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Return the subset of returns below a given quantile threshold, discarding upper-tail outliers.</p>
-<section id="parameters-55" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-55">Parameters</h4>
+<section id="parameters-56" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-56">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 12%">
@@ -5657,8 +5786,8 @@ window.Quarto = {
 </tbody>
 </table>
 </section>
-<section id="returns-55" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-55">Returns</h4>
+<section id="returns-56" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-56">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -5679,17 +5808,17 @@ window.Quarto = {
 </section>
 <section id="qrt.stats.returns" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.stats.returns">returns</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb77"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>stats.returns(</span>
-<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>    data,</span>
-<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a>    benchmark<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb77-4"><a href="#cb77-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb77-5"><a href="#cb77-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
-<span id="cb77-6"><a href="#cb77-6" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb77-7"><a href="#cb77-7" aria-hidden="true" tabindex="-1"></a>    rf<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb77-8"><a href="#cb77-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb78"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>stats.returns(</span>
+<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a>    data,</span>
+<span id="cb78-3"><a href="#cb78-3" aria-hidden="true" tabindex="-1"></a>    benchmark<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb78-4"><a href="#cb78-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb78-5"><a href="#cb78-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb78-6"><a href="#cb78-6" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb78-7"><a href="#cb78-7" aria-hidden="true" tabindex="-1"></a>    rf<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb78-8"><a href="#cb78-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Bind a return stream (and optional benchmark) for chained stats and plotting.</p>
-<section id="parameters-56" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-56">Parameters</h4>
+<section id="parameters-57" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-57">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 9%">
@@ -5739,8 +5868,8 @@ window.Quarto = {
 </tbody>
 </table>
 </section>
-<section id="returns-56" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-56">Returns</h4>
+<section id="returns-57" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-57">Returns</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 8%">
@@ -5771,67 +5900,9 @@ window.Quarto = {
 </section>
 <section id="qrt.stats.risk_of_ruin" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.stats.risk_of_ruin">risk_of_ruin</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb78"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>stats.risk_of_ruin(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb79"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>stats.risk_of_ruin(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Estimate the risk of ruin.</p>
 <p>The <a href="https://en.wikipedia.org/wiki/Gambler%27s_ruin">risk of ruin</a> is the probability of losing the entire trading account, from the classic gambler’s-ruin formula applied to the strategy’s per-period win rate.</p>
-<section id="parameters-57" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-57">Parameters</h4>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 13%">
-<col style="width: 12%">
-<col style="width: 62%">
-<col style="width: 12%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-<th>Default</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>returns</td>
-<td>pd.Series</td>
-<td>Periodic return series (simple or log, per <code>return_type</code>).</td>
-<td><em>required</em></td>
-</tr>
-<tr class="even">
-<td>return_type</td>
-<td>ReturnType</td>
-<td>Whether <code>returns</code> are <code>"simple"</code> or <code>"log"</code> returns.</td>
-<td><code>'simple'</code></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="returns-57" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-57">Returns</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td></td>
-<td>float</td>
-<td>Probability of ruin, in <code>[0, 1]</code>.</td>
-</tr>
-</tbody>
-</table>
-</section>
-</section>
-<section id="qrt.stats.risk_return_ratio" class="level3">
-<h3 class="anchored" data-anchor-id="qrt.stats.risk_return_ratio">risk_return_ratio</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb79"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>stats.risk_return_ratio(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Calculate the risk-return ratio: mean return divided by its standard deviation.</p>
-<p>Like the Sharpe ratio, but un-annualized and without a risk-free rate — the simplest possible return-per-unit-of-risk measure.</p>
 <section id="parameters-58" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-58">Parameters</h4>
 <table class="caption-top table">
@@ -5879,6 +5950,64 @@ window.Quarto = {
 <tr class="odd">
 <td></td>
 <td>float</td>
+<td>Probability of ruin, in <code>[0, 1]</code>.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="qrt.stats.risk_return_ratio" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.stats.risk_return_ratio">risk_return_ratio</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb80"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>stats.risk_return_ratio(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Calculate the risk-return ratio: mean return divided by its standard deviation.</p>
+<p>Like the Sharpe ratio, but un-annualized and without a risk-free rate — the simplest possible return-per-unit-of-risk measure.</p>
+<section id="parameters-59" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-59">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 12%">
+<col style="width: 62%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>returns</td>
+<td>pd.Series</td>
+<td>Periodic return series (simple or log, per <code>return_type</code>).</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>return_type</td>
+<td>ReturnType</td>
+<td>Whether <code>returns</code> are <code>"simple"</code> or <code>"log"</code> returns.</td>
+<td><code>'simple'</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-59" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-59">Returns</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>float</td>
 <td>Risk-return ratio.</td>
 </tr>
 </tbody>
@@ -5887,18 +6016,18 @@ window.Quarto = {
 </section>
 <section id="qrt.stats.rolling_alpha" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.stats.rolling_alpha">rolling_alpha</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb80"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>stats.rolling_alpha(</span>
-<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
-<span id="cb80-3"><a href="#cb80-3" aria-hidden="true" tabindex="-1"></a>    benchmark,</span>
-<span id="cb80-4"><a href="#cb80-4" aria-hidden="true" tabindex="-1"></a>    window<span class="op">=</span><span class="dv">63</span>,</span>
-<span id="cb80-5"><a href="#cb80-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb80-6"><a href="#cb80-6" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
-<span id="cb80-7"><a href="#cb80-7" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb80-8"><a href="#cb80-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb81"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>stats.rolling_alpha(</span>
+<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb81-3"><a href="#cb81-3" aria-hidden="true" tabindex="-1"></a>    benchmark,</span>
+<span id="cb81-4"><a href="#cb81-4" aria-hidden="true" tabindex="-1"></a>    window<span class="op">=</span><span class="dv">63</span>,</span>
+<span id="cb81-5"><a href="#cb81-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb81-6"><a href="#cb81-6" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb81-7"><a href="#cb81-7" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb81-8"><a href="#cb81-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Return annualized rolling Jensen alpha relative to a benchmark.</p>
 <p><a href="https://en.wikipedia.org/wiki/Jensen%27s_alpha">Jensen’s alpha</a> is the annualized return left over after accounting for the return explained by beta exposure to the benchmark — the excess return generated (or lost) beyond what market risk alone would predict.</p>
-<section id="parameters-59" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-59">Parameters</h4>
+<section id="parameters-60" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-60">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 15%">
@@ -5948,8 +6077,8 @@ window.Quarto = {
 </tbody>
 </table>
 </section>
-<section id="returns-59" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-59">Returns</h4>
+<section id="returns-60" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-60">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -5970,11 +6099,11 @@ window.Quarto = {
 </section>
 <section id="qrt.stats.rolling_beta" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.stats.rolling_beta">rolling_beta</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb81"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>stats.rolling_beta(returns, benchmark, window<span class="op">=</span><span class="dv">63</span>, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb82"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>stats.rolling_beta(returns, benchmark, window<span class="op">=</span><span class="dv">63</span>, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Return rolling beta of strategy returns relative to a benchmark.</p>
 <p><a href="https://en.wikipedia.org/wiki/Beta_(finance)">Beta</a> measures sensitivity to benchmark (market) movements: the covariance of strategy and benchmark returns divided by the benchmark’s variance. A beta of 1 tracks the benchmark 1:1; above 1 amplifies its moves; below 1 dampens them. See also the <a href="https://en.wikipedia.org/wiki/Capital_asset_pricing_model">Capital Asset Pricing Model</a>, which uses beta to model expected return as a function of systematic risk.</p>
-<section id="parameters-60" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-60">Parameters</h4>
+<section id="parameters-61" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-61">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 11%">
@@ -6018,8 +6147,8 @@ window.Quarto = {
 </tbody>
 </table>
 </section>
-<section id="returns-60" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-60">Returns</h4>
+<section id="returns-61" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-61">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -6040,19 +6169,19 @@ window.Quarto = {
 </section>
 <section id="qrt.stats.rolling_factor_regression" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.stats.rolling_factor_regression">rolling_factor_regression</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb82"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>stats.rolling_factor_regression(</span>
-<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
-<span id="cb82-3"><a href="#cb82-3" aria-hidden="true" tabindex="-1"></a>    factors,</span>
-<span id="cb82-4"><a href="#cb82-4" aria-hidden="true" tabindex="-1"></a>    window<span class="op">=</span><span class="dv">63</span>,</span>
-<span id="cb82-5"><a href="#cb82-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb82-6"><a href="#cb82-6" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
-<span id="cb82-7"><a href="#cb82-7" aria-hidden="true" tabindex="-1"></a>    rf<span class="op">=</span><span class="st">'RF'</span>,</span>
-<span id="cb82-8"><a href="#cb82-8" aria-hidden="true" tabindex="-1"></a>    min_observations<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb82-9"><a href="#cb82-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb83"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a>stats.rolling_factor_regression(</span>
+<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb83-3"><a href="#cb83-3" aria-hidden="true" tabindex="-1"></a>    factors,</span>
+<span id="cb83-4"><a href="#cb83-4" aria-hidden="true" tabindex="-1"></a>    window<span class="op">=</span><span class="dv">63</span>,</span>
+<span id="cb83-5"><a href="#cb83-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb83-6"><a href="#cb83-6" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb83-7"><a href="#cb83-7" aria-hidden="true" tabindex="-1"></a>    rf<span class="op">=</span><span class="st">'RF'</span>,</span>
+<span id="cb83-8"><a href="#cb83-8" aria-hidden="true" tabindex="-1"></a>    min_observations<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb83-9"><a href="#cb83-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate rolling multi-factor OLS betas over a moving window.</p>
 <p>Refits :func:<code>factor_regression</code>’s OLS on each trailing <code>window</code> of aligned observations, e.g.&nbsp;the rolling Fama-French five-factor betas that reveal time-varying exposure a single full-period fit cannot. Following <a href="https://www.statsmodels.org/stable/examples/notebooks/generated/rolling_ls.html"><code>statsmodels.regression.rolling.RollingOLS</code></a>’s convention, each window’s estimate is stored at the date of its <em>last</em> observation, so the window is a trailing observation window (not a calendar-day window) – with daily data, <code>window=63</code> is roughly 3 trading months.</p>
-<section id="parameters-61" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-61">Parameters</h4>
+<section id="parameters-62" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-62">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 6%">
@@ -6108,8 +6237,8 @@ window.Quarto = {
 </tbody>
 </table>
 </section>
-<section id="returns-61" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-61">Returns</h4>
+<section id="returns-62" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-62">Returns</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 8%">
@@ -6150,90 +6279,7 @@ window.Quarto = {
 </section>
 <section id="qrt.stats.rolling_sharpe" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.stats.rolling_sharpe">rolling_sharpe</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb83"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a>stats.rolling_sharpe(</span>
-<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
-<span id="cb83-3"><a href="#cb83-3" aria-hidden="true" tabindex="-1"></a>    window<span class="op">=</span><span class="dv">63</span>,</span>
-<span id="cb83-4"><a href="#cb83-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb83-5"><a href="#cb83-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
-<span id="cb83-6"><a href="#cb83-6" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb83-7"><a href="#cb83-7" aria-hidden="true" tabindex="-1"></a>    rf<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb83-8"><a href="#cb83-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Return annualized rolling Sharpe ratios over a moving window.</p>
-<p>The <a href="https://en.wikipedia.org/wiki/Sharpe_ratio">Sharpe ratio</a> is the annualized mean excess return divided by the annualized volatility of returns — return earned per unit of total risk taken.</p>
-<section id="parameters-62" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-62">Parameters</h4>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 10%">
-<col style="width: 7%">
-<col style="width: 74%">
-<col style="width: 7%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-<th>Default</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>returns</td>
-<td>pd.Series</td>
-<td>Periodic return series.</td>
-<td><em>required</em></td>
-</tr>
-<tr class="even">
-<td>window</td>
-<td>int</td>
-<td>Rolling window size, in periods.</td>
-<td><code>63</code></td>
-</tr>
-<tr class="odd">
-<td>return_type</td>
-<td>ReturnType</td>
-<td>Whether <code>returns</code> are <code>"simple"</code> or <code>"log"</code> returns.</td>
-<td><code>'simple'</code></td>
-</tr>
-<tr class="even">
-<td>periods_per_year</td>
-<td>int | None</td>
-<td>Annualization frequency. Inferred from the index when not given.</td>
-<td><code>None</code></td>
-</tr>
-<tr class="odd">
-<td>rf</td>
-<td>float</td>
-<td>Annualized risk-free rate, subtracted (after deannualizing) from returns before computing the ratio. Defaults to <code>0.0</code>.</td>
-<td><code>0.0</code></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="returns-62" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-62">Returns</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td></td>
-<td>pd.Series</td>
-<td>Series of annualized rolling Sharpe ratios.</td>
-</tr>
-</tbody>
-</table>
-</section>
-</section>
-<section id="qrt.stats.rolling_sortino" class="level3">
-<h3 class="anchored" data-anchor-id="qrt.stats.rolling_sortino">rolling_sortino</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb84"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>stats.rolling_sortino(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb84"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>stats.rolling_sharpe(</span>
 <span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
 <span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a>    window<span class="op">=</span><span class="dv">63</span>,</span>
 <span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
@@ -6241,8 +6287,8 @@ window.Quarto = {
 <span id="cb84-6"><a href="#cb84-6" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb84-7"><a href="#cb84-7" aria-hidden="true" tabindex="-1"></a>    rf<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb84-8"><a href="#cb84-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Return annualized rolling Sortino ratios over a moving window.</p>
-<p>The <a href="https://en.wikipedia.org/wiki/Sortino_ratio">Sortino ratio</a> is like the Sharpe ratio, but only penalizes downside volatility, since investors rarely mind upside swings.</p>
+<p>Return annualized rolling Sharpe ratios over a moving window.</p>
+<p>The <a href="https://en.wikipedia.org/wiki/Sharpe_ratio">Sharpe ratio</a> is the annualized mean excess return divided by the annualized volatility of returns — return earned per unit of total risk taken.</p>
 <section id="parameters-63" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-63">Parameters</h4>
 <table class="caption-top table">
@@ -6308,6 +6354,89 @@ window.Quarto = {
 <tr class="odd">
 <td></td>
 <td>pd.Series</td>
+<td>Series of annualized rolling Sharpe ratios.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="qrt.stats.rolling_sortino" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.stats.rolling_sortino">rolling_sortino</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb85"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>stats.rolling_sortino(</span>
+<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a>    window<span class="op">=</span><span class="dv">63</span>,</span>
+<span id="cb85-4"><a href="#cb85-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb85-5"><a href="#cb85-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb85-6"><a href="#cb85-6" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb85-7"><a href="#cb85-7" aria-hidden="true" tabindex="-1"></a>    rf<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb85-8"><a href="#cb85-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return annualized rolling Sortino ratios over a moving window.</p>
+<p>The <a href="https://en.wikipedia.org/wiki/Sortino_ratio">Sortino ratio</a> is like the Sharpe ratio, but only penalizes downside volatility, since investors rarely mind upside swings.</p>
+<section id="parameters-64" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-64">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 7%">
+<col style="width: 74%">
+<col style="width: 7%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>returns</td>
+<td>pd.Series</td>
+<td>Periodic return series.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>window</td>
+<td>int</td>
+<td>Rolling window size, in periods.</td>
+<td><code>63</code></td>
+</tr>
+<tr class="odd">
+<td>return_type</td>
+<td>ReturnType</td>
+<td>Whether <code>returns</code> are <code>"simple"</code> or <code>"log"</code> returns.</td>
+<td><code>'simple'</code></td>
+</tr>
+<tr class="even">
+<td>periods_per_year</td>
+<td>int | None</td>
+<td>Annualization frequency. Inferred from the index when not given.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>rf</td>
+<td>float</td>
+<td>Annualized risk-free rate, subtracted (after deannualizing) from returns before computing the ratio. Defaults to <code>0.0</code>.</td>
+<td><code>0.0</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-64" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-64">Returns</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>pd.Series</td>
 <td>Series of annualized rolling Sortino ratios.</td>
 </tr>
 </tbody>
@@ -6316,17 +6445,17 @@ window.Quarto = {
 </section>
 <section id="qrt.stats.rolling_volatility" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.stats.rolling_volatility">rolling_volatility</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb85"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>stats.rolling_volatility(</span>
-<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
-<span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a>    window<span class="op">=</span><span class="dv">63</span>,</span>
-<span id="cb85-4"><a href="#cb85-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb85-5"><a href="#cb85-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
-<span id="cb85-6"><a href="#cb85-6" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb85-7"><a href="#cb85-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb86"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>stats.rolling_volatility(</span>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb86-3"><a href="#cb86-3" aria-hidden="true" tabindex="-1"></a>    window<span class="op">=</span><span class="dv">63</span>,</span>
+<span id="cb86-4"><a href="#cb86-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb86-5"><a href="#cb86-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb86-6"><a href="#cb86-6" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb86-7"><a href="#cb86-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Return annualized rolling volatility for a periodic return stream.</p>
 <p><a href="https://en.wikipedia.org/wiki/Volatility_(finance)">Volatility</a> is the standard deviation of returns — the most common measure of risk. Unlike Sortino-style measures, it penalizes upside and downside swings equally.</p>
-<section id="parameters-64" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-64">Parameters</h4>
+<section id="parameters-65" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-65">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 16%">
@@ -6370,8 +6499,8 @@ window.Quarto = {
 </tbody>
 </table>
 </section>
-<section id="returns-64" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-64">Returns</h4>
+<section id="returns-65" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-65">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -6392,11 +6521,11 @@ window.Quarto = {
 </section>
 <section id="qrt.stats.serenity_index" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.stats.serenity_index">serenity_index</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb86"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>stats.serenity_index(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>, rf<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb87"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a>stats.serenity_index(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>, rf<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate the Serenity Index.</p>
 <p>A composite drawdown-aware risk-adjusted return measure (KeyQuant, 2011): total excess return divided by the :func:<code>ulcer_index</code> scaled by a “pitfall” factor — the tail risk of drawdowns (their Conditional VaR) relative to overall return volatility. Penalizes strategies whose drawdowns are both deep/prolonged (high Ulcer Index) and concentrated in a few severe episodes (high pitfall).</p>
-<section id="parameters-65" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-65">Parameters</h4>
+<section id="parameters-66" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-66">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 11%">
@@ -6434,8 +6563,8 @@ window.Quarto = {
 </tbody>
 </table>
 </section>
-<section id="returns-65" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-65">Returns</h4>
+<section id="returns-66" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-66">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -6456,18 +6585,18 @@ window.Quarto = {
 </section>
 <section id="qrt.stats.sharpe" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.stats.sharpe">sharpe</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb87"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a>stats.sharpe(</span>
-<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
-<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb87-4"><a href="#cb87-4" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
-<span id="cb87-5"><a href="#cb87-5" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb87-6"><a href="#cb87-6" aria-hidden="true" tabindex="-1"></a>    rf<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb87-7"><a href="#cb87-7" aria-hidden="true" tabindex="-1"></a>    smart<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb87-8"><a href="#cb87-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb88"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>stats.sharpe(</span>
+<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb88-3"><a href="#cb88-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb88-4"><a href="#cb88-4" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb88-5"><a href="#cb88-5" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb88-6"><a href="#cb88-6" aria-hidden="true" tabindex="-1"></a>    rf<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb88-7"><a href="#cb88-7" aria-hidden="true" tabindex="-1"></a>    smart<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb88-8"><a href="#cb88-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate the annualized Sharpe ratio of excess returns.</p>
 <p>The <a href="https://en.wikipedia.org/wiki/Sharpe_ratio">Sharpe ratio</a> is the annualized mean excess return divided by the annualized volatility of returns — return earned per unit of total risk taken.</p>
-<section id="parameters-66" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-66">Parameters</h4>
+<section id="parameters-67" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-67">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 6%">
@@ -6517,8 +6646,8 @@ window.Quarto = {
 </tbody>
 </table>
 </section>
-<section id="returns-66" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-66">Returns</h4>
+<section id="returns-67" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-67">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -6539,11 +6668,11 @@ window.Quarto = {
 </section>
 <section id="qrt.stats.skew" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.stats.skew">skew</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb88"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>stats.skew(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb89"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a>stats.skew(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate the <a href="https://en.wikipedia.org/wiki/Skewness">skewness</a> of returns.</p>
 <p>Skewness measures the degree of asymmetry of the return distribution around its mean. Positive skew means a longer right tail (occasional large gains); negative skew means a longer left tail (occasional large losses).</p>
-<section id="parameters-67" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-67">Parameters</h4>
+<section id="parameters-68" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-68">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 13%">
@@ -6575,8 +6704,8 @@ window.Quarto = {
 </tbody>
 </table>
 </section>
-<section id="returns-67" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-67">Returns</h4>
+<section id="returns-68" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-68">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -6597,18 +6726,18 @@ window.Quarto = {
 </section>
 <section id="qrt.stats.sortino" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.stats.sortino">sortino</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb89"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a>stats.sortino(</span>
-<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
-<span id="cb89-3"><a href="#cb89-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb89-4"><a href="#cb89-4" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
-<span id="cb89-5"><a href="#cb89-5" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb89-6"><a href="#cb89-6" aria-hidden="true" tabindex="-1"></a>    rf<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb89-7"><a href="#cb89-7" aria-hidden="true" tabindex="-1"></a>    smart<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb89-8"><a href="#cb89-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb90"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>stats.sortino(</span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb90-4"><a href="#cb90-4" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb90-5"><a href="#cb90-5" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb90-6"><a href="#cb90-6" aria-hidden="true" tabindex="-1"></a>    rf<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb90-7"><a href="#cb90-7" aria-hidden="true" tabindex="-1"></a>    smart<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb90-8"><a href="#cb90-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate the annualized Sortino ratio of excess returns.</p>
 <p>The <a href="https://en.wikipedia.org/wiki/Sortino_ratio">Sortino ratio</a> is like the Sharpe ratio, but only penalizes downside volatility, since investors rarely mind upside swings.</p>
-<section id="parameters-68" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-68">Parameters</h4>
+<section id="parameters-69" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-69">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 10%">
@@ -6658,8 +6787,8 @@ window.Quarto = {
 </tbody>
 </table>
 </section>
-<section id="returns-68" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-68">Returns</h4>
+<section id="returns-69" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-69">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -6680,21 +6809,21 @@ window.Quarto = {
 </section>
 <section id="qrt.stats.tail_conditional_expectation" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.stats.tail_conditional_expectation">tail_conditional_expectation</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb90"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>stats.tail_conditional_expectation(</span>
-<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
-<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb90-4"><a href="#cb90-4" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
-<span id="cb90-5"><a href="#cb90-5" aria-hidden="true" tabindex="-1"></a>    confidence<span class="op">=</span><span class="fl">0.95</span>,</span>
-<span id="cb90-6"><a href="#cb90-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb91"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a>stats.tail_conditional_expectation(</span>
+<span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb91-3"><a href="#cb91-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb91-4"><a href="#cb91-4" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb91-5"><a href="#cb91-5" aria-hidden="true" tabindex="-1"></a>    confidence<span class="op">=</span><span class="fl">0.95</span>,</span>
+<span id="cb91-6"><a href="#cb91-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Return the mean observed loss at or beyond historical VaR.</p>
 </section>
 <section id="qrt.stats.tail_ratio" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.stats.tail_ratio">tail_ratio</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb91"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a>stats.tail_ratio(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>, cutoff<span class="op">=</span><span class="fl">0.95</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb92"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>stats.tail_ratio(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>, cutoff<span class="op">=</span><span class="fl">0.95</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate the tail ratio between the right and left tails of the return distribution.</p>
 <p>Ratio of the <code>cutoff</code> percentile (e.g.&nbsp;95th) to the <code>1 - cutoff</code> percentile (e.g.&nbsp;5th) of returns — how large favorable outliers are relative to unfavorable ones.</p>
-<section id="parameters-69" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-69">Parameters</h4>
+<section id="parameters-70" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-70">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 9%">
@@ -6732,8 +6861,8 @@ window.Quarto = {
 </tbody>
 </table>
 </section>
-<section id="returns-69" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-69">Returns</h4>
+<section id="returns-70" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-70">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -6754,71 +6883,9 @@ window.Quarto = {
 </section>
 <section id="qrt.stats.to_drawdown_series" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.stats.to_drawdown_series">to_drawdown_series</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb92"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>stats.to_drawdown_series(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb93"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a>stats.to_drawdown_series(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Convert a return series into its running drawdown series.</p>
 <p>Each value is the percentage decline from the running peak of cumulative growth (0 at new highs, negative during drawdowns).</p>
-<section id="parameters-70" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-70">Parameters</h4>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 13%">
-<col style="width: 12%">
-<col style="width: 62%">
-<col style="width: 12%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-<th>Default</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>returns</td>
-<td>pd.Series</td>
-<td>Periodic return series (simple or log, per <code>return_type</code>).</td>
-<td><em>required</em></td>
-</tr>
-<tr class="even">
-<td>return_type</td>
-<td>ReturnType</td>
-<td>Whether <code>returns</code> are <code>"simple"</code> or <code>"log"</code> returns.</td>
-<td><code>'simple'</code></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="returns-70" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-70">Returns</h4>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 9%">
-<col style="width: 12%">
-<col style="width: 77%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td></td>
-<td>pd.Series</td>
-<td>Drawdown series (non-positive values), same index as <code>returns</code>.</td>
-</tr>
-</tbody>
-</table>
-</section>
-</section>
-<section id="qrt.stats.to_log_returns" class="level3">
-<h3 class="anchored" data-anchor-id="qrt.stats.to_log_returns">to_log_returns</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb93"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a>stats.to_log_returns(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Convert a return series to log (continuously compounded) returns.</p>
 <section id="parameters-71" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-71">Parameters</h4>
 <table class="caption-top table">
@@ -6855,6 +6922,68 @@ window.Quarto = {
 <section id="returns-71" class="level4 doc-section doc-section-returns">
 <h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-71">Returns</h4>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 12%">
+<col style="width: 77%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>pd.Series</td>
+<td>Drawdown series (non-positive values), same index as <code>returns</code>.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="qrt.stats.to_log_returns" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.stats.to_log_returns">to_log_returns</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb94"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>stats.to_log_returns(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Convert a return series to log (continuously compounded) returns.</p>
+<section id="parameters-72" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-72">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 12%">
+<col style="width: 62%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>returns</td>
+<td>pd.Series</td>
+<td>Periodic return series (simple or log, per <code>return_type</code>).</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>return_type</td>
+<td>ReturnType</td>
+<td>Whether <code>returns</code> are <code>"simple"</code> or <code>"log"</code> returns.</td>
+<td><code>'simple'</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-72" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-72">Returns</h4>
+<table class="caption-top table">
 <thead>
 <tr class="header">
 <th>Name</th>
@@ -6874,10 +7003,10 @@ window.Quarto = {
 </section>
 <section id="qrt.stats.to_prices" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.stats.to_prices">to_prices</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb94"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>stats.to_prices(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>, base<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb95"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a>stats.to_prices(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>, base<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Convert a return series into a cumulative price/equity curve.</p>
-<section id="parameters-72" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-72">Parameters</h4>
+<section id="parameters-73" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-73">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 13%">
@@ -6915,8 +7044,8 @@ window.Quarto = {
 </tbody>
 </table>
 </section>
-<section id="returns-72" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-72">Returns</h4>
+<section id="returns-73" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-73">Returns</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 8%">
@@ -6942,11 +7071,11 @@ window.Quarto = {
 </section>
 <section id="qrt.stats.trade_stats" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.stats.trade_stats">trade_stats</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb95"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a>stats.trade_stats(trades, by<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb96"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>stats.trade_stats(trades, by<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate trade-level statistics from a canonical trades-format log.</p>
 <p>Unlike the return-stream metrics (:func:<code>performance</code>, :func:<code>win_rate</code>, …), these operate on whole round-trip trades – so <code>Win Rate</code> is the share of winning <em>trades</em>, <code>Avg Days</code> the mean holding period, and <code>Exposure</code> the fraction of calendar time (first entry to last exit) with an open position, computed from the union of actual trade spans.</p>
-<section id="parameters-73" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-73">Parameters</h4>
+<section id="parameters-74" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-74">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 3%">
@@ -6978,8 +7107,8 @@ window.Quarto = {
 </tbody>
 </table>
 </section>
-<section id="returns-73" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-73">Returns</h4>
+<section id="returns-74" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-74">Returns</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 6%">
@@ -7079,11 +7208,11 @@ window.Quarto = {
 </section>
 <section id="qrt.stats.trades_to_positions" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.stats.trades_to_positions">trades_to_positions</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb96"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>stats.trades_to_positions(trades, index)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb97"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a>stats.trades_to_positions(trades, index)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Convert a trade log into a signed position series over <code>index</code>.</p>
 <p>Each trade contributes <code>+1</code> (long) or <code>-1</code> (short) on every bar from its <code>entry_time</code> through its <code>exit_time</code> (inclusive); overlapping trades sum. Bars with no open trade are <code>0</code> – the basis for exposure timelines and time-in-market analysis.</p>
-<section id="parameters-74" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-74">Parameters</h4>
+<section id="parameters-75" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-75">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 8%">
@@ -7115,8 +7244,8 @@ window.Quarto = {
 </tbody>
 </table>
 </section>
-<section id="returns-74" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-74">Returns</h4>
+<section id="returns-75" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-75">Returns</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 9%">
@@ -7142,7 +7271,7 @@ window.Quarto = {
 </section>
 <section id="qrt.stats.trades_to_returns" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.stats.trades_to_returns">trades_to_returns</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb97"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a>stats.trades_to_returns(trades, prices<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb98"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a>stats.trades_to_returns(trades, prices<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Convert a trade log into a periodic return stream.</p>
 <p>The bridge from qrt’s canonical trades format (one row per round-trip trade, see :mod:<code>qrt.data.datasets</code>) to the return-stream form every other :mod:<code>qrt.stats</code>/:mod:<code>qrt.plot</code> function consumes.</p>
 <p>Without <code>prices</code>, each trade’s whole return is attributed at its <code>exit_time</code> (compounded when several trades exit on the same bar) – fine for aggregate stats, but intra-trade drawdown and volatility are invisible. With <code>prices</code> (a close series covering the trade span), trades are marked to market: each bar in a trade contributes its close-to-close return (entry bar: close vs <code>entry_price</code>; exit bar: <code>exit_price</code> vs previous close), direction-adjusted, and bars with no open trade contribute <code>0.0</code> – giving honest drawdown/volatility/ exposure statistics.</p>
@@ -7150,8 +7279,8 @@ window.Quarto = {
 <h4 class="doc-section doc-section-note anchored" data-anchor-id="note-5">Note</h4>
 <p>For long trades, marked-to-market bar returns compound exactly to the trade’s stored <code>return</code>. For shorts they model a <em>daily rebalanced</em> short position, which compounds slightly differently than the unrebalanced trade-level return – both are correct, they answer different questions.</p>
 </section>
-<section id="parameters-75" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-75">Parameters</h4>
+<section id="parameters-76" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-76">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 5%">
@@ -7183,8 +7312,8 @@ window.Quarto = {
 </tbody>
 </table>
 </section>
-<section id="returns-75" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-75">Returns</h4>
+<section id="returns-76" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-76">Returns</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 9%">
@@ -7220,18 +7349,18 @@ window.Quarto = {
 </section>
 <section id="qrt.stats.treynor_ratio" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.stats.treynor_ratio">treynor_ratio</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb98"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a>stats.treynor_ratio(</span>
-<span id="cb98-2"><a href="#cb98-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
-<span id="cb98-3"><a href="#cb98-3" aria-hidden="true" tabindex="-1"></a>    benchmark,</span>
-<span id="cb98-4"><a href="#cb98-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb98-5"><a href="#cb98-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
-<span id="cb98-6"><a href="#cb98-6" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb98-7"><a href="#cb98-7" aria-hidden="true" tabindex="-1"></a>    rf<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb98-8"><a href="#cb98-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb99"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a>stats.treynor_ratio(</span>
+<span id="cb99-2"><a href="#cb99-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb99-3"><a href="#cb99-3" aria-hidden="true" tabindex="-1"></a>    benchmark,</span>
+<span id="cb99-4"><a href="#cb99-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb99-5"><a href="#cb99-5" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb99-6"><a href="#cb99-6" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb99-7"><a href="#cb99-7" aria-hidden="true" tabindex="-1"></a>    rf<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb99-8"><a href="#cb99-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate the annualized Treynor ratio relative to a benchmark.</p>
 <p>The <a href="https://en.wikipedia.org/wiki/Treynor_ratio">Treynor ratio</a> is the annualized mean excess return divided by beta — like the Sharpe ratio, but measuring return earned per unit of systematic (market) risk rather than total risk.</p>
-<section id="parameters-76" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-76">Parameters</h4>
+<section id="parameters-77" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-77">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 10%">
@@ -7281,8 +7410,8 @@ window.Quarto = {
 </tbody>
 </table>
 </section>
-<section id="returns-76" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-76">Returns</h4>
+<section id="returns-77" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-77">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -7303,11 +7432,11 @@ window.Quarto = {
 </section>
 <section id="qrt.stats.ulcer_index" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.stats.ulcer_index">ulcer_index</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb99"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a>stats.ulcer_index(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb100"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a>stats.ulcer_index(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate the Ulcer Index.</p>
 <p>The <a href="https://en.wikipedia.org/wiki/Ulcer_index">Ulcer Index</a> is the root-mean-square of drawdowns from the running peak, capturing both the depth and duration of drawdowns rather than just their worst point (unlike Max Drawdown).</p>
-<section id="parameters-77" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-77">Parameters</h4>
+<section id="parameters-78" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-78">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 13%">
@@ -7339,8 +7468,8 @@ window.Quarto = {
 </tbody>
 </table>
 </section>
-<section id="returns-77" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-77">Returns</h4>
+<section id="returns-78" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-78">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -7361,17 +7490,17 @@ window.Quarto = {
 </section>
 <section id="qrt.stats.ulcer_performance_index" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.stats.ulcer_performance_index">ulcer_performance_index</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb100"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a>stats.ulcer_performance_index(</span>
-<span id="cb100-2"><a href="#cb100-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
-<span id="cb100-3"><a href="#cb100-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb100-4"><a href="#cb100-4" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
-<span id="cb100-5"><a href="#cb100-5" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb100-6"><a href="#cb100-6" aria-hidden="true" tabindex="-1"></a>    rf<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb100-7"><a href="#cb100-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb101"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a>stats.ulcer_performance_index(</span>
+<span id="cb101-2"><a href="#cb101-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb101-3"><a href="#cb101-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb101-4"><a href="#cb101-4" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb101-5"><a href="#cb101-5" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb101-6"><a href="#cb101-6" aria-hidden="true" tabindex="-1"></a>    rf<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb101-7"><a href="#cb101-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate the Ulcer Performance Index (Martin ratio).</p>
 <p>Annualized excess return divided by the :func:<code>ulcer_index</code> — like Calmar, but risk is measured by the depth <em>and</em> duration of drawdowns rather than just the single worst one.</p>
-<section id="parameters-78" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-78">Parameters</h4>
+<section id="parameters-79" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-79">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 11%">
@@ -7415,8 +7544,8 @@ window.Quarto = {
 </tbody>
 </table>
 </section>
-<section id="returns-78" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-78">Returns</h4>
+<section id="returns-79" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-79">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -7437,17 +7566,17 @@ window.Quarto = {
 </section>
 <section id="qrt.stats.variance_test" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.stats.variance_test">variance_test</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb101"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a>stats.variance_test(</span>
-<span id="cb101-2"><a href="#cb101-2" aria-hidden="true" tabindex="-1"></a>    trades,</span>
-<span id="cb101-3"><a href="#cb101-3" aria-hidden="true" tabindex="-1"></a>    periods,</span>
-<span id="cb101-4"><a href="#cb101-4" aria-hidden="true" tabindex="-1"></a>    sims<span class="op">=</span><span class="dv">1000</span>,</span>
-<span id="cb101-5"><a href="#cb101-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb101-6"><a href="#cb101-6" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
-<span id="cb101-7"><a href="#cb101-7" aria-hidden="true" tabindex="-1"></a>    win_rate_variance<span class="op">=</span><span class="fl">0.1</span>,</span>
-<span id="cb101-8"><a href="#cb101-8" aria-hidden="true" tabindex="-1"></a>    ruin<span class="op">=-</span><span class="fl">0.9</span>,</span>
-<span id="cb101-9"><a href="#cb101-9" aria-hidden="true" tabindex="-1"></a>    confidence<span class="op">=</span><span class="fl">0.95</span>,</span>
-<span id="cb101-10"><a href="#cb101-10" aria-hidden="true" tabindex="-1"></a>    seed<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb101-11"><a href="#cb101-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb102"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a>stats.variance_test(</span>
+<span id="cb102-2"><a href="#cb102-2" aria-hidden="true" tabindex="-1"></a>    trades,</span>
+<span id="cb102-3"><a href="#cb102-3" aria-hidden="true" tabindex="-1"></a>    periods,</span>
+<span id="cb102-4"><a href="#cb102-4" aria-hidden="true" tabindex="-1"></a>    sims<span class="op">=</span><span class="dv">1000</span>,</span>
+<span id="cb102-5"><a href="#cb102-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb102-6"><a href="#cb102-6" aria-hidden="true" tabindex="-1"></a>    return_type<span class="op">=</span><span class="st">'simple'</span>,</span>
+<span id="cb102-7"><a href="#cb102-7" aria-hidden="true" tabindex="-1"></a>    win_rate_variance<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb102-8"><a href="#cb102-8" aria-hidden="true" tabindex="-1"></a>    ruin<span class="op">=-</span><span class="fl">0.9</span>,</span>
+<span id="cb102-9"><a href="#cb102-9" aria-hidden="true" tabindex="-1"></a>    confidence<span class="op">=</span><span class="fl">0.95</span>,</span>
+<span id="cb102-10"><a href="#cb102-10" aria-hidden="true" tabindex="-1"></a>    seed<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb102-11"><a href="#cb102-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Simulate forward trades with a randomly varied win rate to stress-test a strategy’s edge.</p>
 <p>Unlike :func:<code>montecarlo</code> (which resamples <em>periodic</em> returns to explore plausible histories), this simulates forward, trade-by-trade: each simulated path draws <code>periods</code> future trades by (1) picking a per-simulation win rate randomly perturbed by up to <code>win_rate_variance</code> from the historical win rate, then (2) for each trade, flipping a coin at that win rate and sampling a return with replacement from the historical winning or losing trades accordingly. This directly stresses whether a strategy’s edge holds up if its win rate drifts, rather than just reordering/bootstrapping the exact historical return sequence.</p>
 <section id="note-6" class="level4 doc-section doc-section-note">
@@ -7458,8 +7587,8 @@ window.Quarto = {
 <h4 class="doc-section doc-section-note anchored" data-anchor-id="note-7">Note</h4>
 <p>When <code>trades</code> has a <code>DatetimeIndex</code>, <code>paths</code> is indexed by <code>periods</code> timestamps extrapolated forward from the last historical trade date (step size inferred via :func:<code>pandas.infer_freq</code>, falling back to the median spacing for irregular series), continuing the timeline where <code>real_path</code> leaves off, rather than a bare trade count — consistent with the date axes used throughout :mod:<code>qrt.plot</code>. Falls back to a plain <code>0..periods - 1</code> trade-count index otherwise.</p>
 </section>
-<section id="parameters-79" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-79">Parameters</h4>
+<section id="parameters-80" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-80">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 5%">
@@ -7527,8 +7656,8 @@ window.Quarto = {
 </tbody>
 </table>
 </section>
-<section id="returns-79" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-79">Returns</h4>
+<section id="returns-80" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-80">Returns</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 1%">
@@ -7604,11 +7733,11 @@ window.Quarto = {
 </section>
 <section id="qrt.stats.volatility" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.stats.volatility">volatility</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb102"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a>stats.volatility(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>, periods_per_year<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb103"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a>stats.volatility(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>, periods_per_year<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate annualized <a href="https://en.wikipedia.org/wiki/Volatility_(finance)">volatility</a>.</p>
 <p>The standard deviation of returns — the most common measure of risk. See :func:<code>rolling_volatility</code> for a moving-window variant.</p>
-<section id="parameters-80" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-80">Parameters</h4>
+<section id="parameters-81" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-81">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 16%">
@@ -7646,8 +7775,8 @@ window.Quarto = {
 </tbody>
 </table>
 </section>
-<section id="returns-80" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-80">Returns</h4>
+<section id="returns-81" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-81">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -7668,11 +7797,11 @@ window.Quarto = {
 </section>
 <section id="qrt.stats.win_rate" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.stats.win_rate">win_rate</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb103"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a>stats.win_rate(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>, aggregate<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb104"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a>stats.win_rate(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>, aggregate<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate the win rate: the share of non-zero-return periods that were positive.</p>
 <p>Periods with exactly zero return are excluded from both the count of wins and the total.</p>
-<section id="parameters-81" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-81">Parameters</h4>
+<section id="parameters-82" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-82">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 6%">
@@ -7710,8 +7839,8 @@ window.Quarto = {
 </tbody>
 </table>
 </section>
-<section id="returns-81" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-81">Returns</h4>
+<section id="returns-82" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-82">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -7732,10 +7861,10 @@ window.Quarto = {
 </section>
 <section id="qrt.stats.worst" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.stats.worst">worst</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb104"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a>stats.worst(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>, aggregate<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb105"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a>stats.worst(returns, <span class="op">*</span>, return_type<span class="op">=</span><span class="st">'simple'</span>, aggregate<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Return the single worst (lowest) period return.</p>
-<section id="parameters-82" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-82">Parameters</h4>
+<section id="parameters-83" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-83">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 6%">
@@ -7773,8 +7902,8 @@ window.Quarto = {
 </tbody>
 </table>
 </section>
-<section id="returns-82" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-82">Returns</h4>
+<section id="returns-83" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-83">Returns</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">

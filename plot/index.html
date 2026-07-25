@@ -23,6 +23,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -772,6 +807,12 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../plot/barchart.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ranked bar charts</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../plot/returns.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Return charts</span></a>
   </div>
@@ -932,11 +973,17 @@ ul.task-list li input[type="checkbox"] {
 
 
 <p><code>q.plot</code> renders interactive Plotly figures for feature relationships, labels, multiclass model evaluation, return streams, and trade logs. <code>q.plot.correlation</code> creates a linked scatterplot matrix with categorical regime or continuous-outcome coloring, and <code>q.plot.correlation_heatmap</code> condenses a whole feature library into a clustered correlation matrix. <code>q.plot.labels</code> overlays long, hold, and short events on price, with optional outcome-interval shading; see the <a href="../label/index.html">labeling examples</a>. Classification diagnostics include one-vs-rest ROC and precision-recall curves with per-class, micro-average, and macro-average summaries. Return and trade visualizations cover quick column charts, equity curves, drawdowns, calendar heatmaps, full quantstats-style tearsheets, Monte Carlo diagnostics, entry/exit markers, excursions, and per-trade distributions. Return-stream <em>statistics</em> (performance, alpha/beta, rolling diagnostics, <code>q.stats.montecarlo</code>, …) live in <code>q.stats</code>; see <a href="../stats/index.html">Return Statistics</a>. For market measurements, see <a href="../indicator/index.html">Indicators</a>.</p>
+<p>For a quick ranked comparison of scalar strategy metrics, pass a Series:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>q.plot.barchart(strategy_sharpes, <span class="bu">sorted</span><span class="op">=</span><span class="va">True</span>, title<span class="op">=</span><span class="st">"Strategy Sharpe ratios"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A DataFrame can select columns by name or wildcard. Multi-row frames require an explicit reduction so the chart never guesses what a “total” means:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>q.plot.barchart(asset_returns, columns<span class="op">=</span><span class="st">"*_return"</span>, aggregate<span class="op">=</span><span class="st">"sum"</span>, <span class="bu">sorted</span><span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Bars use green/red sign coloring by default. Set <code>positive_color</code> and <code>negative_color</code>, or pass <code>color_scheme</code> as one color, a color sequence, or a column-name-to-color mapping. Category labels are shown vertically by default.</p>
 <p>Pages:</p>
 <ul>
 <li><a href="../plot/correlation.html">Feature relationships</a> — linked scatterplot matrices colored by market regime, asset, split, or continuous forward outcome.</li>
 <li><a href="../plot/correlation_heatmap.html">Correlation heatmap</a> — whole-library correlation matrices with clustered ordering, rank methods, and triangle masking.</li>
 <li><a href="../plot/classification.html">Classification curves</a> — multiclass ROC and precision-recall curves, plus reusable tidy curve data from <code>q.stats</code>.</li>
+<li><a href="../plot/barchart.html">Ranked bar charts</a> — strategy metrics, asset returns, DataFrame column selection, sorting, aggregation, and custom color schemes.</li>
 <li><a href="../plot/returns.html">Return charts</a> — column charts, equity curves, drawdowns, full performance reports, and monthly heatmaps.</li>
 <li><a href="../plot/report.html">Tearsheet report</a> — full quantstats-style strategy tearsheet (<code>q.plot.report</code>) plus its individual panels (metrics table, cumulative returns, EOY returns, rolling diagnostics, worst drawdowns, …).</li>
 <li><a href="../plot/simulation.html">Simulation tests</a> — Monte Carlo fan charts and outcome distributions, variance testing, and noise testing.</li>

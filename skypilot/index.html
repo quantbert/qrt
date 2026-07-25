@@ -807,6 +807,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../plot/barchart.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ranked bar charts</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../plot/returns.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Return charts</span></a>
   </div>
@@ -947,7 +953,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#guides" id="toc-guides" class="nav-link active" data-scroll-target="#guides">Guides</a></li>
-  <li><a href="#install-the-cli" id="toc-install-the-cli" class="nav-link" data-scroll-target="#install-the-cli">Install the CLI</a></li>
+  <li><a href="#install-the-skypilot-cli" id="toc-install-the-skypilot-cli" class="nav-link" data-scroll-target="#install-the-skypilot-cli">Install the SkyPilot CLI</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/skypilot/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/skypilot/index.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -973,25 +979,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><a href="https://docs.skypilot.ai/">SkyPilot</a> provisions compute and launches workloads across clouds, Kubernetes, Slurm, and SSH node pools. It is an external developer tool rather than part of the <code>qrt</code> Python package. The tutorials exist as a point of reference for QRT users who want to run workloads on on-prem or cloud infrastructure.</p>
-<p>Keep the boundary simple:</p>
-<ul>
-<li>QRT code defines data preparation, training, evaluation, and experiment tracking.</li>
-<li>A SkyPilot YAML defines compute requirements, environment setup, file mounts, and the command to run.</li>
-<li><code>q.ray</code> can distribute work after the requested compute is available; it does not provision that compute.</li>
-</ul>
-<p>This keeps a training entry point runnable with the same <code>uv run ...</code> command on a laptop, an existing Ray cluster, or a SkyPilot-managed machine.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>SkyPilot is a standalone tool and has no dependencies on QRT. The tutrials here are for users who want to run QRT workloads on on-prem or cloud infrastructure.</p>
+</div>
+</div>
+<p><a href="https://docs.skypilot.ai/">SkyPilot</a> provisions compute and launches workloads across clouds, Kubernetes, Slurm, and SSH node pools. It drastically simplifies the process of running workloads on remote machines, while keeping the same <code>uv run ...</code> command for local development.</p>
 <section id="guides" class="level2">
 <h2 class="anchored" data-anchor-id="guides">Guides</h2>
+<p><em>Note that the guides may not work for all users and are provided as-is.</em></p>
 <ul>
 <li><a href="../skypilot/training.html">Launch a training run</a>: submit a repeatable model-training command as a managed job.</li>
 <li><a href="../skypilot/vscode.html">Develop with VS Code over SSH</a>: launch an interactive machine and open the synchronized QRT checkout remotely.</li>
 <li><a href="../skypilot/strix-halo.html">Build a local Strix Halo cluster</a>: schedule QRT workloads across a four-node AMD SSH pool.</li>
 </ul>
 </section>
-<section id="install-the-cli" class="level2">
-<h2 class="anchored" data-anchor-id="install-the-cli">Install the CLI</h2>
-<p>Install SkyPilot as a standalone tool so it does not become a QRT project dependency. Include the extras for the infrastructure and storage backends you use; this example enables AWS, GCP, Kubernetes, RunPod, and Hugging Face Storage:</p>
+<section id="install-the-skypilot-cli" class="level2">
+<h2 class="anchored" data-anchor-id="install-the-skypilot-cli">Install the SkyPilot CLI</h2>
+<p>Include the extras for the infrastructure and storage backends you use; this example enables AWS, GCP, Kubernetes, RunPod, and Hugging Face Storage:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> tool install <span class="at">--with</span> pip <span class="st">"skypilot[aws,gcp,huggingface,kubernetes,runpod]"</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">sky</span> check</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Follow the <a href="https://docs.skypilot.ai/en/latest/getting-started/installation.html">SkyPilot installation guide</a> for provider-specific credentials and extras.</p>
