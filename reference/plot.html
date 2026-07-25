@@ -937,7 +937,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    color_by<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    color_discrete_sequence<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    color_discrete_map<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    color_continuous_scale<span class="op">=</span><span class="st">'RdBu'</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    color_continuous_scale<span class="op">=</span><span class="st">'RdYlGn'</span>,</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    hover_data<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    labels<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    triangle<span class="op">=</span><span class="st">'full'</span>,</span>
@@ -956,15 +956,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    panel_aspect_ratio<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create an interactive scatterplot matrix for feature correlation analysis.</p>
-<p>Linked selection highlights the same observations in every panel. A categorical <code>color_by</code> is useful for market regimes, assets, or model classes; a numeric color can encode forward return, volatility, or another continuous outcome. Numeric colors that span zero automatically center the continuous scale at zero.</p>
+<p>Linked selection highlights the same observations in every panel. <code>color_by</code> must name a column in <code>data</code>; QRT uses each row’s value in that column to determine the point color. Categorical values create discrete groups, while numeric values use a continuous scale. Numeric colors that span zero automatically center the scale at zero.</p>
 <section id="parameters-1" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 11%">
-<col style="width: 19%">
-<col style="width: 57%">
-<col style="width: 12%">
+<col style="width: 7%">
+<col style="width: 13%">
+<col style="width: 71%">
+<col style="width: 8%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -990,7 +990,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td>color_by</td>
 <td>str | None</td>
-<td>Optional DataFrame column used to color observations.</td>
+<td>Exact DataFrame column name used to color observations. QRT does not infer a regime column or calculate category boundaries. String, categorical, and boolean values use discrete colors; numeric values use <code>color_continuous_scale</code>.</td>
 <td><code>None</code></td>
 </tr>
 <tr class="even">
@@ -1002,14 +1002,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td>color_discrete_map</td>
 <td>Mapping[object, str] | None</td>
-<td>Exact categorical value-to-color assignments. Useful for stable semantic colors such as red for <code>"risk-off"</code>.</td>
+<td>Exact value-to-color assignments for categories in the <code>color_by</code> column. Useful for stable semantic colors such as red for <code>"risk-off"</code>.</td>
 <td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>color_continuous_scale</td>
 <td>str | Sequence[str]</td>
-<td>Plotly color-scale name or explicit color sequence for numeric values. Defaults to <code>"RdBu"</code>.</td>
-<td><code>'RdBu'</code></td>
+<td>Plotly color-scale name or explicit color sequence for numeric values. Defaults to <code>"RdYlGn"</code>.</td>
+<td><code>'RdYlGn'</code></td>
 </tr>
 <tr class="odd">
 <td>hover_data</td>
@@ -1141,7 +1141,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    cluster<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    triangle<span class="op">=</span><span class="st">'full'</span>,</span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    diagonal<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    color_continuous_scale<span class="op">=</span><span class="st">'RdBu'</span>,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    color_continuous_scale<span class="op">=</span><span class="st">'RdYlGn'</span>,</span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    show_values<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    value_format<span class="op">=</span><span class="st">'.2f'</span>,</span>
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    text_size<span class="op">=</span><span class="dv">11</span>,</span>
@@ -1217,8 +1217,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="even">
 <td>color_continuous_scale</td>
 <td>str | Sequence[str]</td>
-<td>Plotly color-scale name or explicit color sequence. Defaults to <code>"RdBu"</code>.</td>
-<td><code>'RdBu'</code></td>
+<td>Plotly color-scale name or explicit color sequence. Defaults to <code>"RdYlGn"</code>.</td>
+<td><code>'RdYlGn'</code></td>
 </tr>
 <tr class="odd">
 <td>show_values</td>
