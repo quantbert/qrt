@@ -174,43 +174,45 @@ def correlation(
     data: pd.DataFrame,
     columns: str | Iterable[str] | None = None,
     *,
-    color: str | None = None,
+    color_by: str | None = None,
     color_discrete_sequence: Sequence[str] | None = None,
     color_discrete_map: Mapping[object, str] | None = None,
-    color_continuous_scale: str | Sequence[str] = "RdYlGn",
+    color_continuous_scale: str | Sequence[str] = "RdBu",
     hover_data: Iterable[str] | None = None,
     labels: dict[str, str] | None = None,
-    triangle: Literal["lower", "upper", "full"] = "lower",
-    diagonal: bool = False,
+    triangle: Literal["lower", "upper", "full"] = "full",
+    diagonal: bool = True,
     marker_size: float = 7,
     marker_opacity: float = 0.9,
     marker_line_width: float = 0.6,
-    marker_line_color: str = "#334155",
+    marker_line_color: str = "#1F2937",
     axis_color: str = "#334155",
     axis_line_width: float = 1.2,
     tick_length: float = 5,
     tick_width: float = 1.2,
     title: str = "Feature relationships",
     height: int | None = None,
+    width: int | None = None,
+    panel_aspect_ratio: float | None = 1.0,
 ) -> Figure:
     """Create an interactive scatterplot matrix for feature correlation analysis.
 
     Linked selection highlights the same observations in every panel. A categorical
-    ``color`` is useful for market regimes, assets, or model classes; a numeric color
+    ``color_by`` is useful for market regimes, assets, or model classes; a numeric color
     can encode forward return, volatility, or another continuous outcome. Numeric
     colors that span zero automatically center the continuous scale at zero.
 
     Args:
         data: Observations in rows and features in columns.
         columns: Numeric feature name(s) or shell-style pattern(s). By default,
-            all numeric columns except ``color`` are included.
-        color: Optional column used to color observations.
+            all numeric columns except ``color_by`` are included.
+        color_by: Optional DataFrame column used to color observations.
         color_discrete_sequence: Colors assigned in order to categorical values.
             Defaults to the QRT categorical palette.
         color_discrete_map: Exact categorical value-to-color assignments. Useful
             for stable semantic colors such as red for ``"risk-off"``.
         color_continuous_scale: Plotly color-scale name or explicit color sequence
-            for numeric values. Defaults to ``"RdYlGn"``.
+            for numeric values. Defaults to ``"RdBu"``.
         hover_data: Additional columns shown on hover, such as symbol or regime.
         labels: Optional mapping from column names to display labels.
         triangle: Matrix panels to display: ``"lower"``, ``"upper"``, or
@@ -226,14 +228,17 @@ def correlation(
         tick_width: Tick width in pixels.
         title: Figure title.
         height: Figure height in pixels. Inferred from the feature count by default.
+        width: Figure width in pixels. Overrides ``panel_aspect_ratio`` when set.
+        panel_aspect_ratio: Width-to-height ratio for each matrix panel. Defaults
+            to ``1.0`` for square panels; use ``None`` for responsive container width.
 
     Returns:
         A Plotly ``Figure``.
     """
     if not isinstance(data, pd.DataFrame):
         raise TypeError("data must be a pandas DataFrame")
-    if color is not None and color not in data.columns:
-        raise KeyError(f"Color column {color!r} is not present in data")
+    if color_by is not None and color_by not in data.columns:
+        raise KeyError(f"color_by column {color_by!r} is not present in data")
     if triangle not in {"lower", "upper", "full"}:
         raise ValueError("triangle must be 'lower', 'upper', or 'full'")
     if marker_size < 0:
@@ -248,10 +253,16 @@ def correlation(
         raise ValueError("tick_length must be non-negative")
     if tick_width < 0:
         raise ValueError("tick_width must be non-negative")
+    if width is not None and width <= 0:
+        raise ValueError("width must be positive")
+    if panel_aspect_ratio is not None and panel_aspect_ratio <= 0:
+        raise ValueError("panel_aspect_ratio must be positive or None")
+    if height is not None and height <= 0:
+        raise ValueError("height must be positive")
 
     selected_columns: str | Iterable[str]
     if columns is None:
-        selected_columns = [column for column in data.select_dtypes(include="number").columns if column != color]
+        selected_columns = [column for column in data.select_dtypes(include="number").columns if column != color_by]
     else:
         selected_columns = columns
     frame = _as_frame(data, selected_columns)
@@ -276,16 +287,16 @@ def correlation(
     }
     if color_discrete_map is not None:
         color_options["color_discrete_map"] = dict(color_discrete_map)
-    if color is not None and pd.api.types.is_numeric_dtype(data[color]) and not pd.api.types.is_bool_dtype(data[color]):
+    if color_by is not None and pd.api.types.is_numeric_dtype(data[color_by]) and not pd.api.types.is_bool_dtype(data[color_by]):
         color_options["color_continuous_scale"] = color_continuous_scale
-        finite_color = pd.to_numeric(data[color], errors="coerce").replace([np.inf, -np.inf], np.nan).dropna()
+        finite_color = pd.to_numeric(data[color_by], errors="coerce").replace([np.inf, -np.inf], np.nan).dropna()
         if not finite_color.empty and finite_color.min() < 0 < finite_color.max():
             color_options["color_continuous_midpoint"] = 0.0
 
     figure = px.scatter_matrix(
         plot_data,
         dimensions=list(frame.columns),
-        color=color,
+        color=color_by,
         hover_name=index_column,
         hover_data=extra_hover,
         labels=display_labels,
@@ -302,16 +313,38 @@ def correlation(
             "line": {"width": marker_line_width, "color": marker_line_color},
         },
     )
-    chart_height = height or min(1200, max(500, 170 * len(frame.columns)))
-    _base_layout(figure, title=title, height=chart_height, time_axis=False)
-    categorical_color = color is not None and (
-        not pd.api.types.is_numeric_dtype(data[color])
-        or pd.api.types.is_bool_dtype(data[color])
+    categorical_color = color_by is not None and (
+        not pd.api.types.is_numeric_dtype(data[color_by])
+        or pd.api.types.is_bool_dtype(data[color_by])
     )
-    figure.update_layout(dragmode="select", hovermode="closest")
+    continuous_color = color_by is not None and not categorical_color
+    grid_gap = 0.1
+    panel_count = len(frame.columns) - (not diagonal and triangle != "full")
+    margins = {
+        "l": 60,
+        "r": 120 if continuous_color else 30,
+        "t": 145 if categorical_color else 90,
+        "b": 50,
+    }
+    default_matrix_size = 150 * (panel_count + (panel_count - 1) * grid_gap)
+    chart_height = height if height is not None else min(
+        1400,
+        max(500, round(default_matrix_size + margins["t"] + margins["b"])),
+    )
+    chart_width = width
+    if chart_width is None and panel_aspect_ratio is not None:
+        matrix_height = chart_height - margins["t"] - margins["b"]
+        chart_width = round(matrix_height * panel_aspect_ratio + margins["l"] + margins["r"])
+
+    _base_layout(figure, title=title, height=chart_height, time_axis=False)
+    figure.update_layout(
+        width=chart_width,
+        margin=margins,
+        dragmode="select",
+        hovermode="closest",
+    )
     if categorical_color:
         figure.update_layout(
-            margin={"l": 60, "r": 30, "t": 145, "b": 50},
             legend={
                 "orientation": "h",
                 "x": 0,
@@ -336,8 +369,6 @@ def correlation(
     figure.update_xaxes(**axis_style)
     figure.update_yaxes(**axis_style)
 
-    grid_gap = 0.1
-    panel_count = len(frame.columns) - (not diagonal and triangle != "full")
     panel_width = 1.0 / (panel_count + (panel_count - 1) * grid_gap)
     panel_step = panel_width * (1.0 + grid_gap)
     figure.update_layout(grid={"xgap": grid_gap, "ygap": grid_gap})

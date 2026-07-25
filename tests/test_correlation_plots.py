@@ -23,19 +23,20 @@ def test_correlation_colors_categorical_regimes(feature_data):
     figure = q.plot.correlation(
         feature_data,
         columns=["momentum", "volatility", "volume"],
-        color="regime",
+        color_by="regime",
         hover_data=["forward_return"],
     )
 
     assert isinstance(figure, Figure)
     assert {trace.name for trace in figure.data} == {"risk-off", "risk-on"}
     assert all(trace.type == "splom" for trace in figure.data)
-    assert all(trace.diagonal.visible is False for trace in figure.data)
+    assert all(trace.diagonal.visible is True for trace in figure.data)
     assert all(trace.showlowerhalf is True for trace in figure.data)
-    assert all(trace.showupperhalf is False for trace in figure.data)
+    assert all(trace.showupperhalf is True for trace in figure.data)
     assert figure.layout.dragmode == "select"
     assert figure.layout.hovermode == "closest"
     assert figure.layout.margin.t == 145
+    assert figure.layout.width == 570
     assert figure.layout.legend.y == 1.04
     assert figure.layout.legend.yanchor == "bottom"
 
@@ -44,24 +45,66 @@ def test_correlation_continuous_color_does_not_reserve_legend_space(feature_data
     figure = q.plot.correlation(
         feature_data,
         columns=["momentum", "volatility"],
-        color="forward_return",
+        color_by="forward_return",
     )
 
     assert figure.layout.margin.t == 90
+    assert figure.layout.margin.r == 120
+    assert figure.layout.width == 540
+
+
+def test_correlation_supports_rectangular_and_responsive_panels(feature_data):
+    rectangular = q.plot.correlation(
+        feature_data,
+        columns=["momentum", "volatility"],
+        panel_aspect_ratio=1.5,
+    )
+    responsive = q.plot.correlation(
+        feature_data,
+        columns=["momentum", "volatility"],
+        panel_aspect_ratio=None,
+    )
+    fixed = q.plot.correlation(
+        feature_data,
+        columns=["momentum", "volatility"],
+        width=900,
+    )
+
+    assert rectangular.layout.width == 630
+    assert responsive.layout.width is None
+    assert fixed.layout.width == 900
+
+
+def test_correlation_default_matrix_is_square_with_readable_cells(feature_data):
+    figure = q.plot.correlation(
+        feature_data,
+        columns=["momentum", "volatility", "volume"],
+        color_by="forward_return",
+        triangle="full",
+        diagonal=True,
+    )
+
+    matrix_width = figure.layout.width - figure.layout.margin.l - figure.layout.margin.r
+    matrix_height = figure.layout.height - figure.layout.margin.t - figure.layout.margin.b
+    assert matrix_width == matrix_height == 480
 
 
 def test_correlation_centers_continuous_outcomes_at_zero(feature_data):
     figure = q.plot.correlation(
         feature_data,
         columns=["momentum", "volatility"],
-        color="forward_return",
+        color_by="forward_return",
         triangle="full",
     )
 
     assert len(figure.data) == 1
     assert figure.layout.coloraxis.cmid == 0.0
+    assert figure.layout.coloraxis.colorscale[0][1] == "rgb(103,0,31)"
+    assert figure.layout.coloraxis.colorscale[-1][1] == "rgb(5,48,97)"
     assert figure.data[0].showlowerhalf is True
     assert figure.data[0].showupperhalf is True
+    assert figure.data[0].diagonal.visible is True
+    assert figure.data[0].marker.line.color == "#1F2937"
 
 
 def test_correlation_can_show_diagonal_and_customize_marker_contrast(feature_data):
@@ -136,13 +179,13 @@ def test_correlation_accepts_custom_color_schemes(feature_data):
     categorical = q.plot.correlation(
         feature_data,
         columns=["momentum", "volatility"],
-        color="regime",
+        color_by="regime",
         color_discrete_map={"risk-off": "#112233", "risk-on": "#AABBCC"},
     )
     continuous = q.plot.correlation(
         feature_data,
         columns=["momentum", "volatility"],
-        color="forward_return",
+        color_by="forward_return",
         color_continuous_scale="RdBu",
     )
 
@@ -155,7 +198,7 @@ def test_correlation_accepts_custom_color_schemes(feature_data):
 
 
 def test_correlation_infers_numeric_features_except_color(feature_data):
-    figure = q.plot.correlation(feature_data, color="forward_return")
+    figure = q.plot.correlation(feature_data, color_by="forward_return")
 
     assert [dimension.label for dimension in figure.data[0].dimensions] == [
         "momentum",
@@ -168,7 +211,7 @@ def test_correlation_infers_numeric_features_except_color(feature_data):
     ("kwargs", "error", "message"),
     [
         ({"columns": ["momentum"]}, ValueError, "at least two"),
-        ({"color": "missing"}, KeyError, "Color column"),
+        ({"color_by": "missing"}, KeyError, "color_by column"),
         ({"triangle": "left"}, ValueError, "triangle must be"),
         ({"marker_size": -1}, ValueError, "marker_size"),
         ({"marker_opacity": 1.1}, ValueError, "marker_opacity"),
@@ -176,6 +219,9 @@ def test_correlation_infers_numeric_features_except_color(feature_data):
         ({"axis_line_width": -1}, ValueError, "axis_line_width"),
         ({"tick_length": -1}, ValueError, "tick_length"),
         ({"tick_width": -1}, ValueError, "tick_width"),
+        ({"width": 0}, ValueError, "width"),
+        ({"height": 0}, ValueError, "height"),
+        ({"panel_aspect_ratio": 0}, ValueError, "panel_aspect_ratio"),
         ({"hover_data": ["missing"]}, KeyError, "Hover columns"),
     ],
 )
