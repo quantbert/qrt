@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>q.signal Roadmap – qrt</title>
+<title>Develop with VS Code over SSH – qrt</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,6 +23,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -33,8 +68,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../model/index.html" rel="next">
-<link href="../signal/index.html" rel="prev">
+<link href="../gym/index.html" rel="next">
+<link href="../skypilot/training.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -118,7 +153,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../signal/index.html">q.signal — Signals</a></li><li class="breadcrumb-item"><a href="../signal/roadmap.html">Roadmap</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../skypilot/index.html">SkyPilot — Compute orchestration</a></li><li class="breadcrumb-item"><a href="../skypilot/vscode.html">VS Code over SSH</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -633,14 +668,14 @@ ul.task-list li input[type="checkbox"] {
       <div class="sidebar-item-container"> 
             <a href="../signal/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">q.signal — Signals</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../signal/roadmap.html" class="sidebar-item-text sidebar-link active">
+  <a href="../signal/roadmap.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Roadmap</span></a>
   </div>
 </li>
@@ -684,11 +719,11 @@ ul.task-list li input[type="checkbox"] {
       <div class="sidebar-item-container"> 
             <a href="../skypilot/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">SkyPilot — Compute orchestration</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-15" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-15" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-15" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-15" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../skypilot/training.html" class="sidebar-item-text sidebar-link">
@@ -697,7 +732,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../skypilot/vscode.html" class="sidebar-item-text sidebar-link">
+  <a href="../skypilot/vscode.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">VS Code over SSH</span></a>
   </div>
 </li>
@@ -900,15 +935,27 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link active" data-scroll-target="#prerequisites">Prerequisites</a></li>
+  <li><a href="#define-the-development-machine" id="toc-define-the-development-machine" class="nav-link" data-scroll-target="#define-the-development-machine">1. Define the development machine</a></li>
+  <li><a href="#launch-the-cluster" id="toc-launch-the-cluster" class="nav-link" data-scroll-target="#launch-the-cluster">2. Launch the cluster</a></li>
+  <li><a href="#connect-vs-code" id="toc-connect-vs-code" class="nav-link" data-scroll-target="#connect-vs-code">3. Connect VS Code</a></li>
+  <li><a href="#work-without-losing-changes" id="toc-work-without-losing-changes" class="nav-link" data-scroll-target="#work-without-losing-changes">4. Work without losing changes</a></li>
+  <li><a href="#stop-or-delete-the-cluster" id="toc-stop-or-delete-the-cluster" class="nav-link" data-scroll-target="#stop-or-delete-the-cluster">5. Stop or delete the cluster</a></li>
+  <li><a href="#troubleshooting" id="toc-troubleshooting" class="nav-link" data-scroll-target="#troubleshooting">Troubleshooting</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/skypilot/vscode.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/skypilot/vscode.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../signal/index.html">q.signal — Signals</a></li><li class="breadcrumb-item"><a href="../signal/roadmap.html">Roadmap</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../skypilot/index.html">SkyPilot — Compute orchestration</a></li><li class="breadcrumb-item"><a href="../skypilot/vscode.html">VS Code over SSH</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">q.signal Roadmap</h1>
+<h1 class="title">Develop with VS Code over SSH</h1>
 </div>
 
 
@@ -925,15 +972,100 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<ul class="task-list">
-<li><label><input type="checkbox">Directional and continuous signal schemas</label></li>
-<li><label><input type="checkbox">Threshold and hysteresis rules</label></li>
-<li><label><input type="checkbox">Cross-sectional normalization and combination</label></li>
-<li><label><input type="checkbox">Signal decay, delay, and availability semantics</label></li>
-<li><label><input type="checkbox">Turnover-aware signal shaping</label></li>
+<p>Use a named SkyPilot cluster for interactive QRT development. SkyPilot provisions the machine, synchronizes the local checkout, and adds the cluster name to the local SSH configuration. VS Code Remote - SSH then connects through that generated host entry.</p>
+<p>Managed jobs are intentionally not used here: their machines are temporary, automatically cleaned up, and not SSH-accessible as a development workspace.</p>
+<section id="prerequisites" class="level2">
+<h2 class="anchored" data-anchor-id="prerequisites">Prerequisites</h2>
+<ol type="1">
+<li>Install SkyPilot and configure a provider as described in the <a href="../skypilot/index.html#install-the-cli">SkyPilot overview</a>.</li>
+<li>Install <a href="https://code.visualstudio.com/">Visual Studio Code</a> locally.</li>
+<li>Install the <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh">Remote - SSH extension</a>.</li>
+<li>Open a local terminal at the QRT repository root and verify provider access:</li>
+</ol>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">sky</span> check</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="define-the-development-machine" class="level2">
+<h2 class="anchored" data-anchor-id="define-the-development-machine">1. Define the development machine</h2>
+<p>Create <code>sky-dev.yaml</code> in the repository root:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">name</span><span class="kw">:</span><span class="at"> qrt-development</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">resources</span><span class="kw">:</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">accelerators</span><span class="kw">:</span><span class="at"> L4:1</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">cpus</span><span class="kw">:</span><span class="at"> 8+</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">memory</span><span class="kw">:</span><span class="at"> 32+</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">disk_size</span><span class="kw">:</span><span class="at"> </span><span class="dv">100</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">autostop</span><span class="kw">:</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">idle_minutes</span><span class="kw">:</span><span class="at"> </span><span class="dv">60</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">wait_for</span><span class="kw">:</span><span class="at"> jobs_and_ssh</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">workdir</span><span class="kw">:</span><span class="at"> .</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="fu">setup</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  curl -LsSf https://astral.sh/uv/install.sh | sh</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  export PATH="$HOME/.local/bin:$PATH"</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  uv sync --frozen --extra torch</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Remove <code>accelerators</code> for CPU-only work. The default <code>jobs_and_ssh</code> behavior prevents autostop while an SSH session is active; the timer starts after SSH sessions and jobs become idle.</p>
+</section>
+<section id="launch-the-cluster" class="level2">
+<h2 class="anchored" data-anchor-id="launch-the-cluster">2. Launch the cluster</h2>
+<p>Launch a cluster named <code>qrt-dev</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">sky</span> launch <span class="at">-c</span> qrt-dev sky-dev.yaml</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>SkyPilot prints the selected provider, instance type, and estimated hourly price before creating anything. The first launch provisions the machine, synchronizes the checkout to <code>~/sky_workdir</code>, runs <code>setup</code>, and writes a local SSH host entry named <code>qrt-dev</code>.</p>
+<p>Refresh the status and SSH configuration, then test the connection:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">sky</span> status qrt-dev</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> qrt-dev</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Exit the shell after the prompt confirms that the host is reachable.</p>
+</section>
+<section id="connect-vs-code" class="level2">
+<h2 class="anchored" data-anchor-id="connect-vs-code">3. Connect VS Code</h2>
+<ol type="1">
+<li>Open the VS Code Command Palette.</li>
+<li>Run <strong>Remote-SSH: Connect Current Window to Host…</strong>.</li>
+<li>Select <strong>qrt-dev</strong>.</li>
+<li>After the remote window opens, run <strong>File: Open Folder…</strong>.</li>
+<li>Open <code>~/sky_workdir</code>.</li>
+</ol>
+<p>VS Code installs its remote server and workspace extensions on the cluster. Open a terminal in the remote window and verify the environment:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-c</span> <span class="st">"import qrt; print(qrt.__file__)"</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-c</span> <span class="st">"import torch; print(torch.cuda.is_available())"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For a CPU-only cluster, omit the Torch check.</p>
+</section>
+<section id="work-without-losing-changes" class="level2">
+<h2 class="anchored" data-anchor-id="work-without-losing-changes">4. Work without losing changes</h2>
+<p><code>workdir: .</code> is a one-way synchronization from the local checkout during <code>sky launch</code> or <code>sky exec</code>. Edits made in the remote VS Code window do not automatically return to the local checkout.</p>
+<p>Choose one source-of-truth workflow:</p>
+<ul>
+<li>Use Git remotely: create a branch, commit, and push before stopping or deleting the cluster.</li>
+<li>Keep the local checkout authoritative: edit locally and rerun <code>sky launch -c qrt-dev sky-dev.yaml</code> to resynchronize and rerun setup.</li>
+</ul>
+<p>Do not keep the only copy of code, model artifacts, or datasets on the cluster disk. A stopped cluster preserves its attached disk, but <code>sky down</code> deletes it.</p>
+<p>If only the command changes and the environment is already current, run it on the existing cluster without repeating setup:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">sky</span> exec qrt-dev <span class="at">--workdir</span> . uv run python scripts/train.py <span class="at">--help</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Run <code>sky launch -c qrt-dev sky-dev.yaml</code> again when dependencies, mounts, setup commands, or hardware requirements change.</p>
+</section>
+<section id="stop-or-delete-the-cluster" class="level2">
+<h2 class="anchored" data-anchor-id="stop-or-delete-the-cluster">5. Stop or delete the cluster</h2>
+<p>Close the VS Code remote window before changing cluster state.</p>
+<p>Stop the VM while preserving its disk for a later session:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">sky</span> stop qrt-dev</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">sky</span> start qrt-dev</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="ex">sky</span> status qrt-dev</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Stopped instances stop compute billing, but attached disks may still incur storage charges. Spot clusters cannot be stopped.</p>
+<p>Delete the cluster and its attached disk when the workspace is no longer needed:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">sky</span> down qrt-dev</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>After <code>sky down</code>, confirm that the cluster no longer appears in <code>sky status</code>. Any remote-only edits or artifacts are unrecoverable after deletion.</p>
+</section>
+<section id="troubleshooting" class="level2">
+<h2 class="anchored" data-anchor-id="troubleshooting">Troubleshooting</h2>
+<ul>
+<li>If <code>qrt-dev</code> is absent from VS Code, run <code>sky status qrt-dev</code> to refresh SkyPilot’s SSH configuration, then reload VS Code.</li>
+<li>If plain <code>ssh qrt-dev</code> fails, resolve that before troubleshooting the Remote - SSH extension.</li>
+<li>If setup changed, rerun <code>sky launch -c qrt-dev sky-dev.yaml</code>; <code>sky exec</code> deliberately skips setup.</li>
+<li>If autostop occurred, run <code>sky start qrt-dev</code>, followed by <code>sky status qrt-dev</code>, before reconnecting.</li>
 </ul>
 
 
+</section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -1338,13 +1470,13 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../signal/index.html" class="pagination-link" aria-label="q.signal — Signals">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">q.signal — Signals</span>
+      <a href="../skypilot/training.html" class="pagination-link" aria-label="Launch a training run">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Launch a training run</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../model/index.html" class="pagination-link" aria-label="q.model — Models">
-        <span class="nav-page-text">q.model — Models</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../gym/index.html" class="pagination-link" aria-label="q.gym — Financial RL">
+        <span class="nav-page-text">q.gym — Financial RL</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -1353,4 +1485,4 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/signal/roadmap.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/signal/roadmap.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/skypilot/vscode.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/skypilot/vscode.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
