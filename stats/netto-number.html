@@ -1,0 +1,1906 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>The Netto Number – qrt</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../stats/performance.html" rel="next">
+<link href="../stats/risk.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-234273dcd3ff8f4bdb782b4fb3f12a13.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../reference/_styles-quartodoc.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">qrt — Quant Research Tools</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Getting Started</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../reference/index.html"> 
+<span class="menu-text">API Reference</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../roadmap.html"> 
+<span class="menu-text">Roadmap</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+    <a href="https://github.com/quantbert/qrt" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../stats/index.html">q.stats — Statistics</a></li><li class="breadcrumb-item"><a href="../stats/netto-number.html">Netto Number</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Getting Started</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../bt/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.bt — Backtesting</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../bt/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../data/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.data — Data</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data/datasets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sample datasets</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data/schemas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data schemas</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data/local.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Local files</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data/sources.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Market data sources</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../ai/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.ai — Generative AI</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../ai/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../experiment/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.experiment — Experiment tracking</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../experiment/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../indicator/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.indicator — Indicators</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
+ <span class="menu-text">QRT indicators</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/sma.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simple moving average (SMA)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/ema.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Exponential moving average (EMA)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/madev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Mean absolute deviation (MADEV)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/returns.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simple returns</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/momentum.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Price momentum</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/rolling_volatility.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Rolling volatility</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/volume_ratio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Relative volume</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/volume_spike_ratio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Volume spike ratio</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/price_spikes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Price spikes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/log_returns.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Log returns</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/realized_variance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Realized variance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/realized_quarticity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Realized quarticity</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/bipower_variation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bipower variation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/med_rv.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Median realized volatility</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/min_rv.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Minimum realized volatility</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/realized_volatility.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Realized volatility by session</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/relative_strength.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Relative strength</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/rsma.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Relative-strength moving average</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/rs_days.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Relative-strength days</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/rs_phase.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Relative-strength phase</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/rsnhbp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">RS new high before price</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/talib.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TA-Lib</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/pandas_ta.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">pandas-ta-classic</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../cross_section/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.cross_section — Cross-sectional analysis</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../cross_section/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../label/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.label — Financial labels</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/cusum_filter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CUSUM event filter</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/vertical_barriers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Vertical barriers</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/fixed_horizon.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Fixed-horizon labels</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/triple_barrier.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Triple-barrier labels</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/meta_label.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Meta-labels</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/trend_scanning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Trend-scanning labels</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/prune_labels.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Rare-label pruning</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/concurrency.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Label concurrency</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/indicator_matrix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Event indicator matrix</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/average_uniqueness.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Average label uniqueness</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/sequential_bootstrap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sequential bootstrap</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/purging_metadata.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Purging and embargo metadata</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/sample_weights.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Return-attribution weights</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/time_decay.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Linear time decay</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/class_balance_weights.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Class-balance weights</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/combine_weights.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Combine sample weights</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../dataset/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.dataset — ML datasets</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../dataset/temporal_split.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Temporal split</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../dataset/time_series_split.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Time-series split</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../dataset/splitting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Splitting datasets</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../dataset/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../transform/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.transform — Transformations</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../transform/impute.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Missing data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../transform/scale.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Scaling</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../transform/outlier.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Outliers</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../transform/encode.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Encoding</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../transform/reduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Reduction</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../transform/selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Selection</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../transform/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../calendar/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.calendar — Market time</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../calendar/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../signal/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.signal — Signals</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../signal/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../model/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.model — Models</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-13" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../model/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../ray/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.ray — Distributed computing</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-14" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-14" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../ray/train.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ray Train tutorial</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../gym/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.gym — Financial RL</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-15" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-15" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../gym/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../env/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.env — Environment</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-16" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-16" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../env/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../plot/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.plot — Plotting</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-17" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-17" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/correlation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Feature relationships</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/classification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Classification curves</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/returns.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Return charts</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/report.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tearsheet report</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/simulation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simulation tests</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/trades.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Trade logs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/saving.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Saving figures</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../portfolio/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.portfolio — Portfolio</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-18" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-18" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../portfolio/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../stats/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.stats — Statistics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-19" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-19" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats/risk.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Risk estimators</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats/netto-number.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Netto Number</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats/performance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Performance &amp; benchmark</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats/rolling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Rolling &amp; calendar returns</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats/factors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Factor analytics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats/chained.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chained API</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../utils/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.utils — Utilities</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-20" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-20" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../utils/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#origin-and-development" id="toc-origin-and-development" class="nav-link active" data-scroll-target="#origin-and-development">Origin and development</a></li>
+  <li><a href="#definition" id="toc-definition" class="nav-link" data-scroll-target="#definition">Definition</a>
+  <ul class="collapse">
+  <li><a href="#published-style-example" id="toc-published-style-example" class="nav-link" data-scroll-target="#published-style-example">Published-style example</a></li>
+  </ul></li>
+  <li><a href="#input-contract-in-qrt" id="toc-input-contract-in-qrt" class="nav-link" data-scroll-target="#input-contract-in-qrt">Input contract in QRT</a></li>
+  <li><a href="#adverse-excursion-is-not-automatically-max-drawdown" id="toc-adverse-excursion-is-not-automatically-max-drawdown" class="nav-link" data-scroll-target="#adverse-excursion-is-not-automatically-max-drawdown">Adverse excursion is not automatically max drawdown</a></li>
+  <li><a href="#where-it-can-be-applied" id="toc-where-it-can-be-applied" class="nav-link" data-scroll-target="#where-it-can-be-applied">Where it can be applied</a></li>
+  <li><a href="#quant-research-adaptations" id="toc-quant-research-adaptations" class="nav-link" data-scroll-target="#quant-research-adaptations">Quant-research adaptations</a>
+  <ul class="collapse">
+  <li><a href="#strategy-and-hyperparameter-evaluation" id="toc-strategy-and-hyperparameter-evaluation" class="nav-link" data-scroll-target="#strategy-and-hyperparameter-evaluation">Strategy and hyperparameter evaluation</a></li>
+  <li><a href="#reinforcement-learning-evaluation" id="toc-reinforcement-learning-evaluation" class="nav-link" data-scroll-target="#reinforcement-learning-evaluation">Reinforcement-learning evaluation</a></li>
+  <li><a href="#risk-constraints-and-budget-consumption" id="toc-risk-constraints-and-budget-consumption" class="nav-link" data-scroll-target="#risk-constraints-and-budget-consumption">Risk constraints and budget consumption</a></li>
+  </ul></li>
+  <li><a href="#comparison-with-familiar-metrics" id="toc-comparison-with-familiar-metrics" class="nav-link" data-scroll-target="#comparison-with-familiar-metrics">Comparison with familiar metrics</a></li>
+  <li><a href="#limitations-and-failure-modes" id="toc-limitations-and-failure-modes" class="nav-link" data-scroll-target="#limitations-and-failure-modes">Limitations and failure modes</a>
+  <ul class="collapse">
+  <li><a href="#the-5050-weighting-is-a-design-choice" id="toc-the-5050-weighting-is-a-design-choice" class="nav-link" data-scroll-target="#the-5050-weighting-is-a-design-choice">The 50/50 weighting is a design choice</a></li>
+  <li><a href="#the-budget-can-be-gamed" id="toc-the-budget-can-be-gamed" class="nav-link" data-scroll-target="#the-budget-can-be-gamed">The budget can be gamed</a></li>
+  <li><a href="#horizon-and-path-conventions-matter" id="toc-horizon-and-path-conventions-matter" class="nav-link" data-scroll-target="#horizon-and-path-conventions-matter">Horizon and path conventions matter</a></li>
+  <li><a href="#one-path-statistic-cannot-describe-tail-risk" id="toc-one-path-statistic-cannot-describe-tail-risk" class="nav-link" data-scroll-target="#one-path-statistic-cannot-describe-tail-risk">One path statistic cannot describe tail risk</a></li>
+  <li><a href="#small-denominators-and-inactive-policies" id="toc-small-denominators-and-inactive-policies" class="nav-link" data-scroll-target="#small-denominators-and-inactive-policies">Small denominators and inactive policies</a></li>
+  <li><a href="#it-is-not-independently-validated-as-a-universal-ranking-rule" id="toc-it-is-not-independently-validated-as-a-universal-ranking-rule" class="nav-link" data-scroll-target="#it-is-not-independently-validated-as-a-universal-ranking-rule">It is not independently validated as a universal ranking rule</a></li>
+  </ul></li>
+  <li><a href="#recommended-reporting-standard" id="toc-recommended-reporting-standard" class="nav-link" data-scroll-target="#recommended-reporting-standard">Recommended reporting standard</a></li>
+  <li><a href="#sources-and-further-reading" id="toc-sources-and-further-reading" class="nav-link" data-scroll-target="#sources-and-further-reading">Sources and further reading</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/stats/netto-number.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/stats/netto-number.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../stats/index.html">q.stats — Statistics</a></li><li class="breadcrumb-item"><a href="../stats/netto-number.html">Netto Number</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">The Netto Number</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>The Netto Number combines a risk budget chosen before an evaluation period with the adverse path realized during that period. It asks a different question from Sharpe, Sortino, or Calmar:</p>
+<blockquote class="blockquote">
+<p>How much profit did this strategy produce relative to both the risk capacity it was granted and the downside it actually used?</p>
+</blockquote>
+<p>QRT implements the calculation as <code>q.stats.netto_number</code>. The function is a small scalar primitive; the important work is defining its three inputs with a consistent mandate, horizon, unit, and adverse-excursion convention.</p>
+<div class="callout callout-style-default callout-important callout-titled" title="Status of the metric">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Status of the metric
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The Netto Number is a practitioner-designed framework associated with trader and author John Netto. Its economic intuition is useful, but it is not a canonical academic standard and there is no broad public evidence that it universally predicts investment skill better than established measures. Use it as an additional risk-budget-aware diagnostic, not as a replacement for return, drawdown, tail-risk, turnover, and benchmark analysis.</p>
+</div>
+</div>
+<section id="origin-and-development" class="level2">
+<h2 class="anchored" data-anchor-id="origin-and-development">Origin and development</h2>
+<p>John Netto developed the modern Netto Number within his broader Unit-of-Risk (UoR) framework. His 2016 book <a href="https://books.google.com/books?id=lriIvgAACAAJ"><em>The Global Macro Edge: Maximizing Return Per Unit-of-Risk</em></a> frames investment performance around return earned under a predetermined risk budget. A <a href="https://news.cqg.com/sites/default/files/docs/The%20Global%20Macro%20Edge%20Chapter%205%20-%20Pages%201%20-%206%20CQG%20Excerpt.pdf">chapter excerpt hosted by CQG</a> describes the Netto Number as the most important UoR ratio and links it to the Risk Factor Compensation System presented later in the book.</p>
+<p>The idea was subsequently discussed in public trading presentations and interviews. A 2017 <a href="https://www.moneyshow.com/video/10761/">MoneyShow presentation</a> describes the measure as a way to compare returns by manager and by unit of risk. In a separate <a href="https://www.cannontrading.com/traders-interview/john-netto">Cannon Trading interview</a>, Netto describes evaluating a strategy, index, portfolio, or trade relative to a predetermined risk budget rather than only in nominal terms. These materials also connect the ratio to manager incentive design.</p>
+<p>That compensation use is the historical motivation, not a restriction on the mathematics. The formula can be applied to any well-defined decision unit with an ex-ante risk budget and a realized P&amp;L path: a trade, strategy, portfolio, model checkpoint, or reinforcement-learning episode.</p>
+<p>The public evidence base is concentrated in Netto’s own book, excerpts, presentations, and interviews. The framework should therefore be described as a proprietary or bespoke practitioner metric, not as a finance law or a peer-reviewed theorem.</p>
+</section>
+<section id="definition" class="level2">
+<h2 class="anchored" data-anchor-id="definition">Definition</h2>
+<p>Let:</p>
+<ul>
+<li><span class="math inline">\(P\)</span> be net realized profit over the evaluation period.</li>
+<li><span class="math inline">\(U\)</span> be Unit-of-Risk: a positive loss budget fixed before the period.</li>
+<li><span class="math inline">\(A\)</span> be maximum adverse excursion, expressed as a non-negative loss magnitude.</li>
+</ul>
+<p>The framework first defines a Risk Factor as the arithmetic mean of planned risk and realized adversity:</p>
+<p><span class="math display">\[
+\operatorname{RF} = \frac{U + A}{2}.
+\]</span></p>
+<p>The Netto Number is profit divided by that Risk Factor:</p>
+<p><span class="math display">\[
+\operatorname{NN}
+= \frac{P}{\operatorname{RF}}
+= \frac{2P}{U + A}.
+\]</span></p>
+<p>A value of <span class="math inline">\(1\)</span> means profit equals the blended Risk Factor. A value above <span class="math inline">\(1\)</span> means profit exceeded it. Zero means the period broke even, and a negative value means the strategy lost money. There is no universal threshold that separates a good value from a bad one; interpretation depends on a consistently defined mandate and peer group.</p>
+<div class="callout callout-style-default callout-warning callout-titled" title="Negative-profit inversion">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Negative-profit inversion
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The raw ratio is not a risk-monotonic optimization objective for losing outcomes. Holding <span class="math inline">\(P\)</span> and <span class="math inline">\(U\)</span> fixed:</p>
+<p><span class="math display">\[
+\frac{\partial \operatorname{NN}}{\partial A}
+= -\frac{2P}{(U+A)^2}.
+\]</span></p>
+<p>For <span class="math inline">\(P&gt;0\)</span>, more adversity lowers the score as intended. For <span class="math inline">\(P&lt;0\)</span>, the derivative is positive: more adversity moves the negative score toward zero. With <span class="math inline">\(P=-0.10\)</span> and <span class="math inline">\(U=1\)</span>, increasing <span class="math inline">\(A\)</span> from <span class="math inline">\(0.10\)</span> to <span class="math inline">\(0.90\)</span> changes the score from approximately <span class="math inline">\(-0.182\)</span> to <span class="math inline">\(-0.105\)</span>. A maximizer would prefer the worse path.</p>
+<p>This is a mathematical property of the original formula, not an implementation error in QRT. The value remains valid as descriptive reporting, but must not be the sole reward, loss, or policy-ranking criterion when outcomes can be negative.</p>
+</div>
+</div>
+<section id="published-style-example" class="level3">
+<h3 class="anchored" data-anchor-id="published-style-example">Published-style example</h3>
+<p>For <span class="math inline">\(P=\$100{,}000\)</span>, <span class="math inline">\(U=\$1{,}000{,}000\)</span>, and <span class="math inline">\(A=\$500{,}000\)</span>:</p>
+<p><span class="math display">\[
+\operatorname{RF}
+= \frac{\$1{,}000{,}000 + \$500{,}000}{2}
+= \$750{,}000,
+\]</span></p>
+<p>and:</p>
+<p><span class="math display">\[
+\operatorname{NN}
+= \frac{\$100{,}000}{\$750{,}000}
+\approx 0.1333.
+\]</span></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> qrt <span class="im">as</span> q</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>q.stats.netto_number(</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="dv">100_000</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    unit_of_risk<span class="op">=</span><span class="dv">1_000_000</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    max_adverse_excursion<span class="op">=</span><span class="dv">500_000</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The ratio is scale-invariant. Dividing every input by the same starting capital produces the same result:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>q.stats.netto_number(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="fl">0.10</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    unit_of_risk<span class="op">=</span><span class="fl">1.00</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    max_adverse_excursion<span class="op">=</span><span class="fl">0.50</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Both calls return approximately <code>0.1333</code>.</p>
+</section>
+</section>
+<section id="input-contract-in-qrt" class="level2">
+<h2 class="anchored" data-anchor-id="input-contract-in-qrt">Input contract in QRT</h2>
+<p><code>q.stats.netto_number</code> deliberately accepts three explicit scalar inputs rather than a return series:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>q.stats.netto_number(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    profit,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    unit_of_risk<span class="op">=</span>unit_of_risk,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    max_adverse_excursion<span class="op">=</span>max_adverse_excursion,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The contract is strict:</p>
+<ul>
+<li><code>profit</code> must be finite and may be positive, zero, or negative.</li>
+<li><code>unit_of_risk</code> must be finite and strictly positive.</li>
+<li><code>max_adverse_excursion</code> must be finite and non-negative.</li>
+<li>All values must cover the same object and evaluation period.</li>
+<li>All values must use the same units.</li>
+</ul>
+<p>Currency amounts and fractions of starting capital are both valid. Mixing them is not. For example, a dollar profit cannot be combined with a percentage risk budget.</p>
+<p>The function is not automatically included in <code>q.stats.performance</code> or <code>q.stats.metrics</code>. A return stream contains no authoritative record of the risk budget committed before trading, so QRT will not infer one after the fact.</p>
+</section>
+<section id="adverse-excursion-is-not-automatically-max-drawdown" class="level2">
+<h2 class="anchored" data-anchor-id="adverse-excursion-is-not-automatically-max-drawdown">Adverse excursion is not automatically max drawdown</h2>
+<p>The most important implementation choice is the meaning of <span class="math inline">\(A\)</span>.</p>
+<p>QRT’s <code>q.stats.max_drawdown</code> is the largest peak-to-trough decline from a running equity high. Public Netto material also uses language such as maximum negative drawdown or adverse excursion, with examples centered on loss of starting principal. Under a principal-relative convention, giving back profit while remaining above starting equity does not increase <span class="math inline">\(A\)</span>; under standard maximum drawdown, it does.</p>
+<p>Consider an equity path that rises from <code>1.00</code> to <code>1.30</code> and then falls to <code>1.05</code>:</p>
+<ul>
+<li>Principal-relative adverse excursion is <code>0.00</code>; equity never fell below its starting value.</li>
+<li>Peak-to-trough maximum drawdown is about <code>0.1923</code>; equity fell roughly 19.23% from <code>1.30</code> to <code>1.05</code>.</li>
+</ul>
+<p>Those conventions answer different questions and can produce materially different Netto Numbers. QRT therefore requires the loss magnitude explicitly.</p>
+<p>For a principal-relative convention on a periodic return stream:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>equity <span class="op">=</span> (<span class="fl">1.0</span> <span class="op">+</span> returns).cumprod()</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>profit <span class="op">=</span> equity.iloc[<span class="op">-</span><span class="dv">1</span>] <span class="op">-</span> <span class="fl">1.0</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>principal_adverse_excursion <span class="op">=</span> <span class="bu">max</span>(<span class="fl">0.0</span>, <span class="fl">1.0</span> <span class="op">-</span> equity.<span class="bu">min</span>())</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>score <span class="op">=</span> q.stats.netto_number(</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    profit,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    unit_of_risk<span class="op">=</span><span class="fl">0.10</span>,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    max_adverse_excursion<span class="op">=</span>principal_adverse_excursion,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If a research mandate intentionally defines adversity as standard maximum drawdown, make that variant explicit:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>score <span class="op">=</span> q.stats.netto_number(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    profit,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    unit_of_risk<span class="op">=</span><span class="fl">0.10</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    max_adverse_excursion<span class="op">=</span><span class="bu">abs</span>(q.stats.max_drawdown(returns)),</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Report this as a “peak-to-trough Netto variant” rather than silently implying that it is the only definition.</p>
+</section>
+<section id="where-it-can-be-applied" class="level2">
+<h2 class="anchored" data-anchor-id="where-it-can-be-applied">Where it can be applied</h2>
+<p>The metric is not inherently a single-asset or portfolio measure. Its scope is determined by the scope of its inputs.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Evaluation unit</th>
+<th>Profit</th>
+<th>Unit-of-Risk</th>
+<th>Adverse excursion</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Single trade</td>
+<td>Net trade P&amp;L</td>
+<td>Pre-trade loss budget</td>
+<td>Trade MAE</td>
+</tr>
+<tr class="even">
+<td>Single-asset strategy</td>
+<td>Strategy-period P&amp;L</td>
+<td>Strategy risk budget</td>
+<td>Strategy equity adversity</td>
+</tr>
+<tr class="odd">
+<td>Multi-asset portfolio</td>
+<td>Portfolio P&amp;L</td>
+<td>Portfolio mandate budget</td>
+<td>Portfolio equity adversity</td>
+</tr>
+<tr class="even">
+<td>Model checkpoint</td>
+<td>Validation/test P&amp;L</td>
+<td>Fixed evaluation budget</td>
+<td>Evaluation-path adversity</td>
+</tr>
+<tr class="odd">
+<td>RL episode</td>
+<td>Terminal account P&amp;L</td>
+<td>Episode loss budget</td>
+<td>Episode account adversity</td>
+</tr>
+</tbody>
+</table>
+<p>A raw asset does not possess an intrinsic Unit-of-Risk. AAPL, gold, or a futures contract has returns and drawdowns, but the investor, strategy, or mandate must supply the risk budget. Consequently, comparisons are meaningful only when the budgets were fixed using comparable governance.</p>
+</section>
+<section id="quant-research-adaptations" class="level2">
+<h2 class="anchored" data-anchor-id="quant-research-adaptations">Quant-research adaptations</h2>
+<section id="strategy-and-hyperparameter-evaluation" class="level3">
+<h3 class="anchored" data-anchor-id="strategy-and-hyperparameter-evaluation">Strategy and hyperparameter evaluation</h3>
+<p>The Netto Number can complement model diagnostics when every candidate is evaluated on the same data split, horizon, execution model, and risk budget. For profitable candidates it rewards profit while retaining information about the capital flexibility granted before the run. It must not be the sole ranking objective across losing candidates because of the negative-profit inversion.</p>
+<p>A useful experiment table should retain the components, not only the ratio:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Why retain it</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>profit</code></td>
+<td>Distinguishes genuine profit from denominator effects</td>
+</tr>
+<tr class="even">
+<td><code>unit_of_risk</code></td>
+<td>Makes the ex-ante mandate auditable</td>
+</tr>
+<tr class="odd">
+<td><code>max_adverse_excursion</code></td>
+<td>Exposes realized path stress</td>
+</tr>
+<tr class="even">
+<td><code>netto_number</code></td>
+<td>Provides the combined comparison score</td>
+</tr>
+<tr class="odd">
+<td><code>max_drawdown</code></td>
+<td>Preserves conventional peak-to-trough risk</td>
+</tr>
+<tr class="even">
+<td><code>turnover</code> and costs</td>
+<td>Detects impractical high-churn policies</td>
+</tr>
+<tr class="odd">
+<td>tail metrics</td>
+<td>Detects risks hidden by one worst-path statistic</td>
+</tr>
+</tbody>
+</table>
+<p>Do not optimize the raw ratio over many configurations and then report the best value on the same sample. Prefer a monotonic objective or explicit constraints, retain the Netto Number as a diagnostic, lock the policy and risk convention, and report once on untouched test data.</p>
+</section>
+<section id="reinforcement-learning-evaluation" class="level3">
+<h3 class="anchored" data-anchor-id="reinforcement-learning-evaluation">Reinforcement-learning evaluation</h3>
+<div class="callout callout-style-default callout-important callout-titled" title="Should I use the Netto Number in RL?">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Should I use the Netto Number in RL?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Yes, but do not use the original Netto Number as the agent’s main reward.</strong></p>
+<p>Use it to <strong>measure and audit</strong> an RL agent:</p>
+<ul>
+<li>calculate it after each episode as a performance diagnostic;</li>
+<li>compare profit with both the risk budget and the adversity experienced;</li>
+<li>monitor whether the agent used or breached its risk budget;</li>
+<li>report it alongside return, drawdown, tail loss, turnover, and costs.</li>
+</ul>
+<p>Do not use it by itself to teach the agent or select the best checkpoint. During a losing episode, a worse adverse excursion can produce a numerically higher Netto Number. An optimizer could therefore learn the wrong preference.</p>
+<p>For training, use a reward that always prefers more profit and less risk, such as net log return with monotonic drawdown penalties, or maximize return subject to explicit drawdown and tail-loss constraints. In short: <strong>use the original Netto Number to evaluate the agent, not as its primary learning signal.</strong></p>
+</div>
+</div>
+<p>For a financial Gymnasium environment, calculate the metric from account equity rather than from the return of one quoted asset. Let <span class="math inline">\(V_0\)</span> be starting account value, <span class="math inline">\(V_T\)</span> terminal value, and <span class="math inline">\(V_t\)</span> the account path. A normalized episode definition is:</p>
+<p><span class="math display">\[
+P = \frac{V_T}{V_0} - 1,
+\qquad
+A = \max\left(0, 1 - \min_t \frac{V_t}{V_0}\right),
+\]</span></p>
+<p>with a fixed normalized budget <span class="math inline">\(U\)</span>, such as <code>0.10</code> for 10% of starting capital. The raw Netto Number then describes the episode under that account-level risk mandate. Do not use it by itself to rank arbitrary episodes or checkpoints.</p>
+<p>Use it for descriptive episode reporting alongside:</p>
+<ul>
+<li>terminal return and net P&amp;L;</li>
+<li>risk-budget utilization and breach rate;</li>
+<li>peak-to-trough drawdown and drawdown duration;</li>
+<li>expected shortfall and worst-decile outcomes;</li>
+<li>turnover, costs, and exposure.</li>
+</ul>
+<p>It is a poor direct per-step reward. The denominator changes only when a new adverse extreme occurs, the full score is unknown until the episode ends, and the negative-profit inversion compounds the usual ratio-reward incentives for inactivity, early stopping, tiny exposure, or other reward hacking.</p>
+<section id="experimental-monotonic-adaptation" class="level4">
+<h4 class="anchored" data-anchor-id="experimental-monotonic-adaptation">Experimental monotonic adaptation</h4>
+<p>A Netto-inspired terminal score can retain separate planned- and realized-risk terms without dividing negative profit by risk. Let <span class="math inline">\(p_T=V_T/V_0-1\)</span>, let <span class="math inline">\(u\)</span> be the normalized risk budget, and let <span class="math inline">\(D_T\)</span> be a chosen non-negative drawdown measure. One candidate is:</p>
+<p><span class="math display">\[
+S_T = \log(1+p_T)
+- \lambda_N \log\left(1 + \frac{u+D_T}{2}\right),
+\qquad p_T&gt;-1,\ \lambda_N&gt;0.
+\]</span></p>
+<p>It is monotonic in the intended directions:</p>
+<p><span class="math display">\[
+\frac{\partial S_T}{\partial p_T}=\frac{1}{1+p_T}&gt;0,
+\qquad
+\frac{\partial S_T}{\partial D_T}
+=-\frac{\lambda_N}{2\left(1+(u+D_T)/2\right)}&lt;0.
+\]</span></p>
+<p>This is a QRT research adaptation, not John Netto’s formula and not currently implemented as a public statistic. Its weighting, drawdown convention, and out-of-sample value require empirical validation before it becomes an API.</p>
+<p>For dense feedback, define running peak <span class="math inline">\(H_t=\max_{s\le t}V_s\)</span>, current drawdown <span class="math inline">\(d_t=1-V_t/H_t\)</span>, and running maximum drawdown <span class="math inline">\(D_t=\max_{s\le t}d_s\)</span>. A candidate training reward is:</p>
+<p><span class="math display">\[
+r_t = \Delta\log V_t
+- \lambda_1 d_t
+- \lambda_2(D_t-D_{t-1})
++ \beta\,\mathbf{1}_{t=T}\tanh(S_T/\tau).
+\]</span></p>
+<p>If account equity <span class="math inline">\(V_t\)</span> already includes fees, spread, slippage, and financing, do not subtract those costs again. If it is a gross equity process, subtract an explicit cost term once. The terminal bonus should be treated as an ablation, not assumed to improve learning. Log-return rewards also require <span class="math inline">\(V_t&gt;0\)</span>; the environment must define liquidation and termination behavior before equity can reach zero.</p>
+</section>
+<section id="state-augmentation" class="level4">
+<h4 class="anchored" data-anchor-id="state-augmentation">State augmentation</h4>
+<p>Drawdown and terminal trajectory scores are path-dependent. An observation containing only market features and current positions does not make their reward dynamics Markov. Include sufficient account state, for example:</p>
+<p><span class="math display">\[
+\left[
+V_t/V_0,\ H_t/V_0,\ d_t,\ D_t,\ u,\
+\operatorname{remaining\ episode\ time}
+\right],
+\]</span></p>
+<p>alongside positions and market features. The budget need only be observed when it varies across episodes. This state summarizes the history needed to update the drawdown terms; more general non-Markovian objectives may require a trajectory-aware method.</p>
+<p>When comparing RL agents, keep episode length and market windows aligned. A short policy should not appear superior merely because it had less time to encounter adversity.</p>
+<p>For outer-loop selection, aggregate the experimental monotonic score <span class="math inline">\(S_T\)</span>, not the raw Netto Number, across a fixed panel of market episodes and random seeds. Report at least the median, lower quartile, and risk-budget breach rate. A mean alone can be dominated by a few favorable trajectories. Keep a final market window untouched by reward and hyperparameter selection.</p>
+</section>
+<section id="evaluation-protocol" class="level4">
+<h4 class="anchored" data-anchor-id="evaluation-protocol">Evaluation protocol</h4>
+<p>A useful ablation compares:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Configuration</th>
+<th>Training objective</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Baseline</td>
+<td>Net log return</td>
+</tr>
+<tr class="even">
+<td>Drawdown additive</td>
+<td>Log return minus current/new-drawdown penalties</td>
+</tr>
+<tr class="odd">
+<td>Original Netto</td>
+<td>Exact terminal ratio, included to expose failure modes rather than as a production default</td>
+</tr>
+<tr class="even">
+<td>Monotonic adaptation</td>
+<td>Dense reward plus bounded <span class="math inline">\(S_T\)</span> terminal bonus</td>
+</tr>
+<tr class="odd">
+<td>Constrained</td>
+<td>Return objective with drawdown and tail-loss constraints</td>
+</tr>
+</tbody>
+</table>
+<p>Evaluate every configuration with metrics not all directly optimized: net return, maximum drawdown, drawdown duration, Sortino, Calmar, expected shortfall, worst-decile return, turnover, costs, budget-breach probability, regime stability, and seed stability. Explicitly probe late risk-taking during losing episodes, inactivity, episode-boundary liquidation, leverage artifacts, and frequent small gains paired with rare catastrophic losses.</p>
+</section>
+</section>
+<section id="risk-constraints-and-budget-consumption" class="level3">
+<h3 class="anchored" data-anchor-id="risk-constraints-and-budget-consumption">Risk constraints and budget consumption</h3>
+<p>The ratio is most informative when Unit-of-Risk is a real constraint rather than a label added after observing performance. A trading environment can track principal-relative budget utilization:</p>
+<p><span class="math display">\[
+b_t = \frac{\max\left(0, V_0 - \min_{\tau \le t} V_\tau\right)}{U_{\$}}.
+\]</span></p>
+<p>Here <span class="math inline">\(U_{\$}\)</span> is the dollar loss budget. The environment may terminate an episode or force liquidation when <span class="math inline">\(b_t \ge 1\)</span>. This operational rule makes the ex-ante input auditable and prevents researchers from changing the denominator after seeing the path.</p>
+<p>A cleaner alternative to combining every preference in one scalar reward is a constrained problem:</p>
+<p><span class="math display">\[
+\max_\pi\ \mathbb{E}_\pi\left[\log\frac{V_T}{V_0}\right]
+\]</span></p>
+<p>subject to, for example:</p>
+<p><span class="math display">\[
+\mathbb{E}_\pi[D_T] \le d_{\max},
+\qquad
+\operatorname{CVaR}_\alpha(-p_T) \le L_{\max}.
+\]</span></p>
+<p>This separates compound-wealth growth from drawdown and tail-loss limits. The constraint estimator, confidence level, and enforcement algorithm still need careful validation; writing a constraint does not make finite-sample risk estimates reliable automatically.</p>
+</section>
+</section>
+<section id="comparison-with-familiar-metrics" class="level2">
+<h2 class="anchored" data-anchor-id="comparison-with-familiar-metrics">Comparison with familiar metrics</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Metric</th>
+<th>Numerator</th>
+<th>Risk denominator</th>
+<th>Ex-ante input?</th>
+<th>Main question</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Sharpe</td>
+<td>Mean excess return</td>
+<td>Return volatility</td>
+<td>No</td>
+<td>Return per unit of total variability</td>
+</tr>
+<tr class="even">
+<td>Sortino</td>
+<td>Mean excess return</td>
+<td>Downside deviation</td>
+<td>No</td>
+<td>Return per unit of harmful variability</td>
+</tr>
+<tr class="odd">
+<td>Calmar</td>
+<td>CAGR</td>
+<td>Peak-to-trough max drawdown</td>
+<td>No</td>
+<td>Annualized growth per worst drawdown</td>
+</tr>
+<tr class="even">
+<td>Recovery factor</td>
+<td>Total return</td>
+<td>Peak-to-trough max drawdown</td>
+<td>No</td>
+<td>Total gain per worst drawdown</td>
+</tr>
+<tr class="odd">
+<td>Netto Number</td>
+<td>Net profit</td>
+<td>Mean of risk budget and adverse excursion</td>
+<td>Yes</td>
+<td>Profit relative to granted and realized risk</td>
+</tr>
+</tbody>
+</table>
+<p>The ex-ante term is the distinctive feature. It is also the source of the metric’s main governance burden: a subjective or movable budget destroys comparability.</p>
+</section>
+<section id="limitations-and-failure-modes" class="level2">
+<h2 class="anchored" data-anchor-id="limitations-and-failure-modes">Limitations and failure modes</h2>
+<section id="the-5050-weighting-is-a-design-choice" class="level3">
+<h3 class="anchored" data-anchor-id="the-5050-weighting-is-a-design-choice">The 50/50 weighting is a design choice</h3>
+<p>The arithmetic mean gives equal weight to Unit-of-Risk and realized adversity. Public descriptions provide the rule, but not a general statistical derivation showing that equal weights are optimal. Researchers should treat it as a stated utility choice and test whether it adds out-of-sample information.</p>
+</section>
+<section id="the-budget-can-be-gamed" class="level3">
+<h3 class="anchored" data-anchor-id="the-budget-can-be-gamed">The budget can be gamed</h3>
+<p>A budget chosen after the result, changed during the period, or defined inconsistently across candidates makes the ratio arbitrary. Record the budget, unit, horizon, adversity convention, and breach rule before evaluation begins.</p>
+</section>
+<section id="horizon-and-path-conventions-matter" class="level3">
+<h3 class="anchored" data-anchor-id="horizon-and-path-conventions-matter">Horizon and path conventions matter</h3>
+<p>Scores from a week and a year are not directly comparable. Neither are scores based on principal shortfall and peak-to-trough drawdown. Reset rules, capital flows, leverage, fees, and whether unrealized P&amp;L is marked to market must also match.</p>
+</section>
+<section id="one-path-statistic-cannot-describe-tail-risk" class="level3">
+<h3 class="anchored" data-anchor-id="one-path-statistic-cannot-describe-tail-risk">One path statistic cannot describe tail risk</h3>
+<p>Maximum adverse excursion records one extreme. It does not reveal loss frequency, duration, liquidity, gaps, skew, or the distribution beyond the observed path. Pair the score with expected shortfall, drawdown duration, stress tests, and simulation where appropriate.</p>
+</section>
+<section id="small-denominators-and-inactive-policies" class="level3">
+<h3 class="anchored" data-anchor-id="small-denominators-and-inactive-policies">Small denominators and inactive policies</h3>
+<p>A very small risk budget and near-zero adverse excursion can create a large ratio from modest profit. In RL, an agent may also avoid trading to protect its denominator. Always inspect absolute profit, exposure, turnover, and the two denominator components.</p>
+</section>
+<section id="it-is-not-independently-validated-as-a-universal-ranking-rule" class="level3">
+<h3 class="anchored" data-anchor-id="it-is-not-independently-validated-as-a-universal-ranking-rule">It is not independently validated as a universal ranking rule</h3>
+<p>The formula has clear economic intuition but a limited public empirical literature. Before using it as a production objective, test whether it improves future outcomes relative to simpler baselines such as total return under a hard risk constraint, Calmar, or a multi-objective return/drawdown criterion.</p>
+</section>
+</section>
+<section id="recommended-reporting-standard" class="level2">
+<h2 class="anchored" data-anchor-id="recommended-reporting-standard">Recommended reporting standard</h2>
+<p>A reproducible Netto Number should be accompanied by:</p>
+<ol type="1">
+<li>Evaluation object and exact start/end timestamps.</li>
+<li>Profit unit and treatment of fees, financing, and cash flows.</li>
+<li>Unit-of-Risk value, when it was fixed, and who or what set it.</li>
+<li>Adverse-excursion definition and whether P&amp;L was marked to market.</li>
+<li>Starting capital and normalization convention.</li>
+<li>Budget-breach and episode-termination rules.</li>
+<li>Profit, Unit-of-Risk, adverse excursion, Risk Factor, and final ratio.</li>
+<li>Conventional return, drawdown, tail-risk, exposure, and turnover metrics.</li>
+<li>Whether the ratio was descriptive only or used in any selection objective.</li>
+</ol>
+<p>With those controls, the Netto Number is a useful bridge between performance measurement and risk-budget governance. Without them, its apparent precision can hide arbitrary inputs.</p>
+</section>
+<section id="sources-and-further-reading" class="level2">
+<h2 class="anchored" data-anchor-id="sources-and-further-reading">Sources and further reading</h2>
+<ul>
+<li>John Netto, <a href="https://books.google.com/books?id=lriIvgAACAAJ"><em>The Global Macro Edge: Maximizing Return Per Unit-of-Risk</em></a>, 2016.</li>
+<li>CQG, <a href="https://news.cqg.com/sites/default/files/docs/The%20Global%20Macro%20Edge%20Chapter%205%20-%20Pages%201%20-%206%20CQG%20Excerpt.pdf">excerpt from Chapter 5 of <em>The Global Macro Edge</em></a>.</li>
+<li>MoneyShow, <a href="https://www.moneyshow.com/video/10761/">“John Netto, The Protean Trader, explains the Netto Number”</a>, 2017.</li>
+<li>Cannon Trading, <a href="https://www.cannontrading.com/traders-interview/john-netto">interview with John Netto</a>, discussing predetermined risk budgets across trades, strategies, indices, and portfolios.</li>
+<li>Wang et al., <a href="https://doi.org/10.1609/aaai.v35i1.16144">“DeepTrader: A Deep Reinforcement Learning Approach for Risk-Return Balanced Portfolio Management with Market Conditions Embedding”</a>, 2021. The method includes negative maximum drawdown as a reward in one of its policy components.</li>
+<li>Gaon and Brafman, <a href="https://doi.org/10.1609/aaai.v34i04.5814">“Reinforcement Learning with Non-Markovian Rewards”</a>, 2020. This provides general background on RL when rewards depend on history rather than only the latest state and action.</li>
+<li>Coache and Jaimungal, <a href="https://doi.org/10.1111/mafi.12388">“Reinforcement Learning with Dynamic Convex Risk Measures”</a>, published online in 2023 and in <em>Mathematical Finance</em> in 2024. The paper develops time-consistent policy-gradient and actor-critic methods and includes financial applications.</li>
+</ul>
+
+
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/quantbert\.github\.io\/qrt\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../stats/risk.html" class="pagination-link" aria-label="Risk estimators">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Risk estimators</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../stats/performance.html" class="pagination-link" aria-label="Performance &amp; benchmark">
+        <span class="nav-page-text">Performance &amp; benchmark</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/stats/netto-number.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/stats/netto-number.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
