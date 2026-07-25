@@ -726,7 +726,13 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../plot/correlation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Feature relationships</span></a>
+ <span class="menu-text">Correlation Plots</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/correlation_heatmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Correlation heatmap</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -896,10 +902,11 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><code>q.plot</code> renders interactive Plotly figures for feature relationships, labels, multiclass model evaluation, return streams, and trade logs. <code>q.plot.correlation</code> creates a linked scatterplot matrix with categorical regime or continuous-outcome coloring. <code>q.plot.labels</code> overlays long, hold, and short events on price, with optional outcome-interval shading; see the <a href="../label/index.html">labeling examples</a>. Classification diagnostics include one-vs-rest ROC and precision-recall curves with per-class, micro-average, and macro-average summaries. Return and trade visualizations cover quick column charts, equity curves, drawdowns, calendar heatmaps, full quantstats-style tearsheets, Monte Carlo diagnostics, entry/exit markers, excursions, and per-trade distributions. Return-stream <em>statistics</em> (performance, alpha/beta, rolling diagnostics, <code>q.stats.montecarlo</code>, …) live in <code>q.stats</code>; see <a href="../stats/index.html">Return Statistics</a>. For market measurements, see <a href="../indicator/index.html">Indicators</a>.</p>
+<p><code>q.plot</code> renders interactive Plotly figures for feature relationships, labels, multiclass model evaluation, return streams, and trade logs. <code>q.plot.correlation</code> creates a linked scatterplot matrix with categorical regime or continuous-outcome coloring, and <code>q.plot.correlation_heatmap</code> condenses a whole feature library into a clustered correlation matrix. <code>q.plot.labels</code> overlays long, hold, and short events on price, with optional outcome-interval shading; see the <a href="../label/index.html">labeling examples</a>. Classification diagnostics include one-vs-rest ROC and precision-recall curves with per-class, micro-average, and macro-average summaries. Return and trade visualizations cover quick column charts, equity curves, drawdowns, calendar heatmaps, full quantstats-style tearsheets, Monte Carlo diagnostics, entry/exit markers, excursions, and per-trade distributions. Return-stream <em>statistics</em> (performance, alpha/beta, rolling diagnostics, <code>q.stats.montecarlo</code>, …) live in <code>q.stats</code>; see <a href="../stats/index.html">Return Statistics</a>. For market measurements, see <a href="../indicator/index.html">Indicators</a>.</p>
 <p>Pages:</p>
 <ul>
 <li><a href="../plot/correlation.html">Feature relationships</a> — linked scatterplot matrices colored by market regime, asset, split, or continuous forward outcome.</li>
+<li><a href="../plot/correlation_heatmap.html">Correlation heatmap</a> — whole-library correlation matrices with clustered ordering, rank methods, and triangle masking.</li>
 <li><a href="../plot/classification.html">Classification curves</a> — multiclass ROC and precision-recall curves, plus reusable tidy curve data from <code>q.stats</code>.</li>
 <li><a href="../plot/returns.html">Return charts</a> — column charts, equity curves, drawdowns, full performance reports, and monthly heatmaps.</li>
 <li><a href="../plot/report.html">Tearsheet report</a> — full quantstats-style strategy tearsheet (<code>q.plot.report</code>) plus its individual panels (metrics table, cumulative returns, EOY returns, rolling diagnostics, worst drawdowns, …).</li>
@@ -1318,8 +1325,8 @@ ul.task-list li input[type="checkbox"] {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../plot/correlation.html" class="pagination-link" aria-label="Feature relationships">
-        <span class="nav-page-text">Feature relationships</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../plot/correlation.html" class="pagination-link" aria-label="Correlation Plots">
+        <span class="nav-page-text">Correlation Plots</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
