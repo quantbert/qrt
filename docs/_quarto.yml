@@ -230,7 +230,7 @@ website:
         - section: "q.plot — Plotting"
           href: plot/index.qmd
           contents:
-            - text: "Feature relationships"
+            - text: "Correlation Plots"
               href: plot/correlation.ipynb
             - text: "Correlation heatmap"
               href: plot/correlation_heatmap.ipynb
