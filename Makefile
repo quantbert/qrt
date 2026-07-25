@@ -28,13 +28,13 @@ docs: ## Build the API reference and serve the docs locally with live reload
 docs-render: ## Build docs, re-executing notebooks changed since the last successful render
 	uv run --group docs quartodoc build --config docs/_quarto.yml
 	uv run python tools/docs_freeze.py prepare
-	uv run --group docs quarto render docs
+	uv run --group docs python tools/docs_freeze.py render
 	uv run python tools/docs_freeze.py record
 
 docs-render-refresh: ## Build docs and force every notebook to re-execute
 	uv run --group docs quartodoc build --config docs/_quarto.yml
 	uv run python tools/docs_freeze.py prepare --force
-	uv run --group docs quarto render docs
+	uv run --group docs python tools/docs_freeze.py render
 	uv run python tools/docs_freeze.py record
 
 docs-deploy: docs-render ## Incrementally build and publish docs to GitHub Pages

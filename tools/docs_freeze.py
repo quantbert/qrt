@@ -5,6 +5,8 @@ from __future__ import annotations
 import argparse
 import hashlib
 import shutil
+import subprocess
+import tempfile
 from pathlib import Path
 
 
@@ -59,16 +61,37 @@ def record() -> None:
     STATE_FILE.write_text(f"{runtime_fingerprint()}\n")
 
 
+def render() -> None:
+    """Render docs without persisting executed outputs in source notebooks."""
+    notebooks = sorted((ROOT / "docs").rglob("*.ipynb"))
+    with tempfile.TemporaryDirectory() as backup_dir:
+        backup_root = Path(backup_dir)
+        for notebook in notebooks:
+            destination = backup_root / notebook.relative_to(ROOT / "docs")
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(notebook, destination)
+
+        try:
+            subprocess.run(["quarto", "render", "docs"], cwd=ROOT, check=True)
+        finally:
+            for notebook in notebooks:
+                backup = backup_root / notebook.relative_to(ROOT / "docs")
+                shutil.copyfile(backup, notebook)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(dest="command", required=True)
     prepare_parser = subparsers.add_parser("prepare")
     prepare_parser.add_argument("--force", action="store_true")
     subparsers.add_parser("record")
+    subparsers.add_parser("render")
     args = parser.parse_args()
 
     if args.command == "prepare":
         prepare(force=args.force)
+    elif args.command == "render":
+        render()
     else:
         record()
 
