@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Future q.bt integration – qrt</title>
+<title>q.bt integration – qrt</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -180,6 +180,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           </a> 
       </div>
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../bt/lean.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Run LEAN backtests</span></a>
+  </div>
+</li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../bt/roadmap.html" class="sidebar-item-text sidebar-link">
@@ -1023,7 +1029,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#proposed-responsibilities" id="toc-proposed-responsibilities" class="nav-link active" data-scroll-target="#proposed-responsibilities">Proposed responsibilities</a></li>
+  <li><a href="#native-qrt-report" id="toc-native-qrt-report" class="nav-link active" data-scroll-target="#native-qrt-report">Native QRT report</a></li>
+  <li><a href="#execution-adapter" id="toc-execution-adapter" class="nav-link" data-scroll-target="#execution-adapter">Execution adapter</a></li>
   <li><a href="#ownership-boundaries" id="toc-ownership-boundaries" class="nav-link" data-scroll-target="#ownership-boundaries">Ownership boundaries</a></li>
   <li><a href="#reproducibility-record" id="toc-reproducibility-record" class="nav-link" data-scroll-target="#reproducibility-record">Reproducibility record</a></li>
   <li><a href="#roadmap" id="toc-roadmap" class="nav-link" data-scroll-target="#roadmap">Roadmap</a></li>
@@ -1035,7 +1042,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lean/index.html">LEAN — Backtesting engine</a></li><li class="breadcrumb-item"><a href="../lean/qbt-integration.html">Future q.bt integration</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Future q.bt integration</h1>
+<h1 class="title">q.bt integration</h1>
 </div>
 
 
@@ -1052,54 +1059,52 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Important
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The API on this page is planned, not implemented. Today, use Lean CLI directly as described in the other guides.</p>
-</div>
-</div>
+<p>Native result reporting and local Lean CLI orchestration are implemented.</p>
+<section id="native-qrt-report" class="level2">
+<h2 class="anchored" data-anchor-id="native-qrt-report">Native QRT report</h2>
+<p><code>q.bt.report</code> consumes an original LEAN result JSON without invoking the standalone Report Creator:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> qrt <span class="im">as</span> q</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>report <span class="op">=</span> q.bt.report(</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"backtests/2026-07-26_16-55-07/1920060547.json"</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"Sweden 20/100 SMA"</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    description<span class="op">=</span><span class="st">"Synthetic 100-asset XSTO daily-universe SMA crossover"</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    output<span class="op">=</span><span class="st">"sma-report.html"</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>It uses the recorded Strategy Equity, Benchmark, Exposure, Portfolio Turnover, Capacity, statistics, orders, and closed trades. It does not replay orders, decode SIDs, start Docker, or change the source result. This makes custom market results such as <code>sweden</code> market ID <code>900</code> work without a report compatibility copy.</p>
+<p>The returned object exposes the normalized inputs:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>report.returns</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>report.orders</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>report.trades</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>report.statistics</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>report.figure</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Use <code>report.save("report.html")</code> to write another self-contained HTML copy.</p>
+</section>
+<section id="execution-adapter" class="level2">
+<h2 class="anchored" data-anchor-id="execution-adapter">Execution adapter</h2>
 <p><code>q.bt</code> is intended to support two independent execution backends:</p>
 <ol type="1">
 <li>a future in-process QRT event kernel shared with <code>q.gym</code>;</li>
 <li>an optional adapter that orchestrates the standalone Lean CLI.</li>
 </ol>
-<p>The LEAN adapter should not reimplement LEAN’s event engine or hide its native artifacts.</p>
-<section id="proposed-responsibilities" class="level2">
-<h2 class="anchored" data-anchor-id="proposed-responsibilities">Proposed responsibilities</h2>
-<p>A typed QRT API should be able to:</p>
-<ul>
-<li>identify a LEAN workspace and algorithm file;</li>
-<li>select a pinned engine image and data root;</li>
-<li>validate parameters and custom-market registration requirements;</li>
-<li>launch, monitor, cancel, and reproduce local backtests;</li>
-<li>parse result JSON, logs, order events, charts, and data-request reports;</li>
-<li>expose original artifact paths alongside QRT-normalized summaries;</li>
-<li>prepare and generate HTML/PDF reports;</li>
-<li>record command, image, parameters, environment, and artifact hashes.</li>
-</ul>
-<p>A possible user-facing shape is:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> qrt <span class="im">as</span> q</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>run <span class="op">=</span> q.bt.lean.backtest(</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    workspace<span class="op">=</span><span class="st">"lean/demo-generated-data"</span>,</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    algorithm<span class="op">=</span><span class="st">"demo_sma.py"</span>,</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    parameters<span class="op">=</span>{</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"backtest-start"</span>: <span class="st">"2024-01-02"</span>,</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"backtest-end"</span>: <span class="st">"2024-12-30"</span>,</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    },</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    update_image<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> run.wait()</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>report <span class="op">=</span> result.report(destination<span class="op">=</span><span class="st">"sma-report.html"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>This sketch is not yet a compatibility promise.</p>
+<p>The LEAN adapter does not reimplement LEAN’s event engine or hide its native artifacts.</p>
+<p>The typed orchestration API identifies the workspace and algorithm, validates the local project, launches LEAN without changing the caller’s working directory, captures output, and owns an exact run-specific artifact directory:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> qrt <span class="im">as</span> q</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>run <span class="op">=</span> q.bt.lean.backtest(</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    workspace<span class="op">=</span><span class="st">"lean/demo-generated-data"</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    algorithm<span class="op">=</span><span class="st">"demo_sma.py"</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    parameters<span class="op">=</span>{</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"backtest-start"</span>: <span class="st">"2024-01-02"</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"backtest-end"</span>: <span class="st">"2024-12-30"</span>,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    update_image<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> run.wait()</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>report <span class="op">=</span> result.report(destination<span class="op">=</span><span class="st">"sma-report.html"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The returned handle supports <code>state</code>, <code>stdout</code>, <code>stderr</code>, <code>wait(timeout=...)</code>, and <code>cancel()</code>. <code>result.result_path</code> is the exact native result used by <code>result.report(...)</code>; selection never depends on another process’s latest run.</p>
+<p>Use <code>q.bt.lean.init(workspace=..., organization=..., language="python")</code> to initialize a workspace. Use <code>q.bt.lean.run("config get engine-image", workspace=...)</code> for general commands, passing only what follows <code>lean</code>.</p>
 </section>
 <section id="ownership-boundaries" class="level2">
 <h2 class="anchored" data-anchor-id="ownership-boundaries">Ownership boundaries</h2>
@@ -1110,21 +1115,19 @@ Important
 <li>native market-data and universe formats;</li>
 <li>result JSON and Report Creator behavior.</li>
 </ul>
-<p>QRT should preserve raw LEAN artifacts even when it creates derived result objects. A report compatibility transform must write a copy and never mutate the original result.</p>
+<p>QRT preserves raw LEAN artifacts when it creates derived result objects. Native QRT reports require no compatibility transform.</p>
 </section>
 <section id="reproducibility-record" class="level2">
 <h2 class="anchored" data-anchor-id="reproducibility-record">Reproducibility record</h2>
-<p>Every adapter run should retain at least:</p>
-<pre class="text"><code>workspace path
-algorithm source path and hash
-LEAN CLI version
-Docker image tag and digest
-lean.json/config.json hashes
-parameters
-data root identity
-start/end timestamps
-result and log paths
-exit status</code></pre>
+<p>The current immutable command specification records:</p>
+<pre class="text"><code>workspace and algorithm paths
+complete CLI argument vector
+normalized parameters
+start/end timestamps and exit state
+stdout and stderr
+run-specific output directory
+result and native artifact paths</code></pre>
+<p>Content hashes, Docker image digests, structured diagnostics, and reproduction manifests remain roadmap items.</p>
 </section>
 <section id="roadmap" class="level2">
 <h2 class="anchored" data-anchor-id="roadmap">Roadmap</h2>

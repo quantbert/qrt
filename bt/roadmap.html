@@ -23,41 +23,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -69,7 +34,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
 <link href="../data/index.html" rel="next">
-<link href="../bt/index.html" rel="prev">
+<link href="../bt/lean.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -180,6 +145,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           </a> 
       </div>
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../bt/lean.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Run LEAN backtests</span></a>
+  </div>
+</li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../bt/roadmap.html" class="sidebar-item-text sidebar-link active">
@@ -1085,20 +1056,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="lean-adapter-api" class="level2">
 <h2 class="anchored" data-anchor-id="lean-adapter-api">LEAN adapter API</h2>
 <ul class="task-list">
-<li><p><label><input type="checkbox">Add an optional <code>q.bt.lean</code> namespace with a typed entry point:</label></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>run <span class="op">=</span> q.bt.lean.backtest(</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>        workspace<span class="op">=</span><span class="st">"lean/demo-generated-data"</span>,</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>        algorithm<span class="op">=</span><span class="st">"demo_sma.py"</span>,</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>        parameters<span class="op">=</span>{</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>                <span class="st">"backtest-start"</span>: <span class="st">"2024-01-02"</span>,</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>                <span class="st">"backtest-end"</span>: <span class="st">"2024-12-30"</span>,</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        },</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        update_image<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> run.wait()</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>report <span class="op">=</span> result.report(destination<span class="op">=</span><span class="st">"sma-report.html"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>This sketch is not a compatibility promise until the lifecycle and result contracts below are implemented.</p></li>
 <li><p><label><input type="checkbox">Accept paths without changing the caller’s process-wide working directory. Resolve workspace, algorithm, data root, output root, and optional Lean CLI executable to absolute paths at validation time.</label></p></li>
 <li><p><label><input type="checkbox">Validate the workspace before launch: <code>lean.json</code>, project <code>config.json</code>, algorithm file, language, data folder, writable output directories, Docker availability, CLI version, and custom-market prerequisites.</label></p></li>
 <li><p><label><input type="checkbox">Provide an immutable run specification object that can be serialized to JSON and compared across runs. Parameters should be typed where a project schema exists and string-normalized only at the CLI boundary.</label></p></li>
@@ -1132,6 +1089,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="reports" class="level2">
 <h2 class="anchored" data-anchor-id="reports">Reports</h2>
 <ul class="task-list">
+<li><p><label><input type="checkbox">Add backend-neutral adapters beyond LEAN result JSON while retaining the native <code>q.bt.BacktestReport</code> contract.</label></p></li>
+<li><p><label><input type="checkbox">Add optional PDF export, custom HTML themes, and report-section selection to the native QRT reporter.</label></p></li>
+<li><p><label><input type="checkbox">Normalize partial fills, assignments, multi-leg orders, and currency conversions with explicit conversion warnings.</label></p></li>
 <li><p><label><input type="checkbox">Wrap <code>lean report</code> with exact result-file selection. Never pass a result directory or infer an arbitrary JSON when several candidates exist.</label></p></li>
 <li><p><label><input type="checkbox">Support HTML and PDF destinations, strategy metadata, custom templates, overwrite policy, and local image selection while reflecting the actual Lean CLI options (<code>lean report</code> has <code>--update</code>, not <code>--no-update</code>).</label></p></li>
 <li><p><label><input type="checkbox">Detect custom-market SIDs before invoking Report Creator. If compatibility conversion is required, write a derived copy under a separate artifact path and retain a manifest of every transformed field.</label></p></li>
@@ -1596,8 +1556,8 @@ result/log/artifact paths and checksums</code></pre></li>
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../bt/index.html" class="pagination-link" aria-label="q.bt — Backtesting">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">q.bt — Backtesting</span>
+      <a href="../bt/lean.html" class="pagination-link" aria-label="Run LEAN backtests">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Run LEAN backtests</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

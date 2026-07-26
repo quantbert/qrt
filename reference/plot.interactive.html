@@ -806,7 +806,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#qrt.plot.interactive.trade_distribution">trade_distribution</a></td>
-<td>Create an interactive box plot of per-trade returns grouped by a column.</td>
+<td>Create a per-trade return distribution.</td>
 </tr>
 <tr class="even">
 <td><a href="#qrt.plot.interactive.trades">trades</a></td>
@@ -3109,15 +3109,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">430</span>,</span>
 <span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Create an interactive box plot of per-trade returns grouped by a column.</p>
+<p>Create a per-trade return distribution.</p>
+<p>With <code>by=None</code>, renders a sign-colored histogram with zero and mean reference lines. With a column name, renders the existing grouped box plot.</p>
 <section id="parameters-24" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-24">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 5%">
-<col style="width: 9%">
-<col style="width: 72%">
-<col style="width: 12%">
+<col style="width: 3%">
+<col style="width: 6%">
+<col style="width: 80%">
+<col style="width: 8%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -3136,8 +3137,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td>by</td>
-<td>str</td>
-<td>Trades column to group by (e.g.&nbsp;<code>"exit_reason"</code>, <code>"direction"</code>, or any feature-snapshot column).</td>
+<td>str | None</td>
+<td>Trades column to group by (e.g.&nbsp;<code>"exit_reason"</code>, <code>"direction"</code>, or any feature-snapshot column). Set to <code>None</code> for an overall returns-per-trade histogram.</td>
 <td><code>'exit_reason'</code></td>
 </tr>
 <tr class="odd">
