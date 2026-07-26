@@ -22,18 +22,19 @@ Lean CLI and the LEAN engine are different versioned components. The Python pack
 
 ## Initialize a workspace
 
-Create an empty directory and run `lean init` inside it:
+The tracked Sweden demo contains algorithms and generators but intentionally
+does not commit the organization-bound `lean.json`. Initialize it once per
+checkout:
 
 ```bash
-mkdir -p .temp/leansweden
-cd .temp/leansweden
+cd /home/hi/qrt/lean/demo-generated-data
 uv run lean init --organization <organization-name-or-id> --language python
 ```
 
 Initialization creates:
 
 ```text
-leansweden/
+demo-generated-data/
 ├── lean.json
 └── data/
 ```
@@ -51,8 +52,8 @@ workspace:
 ```bash
 cd /home/hi/qrt
 uv run lean --version
-uv run python .temp/leansweden/source/generate_data.py
-uv run lean backtest .temp/leansweden/demo.py --no-update
+uv run python lean/demo-generated-data/source/generate_data.py
+uv run lean backtest lean/demo-generated-data/demo.py --no-update
 ```
 
 `uv run` resolves Python and Lean CLI from `/home/hi/qrt/.venv` without

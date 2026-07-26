@@ -22,7 +22,9 @@ LEAN and Lean CLI are standalone QuantConnect tools. They do not depend on QRT. 
 
 ## Tested fixture
 
-The repository-local `.temp/leansweden` workspace is intentionally ignored by Git. Its generator creates:
+The repository tracks the reusable fixture at `lean/demo-generated-data`.
+Generated data, backtests, reports, storage, and local Lean CLI identity remain
+ignored by Git. Its generator creates:
 
 - 100 synthetic equities, `AAA` through `ADV`;
 - 270 XSTO sessions from 2023-12-01 through 2024-12-30;

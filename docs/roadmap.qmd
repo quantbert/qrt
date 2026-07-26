@@ -39,6 +39,82 @@ items are removed from these pages.
   drop-in replacement for the pandas backend, subject to API-compatibility and
   performance benchmarking across qrt workflows
 
+## Market-data and LEAN program
+
+The generated Nasdaq Stockholm workflow established an end-to-end reference
+case: exchange sessions, synthetic ticks and bars, security identity, corporate
+actions, point-in-time universes, native LEAN serialization, custom-market
+backtests, result parsing, and reports. Future implementation should extract
+general capabilities without turning QRT's core into a LEAN-specific package.
+
+### Ownership
+
+| Concern | Owning module | Boundary |
+|---|---|---|
+| Exchange sessions and timestamp alignment | [`q.calendar`](calendar/roadmap.qmd) | No OHLCV mutation or engine-specific files |
+| Security identity, actions, universes, aggregation, validation | [`q.data`](data/roadmap.qmd) | Canonical models remain engine/vendor independent |
+| LEAN paths, scaling, ZIP/CSV schemas, SIDs, metadata | `q.data.lean` on the [`q.data` roadmap](data/roadmap.qmd) | No process orchestration or portfolio simulation |
+| In-process execution and Lean CLI orchestration | [`q.bt`](bt/roadmap.qmd) | No duplicate market-data writer or LEAN event engine |
+| Run lineage and artifact retention | `q.experiment`, integrated optionally by `q.bt` | Local runs remain usable without a tracking backend |
+
+### Program principles
+
+- [ ] Build and test canonical QRT models before adding engine serializers.
+  Security IDs, membership events, corporate actions, trades, quotes, and bars
+  must remain useful without Lean CLI or Docker.
+
+- [ ] Keep optional dependencies at their boundary. Importing `qrt`, `q.data`,
+  or the in-process `q.bt` backend must not require Lean CLI, Docker, or
+  QuantConnect packages.
+
+- [ ] Preserve source artifacts and provenance. Conversions produce derived
+  outputs with manifests and checksums; they do not mutate vendor inputs or
+  native backtest result JSON.
+
+- [ ] Make point-in-time behavior explicit. Effective time, publication time,
+  listing intervals, ticker intervals, and simulated availability must not be
+  collapsed into one date.
+
+- [ ] Require explicit exchange, timezone, currency, market ID, normalization,
+  and execution policies. Defaults must not silently assume US equities.
+
+- [ ] Treat the tracked `lean/demo-generated-data` workspace as a golden
+  integration fixture. Fixture constants and workarounds should not leak into
+  generic public APIs.
+
+### Dependency order
+
+1. [ ] Complete `q.calendar` session lookup, timestamp alignment, and trading
+   interval APIs.
+2. [ ] Stabilize canonical security-master, membership, corporate-action,
+   trade, quote, bar, and quality-finding schemas in `q.data`.
+3. [ ] Implement point-in-time universe snapshots, factor construction,
+   session-aware aggregation, and structured validation.
+4. [ ] Build `q.data.lean` as a serializer/validator over those models, then
+   reproduce the Sweden data tree and zero-failure validation backtests.
+5. [ ] Build `q.bt.lean` process lifecycle, result parsing, manifests, and
+   non-mutating report compatibility over the stable data adapter.
+6. [ ] Add optional `q.experiment` lineage and retention after local manifests
+   and reproduction are proven.
+7. [ ] Evaluate promotion of fixture-derived synthetic quote/tick helpers only
+   after a second independent use case defines a general contract.
+
+### Program acceptance gates
+
+- [ ] Generic calendar/data unit tests pass in an environment without Lean CLI
+  or Docker.
+- [ ] Point-in-time tests prove no future ticker, constituent, or action data
+  leaks into earlier decisions.
+- [ ] The XSTO fixture covers normal sessions, half days, holidays, DST, index
+  reconstitution, and all requested data resolutions.
+- [ ] Generated LEAN files pass structural validation before an engine is
+  launched and complete direct, universe, and SMA integration runs with zero
+  failed data requests.
+- [ ] A saved run manifest can identify the exact source, algorithm, parameters,
+  data generation, CLI version, engine image digest, results, and reports.
+- [ ] Custom-market report preparation leaves the native result checksum
+  unchanged and records every compatibility transformation.
+
 ## Ideas
 
 Exploratory candidates that fit qrt's unified quant-research API. These are
@@ -47,14 +123,8 @@ on that module's roadmap; the items below would introduce or span namespaces.
 
 - [ ] `q.config` — layer defaults, JSON/TOML files, `.env` values, and explicit
   overrides with validation
-- [ ] `q.calendar` — exchange calendars, sessions, holidays, market hours, and
-  timestamp alignment using `exchange-calendars`
 - [ ] `q.optimize` — mean-variance, risk-parity, minimum-variance, and constrained
   portfolio optimization
-- [ ] `q.validate` — validate OHLCV/trade schemas, timestamps, missing sessions,
-  suspicious returns, and look-ahead risks
-- [ ] `q.execution` — shared fee, slippage, spread, order-sizing, and fill models
-  for backtests
 
 ### Portable compute orchestration
 

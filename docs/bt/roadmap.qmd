@@ -6,18 +6,230 @@ Only open work is listed here. Completed items are removed.
 
 ## Planned
 
-- [ ] Event-driven execution kernel shared by batch backtests and `q.gym`
-- [ ] `q.bt.run` adapter for model signals
-- [ ] LEAN CLI adapter for executing local backtests and reports through a
-			typed `q.bt` API
-		- configure a LEAN workspace, project, engine image, parameters, and data root
-		- launch, monitor, cancel, and reproduce `lean backtest` runs
-		- parse result JSON, logs, orders, trades, charts, and data-request reports
-			into QRT-owned result objects
-		- generate HTML/PDF reports and preserve links to the original LEAN artifacts
-		- support custom-market registration and report compatibility without
-			mutating source backtest results
-- [ ] Keep the LEAN adapter optional: LEAN remains a standalone execution
-	engine, while QRT's in-process event kernel remains separately usable
-- [ ] Transaction costs / slippage models
-- [ ] Trade log output compatible with `q.plot` (tearsheets)
+## Backend boundaries
+
+`q.bt` will expose a common research-facing result contract over two independent
+execution backends:
+
+1. a QRT-owned in-process event kernel shared with `q.gym`;
+2. an optional adapter that orchestrates the standalone Lean CLI and LEAN engine.
+
+The backends may normalize summaries and trade logs, but they must not pretend
+to have identical execution semantics. Every result records its backend and
+backend-specific configuration. LEAN remains authoritative for its event loop,
+subscriptions, orders, fills, fees, buying power, settlement, portfolio state,
+native result JSON, and Report Creator output.
+
+## In-process QRT backend
+
+- [ ] Implement an event-driven execution kernel shared by batch backtests and
+	`q.gym` without depending on Lean CLI or Docker.
+
+- [ ] Add `q.bt.run(signal, prices, ...)` for canonical QRT signals and OHLCV
+	data. Define timing explicitly: signal availability, order submission,
+	execution bar, mark-to-market timestamp, and prevention of look-ahead.
+
+- [ ] Define pluggable transaction-cost, spread, slippage, order-sizing, fill,
+	and position-limit interfaces. Default models should be simple and explicit,
+	never silently market-specific.
+
+- [ ] Emit the canonical QRT trade-log schema used by `q.stats` and `q.plot`,
+	plus equity, cash, exposure, turnover, and rejected-order series.
+
+- [ ] Keep the in-process engine useful when Lean CLI is not installed. LEAN
+	integration must not become a dependency of `q.bt.run`.
+
+## LEAN adapter API
+
+- [ ] Add an optional `q.bt.lean` namespace with a typed entry point:
+
+	```python
+	run = q.bt.lean.backtest(
+			workspace="lean/demo-generated-data",
+			algorithm="demo_sma.py",
+			parameters={
+					"backtest-start": "2024-01-02",
+					"backtest-end": "2024-12-30",
+			},
+			update_image=False,
+	)
+
+	result = run.wait()
+	report = result.report(destination="sma-report.html")
+	```
+
+	This sketch is not a compatibility promise until the lifecycle and result
+	contracts below are implemented.
+
+- [ ] Accept paths without changing the caller's process-wide working directory.
+	Resolve workspace, algorithm, data root, output root, and optional Lean CLI
+	executable to absolute paths at validation time.
+
+- [ ] Validate the workspace before launch: `lean.json`, project `config.json`,
+	algorithm file, language, data folder, writable output directories, Docker
+	availability, CLI version, and custom-market prerequisites.
+
+- [ ] Provide an immutable run specification object that can be serialized to
+	JSON and compared across runs. Parameters should be typed where a project
+	schema exists and string-normalized only at the CLI boundary.
+
+- [ ] Support an explicit engine image tag or digest. `update_image=False`
+	should map to Lean CLI's no-update behavior for backtests; a digest should be
+	recorded after Docker resolves the image.
+
+- [ ] Keep custom market name/ID and data serialization in `q.data.lean`.
+	`q.bt.lean` may validate those settings and inject algorithm parameters, but
+	must not maintain a second SID or file-format implementation.
+
+## Process lifecycle
+
+- [ ] Implement launch, status, log streaming, wait, timeout, cancellation, and
+	cleanup as a state machine. Proposed terminal states are `succeeded`,
+	`failed`, `cancelled`, and `timed_out`.
+
+- [ ] Capture stdout/stderr incrementally without requiring terminal scraping.
+	Preserve raw streams and expose parsed progress/events separately.
+
+- [ ] Cancellation must terminate the CLI process and its run-specific Docker
+	container without killing unrelated LEAN or Docker workloads. Record whether
+	shutdown was graceful or forced.
+
+- [ ] Prevent output-directory collisions under concurrent runs. Use a unique
+	run ID and discover the engine's timestamped result directory deterministically
+	rather than selecting "latest" after completion.
+
+- [ ] Surface interactive authentication or Docker permission failures as typed
+	preflight errors. Never request API keys, tokens, passwords, or passphrases
+	through ordinary function parameters that are persisted in run manifests.
+
+- [ ] Provide synchronous and asynchronous orchestration without tying the core
+	API to notebooks, a particular task queue, or an async event loop owned by the
+	caller.
+
+## Result and artifact model
+
+- [ ] Parse the canonical LEAN result JSON, summary JSON, engine log, algorithm
+	log, order events, succeeded/failed data-request reports, and generated code
+	snapshot into a `LeanBacktestResult`.
+
+- [ ] Preserve every native artifact path and checksum. Parsed QRT objects are
+	derived views and must never replace or rewrite the source files.
+
+- [ ] Normalize run metadata, statistics, runtime statistics, charts/series,
+	orders, order events, holdings, closed trades, parameters, and errors while
+	retaining unknown fields for forward compatibility.
+
+- [ ] Convert LEAN closed trades/order events to QRT's canonical trade log with
+	a documented mapping. Preserve the original LEAN identifiers and expose
+	conversion warnings when partial fills, assignments, multi-leg orders, or
+	currency conversions cannot be represented losslessly.
+
+- [ ] Distinguish process success from research success. A zero CLI exit code
+	can still accompany failed data requests, algorithm `ERROR::` messages,
+	invalid orders, unfilled final-session orders, or analyzer failures.
+
+- [ ] Add structured diagnostics with stable codes and severities for missing
+	data, custom-market failures, model rejection, Docker problems, result parse
+	drift, and report failures. Retain raw matching log lines as evidence.
+
+- [ ] Expose charts and tabular results in backend-neutral forms consumable by
+	`q.plot`, but do not discard backend-specific chart metadata or precision.
+
+## Reports
+
+- [ ] Wrap `lean report` with exact result-file selection. Never pass a result
+	directory or infer an arbitrary JSON when several candidates exist.
+
+- [ ] Support HTML and PDF destinations, strategy metadata, custom templates,
+	overwrite policy, and local image selection while reflecting the actual Lean
+	CLI options (`lean report` has `--update`, not `--no-update`).
+
+- [ ] Detect custom-market SIDs before invoking Report Creator. If compatibility
+	conversion is required, write a derived copy under a separate artifact path
+	and retain a manifest of every transformed field.
+
+- [ ] Never mutate the original backtest JSON. Report compatibility should be a
+	pure transformation from source result to derived result plus an audit record.
+
+- [ ] Make order omission/aliasing explicit when working around upstream Report
+	replay limitations. Surface which report sections lose reconstruction input,
+	such as asset allocation, while preserving closed-trade statistics and charts.
+
+- [ ] Version compatibility transforms by LEAN engine and CLI version so a
+	workaround is not applied after upstream behavior changes.
+
+## Reproducibility and provenance
+
+- [ ] Store a run manifest containing at least:
+
+	```text
+	QRT version and adapter schema version
+	workspace and algorithm paths
+	algorithm source and project-config hashes
+	LEAN CLI version
+	Docker image tag and digest
+	lean.json hash with secrets redacted
+	parameters and data-root identity
+	q.data.lean generation manifest, when available
+	start/end timestamps, host platform, and exit state
+	result/log/artifact paths and checksums
+	```
+
+- [ ] Add `result.reproduce()` or an exported run specification that checks
+	missing inputs and version drift before launching. Reproduction should not
+	silently update the engine image or reference databases.
+
+- [ ] Integrate with `q.experiment` as an optional artifact/lineage sink while
+	keeping local execution usable without an experiment backend.
+
+- [ ] Define retention and cleanup separately from execution. Cleanup must be
+	scoped to one run manifest and never delete shared market data or Docker images
+	by default.
+
+## Packaging and compatibility
+
+- [ ] Keep Lean CLI/Docker support optional. Importing `qrt` or `q.bt` must work
+	when neither is installed; invoking `q.bt.lean` should produce actionable
+	dependency diagnostics.
+
+- [ ] Detect CLI capability/version rather than assuming flags. Maintain a small
+	compatibility matrix for supported CLI and engine versions.
+
+- [ ] Avoid importing QuantConnect algorithm classes into QRT's public result or
+	configuration models. Serialized boundaries should remain plain Python,
+	pandas, and path-like objects.
+
+## Testing and acceptance criteria
+
+- [ ] Unit-test command construction, path handling, manifest redaction, state
+	transitions, log parsing, JSON parsing, and report transforms without Docker.
+
+- [ ] Use fake subprocesses for cancellation, timeout, partial output, malformed
+	JSON, nonzero exit, and successful-process/failed-research combinations.
+
+- [ ] Run Docker integration tests only in an opt-in environment with pinned
+	CLI and image versions.
+
+- [ ] Use `lean/demo-generated-data` as the golden custom-market workflow. The
+	direct-data, universe, and SMA runs must preserve their verification markers,
+	expected data-request counts, orders, and statistics within documented
+	tolerances.
+
+- [ ] Verify report generation for an ordinary built-in market and the custom
+	Sweden compatibility path. Assert that source result hashes are unchanged.
+
+- [ ] Demonstrate concurrent runs, deterministic artifact association, graceful
+	cancellation, and reproduction from a saved manifest.
+
+## Delivery sequence
+
+1. [ ] Define immutable run specification, lifecycle states, artifact manifest,
+	 diagnostics, and result schemas.
+2. [ ] Implement preflight and synchronous local execution with exact artifact
+	 discovery.
+3. [ ] Parse results and produce canonical QRT trade logs without reporting.
+4. [ ] Add streaming, cancellation, timeout, concurrency, and async wrappers.
+5. [ ] Add safe Report Creator orchestration and versioned compatibility copies.
+6. [ ] Integrate `q.data.lean` manifests and optional `q.experiment` tracking.
+7. [ ] Stabilize the public API only after the pinned Sweden and built-in-market
+	 integration suites pass.

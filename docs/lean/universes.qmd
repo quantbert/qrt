@@ -78,7 +78,7 @@ The tested fixture writes zero-byte files on non-XSTO dates. They satisfy source
 
 ```bash
 cd /home/hi/qrt
-cd .temp/leansweden
+cd lean/demo-generated-data
 uv run lean backtest universe_demo.py --no-update
 ```
 

@@ -1,0 +1,24 @@
+{
+    "algorithm-language": "Python",
+    "parameters": {
+        "backtest-start": "2024-01-02",
+        "backtest-end": "2024-12-30",
+        "tick-history-date": "2023-12-28",
+        "symbols": "AAA,AAB,AAC,AAD,AAE,AAF,AAG,AAH,AAI,AAJ,AAK,AAL,AAM,AAN,AAO,AAP,AAQ,AAR,AAS,AAT,AAU,AAV,AAW,AAX,AAY,AAZ,ABA,ABB,ABC,ABD,ABE,ABF,ABG,ABH,ABI,ABJ,ABK,ABL,ABM,ABN,ABO,ABP,ABQ,ABR,ABS,ABT,ABU,ABV,ABW,ABX,ABY,ABZ,ACA,ACB,ACC,ACD,ACE,ACF,ACG,ACH,ACI,ACJ,ACK,ACL,ACM,ACN,ACO,ACP,ACQ,ACR,ACS,ACT,ACU,ACV,ACW,ACX,ACY,ACZ,ADA,ADB,ADC,ADD,ADE,ADF,ADG,ADH,ADI,ADJ,ADK,ADL,ADM,ADN,ADO,ADP,ADQ,ADR,ADS,ADT,ADU,ADV",
+        "asset-count": "100",
+        "expected-session-count": "251",
+        "expected-daily-bars": "25100",
+        "expected-minute-history-rows": "6000",
+        "expected-quote-history-rows": "6000",
+        "expected-tick-history-rows": "24200",
+        "expected-hour-history-rows": "500",
+        "expected-daily-history-rows": "500",
+        "daily-universe-name": "sweden100",
+        "index-universe-ticker": "OMXS30",
+        "expected-daily-universe-members": "100",
+        "expected-index-universe-members": "30",
+        "expected-index-compositions": "2"
+    },
+    "description": "Synthetic Nasdaq Stockholm native equity data validation",
+    "local-id": 284000900
+}

@@ -32,7 +32,7 @@ A possible user-facing shape is:
 import qrt as q
 
 run = q.bt.lean.backtest(
-    workspace=".temp/leansweden",
+    workspace="lean/demo-generated-data",
     algorithm="demo_sma.py",
     parameters={
         "backtest-start": "2024-01-02",

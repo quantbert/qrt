@@ -2,13 +2,15 @@
 title: Generate the Sweden fixture
 ---
 
-The `.temp/leansweden/source/generate_data.py` script is a reproducible integration fixture for LEAN's custom-market data paths. It uses QRT for synthetic prices and exchange sessions, then writes native LEAN files.
+The `lean/demo-generated-data/source/generate_data.py` script is a reproducible
+integration fixture for LEAN's custom-market data paths. It uses QRT for
+synthetic prices and exchange sessions, then writes native LEAN files.
 
 ## Generate the data
 
 ```bash
 cd /home/hi/qrt
-uv run python .temp/leansweden/source/generate_data.py
+uv run python lean/demo-generated-data/source/generate_data.py
 ```
 
 The generator replaces only the fixture's Sweden data tree and patches its isolated metadata/configuration. It is idempotent and writes progress every ten assets.
@@ -18,7 +20,7 @@ The generator replaces only the fixture's Sweden data tree and patches its isola
 The current fixture contains 100 symbols from `AAA` through `ADV`:
 
 ```text
-.temp/leansweden/data/
+lean/demo-generated-data/data/
 ├── equity/sweden/
 │   ├── tick/<symbol>/<date>_{trade|quote}.zip
 │   ├── minute/<symbol>/<date>_{trade|quote}.zip
@@ -63,7 +65,7 @@ Synthetic quotes use a fixed one-tick spread around trades. They exist to exerci
 ## Validate generation
 
 ```bash
-cd .temp/leansweden
+cd lean/demo-generated-data
 
 unzip -t data/equity/sweden/tick/aaa/20231228_trade.zip
 unzip -t data/equity/sweden/minute/adv/20240105_quote.zip

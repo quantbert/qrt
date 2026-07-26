@@ -1,8 +1,128 @@
+title: q.calendar Roadmap
+
 ---
 title: q.calendar Roadmap
 ---
 
-- [ ] Session and trading-minute ranges
-- [ ] Market-open, early-close, and holiday flags
-- [ ] Timestamp-to-session alignment with explicit timezone policy
-- [ ] Calendar-distance features for multiple exchanges
+Only open work is listed here. The existing `schedule` and
+`non_trading_days_after` functions are the foundation for the work below.
+
+## Design rules
+
+- Every public operation requires an explicit ISO 10383 exchange identifier.
+- Session labels are timezone-naive normalized dates; market timestamps are
+	timezone-aware and expressed in either UTC or the exchange's IANA timezone.
+- APIs must define their behavior for timestamps before the open, after the
+	close, during holidays, and at daylight-saving transitions.
+- Early closes are ordinary trading sessions with a shorter interval, not
+	holidays or incomplete observations.
+- `q.calendar` owns exchange-time semantics. It may construct labels and time
+	grids, but OHLCV aggregation and market-data mutation belong to `q.data`.
+
+## Session navigation and classification
+
+- [ ] Add scalar and vectorized session predicates:
+
+	```python
+	q.calendar.is_session("2024-03-28", exchange="XSTO")
+	q.calendar.is_early_close("2024-03-28", exchange="XSTO")
+	```
+
+	The vectorized form should preserve the input index, reject missing dates by
+	default, and distinguish a closed date from an unknown/out-of-range calendar.
+
+- [ ] Add `previous_session` and `next_session` with an explicit `include_self`
+	option and positive integer offsets. The implementation must use exchange
+	sessions rather than subtracting calendar days.
+
+- [ ] Add `session_open`, `session_close`, and `session_bounds`. Returned
+	timestamps must be timezone-aware in the exchange's local timezone by default,
+	with `tz="UTC"` as an explicit alternative.
+
+- [ ] Add session classification metadata to `schedule`, either through
+	optional columns or a separate `session_flags` function:
+	`is_early_close`, `is_late_open`, regular duration, actual duration, and the
+	applicable local UTC offset.
+
+## Timestamp-to-session alignment
+
+- [ ] Add a vectorized `session_labels` operation:
+
+	```python
+	labels = q.calendar.session_labels(
+			timestamps,
+			exchange="XSTO",
+			direction="none",
+			include_close=False,
+	)
+	```
+
+	It should assign each timestamp to the exchange session that contains it.
+	`direction="none"` returns missing labels or raises for out-of-session values;
+	`"previous"` and `"next"` explicitly opt into nearest-session alignment.
+
+- [ ] Define interval boundaries once and test them consistently. The proposed
+	default is `[open, close)`, with an opt-in policy for official closing prints
+	timestamped exactly at the close.
+
+- [ ] Support timestamps supplied in UTC, the exchange timezone, or another
+	timezone. Reject timezone-naive intraday timestamps unless the caller passes
+	an explicit `assume_timezone` value; never silently interpret them as local.
+
+- [ ] Add `session_for_timestamp` as a scalar convenience wrapper over the same
+	implementation. Scalar and vectorized results must not diverge.
+
+- [ ] Cover ambiguous and nonexistent local times around daylight-saving
+	changes. Resolution must be explicit and deterministic rather than delegated
+	to pandas defaults that can vary by operation.
+
+## Trading-time grids
+
+- [ ] Add `trading_minutes` and a general `trading_ranges` API for one or many
+	sessions. Inputs should support an exchange, frequency, start/end session,
+	and interval-closure policy.
+
+- [ ] Ensure generated grids respect holidays, half days, late opens, and any
+	exchange breaks represented by the upstream calendar.
+
+- [ ] Add a compact session-offset representation suitable for assigning large
+	tick tables without materializing every minute when only labels are needed.
+
+- [ ] Expose enough interval metadata for `q.data.resample_trades` to aggregate
+	by exchange session without duplicating calendar logic. `q.calendar` should
+	not itself choose OHLC, volume, quote, or empty-bar policies.
+
+## Calendar distance
+
+- [ ] Add trading-session distance and trading-minute distance between two
+	timestamps for one exchange.
+
+- [ ] Add multi-exchange overlap features: common sessions, union sessions,
+	simultaneous open intervals, and distance to the next overlap. These are
+	needed for cross-market features and FX/cash-conversion availability.
+
+- [ ] Define signed distance, endpoint inclusion, and non-session alignment
+	explicitly. Calendar-day, session, and trading-minute distances must remain
+	separate concepts in names and return metadata.
+
+## Performance and caching
+
+- [ ] Cache immutable exchange-calendar lookups and bounded schedules without
+	leaking mutable DataFrames between callers.
+
+- [ ] Provide vectorized implementations for million-row timestamp indexes;
+	avoid Python loops over observations.
+
+- [ ] Benchmark session labeling and minute-grid generation across XNYS, XSTO,
+	and an exchange with an intraday break.
+
+## Acceptance criteria
+
+- [ ] Unit tests for normal sessions, XSTO half days, holidays, weekends,
+	daylight-saving boundaries, exact opens/closes, and out-of-range dates.
+- [ ] Property tests that every generated trading timestamp maps back to the
+	session that generated it and no closed-date timestamp is emitted.
+- [ ] Cross-check representative schedules against `exchange_calendars` while
+	keeping QRT's public errors, timezone policy, and result schemas stable.
+- [ ] Integration tests with the future `q.data` session-aware resampler and
+	point-in-time universe snapshot builder.

@@ -2,7 +2,8 @@
 title: Run the 20/100 SMA strategy
 ---
 
-`.temp/leansweden/demo_sma.py` is a complete dynamic-universe strategy over native LEAN files.
+`lean/demo-generated-data/demo_sma.py` is a complete dynamic-universe strategy
+over native LEAN files.
 
 ## Strategy
 
@@ -19,7 +20,7 @@ The indicators warm naturally from streamed daily bars. No bulk history request 
 
 ```bash
 cd /home/hi/qrt
-cd .temp/leansweden
+cd lean/demo-generated-data
 uv run lean backtest demo_sma.py --no-update
 ```
 

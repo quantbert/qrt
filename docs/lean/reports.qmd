@@ -35,7 +35,7 @@ It therefore cannot deserialize native Sweden SIDs directly. Prepare a separate 
 
 ```bash
 cd /home/hi/qrt
-cd .temp/leansweden
+cd lean/demo-generated-data
 
 uv run python source/prepare_report.py \
   backtests/2026-07-26_13-41-40/1641330887.json \
@@ -72,4 +72,6 @@ A custom template cannot solve SID parsing or portfolio replay problems. Report 
 
 ## Verified artifact
 
-The tested workflow creates `.temp/leansweden/sma-report.html`, approximately 610 KB with 15 embedded charts, strategy metadata, and SEK display values.
+The tested workflow creates `lean/demo-generated-data/sma-report.html`,
+approximately 610 KB with 15 embedded charts, strategy metadata, and SEK
+display values.

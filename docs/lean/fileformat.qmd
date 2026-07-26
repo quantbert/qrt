@@ -1113,15 +1113,15 @@ the source system.
 ## 12. Proven synthetic fixture
 
 The repository contains a working, deterministic test workspace at
-`.temp/leansweden`. Its source generator uses `q.stats.random_walk` for prices
+`lean/demo-generated-data`. Its source generator uses `q.stats.random_walk` for prices
 and `q.calendar.schedule(..., exchange="XSTO")` for real Stockholm sessions,
 holidays, daylight saving, and half-days.
 
 ```bash
 cd /home/hi/qrt
 uv run lean --version
-uv run python .temp/leansweden/source/generate_data.py
-cd .temp/leansweden
+uv run python lean/demo-generated-data/source/generate_data.py
+cd lean/demo-generated-data
 uv run lean backtest demo.py --no-update
 ```
 
@@ -1176,7 +1176,7 @@ The fixture's `source/prepare_report.py` writes a separate compatibility copy
 for `lean report`; it never modifies the original result. The safe default
 preserves closed trades, charts, returns, statistics, and parameters but omits
 the copied order dictionary, because current Report portfolio replay also
-leaves `TradingDaysPerYear` unset. See `.temp/leansweden/README.md` for the
+leaves `TradingDaysPerYear` unset. See `lean/demo-generated-data/README.md` for the
 verified command.
 
 ## 13. Common failure modes
