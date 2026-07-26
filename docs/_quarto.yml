@@ -205,6 +205,8 @@ website:
         - section: "q.signal — Signals"
           href: signal/index.qmd
           contents:
+            - text: "Visual signal tutorial"
+              href: signal/tutorial.ipynb
             - text: "Roadmap"
               href: signal/roadmap.qmd
         - section: "q.model — Models"
@@ -226,6 +228,27 @@ website:
               href: skypilot/vscode.qmd
             - text: "Local Strix Halo cluster"
               href: skypilot/strix-halo.qmd
+        - section: "LEAN — Backtesting engine"
+          href: lean/index.qmd
+          contents:
+            - text: "Install and initialize"
+              href: lean/setup.qmd
+            - text: "Projects and backtests"
+              href: lean/workflow.qmd
+            - text: "Native data formats"
+              href: lean/fileformat.qmd
+            - text: "Generate Sweden data"
+              href: lean/sweden-data.qmd
+            - text: "Universes and composites"
+              href: lean/universes.qmd
+            - text: "20/100 SMA strategy"
+              href: lean/sma.qmd
+            - text: "Generate reports"
+              href: lean/reports.qmd
+            - text: "Troubleshooting"
+              href: lean/troubleshooting.qmd
+            - text: "Future q.bt integration"
+              href: lean/qbt-integration.qmd
         - section: "q.gym — Financial RL"
           href: gym/index.qmd
           contents:
@@ -372,9 +395,10 @@ quartodoc:
         - name: calendar
           include_imports: true
     - title: q.signal
-      desc: "Investment intent derived from indicators, factors, models, and rules."
+      desc: "Point-in-time investment intent derived from indicators, factors, models, and rules."
       contents:
-        - signal
+        - name: signal
+          include_imports: true
     - title: q.stats
       desc: "Reusable return-stream, risk, and classification statistics, including performance, tail-loss estimators, rolling diagnostics, and multiclass evaluation curves (no plotting dependency)."
       contents:

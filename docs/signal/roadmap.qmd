@@ -2,8 +2,18 @@
 title: q.signal Roadmap
 ---
 
-- [ ] Directional and continuous signal schemas
-- [ ] Threshold and hysteresis rules
-- [ ] Cross-sectional normalization and combination
-- [ ] Signal decay, delay, and availability semantics
-- [ ] Turnover-aware signal shaping
+## Implemented foundation
+
+- [x] Canonical ordered pandas Series and time-by-asset DataFrame contract
+- [x] Directional threshold and stateful hysteresis rules
+- [x] Cross-sectional normalization, selection, and exposure neutralization
+- [x] Strictly aligned weighted signal combination
+- [x] Causal row delay and exponential decay
+- [x] Minimum holding periods and post-exit cooldowns
+- [x] Per-asset turnover limiting and bounded target-exposure conversion
+
+## Planned
+
+- [ ] Calendar-aware availability and stale-signal policies
+- [ ] Long-form panel adapters keyed by time and asset
+- [ ] Signal provenance for model, rule, and parameter lineage

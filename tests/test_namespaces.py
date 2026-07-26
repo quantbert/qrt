@@ -117,7 +117,21 @@ def test_indicator_and_cross_section_boundaries():
         "relative_strength",
         "zscore",
     ]
-    assert q.signal.__all__ == []
+    assert q.signal.__all__ == [
+        "as_signal",
+        "combine",
+        "cooldown",
+        "decay",
+        "delay",
+        "hold",
+        "hysteresis",
+        "limit_turnover",
+        "neutralize",
+        "normalize",
+        "select",
+        "target_exposure",
+        "threshold",
+    ]
 
 def test_feature_namespace_is_removed():
     assert not hasattr(q, "feature")
@@ -160,6 +174,36 @@ def test_non_trading_days_after_rejects_unknown_exchange_and_non_session():
         assert "must be sessions" in str(exc)
     else:
         raise AssertionError("non-session date should raise ValueError")
+
+
+def test_calendar_schedule_returns_local_xsto_sessions_and_early_close():
+    result = q.calendar.schedule("2024-01-02", "2024-01-05", exchange="XSTO")
+
+    assert result.index.equals(
+        pd.DatetimeIndex(
+            ["2024-01-02", "2024-01-03", "2024-01-04", "2024-01-05"],
+            name="session",
+        )
+    )
+    assert str(result["open"].dt.tz) == "Europe/Stockholm"
+    assert str(result["close"].dt.tz) == "Europe/Stockholm"
+    assert result["open"].dt.strftime("%H:%M").unique().tolist() == ["09:00"]
+    assert result["close"].dt.strftime("%H:%M").tolist() == [
+        "17:30",
+        "17:30",
+        "17:30",
+        "13:00",
+    ]
+
+
+def test_calendar_schedule_skips_holidays_and_rejects_unknown_exchange():
+    result = q.calendar.schedule("2024-03-28", "2024-04-02", exchange="XSTO")
+
+    assert result.index.tolist() == [pd.Timestamp("2024-03-28"), pd.Timestamp("2024-04-02")]
+    assert result["close"].dt.strftime("%H:%M").tolist() == ["13:00", "17:30"]
+
+    with pytest.raises(ValueError, match="unknown exchange calendar"):
+        q.calendar.schedule("2024-01-01", "2024-01-02", exchange="NOPE")
 
 
 def test_ema_matches_legacy_adjust_false_formula():

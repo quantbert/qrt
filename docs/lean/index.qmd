@@ -1,0 +1,55 @@
+---
+title: LEAN
+---
+
+::: {.callout-warning}
+LEAN and Lean CLI are standalone QuantConnect tools. They do not depend on QRT. These guides document a tested local workflow and how QRT can help prepare data. A future optional `q.bt` adapter will orchestrate the same commands through Python without replacing LEAN as the execution engine.
+:::
+
+[LEAN](https://github.com/QuantConnect/Lean) is an event-driven trading engine. [Lean CLI](https://www.lean.io/docs/v2/lean-cli) manages its local Docker image, workspaces, projects, data, backtests, and reports.
+
+## Guides
+
+- [Install and initialize](setup.qmd): install Lean CLI with `uv`, create an organization workspace, and understand the generated files.
+- [Projects and backtests](workflow.qmd): choose an algorithm file, pass parameters, pin engine behavior, and inspect artifacts.
+- [Native data formats](fileformat.qmd): complete Stockholm equity, metadata, corporate-action, and storage reference.
+- [Generate the Sweden fixture](sweden-data.qmd): create 100 synthetic XSTO assets at tick through daily resolution.
+- [Universes and composites](universes.qmd): use native daily, ETF, and Index constituent files, including an OMXS30-style composite.
+- [20/100 SMA strategy](sma.qmd): run a dynamic-universe crossover strategy over the 100-asset fixture.
+- [Generate reports](reports.qmd): create reports, select exact result JSON files, and handle custom-market SIDs safely.
+- [Troubleshooting](troubleshooting.qmd): diagnose missing files, currencies, models, permissions, result selection, and report errors.
+- [Future `q.bt` integration](qbt-integration.qmd): planned API ownership and artifact contracts.
+
+## Tested fixture
+
+The repository-local `.temp/leansweden` workspace is intentionally ignored by Git. Its generator creates:
+
+- 100 synthetic equities, `AAA` through `ADV`;
+- 270 XSTO sessions from 2023-12-01 through 2024-12-30;
+- native tick, minute, hour, and daily files with matching intraday quotes;
+- map files, factor files, market hours, and symbol properties;
+- a 100-member daily universe and weighted 30-member OMXS30 Index universe;
+- validation algorithms for imports, universes, a 20/100 SMA crossover, and reports.
+
+The fixture is test data, not a claim about historical Swedish prices or constituents.
+
+## Boundary with QRT
+
+QRT currently contributes reusable preparation primitives such as:
+
+```python
+import qrt as q
+
+sessions = q.calendar.schedule(
+    "2024-01-01",
+    "2024-12-31",
+    exchange="XSTO",
+)
+prices = q.stats.random_walk(
+    periods=10_000,
+    paths=100,
+    seed=42,
+)
+```
+
+LEAN owns event progression, subscriptions, orders, fills, portfolio accounting, and result production. QRT should not duplicate those responsibilities merely to wrap the CLI.

@@ -1,0 +1,56 @@
+---
+title: Run the 20/100 SMA strategy
+---
+
+`.temp/leansweden/demo_sma.py` is a complete dynamic-universe strategy over native LEAN files.
+
+## Strategy
+
+For every member of `sweden100`:
+
+1. update a 20-day and 100-day simple moving average from raw daily closes;
+2. enter long when SMA 20 crosses above SMA 100;
+3. exit when SMA 20 crosses below SMA 100;
+4. equal-weight all bullish assets to 95% total target exposure.
+
+The indicators warm naturally from streamed daily bars. No bulk history request is made. With the current fixture, the slow SMA becomes ready on the 100th 2024 session, leaving 151 sessions for signals.
+
+## Run
+
+```bash
+cd /home/hi/qrt
+cd .temp/leansweden
+uv run lean backtest demo_sma.py --no-update
+```
+
+A successful run logs `SWEDEN_SMA_CROSS_VERIFIED`.
+
+The verified synthetic result produced:
+
+- 100 ready SMA pairs;
+- 154 bullish entries and 106 bearish exits;
+- 107 batched rebalances;
+- 448 filled orders and zero invalid orders;
+- 47 final long positions;
+- +1.806% net profit and 1.4% maximum drawdown;
+- zero failed data requests.
+
+Three final-session orders remain submitted as market-on-open orders because the dataset contains no following XSTO session.
+
+## Batched target semantics
+
+LEAN's list overload expects `PortfolioTarget.quantity` to be a portfolio percentage and internally calculates share quantities:
+
+```python
+targets = [
+    PortfolioTarget(symbol, target_weight, "20/100 bullish cross")
+    for symbol in bullish
+]
+self.set_holdings(targets)
+```
+
+Do not pass `PortfolioTarget.percent(...)` outputs into that list overload. Those objects already contain calculated share quantities and would be converted a second time, creating oversized orders.
+
+## Production changes
+
+The fixture uses `ConstantFeeModel(0)` and synthetic quote/volume data. Before interpreting performance, implement realistic Swedish fees, spreads, fills, lot/tick rules, liquidity, market-impact, and brokerage constraints.

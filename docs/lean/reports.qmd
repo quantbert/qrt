@@ -1,0 +1,75 @@
+---
+title: Generate reports
+---
+
+`lean report` runs a standalone .NET Report Creator against a backtest result JSON. It does not import project Python files, so multiple algorithms in one workspace are not a problem.
+
+## Ordinary built-in markets
+
+Generate the latest report:
+
+```bash
+uv run lean report --overwrite
+```
+
+Or specify the exact result JSON:
+
+```bash
+uv run lean report \
+  --backtest-results backtests/<timestamp>/<algorithm-id>.json \
+  --report-destination report.html \
+  --overwrite
+```
+
+`--backtest-results` requires a file, not a backtest directory. `lean report` has `--update` but no `--no-update`; it uses the local image unless `--update` is supplied.
+
+## Custom Sweden market
+
+The Report Creator starts in a separate process and never runs:
+
+```python
+Market.add("sweden", 900)
+```
+
+It therefore cannot deserialize native Sweden SIDs directly. Prepare a separate compatibility result:
+
+```bash
+cd /home/hi/qrt
+cd .temp/leansweden
+
+uv run python source/prepare_report.py \
+  backtests/2026-07-26_13-41-40/1641330887.json \
+  report-results/1641330887-report.json
+
+uv run lean report \
+  --backtest-results report-results/1641330887-report.json \
+  --report-destination sma-report.html \
+  --strategy-name "Sweden 20/100 SMA" \
+  --strategy-description "Synthetic 100-asset XSTO daily-universe SMA crossover" \
+  --overwrite
+```
+
+The helper never modifies the original result. It:
+
+- aliases custom market bits to a built-in market only in the copy;
+- uses USD only for Report's internal 1:1 replay metadata;
+- preserves original SEK charts, runtime values, numeric statistics, closed trades, and parameters;
+- omits the copied order dictionary by default.
+
+Orders are omitted because current Report `PortfolioLooper` cannot register custom markets and leaves `TradingDaysPerYear` unset during a large replay. Returns-per-trade and other closed-trade statistics remain available; the reconstructed asset-allocation chart has no order input.
+
+Use `prepare_report.py --keep-orders ...` only when allocation reconstruction is more important than the upstream replay warning.
+
+## Custom templates
+
+The official [`Report/template.html`](https://github.com/QuantConnect/Lean/blob/master/Report/template.html) controls layout and placeholders. Pass a replacement with:
+
+```bash
+uv run lean report --html custom-template.html --overwrite
+```
+
+A custom template cannot solve SID parsing or portfolio replay problems. Report deserializes orders and runs `PortfolioLooper` before compiling template placeholders.
+
+## Verified artifact
+
+The tested workflow creates `.temp/leansweden/sma-report.html`, approximately 610 KB with 15 embedded charts, strategy metadata, and SEK display values.

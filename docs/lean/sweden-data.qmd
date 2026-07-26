@@ -1,0 +1,75 @@
+---
+title: Generate the Sweden fixture
+---
+
+The `.temp/leansweden/source/generate_data.py` script is a reproducible integration fixture for LEAN's custom-market data paths. It uses QRT for synthetic prices and exchange sessions, then writes native LEAN files.
+
+## Generate the data
+
+```bash
+cd /home/hi/qrt
+uv run python .temp/leansweden/source/generate_data.py
+```
+
+The generator replaces only the fixture's Sweden data tree and patches its isolated metadata/configuration. It is idempotent and writes progress every ten assets.
+
+## What it creates
+
+The current fixture contains 100 symbols from `AAA` through `ADV`:
+
+```text
+.temp/leansweden/data/
+├── equity/sweden/
+│   ├── tick/<symbol>/<date>_{trade|quote}.zip
+│   ├── minute/<symbol>/<date>_{trade|quote}.zip
+│   ├── hour/<symbol>.zip
+│   ├── daily/<symbol>.zip
+│   ├── map_files/<symbol>.csv
+│   ├── factor_files/<symbol>.csv
+│   └── universes/
+├── index/sweden/universes/etf/omxs30/
+├── market-hours/market-hours-database.json
+└── symbol-properties/symbol-properties-database.csv
+```
+
+Measured scale:
+
+- 27,270,000 trade ticks and matching quote ticks;
+- 13,635,000 minute trade bars and matching quote bars;
+- 240,500 hourly bars;
+- 27,000 daily bars;
+- approximately 1.1 GB and 108,400 native Sweden files before universe snapshots.
+
+## Session construction
+
+The script uses the public QRT API:
+
+```python
+schedule = q.calendar.schedule(
+    "2023-12-01",
+    "2024-12-31",
+    exchange="XSTO",
+)
+```
+
+Normal sessions contain 510 minute bars. Stockholm half-days contain 240. Holidays are omitted from price files and represented in the LEAN market-hours database.
+
+## Price construction
+
+`q.stats.random_walk` generates 100 deterministic geometric Brownian paths. Every equity price is stored as `price * 10_000`, while volumes and quote sizes remain unscaled.
+
+Synthetic quotes use a fixed one-tick spread around trades. They exist to exercise LEAN's required trade/quote subscription paths, not to model a real order book.
+
+## Validate generation
+
+```bash
+cd .temp/leansweden
+
+unzip -t data/equity/sweden/tick/aaa/20231228_trade.zip
+unzip -t data/equity/sweden/minute/adv/20240105_quote.zip
+
+find data/equity/sweden/tick -mindepth 1 -maxdepth 1 -type d | wc -l
+find data/equity/sweden/map_files -type f | wc -l
+```
+
+Both counts should be 100. See [Native data formats](fileformat.qmd) for every path and row schema.

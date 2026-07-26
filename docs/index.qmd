@@ -197,12 +197,15 @@ evaluation semantics that run on that infrastructure.
 
 ### `q.signal`: express investment intent
 
-`q.signal` is reserved for turning indicators, factors, model predictions, or
-rules into directional or sizing intent. Thresholds, normalization, decay,
-combination, and turnover-aware signal shaping belong here.
+`q.signal` turns point-in-time indicators, factors, model predictions, or rules
+into directional or sizing intent. It provides canonical pandas validation,
+threshold and hysteresis rules, cross-sectional selection, explicit delay,
+decay, holding and cooldown policies, signal combination, turnover limiting,
+and bounded desired exposure.
 
 Boundary: an indicator measures and a factor compares; a signal interprets.
-Signals still do not decide final portfolio weights or simulate fills.
+Unlike `q.label` targets, signals never inspect future outcomes. Signals still
+do not decide final portfolio weights or simulate fills.
 
 ### `q.portfolio`: convert intent into positions
 

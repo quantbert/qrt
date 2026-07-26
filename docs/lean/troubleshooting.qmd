@@ -1,0 +1,115 @@
+---
+title: Troubleshooting LEAN locally
+---
+
+## Command not found
+
+Activate the repository environment:
+
+```bash
+cd /home/hi/qrt
+uv run lean --version
+```
+
+## Multiple Python files
+
+Pass the desired file explicitly:
+
+```bash
+uv run lean backtest demo_sma.py --no-update
+```
+
+Directory mode requires `main.py` or `Main.cs`. Multiple sibling demo files do not affect `lean report`, which consumes JSON only.
+
+## Custom market not found
+
+Register the market before creating any Swedish symbols:
+
+```python
+if Market.encode("sweden") is None:
+    Market.add("sweden", 900)
+```
+
+Keep ID 900 stable because it is encoded into stored SIDs and universe rows.
+
+## Market hours entry not found
+
+Check that `market-hours-database.json` is valid JSON and contains the exact key:
+
+```text
+Equity-sweden-[*]
+```
+
+Index constituent universes additionally need `Index-sweden-[*]`.
+
+## No data or failed requests
+
+Enable missing-data logs in `lean.json`:
+
+```json
+"show-missing-data-logs": true
+```
+
+Then inspect `failed-data-requests-*.txt`. Common causes are:
+
+- wrong resolution folder;
+- wrong ticker casing/path;
+- wrong ZIP member name;
+- missing intraday quote ZIPs;
+- map-file date boundaries;
+- absent zero-byte universe files on requested non-session dates.
+
+LEAN does not fall back from minute or daily requests to tick files.
+
+## Price is off by 10,000
+
+All equity prices in native files are `actual_price * 10_000`, regardless of quote currency. Volumes and sizes are not scaled.
+
+## Wrong timezone
+
+Write Stockholm-local timestamps with `dataTimeZone` and `exchangeTimeZone` set to `Europe/Stockholm`. Do not use a fixed UTC offset; daylight saving changes it.
+
+## Fee model rejects Sweden
+
+The default Interactive Brokers fee model rejects unknown equity market `sweden`. For a format test:
+
+```python
+security.set_fee_model(ConstantFeeModel(0))
+```
+
+Use a Sweden-aware model for real research.
+
+## Docker-owned files
+
+Docker may leave `lean.json`, output directories, or `__pycache__` owned by root. The generator replaces `lean.json` atomically through the writable parent directory. Write report compatibility files under host-owned `report-results/`, not inside Docker-owned timestamp directories.
+
+## Report option errors
+
+These are invalid:
+
+```bash
+uv run lean report --no-update
+uv run lean report --backtest-results backtests/<timestamp>
+```
+
+Use an exact JSON file and omit `--no-update`.
+
+## Report cannot parse market 900
+
+This is a standalone Report-process limitation, not a template problem. Follow [Generate reports](reports.qmd) and prepare a compatibility copy.
+
+## Post-backtest analyzer requests SPY
+
+LEAN 2.5's result analyzer unconditionally requests USA SPY daily history. The isolated generator appends synthetic SPY daily data so offline 2024 fixture runs finish cleanly. This is an analyzer workaround, not Swedish market data.
+
+## Validate a run
+
+A robust check combines the algorithm marker, engine log, and data monitor:
+
+```bash
+LATEST=$(find backtests -mindepth 1 -maxdepth 1 -type d | sort | tail -n 1)
+
+grep 'VERIFIED' "$LATEST/log.txt"
+! grep ' ERROR::' "$LATEST/log.txt"
+grep 'Failed data requests 0' "$LATEST/log.txt"
+```

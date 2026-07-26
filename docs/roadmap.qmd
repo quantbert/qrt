@@ -55,8 +55,6 @@ on that module's roadmap; the items below would introduce or span namespaces.
   suspicious returns, and look-ahead risks
 - [ ] `q.execution` — shared fee, slippage, spread, order-sizing, and fill models
   for backtests
-- [ ] `q.signal` — signal normalization, ranking, neutralization, decay,
-  turnover, and information-coefficient analysis
 
 ### Portable compute orchestration
 

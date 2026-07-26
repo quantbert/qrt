@@ -8,5 +8,16 @@ Only open work is listed here. Completed items are removed.
 
 - [ ] Event-driven execution kernel shared by batch backtests and `q.gym`
 - [ ] `q.bt.run` adapter for model signals
+- [ ] LEAN CLI adapter for executing local backtests and reports through a
+			typed `q.bt` API
+		- configure a LEAN workspace, project, engine image, parameters, and data root
+		- launch, monitor, cancel, and reproduce `lean backtest` runs
+		- parse result JSON, logs, orders, trades, charts, and data-request reports
+			into QRT-owned result objects
+		- generate HTML/PDF reports and preserve links to the original LEAN artifacts
+		- support custom-market registration and report compatibility without
+			mutating source backtest results
+- [ ] Keep the LEAN adapter optional: LEAN remains a standalone execution
+	engine, while QRT's in-process event kernel remains separately usable
 - [ ] Transaction costs / slippage models
 - [ ] Trade log output compatible with `q.plot` (tearsheets)

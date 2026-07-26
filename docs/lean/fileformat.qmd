@@ -1,0 +1,1220 @@
+---
+title: Native data formats
+---
+
+## Importing Nasdaq Stockholm Equity Data into LEAN CLI
+
+This guide describes how to load self-supplied Nasdaq Stockholm (OMX) equity
+data into LEAN's native `Equity` data path for local `lean-cli` backtests. It
+covers prices, exchange hours, currencies, symbol identity, ticker changes,
+delistings, splits, dividends, and universe membership.
+
+The findings were checked against LEAN `master` commit
+`cd52034ddf55c0c9aa57264d2a148e563924100f` from 2026-07-23. Pin the LEAN
+Docker image used for production backtests because file readers and built-in
+market identifiers can change.
+
+## Short answer
+
+LEAN can run Stockholm equities as native equities, but current upstream LEAN
+does not define a Sweden/Stockholm market. A complete local setup therefore
+needs:
+
+1. A custom market name registered before any Swedish `Symbol` is created.
+2. A market-hours entry with the Stockholm timezone, sessions, holidays, and
+   half days.
+3. Symbol properties that identify the quote currency as SEK.
+4. Price ZIP files at each resolution the algorithm requests.
+5. Map files for point-in-time ticker identity, listings, renames, and
+   delistings.
+6. Factor files for splits, dividends, and adjusted price modes.
+7. Native point-in-time daily, ETF, or Index constituent files if the algorithm
+  selects a Swedish universe instead of adding known tickers.
+
+Tick files do not automatically satisfy minute or daily subscriptions. LEAN can
+consolidate a tick subscription into bars while a backtest is running, but a
+minute subscription opens the minute path and a daily subscription opens the
+daily path. For repeated research, generate minute and daily files offline.
+
+## What is required
+
+| Component | Path or location | Requirement |
+| --- | --- | --- |
+| Market registration | Algorithm initialization | Mandatory until LEAN has a built-in Sweden market |
+| Exchange calendar | `data/market-hours/market-hours-database.json` | Mandatory; a missing entry throws when the equity is added |
+| Trading metadata | `data/symbol-properties/symbol-properties-database.csv` | Operationally mandatory for SEK and correct increments |
+| Trade/quote data | `data/equity/sweden/...` | Mandatory at every subscribed resolution |
+| Map files | `data/equity/sweden/map_files/*.csv` | Strongly recommended; mandatory for correct lifecycle and ticker changes |
+| Factor files | `data/equity/sweden/factor_files/*.csv` | Mandatory for corporate actions and adjusted prices; optional for an action-free static ticker |
+| Fee/brokerage model | Algorithm initialization | Mandatory before trading if the default model rejects the custom market |
+| Security identifier database | `data/symbol-properties/security-database.csv` | Optional; only for ISIN/FIGI/CUSIP/SEDOL lookup helpers |
+| Universe membership | `data/{equity|index}/sweden/universes/...` | Required only for dynamic OMX universe selection |
+
+The current project has `"data-folder": "data"` in `.temp/leantest/lean.json`,
+so its mounted data root is:
+
+```text
+/home/hi/qrt/.temp/leantest/data
+```
+
+Relative `data-folder` values are resolved from the directory containing
+`lean.json`.
+
+This repository installs Lean CLI through `uv` (`lean>=1.0.227` in
+`pyproject.toml`). Activate its environment before working with the fixture:
+
+```bash
+cd /home/hi/qrt
+uv run lean --version
+lean --version
+```
+
+The examples below assume that environment remains active. `uv run lean ...`
+and `uv run python ...` are equivalent one-command alternatives.
+
+## 1. Protect local database changes
+
+Current Lean CLI periodically downloads these two upstream files and replaces
+the local files in full:
+
+```text
+data/market-hours/market-hours-database.json
+data/symbol-properties/symbol-properties-database.csv
+```
+
+It does not merge or preserve a custom Sweden entry. Disable the update before
+editing either file:
+
+```bash
+uv run lean config set database-update-frequency _
+uv run lean config list
+```
+
+`database-update-frequency` is a global CLI setting stored under
+`~/.lean/config`. Any non-timespan value disables the update. On an older CLI
+without this option, set `file-database-last-update` in `lean.json` to a future
+value such as `12/31/2099 00:00:00`, or automatically reapply the custom entries
+after every update.
+
+Also keep the loose-file providers in `lean.json`:
+
+```json
+{
+  "map-file-provider": "QuantConnect.Data.Auxiliary.LocalDiskMapFileProvider",
+  "factor-file-provider": "QuantConnect.Data.Auxiliary.LocalDiskFactorFileProvider"
+}
+```
+
+The provider setting is global, not per market. `LocalZipMapFileProvider` and
+`LocalZipFactorFileProvider` do not read loose Sweden CSV files. Lean CLI may
+switch to those providers after downloading bulk map/factor archives, so check
+the settings again if corporate actions disappear.
+
+`lean data download` is a downloader for supported data providers and
+QuantConnect datasets. It is not a generic importer for an existing tick file.
+The conversion described below writes directly to the configured data folder.
+
+## 2. Register a Sweden market
+
+As of the LEAN revision above:
+
+- `Country.Sweden` exists, but it is only the ISO country code `SWE`.
+- `Market.Sweden` does not exist.
+- The distributed market-hours database has only `usa` and `india` wildcard
+  equity entries.
+- `Market.add` supports custom market identifiers from 1 through 999.
+
+Use one lower-case market name everywhere. This guide uses `sweden`. Register
+it before calling `add_equity`, creating a Swedish `Symbol`, or creating a
+manual universe:
+
+```python
+SWEDEN = "sweden"
+CUSTOM_SWEDEN_MARKET_ID = 900
+
+if Market.encode(SWEDEN) is None:
+    Market.add(SWEDEN, CUSTOM_SWEDEN_MARKET_ID)
+```
+
+Identifier `900` is free in the inspected revision and is intentionally far
+from current built-ins, but LEAN does not reserve a private range. Keep the ID
+stable, pin the engine version, and check for a collision when upgrading. The
+numeric ID is embedded in LEAN security identifiers. If upstream later adds a
+built-in `sweden` market, plan a one-time SID migration for any persisted
+symbols or optional `security-database.csv` rows.
+
+The same string must appear in all of these places:
+
+```text
+Market.add("sweden", ...)
+add_equity(..., market="sweden")
+data/equity/sweden/
+Equity-sweden-[*]
+sweden,[*],equity,...
+```
+
+A LEAN source fork is not required for local backtests. Adding an official
+`Market.Sweden` constant is only needed if this is to become a shared upstream
+engine feature.
+
+The names above are the Python API. C# uses `Market.Add` and `Market.Encode`.
+
+Native data loading and order modeling are separate concerns. In the tested
+LEAN 2.5 image, the default `InteractiveBrokersFeeModel` rejects an equity whose
+market is `sweden`. For a data-format smoke test, assign a zero fee model after
+adding the security:
+
+```python
+security.set_fee_model(ConstantFeeModel(0))
+```
+
+For realistic research, replace this with a Sweden-aware fee model and review
+the buying-power, settlement, fill, slippage, and shorting models as well.
+
+## 3. Add Nasdaq Stockholm market hours
+
+Add an `Equity-sweden-[*]` member inside the top-level `entries` object in
+`data/market-hours/market-hours-database.json`. The following complete sample
+covers 2024 through 2026:
+
+```json
+"Equity-sweden-[*]": {
+  "dataTimeZone": "Europe/Stockholm",
+  "exchangeTimeZone": "Europe/Stockholm",
+  "sunday": [],
+  "monday": [
+    {
+      "start": "09:00:00",
+      "end": "17:30:00",
+      "state": "market"
+    }
+  ],
+  "tuesday": [
+    {
+      "start": "09:00:00",
+      "end": "17:30:00",
+      "state": "market"
+    }
+  ],
+  "wednesday": [
+    {
+      "start": "09:00:00",
+      "end": "17:30:00",
+      "state": "market"
+    }
+  ],
+  "thursday": [
+    {
+      "start": "09:00:00",
+      "end": "17:30:00",
+      "state": "market"
+    }
+  ],
+  "friday": [
+    {
+      "start": "09:00:00",
+      "end": "17:30:00",
+      "state": "market"
+    }
+  ],
+  "saturday": [],
+  "holidays": [
+    "1/1/2024",
+    "3/29/2024",
+    "4/1/2024",
+    "5/1/2024",
+    "5/9/2024",
+    "6/6/2024",
+    "6/21/2024",
+    "12/24/2024",
+    "12/25/2024",
+    "12/26/2024",
+    "12/31/2024",
+    "1/1/2025",
+    "1/6/2025",
+    "4/18/2025",
+    "4/21/2025",
+    "5/1/2025",
+    "5/29/2025",
+    "6/6/2025",
+    "6/20/2025",
+    "12/24/2025",
+    "12/25/2025",
+    "12/26/2025",
+    "12/31/2025",
+    "1/1/2026",
+    "1/6/2026",
+    "4/3/2026",
+    "4/6/2026",
+    "5/1/2026",
+    "5/14/2026",
+    "6/19/2026",
+    "12/24/2026",
+    "12/25/2026",
+    "12/31/2026"
+  ],
+  "earlyCloses": {
+    "1/5/2024": "13:00:00",
+    "3/28/2024": "13:00:00",
+    "4/30/2024": "13:00:00",
+    "5/8/2024": "13:00:00",
+    "11/1/2024": "13:00:00",
+    "4/17/2025": "13:00:00",
+    "4/30/2025": "13:00:00",
+    "5/28/2025": "13:00:00",
+    "10/31/2025": "13:00:00",
+    "1/5/2026": "13:00:00",
+    "4/2/2026": "13:00:00",
+    "4/30/2026": "13:00:00",
+    "5/13/2026": "13:00:00",
+    "10/30/2026": "13:00:00"
+  },
+  "lateOpens": {},
+  "bankHolidays": []
+}
+```
+
+The dates and hours above come from Nasdaq's current official European market
+schedule. Extend both lists across the entire price history. Do not substitute a
+generic Swedish public-holiday calendar: Nasdaq has exchange-specific closure
+and half-day rules. An incomplete calendar can shift scheduled events, create
+fill-forward data on closed days, and put a split or dividend on the wrong next
+trading day.
+
+Nasdaq describes Stockholm equities as open 09:00-17:30 local time and half
+days as 09:00-13:00. The final five minutes of a normal day are a closing call
+with no continuous matching and a randomized uncross near the end. LEAN's
+market-hours schema has no auction state. Keeping the market open through 17:30
+preserves the official closing print, but the default fill model may allow an
+order during a phase where real matching is restricted. Strategies that trade
+near the close need an auction-aware execution/fill rule.
+
+`Europe/Stockholm` is an IANA/TZDB zone and handles CET/CEST daylight saving.
+Avoid a fixed `CET` or UTC offset.
+
+This sample assumes the CSV timestamps and date partitions are Stockholm local
+time. If files are deliberately kept in UTC, set `dataTimeZone` to `UTC`, keep
+`exchangeTimeZone` as `Europe/Stockholm`, and partition each intraday file by
+the UTC data date. Converting input timestamps to Stockholm local time before
+writing is simpler and is recommended.
+
+## 4. Add SEK symbol properties
+
+Append a wildcard row to
+`data/symbol-properties/symbol-properties-database.csv`:
+
+```csv
+sweden,[*],equity,,SEK,1,0.01,1
+```
+
+The columns are:
+
+```text
+market,symbol,type,description,quote_currency,contract_multiplier,minimum_price_variation,lot_size,market_ticker,minimum_order_size,price_magnifier,strike_multiplier
+```
+
+The final four columns are optional. Add a symbol-specific row when metadata
+differs from the wildcard:
+
+```csv
+sweden,VOLV-B,equity,Volvo AB Class B,SEK,1,0.01,1,VOLV B
+```
+
+Important details:
+
+- `quote_currency` must be the actual listing currency. Most Stockholm shares
+  use SEK, but override exceptions.
+- `contract_multiplier` is normally `1` for cash equities.
+- `lot_size` is normally `1`; verify it from the source security master.
+- `minimum_price_variation` is static in this database. Nasdaq Stockholm uses
+  MiFID II tick-size tables that can vary with price and liquidity band, which
+  one static value cannot model exactly. Use a conservative per-symbol value or
+  implement custom order validation for realistic limit-order simulation.
+- The parser simply splits on commas. Do not put an unescaped comma in a
+  description.
+- `market_ticker` is broker/vendor metadata. It does not rename the LEAN price
+  folder.
+
+For a pure Swedish account, set the account currency before setting cash:
+
+```python
+self.set_account_currency("SEK")
+self.set_cash(1_000_000)
+```
+
+If the account currency is USD or EUR, LEAN also needs a conversion path for
+SEK cash. Supply the required FX data or conversion rate. Otherwise holdings
+may have a zero or stale account-currency value.
+
+## 5. Design symbols and map files
+
+LEAN does not require a central symbol master to add a known ticker. It creates
+a `Symbol` from the ticker, market, security type, and first date resolved from
+the map file. Map files are therefore the native point-in-time identity store
+for equities.
+
+Maintain an ingestion manifest outside LEAN with at least:
+
+```text
+permanent_id,lean_ticker,vendor_ticker,isin,name,currency,listing_date,delisting_date
+```
+
+Use ISIN or another stable source ID to join prices and corporate actions. Keep
+share classes distinct. It is practical to use ASCII, filesystem-safe LEAN
+tickers such as `VOLV-A` and `VOLV-B`, then retain the official ticker in the
+manifest and `market_ticker` field. Whatever convention is chosen must remain
+stable.
+
+### Identity map
+
+For a continuously listed symbol with no ticker change, create:
+
+```text
+data/equity/sweden/map_files/volv-b.csv
+```
+
+```csv
+20000103,volv-b
+20501231,volv-b
+```
+
+`20501231` is LEAN's canonical `Time.EndOfTime` sentinel. The first row is the
+first listing/data date. Without the future row, LEAN treats the first row as
+the delisting date.
+
+### Ticker rename
+
+Each map row is an inclusive end date for the ticker in that row. If `oldco`
+listed on 2010-01-04 and became `newco` on 2020-04-01:
+
+```csv
+20100104,oldco
+20200331,oldco
+20501231,newco
+```
+
+Store price files under `oldco` through 2020-03-31 and under `newco` from
+2020-04-01. The map filename is the stable permtick used to find the entity's
+factor file. Keep its stem unchanged after a rename.
+
+### Delisting
+
+For a symbol whose final trading date was 2024-05-17, omit the future sentinel:
+
+```csv
+20100104,oldco
+20240517,oldco
+```
+
+The final map date drives LEAN's delisting warning/event and prevents price-file
+searches after that date.
+
+Map rows may have a third primary-exchange column, but current LEAN does not
+recognize `XSTO`/Stockholm in its `Exchange` table. Omit that column rather than
+pretending the listing is on a US exchange. LEAN will use `Exchange.UNKNOWN`,
+which is sufficient for loading local prices.
+
+### Reused tickers
+
+If two legal entities used the same ticker at different times, give them
+different stable permticks, similar to LEAN's `.1` convention, and keep their
+mapping periods disjoint. Do not merge them into one return series.
+
+### Optional identifier database
+
+`data/symbol-properties/security-database.csv` maps a fully encoded LEAN SID to
+CUSIP, composite FIGI, SEDOL, ISIN, and CIK. It is consulted by explicit helper
+methods such as `Symbol.create_by_isin`; it is not consulted by ordinary
+`add_equity`, and it is not a universe-membership database. Populating it is
+optional and binds the rows to the chosen custom numeric market ID.
+
+### OMX universe selection
+
+LEAN does not discover a universe by scanning price folders, map files, or the
+identifier database. For a survivorship-bias-free Swedish universe, retain
+point-in-time active listings and index/ETF constituents in native universe
+files. A current ticker list hard-coded into a historical backtest is
+survivorship biased. Map files handle a symbol after selection; they do not
+decide which symbols enter the universe.
+
+#### Broad daily universe
+
+A preselected daily universe uses one uncompressed CSV per source date:
+
+```text
+data/equity/sweden/universes/daily/sweden100/20240102.csv
+```
+
+Each row is:
+
+```text
+ticker,full_lean_sid
+```
+
+For the synthetic fixture:
+
+```csv
+AAA,AAA YDXSJNGP3GK1
+AAB,AAB YDXSJNGP3GK1
+AAC,AAC YDXSJNGP3GK1
+```
+
+The second field must be a valid full SID, not a ticker repeated twice. An
+equity SID encodes its security type, market numeric ID, and first map-file
+date. Keep market ID `900` and map dates stable, or regenerate every universe
+row when either changes.
+
+Create the matching universe in Python with:
+
+```python
+universe_ticker = "constituents-universe-sweden100"
+universe_symbol = Symbol(
+    SecurityIdentifier.generate_constituent_identifier(
+        universe_ticker,
+        SecurityType.EQUITY,
+        SWEDEN,
+    ),
+    universe_ticker,
+)
+self.add_universe(
+    ConstituentsUniverse(universe_symbol, self.universe_settings)
+)
+```
+
+`ConstituentsUniverseData.GetSource` takes the folder name from the text after
+the final hyphen in the universe symbol. Therefore the example symbol resolves
+to the `sweden100` folder.
+
+A row is dated at `Time = source_date` and becomes available at
+`EndTime = source_date + 1 day`. LEAN's generic constituent subscription uses
+custom-data scheduling and may request Sundays and exchange holidays in
+addition to market sessions. To avoid missing-request noise without changing
+membership, create a zero-byte CSV for every non-session calendar date in the
+covered range. Do not put `NONE,NONE 0` in those files unless the intended
+point-in-time selection is genuinely empty; that sentinel explicitly clears
+the universe.
+
+#### ETF and index constituents
+
+ETF and index universes share the same six-column reader but have different
+security-type roots:
+
+```text
+# A tradable ETF, used with self.universe.etf(...)
+data/equity/sweden/universes/etf/<etf-ticker>/20240102.csv
+
+# An index composite, used with self.universe.index(...)
+data/index/sweden/universes/etf/omxs30/20240102.csv
+```
+
+The `etf` directory name in the Index path is intentional: current LEAN reuses
+`ETFConstituentUniverse` as its Index constituent reader. Use the official
+symbol spelling `OMXS30`.
+
+Each row is:
+
+```text
+ticker,full_lean_sid,last_update,weight,shares_held,market_value
+```
+
+Example:
+
+```csv
+AAA,AAA YDXSJNGP3GK1,20231201,0.064516129032,1000000,
+AAB,AAB YDXSJNGP3GK1,20231201,0.062365591398,990000,
+```
+
+- `last_update` uses `YYYYMMDD` and describes when the holdings/composition
+  source last changed; it may differ from the filename date.
+- `weight` is a decimal fraction, so all constituent weights normally sum to
+  approximately `1`, not `100`.
+- `shares_held` and `market_value` are nullable. Preserve all six columns,
+  including the trailing comma when market value is absent.
+- Constituent SIDs identify the component equities, not the parent index.
+
+Add an OMXS30 constituent universe with:
+
+```python
+self.add_universe(
+    self.universe.index(
+        "OMXS30",
+        market=SWEDEN,
+        universe_settings=self.universe_settings,
+        universe_filter_func=lambda constituents: [
+            constituent.symbol for constituent in constituents
+        ],
+    )
+)
+```
+
+Also add `Index-sweden-[*]` to the market-hours database, an SEK wildcard Index
+row to the symbol-properties database, and `data/index/sweden/map_files/`.
+An identity `omxs30.csv` map is useful even when only constituent selection is
+tested. The parent Index does not need price files merely to select components;
+it does need native index price data if the algorithm subscribes to or uses the
+Index as a priced benchmark.
+
+As with the broad daily universe, provide zero-byte files on non-session dates
+that LEAN requests. On actual sessions, repeat the latest point-in-time
+composition until it changes. For a real OMXS30 import, source every historical
+addition/removal and weight effective date rather than applying today's 30
+members to the past.
+
+## 6. Build the price data tree
+
+A representative data tree is:
+
+```text
+data/
+|-- equity/
+|   `-- sweden/
+|       |-- tick/
+|       |   `-- volv-b/
+|       |       |-- 20240102_trade.zip
+|       |       `-- 20240102_quote.zip
+|       |-- second/
+|       |   `-- volv-b/
+|       |       `-- 20240102_trade.zip
+|       |-- minute/
+|       |   `-- volv-b/
+|       |       `-- 20240102_trade.zip
+|       |-- hour/
+|       |   `-- volv-b.zip
+|       |-- daily/
+|       |   `-- volv-b.zip
+|       |-- map_files/
+|       |   `-- volv-b.csv
+|       `-- factor_files/
+|           `-- volv-b.csv
+|-- market-hours/
+|   `-- market-hours-database.json
+`-- symbol-properties/
+    `-- symbol-properties-database.csv
+```
+
+### Rules common to all equity price files
+
+- Use lower-case market, resolution, ticker, folder, and ZIP names.
+- Store one CSV member per ZIP with no header and no nested directory.
+- Sort rows oldest to newest. Duplicate tick timestamps are allowed.
+- Use invariant numeric formatting: `.` for decimals and no thousands
+  separators.
+- Store raw, unadjusted prices and actual historical quantities.
+- Multiply every equity price by exactly `10,000`, regardless of currency.
+  LEAN divides by `10,000` while reading.
+- Omit intervals with no activity. LEAN can fill forward after reading if the
+  subscription enables it.
+- The timestamp is the start time of a bar, not its end time.
+
+For example, `287.35 SEK` is written as `2873500`.
+
+### Tick trade data
+
+Path:
+
+```text
+data/equity/sweden/tick/volv-b/20240102_trade.zip
+```
+
+ZIP member name:
+
+```text
+20240102_volv-b_Trade_Tick.csv
+```
+
+Row schema:
+
+```text
+milliseconds_since_midnight,price_x10000,quantity,exchange,sale_condition,suspicious
+```
+
+Example at 09:00:00.123456 Stockholm time:
+
+```csv
+32400123.456,2873500,100,,0,0
+```
+
+Tick times may contain a decimal fraction of a millisecond. Convert the source
+timestamp to `Europe/Stockholm`, select the local date for the ZIP name, then
+compute elapsed milliseconds from local midnight.
+
+Current LEAN has no Stockholm exchange code. Leave `exchange` empty. A nonempty
+sale condition is parsed as hexadecimal when algorithms access
+`parsed_sale_condition`, so use `0` unless the source flags have been explicitly
+translated to LEAN's condition bit mask. Set `suspicious` to `1` for a tick that
+should not update prices or consolidators; otherwise use `0`.
+
+### Tick quote data
+
+Path and ZIP member:
+
+```text
+data/equity/sweden/tick/volv-b/20240102_quote.zip
+20240102_volv-b_Quote_Tick.csv
+```
+
+Row schema:
+
+```text
+milliseconds_since_midnight,bid_x10000,bid_size,ask_x10000,ask_size,exchange,quote_condition,suspicious
+```
+
+Example:
+
+```csv
+32400123.456,2873000,500,2874000,400,,0,0
+```
+
+Full bid/ask snapshots can include both sides. For a one-sided update, use zero
+for the absent side, as the upstream sample data does. Do not synthesize quote
+ticks from trades.
+
+### Second and minute trade bars
+
+Paths:
+
+```text
+data/equity/sweden/second/volv-b/20240102_trade.zip
+data/equity/sweden/minute/volv-b/20240102_trade.zip
+```
+
+ZIP members:
+
+```text
+20240102_volv-b_second_trade.csv
+20240102_volv-b_minute_trade.csv
+```
+
+Row schema:
+
+```text
+integer_milliseconds_since_midnight,open_x10000,high_x10000,low_x10000,close_x10000,volume
+```
+
+Example 09:00 minute bar:
+
+```csv
+32400000,2873000,2875000,2872000,2873500,12345
+```
+
+Unlike tick time, the trade-bar parser expects the intraday timestamp to be an
+integer.
+
+### Second and minute quote bars
+
+Use `_quote.zip` and a `_quote.csv` ZIP member. The 11 columns are:
+
+```text
+time,bid_open,bid_high,bid_low,bid_close,bid_size,ask_open,ask_high,ask_low,ask_close,ask_size
+```
+
+All bid/ask price fields are multiplied by `10,000`. Sizes are not scaled.
+
+```csv
+32400000,2872000,2874000,2871000,2873000,500,2874000,2876000,2873000,2875000,400
+```
+
+This is not merely optional depth data for a clean standard equity run. In the
+tested LEAN 2.5 image, `add_equity(..., Resolution.MINUTE)` requested both the
+minute trade and minute quote ZIP for every session, even though the algorithm
+only consumed `Slice.bars`. A typed `Tick` history request likewise returned
+both trade and quote ticks. Missing quote ZIPs did not prevent trade bars from
+streaming, but they produced failed data requests. Generate matching quote
+files when zero missing-data requests are required.
+
+### Hour and daily trade bars
+
+Hour and daily data use one ZIP per mapped ticker for the entire available
+history:
+
+```text
+data/equity/sweden/hour/volv-b.zip
+data/equity/sweden/daily/volv-b.zip
+```
+
+Both ZIPs contain `volv-b.csv`. Rows use:
+
+```text
+YYYYMMDD HH:MM,open_x10000,high_x10000,low_x10000,close_x10000,volume
+```
+
+Examples:
+
+```csv
+20240102 09:00,2873000,2890000,2868000,2885000,120000
+20240102 00:00,2873000,2910000,2860000,2905000,2450000
+```
+
+Use `00:00` for a daily row. Native equity hour/daily subscriptions support
+trade bars, not quote bars.
+
+## 7. Generate bars from ticks
+
+### What LEAN does and does not do
+
+LEAN does not transparently fall back to tick data when a strategy requests a
+coarser resolution. It chooses the data path directly from the requested
+subscription or history resolution:
+
+| Algorithm request | File LEAN opens |
+| --- | --- |
+| `Resolution.TICK` | `equity/sweden/tick/...` |
+| `Resolution.SECOND` | `equity/sweden/second/...` |
+| `Resolution.MINUTE` | `equity/sweden/minute/...` |
+| `Resolution.HOUR` | `equity/sweden/hour/...` |
+| `Resolution.DAILY` | `equity/sweden/daily/...` |
+
+Therefore, storing only ticks and calling
+`add_equity(..., Resolution.MINUTE)` produces no minute data. The same applies
+to a call such as `history(..., Resolution.MINUTE)`: it requests minute files;
+it does not build the response from tick files.
+
+This does **not** mean every resolution must be materialized. Only resolutions
+that the algorithm directly requests must exist. Alternatively, subscribe to
+an available finer resolution and explicitly consolidate it while the
+algorithm runs.
+
+LEAN can consolidate a tick subscription while the backtest runs:
+
+```python
+from datetime import timedelta
+
+self._security = self.add_equity(
+    "VOLV-B",
+    Resolution.TICK,
+    market=SWEDEN,
+    data_normalization_mode=DataNormalizationMode.RAW,
+)
+self._minute_consolidator = TickConsolidator(timedelta(minutes=1))
+self._minute_consolidator.data_consolidated += self._on_minute_bar
+self.subscription_manager.add_consolidator(
+    self._security.symbol,
+    self._minute_consolidator,
+)
+```
+
+`TickConsolidator` consumes trade ticks and emits `TradeBar` objects. It does not
+write minute ZIPs to disk, and every run still reads every tick. The resulting
+bars exist only in that algorithm run: they do not make separate minute, hour,
+or daily subscriptions work, and they do not satisfy history requests at those
+resolutions. Use `TickQuoteBarConsolidator` separately for quote ticks.
+
+The same pattern works between bar resolutions. For example, an algorithm can
+subscribe to minute files and use `TradeBarConsolidator` to produce hourly
+bars. In that design, hour files are unnecessary unless the algorithm also
+directly requests `Resolution.HOUR` data or hourly history.
+
+For practical storage and backtest speed:
+
+- Keep ticks as the authoritative raw archive and for microstructure research.
+- Generate minute files for normal intraday strategies.
+- Generate daily files for daily strategies, validation, and factor-file
+  construction.
+- Generate second or hour files only when strategies directly request them or
+  repeated runtime consolidation is too expensive.
+
+In short, if an algorithm asks LEAN for resolution `R`, either files for `R`
+must exist, or the algorithm must instead subscribe to a finer available
+resolution and explicitly consolidate it forward.
+
+### Recommended offline aggregation
+
+Generate minute and daily trade bars once as part of ingestion:
+
+1. Convert all timestamps to Stockholm local time.
+2. Apply corrections/cancellations and flag or reject bad ticks.
+3. Sort by exchange event time and a deterministic source sequence.
+4. Group valid trade ticks into local minute buckets.
+5. Set open/close to first/last trade, high/low to extrema, and volume to the
+   sum of trade quantities.
+6. Omit empty buckets.
+7. Aggregate daily bars by the exchange session, respecting holidays and 13:00
+   half-day closes.
+8. Include the official opening and closing auction prices in the session open
+   and close. Prefer exchange event timestamps over delayed receipt timestamps.
+9. Write raw bars using the schemas above.
+
+Generate daily data before factor files because each corporate-action row needs
+the previous session's raw close as its reference price. Minute plus daily is a
+good default. Add second/hour files only when a strategy directly subscribes to
+those resolutions.
+
+## 8. Store splits and dividends in factor files
+
+Price files must remain raw. Do not pre-adjust the OHLC prices and then also add
+a factor file, because LEAN would adjust them twice.
+
+Factor file path:
+
+```text
+data/equity/sweden/factor_files/volv-b.csv
+```
+
+The filename is the stable map-file permtick, not necessarily the current
+mapped ticker. With no usable map file, LEAN falls back to the requested ticker.
+
+Each row is:
+
+```text
+YYYYMMDD,cumulative_price_factor,cumulative_split_factor,raw_reference_close
+```
+
+Rows are ascending by date. Include a terminal row:
+
+```csv
+20501231,1,1,0
+```
+
+For a symbol with no actions, a complete identity factor file can be:
+
+```csv
+20000103,1,1,100
+20501231,1,1,0
+```
+
+An absent/empty factor file also behaves as factor 1, but an explicit file is
+easier to audit.
+
+### Row date and formulas
+
+The row date is the last open trading day before the action's effective/ex-date,
+not the effective date itself. LEAN compares the row to the next row and emits
+the action on the next trading day according to the market-hours calendar.
+
+Build factors backwards from the terminal row. Let:
+
+- `P_next` be the cumulative price factor after the event.
+- `S_next` be the cumulative split factor after the event.
+- `C` be the raw close on the previous trading day.
+- `D` be the cash dividend per share on the same share basis as `C`.
+- `r` be old shares divided by new shares for a split.
+
+For a dividend:
+
+```text
+P_before = P_next * (C - D) / C
+S_before = S_next
+```
+
+For a split:
+
+```text
+P_before = P_next
+S_before = S_next * r
+```
+
+Examples of `r`:
+
+- 2-for-1 split: `r = 0.5`
+- 7-for-1 split: `r = 1/7`
+- 1-for-10 reverse split: `r = 10`
+
+If a split and dividend share an effective date, apply both changes to one row.
+The adjusted price scale is `P * S`.
+
+### Worked example
+
+Assume:
+
+- A 2-for-1 split is effective 2023-06-01; the 2023-05-31 raw close is 200.
+- A 5 SEK dividend is ex-date 2024-04-05; the 2024-04-04 raw close is 100.
+
+Then the factor file can be:
+
+```csv
+20200102,0.95,0.5,50
+20230531,0.95,0.5,200
+20240404,0.95,1,100
+20501231,1,1,0
+```
+
+The unchanged first row extends the earliest cumulative factors back to the
+first data date. LEAN infers:
+
+```text
+split factor = 0.5 / 1 = 0.5
+dividend = 100 * (1 - 0.95 / 1) = 5 SEK
+```
+
+Write enough decimal precision for cumulative factors. LEAN's own writer rounds
+price factors to 7 decimal places, split factors to 8, and reference prices to
+4. The standard dividend event reconstruction rounds distributions to 2
+decimal places.
+
+### Normalization behavior
+
+- `RAW`: emits raw prices; LEAN adjusts held share quantity on a split and
+  credits dividend cash.
+- `ADJUSTED`: applies split and dividend factors to historical prices; holdings
+  are not separately changed for those already-normalized discontinuities.
+- `SPLIT_ADJUSTED`: adjusts prices for splits and still credits dividends.
+- `TOTAL_RETURN`: represents dividends in the normalized return series.
+
+Use `RAW` first when validating imported data and corporate actions. Factor
+files also generate `Split` and `Dividend` objects in the data slice.
+
+LEAN models the dividend at the ex-date and credits it then in a backtest; it
+does not model the later payable date. Tax withholding, stock dividends,
+rights, spin-offs, merger consideration, and venue-specific corporate-action
+details may require custom accounting beyond the standard factor file.
+
+## 9. End-to-end ingestion order
+
+Use this order for a reproducible import:
+
+1. **Freeze conventions.** Choose `sweden`, custom market ID `900`, a ticker
+   normalization rule, the source timezone, and the LEAN Docker image.
+2. **Build a security manifest.** Join each vendor symbol to a stable entity,
+   ISIN, share class, listing currency, and listing/delisting dates.
+3. **Normalize raw ticks.** Convert to `Europe/Stockholm`, retain exchange event
+   time and source sequence, process cancellations/corrections, and identify
+   auction prints.
+4. **Write daily tick ZIPs.** Write trade and quote archives separately with
+   exact path/member names and prices multiplied by `10,000`.
+5. **Build raw bars.** Generate minute and daily files from clean trade ticks.
+   Keep volume in shares and omit empty bars.
+6. **Write map files.** Encode first listing date, ticker periods, the future
+   sentinel for active stocks, and the real final date for delisted stocks.
+7. **Write factor files.** Join actions by stable entity, use raw previous
+   closes, and calculate cumulative factors backwards.
+8. **Patch reference databases.** Add the market-hours entry and SEK symbol
+   properties after disabling CLI database replacement.
+9. **Run one-symbol smoke tests.** Test `RAW` minute data first, then tick and
+   daily, then a date around one split/dividend/rename/half day.
+10. **Add the universe.** Only after single-symbol behavior is correct, write
+  point-in-time active listings or index/ETF memberships in the native
+  universe formats and validate additions, removals, weights, and effective
+  dates.
+11. **Audit upgrades.** On each LEAN/CLI upgrade, check the custom market ID,
+    database entries, provider settings, and a golden backtest.
+
+## 10. Smoke-test algorithm
+
+Replace the ticker and dates with a range that exists in the imported files:
+
+```python
+from AlgorithmImports import *
+
+
+SWEDEN = "sweden"
+CUSTOM_SWEDEN_MARKET_ID = 900
+
+
+class OmxDataSmokeTest(QCAlgorithm):
+    def initialize(self) -> None:
+        if Market.encode(SWEDEN) is None:
+            Market.add(SWEDEN, CUSTOM_SWEDEN_MARKET_ID)
+
+        self.set_start_date(2024, 1, 2)
+        self.set_end_date(2024, 1, 5)
+        self.set_time_zone("Europe/Stockholm")
+        self.set_account_currency("SEK")
+        self.set_cash(1_000_000)
+
+        security = self.add_equity(
+            "VOLV-B",
+            Resolution.MINUTE,
+            market=SWEDEN,
+            fill_forward=False,
+            extended_market_hours=False,
+            data_normalization_mode=DataNormalizationMode.RAW,
+        )
+        security.set_fee_model(ConstantFeeModel(0))
+        self._symbol = security.symbol
+        self._bar_count = 0
+
+    def on_data(self, data: Slice) -> None:
+        bar = data.bars.get(self._symbol)
+        if bar is None:
+            return
+
+        self._bar_count += 1
+        if self._bar_count <= 3:
+            self.debug(
+                f"{bar.time} {bar.open} {bar.high} "
+                f"{bar.low} {bar.close} {bar.volume}"
+            )
+
+    def on_splits(self, splits: Splits) -> None:
+        for symbol, split in splits.items():
+            self.debug(f"SPLIT {self.time} {symbol} {split.split_factor}")
+
+    def on_dividends(self, dividends: Dividends) -> None:
+        for symbol, dividend in dividends.items():
+            self.debug(f"DIVIDEND {self.time} {symbol} {dividend.distribution}")
+
+    def on_end_of_algorithm(self) -> None:
+        self.debug(f"BARS={self._bar_count}")
+```
+
+Temporarily set `"show-missing-data-logs": true` in `lean.json` while debugging.
+Run from the CLI root that owns the data folder:
+
+```bash
+cd /home/hi/qrt/.temp/leantest
+uv run lean backtest demo.py --no-update
+```
+
+`--no-update` pins the already-downloaded engine image for that invocation. It
+does not replace the separate `database-update-frequency` protection.
+
+## 11. Validate the files
+
+Validate the full market-hours JSON after inserting the member:
+
+```bash
+uv run python -m json.tool \
+  .temp/leantest/data/market-hours/market-hours-database.json \
+  >/dev/null
+```
+
+Inspect and test a ZIP:
+
+```bash
+unzip -t .temp/leantest/data/equity/sweden/minute/volv-b/20240102_trade.zip
+unzip -Z1 .temp/leantest/data/equity/sweden/minute/volv-b/20240102_trade.zip
+unzip -p .temp/leantest/data/equity/sweden/minute/volv-b/20240102_trade.zip | head
+```
+
+Expected member:
+
+```text
+20240102_volv-b_minute_trade.csv
+```
+
+For each symbol, assert in the ingestion job that:
+
+- Timestamps are nondecreasing and belong to the partition's local date.
+- Tick and minute times are within the intended session, including valid
+  auction prints.
+- `low <= open <= high`, `low <= close <= high`, and volume is nonnegative.
+- Scaled prices divided by `10,000` match source prices exactly within the
+  selected precision.
+- Daily OHLCV matches aggregation from accepted ticks/minutes.
+- Map intervals do not overlap across entities that reuse a ticker.
+- Map first/final dates agree with listing status.
+- Every factor reference close matches raw daily data.
+- Reconstructed split ratios and dividend amounts match the action source.
+- The holiday/half-day calendar covers every backtest year.
+
+Run focused backtests for:
+
+1. An ordinary full session.
+2. A 13:00 half day.
+3. A daylight-saving period boundary.
+4. A split.
+5. A dividend.
+6. A ticker rename.
+7. A delisting, if present.
+
+Compare the first/last timestamp, OHLCV, event date, cash, and holdings against
+the source system.
+
+## 12. Proven synthetic fixture
+
+The repository contains a working, deterministic test workspace at
+`.temp/leansweden`. Its source generator uses `q.stats.random_walk` for prices
+and `q.calendar.schedule(..., exchange="XSTO")` for real Stockholm sessions,
+holidays, daylight saving, and half-days.
+
+```bash
+cd /home/hi/qrt
+uv run lean --version
+uv run python .temp/leansweden/source/generate_data.py
+cd .temp/leansweden
+uv run lean backtest demo.py --no-update
+```
+
+The generator creates 100 symbols (`AAA` through `ADV`) from 2023-12-01 through
+2024-12-30. The native Sweden tree is about 1.1 GB across 108,400 files and
+contains 27.27 million trade ticks, 13.635 million minute trade bars, 240,500
+hour bars, and 27,000 daily bars, plus required intraday quotes and 100 map and
+factor files.
+
+The stress backtest covers all 251 XSTO sessions in 2024. It simultaneously
+subscribes to all 100 daily streams, receives all 25,100 expected bars with no
+incomplete session, requests tick/minute/quote/hour/daily history across all
+symbols, fills 100 holdings in SEK, and completes 602 of 602 data requests.
+Look for this marker:
+
+```text
+SWEDEN_MULTI_ASSET_VERIFIED
+```
+
+For a 09:00-10:00 history interval, LEAN returned 60 minute `TradeBar` and 60
+minute `QuoteBar` rows per symbol because bars are filtered by `EndTime`.
+Typed tick history returned 242 rows per symbol because it included both trade
+and quote events and instantaneous ticks exactly at the 10:00 boundary.
+
+The fixture also generates:
+
+```text
+data/equity/sweden/universes/daily/sweden100/
+data/index/sweden/universes/etf/omxs30/
+```
+
+`universe_demo.py` validates both native APIs over the full year. The broad
+universe selected 100 assets on 251 updates. The synthetic OMXS30 selected 30
+weighted assets on 251 updates and observed two compositions: `AAA`-`ABD`
+before July and `AAF`-`ABI` from July. All 100 unique securities were added,
+all 25,100 daily bars arrived, and 618 of 618 universe data requests succeeded.
+Look for:
+
+```text
+SWEDEN_UNIVERSES_VERIFIED
+```
+
+LEAN 2.5's post-backtest `ResultsAnalyzer` currently requests USA `SPY` daily
+history unconditionally, regardless of the algorithm benchmark. The isolated
+generator appends a small synthetic SPY daily series so an offline 2024 run does
+not end with `benchmarkSeries.Keys.First(): Sequence contains no elements`.
+That SPY series is an analyzer workaround, not part of the Sweden format.
+
+The standalone Report Creator has a similar custom-market boundary: it parses
+result SIDs in a fresh process that never executes `Market.add("sweden", 900)`.
+The fixture's `source/prepare_report.py` writes a separate compatibility copy
+for `lean report`; it never modifies the original result. The safe default
+preserves closed trades, charts, returns, statistics, and parameters but omits
+the copied order dictionary, because current Report portfolio replay also
+leaves `TradingDaysPerYear` unset. See `.temp/leansweden/README.md` for the
+verified command.
+
+## 13. Common failure modes
+
+| Symptom | Likely cause |
+| --- | --- |
+| `market` is out of range/not found | `Market.add` ran after symbol creation, used another name, or the ID collided |
+| Exchange-hours entry not found | Missing/misspelled `Equity-sweden-[*]` or invalid JSON caused the entry to be skipped |
+| No data but no parser error | Wrong subscribed resolution, mapped ticker path, ZIP date, or data-folder root |
+| Trade bars load but data requests fail | Matching intraday quote ZIPs are absent |
+| Price is 10,000 times too small/large | Equity price scaling was omitted or applied twice |
+| Data is shifted by one or two hours | UTC timestamps were written as Stockholm local time, or a fixed timezone was used |
+| Data starts late or stops early | Incorrect first/final map row; active ticker is missing the `20501231` sentinel |
+| Rename never occurs | Map intervals or old/new price folder names do not agree |
+| Split/dividend never occurs | Factor filename does not match the map permtick, factors do not change, or a ZIP provider ignores loose CSVs |
+| Dividend amount is wrong | Reference close/dividend share basis is wrong, factor precision is too low, or the action used pay date instead of ex-date |
+| Equity is treated as USD | Missing SEK symbol-properties row or account currency/conversion setup |
+| `InteractiveBrokersFeeModel(): unexpected equity Market sweden` | Assign a Sweden-aware fee model; use `ConstantFeeModel(0)` only for a format smoke test |
+| Custom metadata disappears | Lean CLI replaced the two reference databases during its periodic update |
+| Post-backtest analyzer throws on an empty sequence | Local SPY daily history does not cover the backtest; LEAN 2.5's analyzer hard-codes SPY |
+| Orders fill unrealistically near 17:30 | Default fill model cannot represent the Stockholm closing call |
+| Historical universe contains only today's survivors | Current ticker list was used instead of point-in-time membership data |
+
+## Source references
+
+- [LEAN CLI: Dataset Format and Storage](https://www.lean.io/docs/v2/lean-cli/datasets/format-and-storage)
+- [LEAN Data directory and equity README](https://github.com/QuantConnect/Lean/tree/master/Data)
+- [LEAN market registry](https://github.com/QuantConnect/Lean/blob/master/Common/Market.cs)
+- [LEAN path, ZIP member, CSV, and 10,000x price generation](https://github.com/QuantConnect/Lean/blob/master/Common/Util/LeanData.cs)
+- [LEAN equity tick reader](https://github.com/QuantConnect/Lean/blob/master/Common/Data/Market/Tick.cs)
+- [LEAN trade-bar reader](https://github.com/QuantConnect/Lean/blob/master/Common/Data/Market/TradeBar.cs)
+- [Market-hours lookup and required-entry behavior](https://github.com/QuantConnect/Lean/blob/master/Common/Securities/MarketHoursDatabase.cs)
+- [Symbol-properties lookup and fallback behavior](https://github.com/QuantConnect/Lean/blob/master/Common/Securities/SymbolPropertiesDatabase.cs)
+- [Map file implementation](https://github.com/QuantConnect/Lean/tree/master/Common/Data/Auxiliary)
+- [Corporate factor row formulas](https://github.com/QuantConnect/Lean/blob/master/Common/Data/Auxiliary/CorporateFactorRow.cs)
+- [Factor event detection](https://github.com/QuantConnect/Lean/blob/master/Common/Data/Auxiliary/CorporateFactorProvider.cs)
+- [LEAN tick consolidator](https://github.com/QuantConnect/Lean/blob/master/Common/Data/Consolidators/TickConsolidator.cs)
+- [Nasdaq European trading hours and Stockholm calendars](https://www.nasdaq.com/european-market-activity/trading-hours)
+- [Nasdaq Nordic cash-equity market](https://www.nasdaq.com/solutions/nordic-equities-exchange-and-market)
+- [Nasdaq Stockholm](https://www.nasdaq.com/solutions/european-markets/stockholm)
+- [Lean CLI database replacement implementation](https://github.com/QuantConnect/lean-cli/blob/master/lean/components/cloud/data_downloader.py)

@@ -1,0 +1,87 @@
+---
+title: Install and initialize Lean CLI
+---
+
+## Prerequisites
+
+Local backtests and reports run in Docker. Install Docker and verify that your user can access it. Lean CLI initialization also requires a QuantConnect organization on a paid tier.
+
+This repository manages Lean CLI in its `uv` environment:
+
+```bash
+cd /home/hi/qrt
+uv add lean
+uv run lean --version
+```
+
+The tested version is `lean 1.0.227`. `uv run lean ...` is equivalent when the virtual environment is not activated.
+
+::: {.callout-note}
+Lean CLI and the LEAN engine are different versioned components. The Python package supplies the CLI; local backtests run a Docker image such as `quantconnect/lean:latest`.
+:::
+
+## Initialize a workspace
+
+Create an empty directory and run `lean init` inside it:
+
+```bash
+mkdir -p .temp/leansweden
+cd .temp/leansweden
+uv run lean init --organization <organization-name-or-id> --language python
+```
+
+Initialization creates:
+
+```text
+leansweden/
+├── lean.json
+└── data/
+```
+
+- `lean.json` configures the engine and points `data-folder` at `data`.
+- `data/` contains sample native LEAN data, market hours, and symbol properties.
+
+Create ordinary projects with `lean create-project NAME`. The tested fixture instead keeps `demo.py`, `universe_demo.py`, and `demo_sma.py` at the workspace root and always passes the desired file explicitly.
+
+## Run commands through uv
+
+Run commands from the repository environment, even after changing into a LEAN
+workspace:
+
+```bash
+cd /home/hi/qrt
+uv run lean --version
+uv run python .temp/leansweden/source/generate_data.py
+uv run lean backtest .temp/leansweden/demo.py --no-update
+```
+
+`uv run` resolves Python and Lean CLI from `/home/hi/qrt/.venv` without
+depending on shell activation state.
+
+## Protect custom metadata
+
+Lean CLI periodically replaces the public market-hours and symbol-properties databases. Disable the global refresh while maintaining custom entries:
+
+```bash
+uv run lean config set database-update-frequency _
+uv run lean config list
+```
+
+The fixture also sets this workspace value in `lean.json`:
+
+```json
+"file-database-last-update": "12/31/2099 00:00:00"
+```
+
+Keep the loose CSV providers when custom map and factor files are not packaged in LEAN's bulk ZIP format:
+
+```json
+"map-file-provider": "QuantConnect.Data.Auxiliary.LocalDiskMapFileProvider",
+"factor-file-provider": "QuantConnect.Data.Auxiliary.LocalDiskFactorFileProvider"
+```
+
+## Pin the engine for reproducibility
+
+`lean backtest ... --no-update` uses the Docker image already present locally instead of pulling the latest tag. It does not disable database refreshes or pin an immutable image digest.
+
+For durable production reproducibility, configure a versioned image tag or digest and record it with each run.

@@ -1,0 +1,92 @@
+---
+title: Universes and composites
+---
+
+The fixture demonstrates two native point-in-time universe products:
+
+```text
+data/equity/sweden/universes/daily/sweden100/
+data/index/sweden/universes/etf/omxs30/
+```
+
+## Broad daily universe
+
+Each `sweden100/<date>.csv` session file contains 100 `ticker,SID` rows:
+
+```csv
+AAA,AAA YDXSJNGP3GK1
+AAB,AAB YDXSJNGP3GK1
+```
+
+Construct the universe with a constituent identifier whose final hyphen-delimited token matches the folder name:
+
+```python
+universe_ticker = "constituents-universe-sweden100"
+universe_symbol = Symbol(
+    SecurityIdentifier.generate_constituent_identifier(
+        universe_ticker,
+        SecurityType.EQUITY,
+        SWEDEN,
+    ),
+    universe_ticker,
+)
+self.add_universe(
+    ConstituentsUniverse(universe_symbol, self.universe_settings)
+)
+```
+
+## OMXS30 Index universe
+
+Current LEAN uses `ETFConstituentUniverse` as the shared six-column reader for ETF and Index constituent universes. A proper Index composite therefore uses:
+
+```text
+data/index/sweden/universes/etf/omxs30/<date>.csv
+```
+
+A row contains:
+
+```csv
+AAA,AAA YDXSJNGP3GK1,20231201,0.064516129032,1000000,
+```
+
+The fields are ticker, full constituent SID, source update date, decimal weight, shares held, and optional market value.
+
+Use the Index API rather than pretending OMXS30 is an ETF:
+
+```python
+self.add_universe(
+    self.universe.index(
+        "OMXS30",
+        market=SWEDEN,
+        universe_settings=self.universe_settings,
+        universe_filter_func=lambda constituents: [
+            constituent.symbol for constituent in constituents
+        ],
+    )
+)
+```
+
+The synthetic fixture has 30 weighted members and a July reconstitution. Replace those rows with licensed, point-in-time historical composition data for real research.
+
+## Non-session source files
+
+Constituent universes use custom-data scheduling and request some Sundays and exchange holidays. A missing file creates failed universe requests. A repeated membership file can create duplicate callbacks, while `NONE,NONE 0` clears membership.
+
+The tested fixture writes zero-byte files on non-XSTO dates. They satisfy source resolution without selecting, duplicating, or removing members.
+
+## Run the validation
+
+```bash
+cd /home/hi/qrt
+cd .temp/leansweden
+uv run lean backtest universe_demo.py --no-update
+```
+
+A successful run logs `SWEDEN_UNIVERSES_VERIFIED` and reports:
+
+- 251 broad updates at 100 members;
+- 251 OMXS30 updates at 30 members;
+- two OMXS30 compositions;
+- all 100 unique equities added;
+- all 25,100 daily bars received;
+- 618 successful universe requests and zero failures.

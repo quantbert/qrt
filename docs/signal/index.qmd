@@ -2,9 +2,130 @@
 title: Signals
 ---
 
-`q.signal` is reserved for operations that interpret indicators, factors, model
-predictions, or rules as investment intent. It will own thresholding,
-normalization, combination, decay, and turnover-aware shaping.
+`q.signal` turns point-in-time indicators, factors, model predictions, or rules
+into investment intent. A signal says what the strategy would like to do using
+information available at that row. It does not describe what happened later.
 
-Signals do not measure markets (`q.indicator`), compare a universe (`q.cross_section`),
-or choose final positions (`q.portfolio`). The namespace is currently empty.
+The [visual signal tutorial](tutorial.ipynb) overlays scores, state changes,
+causal delay, and turnover-limited exposure on a bundled SPY price series.
+
+## Labels and signals are different
+
+This distinction is a leakage boundary, not just a naming preference.
+
+| Namespace | Question answered | May inspect future data? | Typical output |
+|---|---|---:|---|
+| `q.label` | What subsequently happened? | Yes, when constructing targets | Class, realized return, event outcome, sample weight |
+| `q.signal` | What do we want to do now? | No | Score, direction, conviction, desired exposure |
+
+`q.label` supplies targets and training metadata. Target construction may
+follow prices after an event, so those outputs must never become
+contemporaneous model features or strategy inputs. `q.signal` consumes only
+measurements or predictions available at decision time and produces deployable
+intent.
+
+```{dot}
+digraph label_signal_boundary {
+	graph [bgcolor="transparent", ranksep=0.45, nodesep=0.3]
+	node [shape=box, style="filled", fillcolor="#edf3fb", color="#495057", fontcolor="#1465b8", fontname="Arial", fontsize=10]
+	edge [color="#495057", arrowsize=0.7]
+
+	features [label="Point-in-time features"]
+	labels [label="q.label\nFuture-aware targets", fillcolor="#fff1e6", fontcolor="#a04700"]
+	model [label="Model or rule"]
+	signal [label="q.signal\nPoint-in-time intent", fillcolor="#e8f2ec", fontcolor="#24704a"]
+	portfolio [label="q.portfolio\nConstrained positions"]
+
+	features -> labels [label=" future path"]
+	features -> model
+	labels -> model [label=" train"]
+	model -> signal -> portfolio
+}
+```
+
+## Canonical objects
+
+Signals are ordinary pandas objects with a strict orientation:
+
+| Shape | Meaning |
+|---|---|
+| `Series` | One asset through ordered decision times |
+| `DataFrame` | Ordered decision times as rows and assets as columns |
+
+Indexes must be sorted and unique. Asset columns must be unique. Values are
+numeric; missing values are allowed, but infinities are rejected.
+`q.signal.as_signal` validates this contract and returns a float copy.
+
+## Function map
+
+| Function | Purpose |
+|---|---|
+| `q.signal.as_signal` | Validate the canonical shape, labels, ordering, and numeric values. |
+| `q.signal.threshold` | Convert scores into long, flat, and optionally short direction. |
+| `q.signal.hysteresis` | Use separate entry and exit levels to prevent unstable threshold crossings. |
+| `q.signal.normalize` | Normalize each time row by cross-sectional z-score or centered percentile rank. |
+| `q.signal.select` | Select exact top and bottom asset counts with deterministic tie handling. |
+| `q.signal.neutralize` | Remove static asset exposures from every row using `q.cross_section.neutralize`. |
+| `q.signal.combine` | Take an aligned weighted mean of multiple signals, renormalizing around missing inputs. |
+| `q.signal.delay` | Make row availability explicit; one observation is the safe default. |
+| `q.signal.decay` | Exponentially smooth updates using only current and earlier rows. |
+| `q.signal.hold` | Enforce a minimum number of observations between directional state changes. |
+| `q.signal.cooldown` | Exit immediately, then require flat observations before re-entry. |
+| `q.signal.limit_turnover` | Limit each asset's change from its previously accepted target. |
+| `q.signal.target_exposure` | Map normalized conviction to bounded per-asset desired exposure. |
+
+## Causal workflow
+
+```python
+import pandas as pd
+import qrt as q
+
+scores = pd.Series(
+	[0.52, 0.66, 0.58, 0.43, 0.35],
+	index=pd.date_range("2026-01-05", periods=5, freq="B"),
+	name="model_score",
+)
+
+# Enter beyond 0.60/0.40, but wait for 0.50 before exiting either side.
+intent = q.signal.hysteresis(
+	scores,
+	long_enter=0.60,
+	long_exit=0.50,
+	short_enter=0.40,
+	short_exit=0.50,
+)
+
+# A score observed at t becomes executable intent at t + 1.
+available_intent = q.signal.delay(intent)
+stable_intent = q.signal.cooldown(available_intent, periods=2)
+exposure = q.signal.target_exposure(stable_intent, maximum=0.25)
+```
+
+Pass `periods=0` to `delay` only when the score is genuinely known before the
+same row's execution decision. The function does not infer whether a close,
+barrier, vendor timestamp, or model feature was actually available.
+
+For a cross-sectional strategy, normalize and select before applying timing
+and exposure controls:
+
+```python
+normalized = q.signal.normalize(predictions, method="percentile")
+direction = q.signal.select(normalized, long_count=10, short_count=10)
+direction = q.signal.delay(direction)
+exposure_preference = q.signal.target_exposure(direction, maximum=0.02)
+```
+
+## Ownership boundaries
+
+- `q.indicator` measures one instrument; it does not decide whether to trade.
+- `q.cross_section` compares assets. `q.signal.normalize` and
+  `q.signal.neutralize` adapt those measurements to the canonical signal panel.
+- `q.label` constructs future-aware targets and training metadata.
+- `q.signal` interprets available information as intent.
+- `q.portfolio` resolves intent against capital, risk, leverage, net/gross,
+  concentration, and rebalance constraints.
+- `q.bt` simulates orders, fills, fees, slippage, and historical state.
+
+`target_exposure` is deliberately not a portfolio optimizer. It maps a
+per-asset conviction in `[-1, 1]` to a bounded desired exposure and leaves
+cross-asset capital constraints to `q.portfolio`.

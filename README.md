@@ -57,7 +57,7 @@ q.plot.performance(strategy, benchmark=benchmark)  # interactive equity + drawdo
 | `q.label` | future-aware target construction, event filtering, and overlap-aware sample weights |
 | `q.dataset` | aligned model inputs, targets, weights, metadata, and split schemes |
 | `q.transform` | fitted model-input transformations *(planned)* |
-| `q.signal` | investment intent derived from measurements, factors, models, and rules *(planned)* |
+| `q.signal` | point-in-time investment intent: thresholds, cross-sectional selection, delay, decay, holding, cooldown, combination, and target exposure |
 | `q.stats` | return-stream, risk, and trade-level statistics: explicit historical/Gaussian tail estimators, performance, alpha/beta, and robustness tests |
 | `q.plot` | interactive Plotly charts and performance reports, for both return streams and trade logs |
 | `q.model` | sklearn-compatible position-array helpers and optional PyTorch utilities |

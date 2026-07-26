@@ -1,0 +1,80 @@
+---
+title: Future q.bt integration
+---
+
+::: {.callout-important}
+The API on this page is planned, not implemented. Today, use Lean CLI directly as described in the other guides.
+:::
+
+`q.bt` is intended to support two independent execution backends:
+
+1. a future in-process QRT event kernel shared with `q.gym`;
+2. an optional adapter that orchestrates the standalone Lean CLI.
+
+The LEAN adapter should not reimplement LEAN's event engine or hide its native artifacts.
+
+## Proposed responsibilities
+
+A typed QRT API should be able to:
+
+- identify a LEAN workspace and algorithm file;
+- select a pinned engine image and data root;
+- validate parameters and custom-market registration requirements;
+- launch, monitor, cancel, and reproduce local backtests;
+- parse result JSON, logs, order events, charts, and data-request reports;
+- expose original artifact paths alongside QRT-normalized summaries;
+- prepare and generate HTML/PDF reports;
+- record command, image, parameters, environment, and artifact hashes.
+
+A possible user-facing shape is:
+
+```python
+import qrt as q
+
+run = q.bt.lean.backtest(
+    workspace=".temp/leansweden",
+    algorithm="demo_sma.py",
+    parameters={
+        "backtest-start": "2024-01-02",
+        "backtest-end": "2024-12-30",
+    },
+    update_image=False,
+)
+
+result = run.wait()
+report = result.report(destination="sma-report.html")
+```
+
+This sketch is not yet a compatibility promise.
+
+## Ownership boundaries
+
+The adapter should own orchestration and normalization, while LEAN continues to own:
+
+- event progression and subscriptions;
+- order, fill, fee, buying-power, and portfolio accounting;
+- native market-data and universe formats;
+- result JSON and Report Creator behavior.
+
+QRT should preserve raw LEAN artifacts even when it creates derived result objects. A report compatibility transform must write a copy and never mutate the original result.
+
+## Reproducibility record
+
+Every adapter run should retain at least:
+
+```text
+workspace path
+algorithm source path and hash
+LEAN CLI version
+Docker image tag and digest
+lean.json/config.json hashes
+parameters
+data root identity
+start/end timestamps
+result and log paths
+exit status
+```
+
+## Roadmap
+
+Track implementation on the [q.bt roadmap](../bt/roadmap.qmd). The standalone tutorials remain valid after an adapter lands because the API will invoke the same underlying commands and consume the same artifacts.

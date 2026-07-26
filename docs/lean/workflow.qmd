@@ -1,0 +1,90 @@
+---
+title: Projects and backtests
+---
+
+## Select the algorithm explicitly
+
+A workspace may contain multiple Python algorithms. Pass the file you intend to execute:
+
+```bash
+uv run lean backtest demo.py --no-update
+uv run lean backtest universe_demo.py --no-update
+uv run lean backtest demo_sma.py --no-update
+```
+
+When a directory is supplied, Lean CLI searches it for `main.py` or `Main.cs`. Multiple sibling files such as `demo.py` and `demo_sma.py` are allowed when the command names one file explicitly.
+
+## Project configuration
+
+`config.json` stores project metadata and parameters. The Sweden generator preserves ordinary project fields and maintains parameters such as:
+
+```json
+{
+  "algorithm-language": "Python",
+  "parameters": {
+    "backtest-start": "2024-01-02",
+    "backtest-end": "2024-12-30",
+    "daily-universe-name": "sweden100",
+    "index-universe-ticker": "OMXS30"
+  }
+}
+```
+
+Algorithms read them with `self.get_parameter(...)`. Runtime overrides can be supplied without editing the file:
+
+```bash
+uv run lean backtest demo_sma.py \
+  --parameter backtest-start 2024-02-01 \
+  --parameter backtest-end 2024-11-30 \
+  --no-update
+```
+
+## Result artifacts
+
+A run writes a timestamped directory:
+
+```text
+backtests/2026-07-26_13-41-40/
+├── <algorithm-id>.json
+├── <algorithm-id>-log.txt
+├── <algorithm-id>-order-events.json
+├── <algorithm-id>-summary.json
+├── log.txt
+├── failed-data-requests-<timestamp>.txt
+└── succeeded-data-requests-<timestamp>.txt
+```
+
+Treat the main `<algorithm-id>.json` as the canonical report input. Inspect:
+
+```bash
+LATEST=$(find backtests -mindepth 1 -maxdepth 1 -type d | sort | tail -n 1)
+grep ' ERROR::' "$LATEST/log.txt"
+grep 'Failed data requests' "$LATEST/log.txt"
+find "$LATEST" -maxdepth 1 -name '[0-9]*.json'
+```
+
+A CLI exit code of zero is necessary but not enough for fixture validation. Check explicit algorithm markers, failed data requests, invalid order events, and engine errors.
+
+## Custom market registration
+
+Register Sweden before creating any Swedish `Symbol`:
+
+```python
+SWEDEN = "sweden"
+CUSTOM_SWEDEN_MARKET_ID = 900
+
+if Market.encode(SWEDEN) is None:
+    Market.add(SWEDEN, CUSTOM_SWEDEN_MARKET_ID)
+```
+
+The numeric ID becomes part of every SID. Keep it stable across price data, map files, universe files, stored results, and future runs.
+
+## Models are separate from data loading
+
+A successful subscription does not imply the default brokerage, fee, fill, buying-power, settlement, or shorting models understand the custom market. The synthetic demos use:
+
+```python
+security.set_fee_model(ConstantFeeModel(0))
+```
+
+That is suitable for format validation only. Production Swedish research needs explicit models matching the venue and brokerage.
