@@ -1,0 +1,2363 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Native data formats – qrt</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../lean/sweden-data.html" rel="next">
+<link href="../lean/workflow.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-234273dcd3ff8f4bdb782b4fb3f12a13.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../reference/_styles-quartodoc.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">qrt — Quant Research Tools</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Getting Started</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../reference/index.html"> 
+<span class="menu-text">API Reference</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../roadmap.html"> 
+<span class="menu-text">Roadmap</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+    <a href="https://github.com/quantbert/qrt" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lean/index.html">LEAN — Backtesting engine</a></li><li class="breadcrumb-item"><a href="../lean/fileformat.html">Native data formats</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Getting Started</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../bt/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.bt — Backtesting</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../bt/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../data/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.data — Data</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data/datasets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sample datasets</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data/schemas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data schemas</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data/local.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Local files</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data/sources.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Market data sources</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../ai/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.ai — Generative AI</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../ai/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../experiment/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.experiment — Experiment tracking</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../experiment/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../indicator/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.indicator — Indicators</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
+ <span class="menu-text">QRT indicators</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/sma.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simple moving average (SMA)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/ema.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Exponential moving average (EMA)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/madev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Mean absolute deviation (MADEV)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/returns.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simple returns</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/momentum.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Price momentum</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/rolling_volatility.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Rolling volatility</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/volume_ratio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Relative volume</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/volume_spike_ratio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Volume spike ratio</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/price_spikes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Price spikes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/log_returns.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Log returns</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/realized_variance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Realized variance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/realized_quarticity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Realized quarticity</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/bipower_variation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bipower variation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/med_rv.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Median realized volatility</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/min_rv.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Minimum realized volatility</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/realized_volatility.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Realized volatility by session</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/relative_strength.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Relative strength</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/rsma.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Relative-strength moving average</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/rs_days.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Relative-strength days</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/rs_phase.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Relative-strength phase</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/rsnhbp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">RS new high before price</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/talib.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TA-Lib</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/pandas_ta.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">pandas-ta-classic</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../cross_section/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.cross_section — Cross-sectional analysis</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../cross_section/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../label/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.label — Financial labels</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/cusum_filter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CUSUM event filter</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/vertical_barriers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Vertical barriers</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/fixed_horizon.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Fixed-horizon labels</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/triple_barrier.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Triple-barrier labels</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/meta_label.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Meta-labels</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/trend_scanning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Trend-scanning labels</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/prune_labels.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Rare-label pruning</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/concurrency.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Label concurrency</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/indicator_matrix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Event indicator matrix</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/average_uniqueness.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Average label uniqueness</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/sequential_bootstrap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sequential bootstrap</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/purging_metadata.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Purging and embargo metadata</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/sample_weights.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Return-attribution weights</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/time_decay.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Linear time decay</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/class_balance_weights.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Class-balance weights</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/combine_weights.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Combine sample weights</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../dataset/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.dataset — ML datasets</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../dataset/temporal_split.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Temporal split</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../dataset/time_series_split.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Time-series split</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../dataset/splitting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Splitting datasets</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../dataset/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../transform/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.transform — Transformations</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../transform/impute.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Missing data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../transform/scale.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Scaling</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../transform/outlier.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Outliers</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../transform/encode.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Encoding</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../transform/reduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Reduction</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../transform/selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Selection</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../transform/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../calendar/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.calendar — Market time</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../calendar/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../signal/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.signal — Signals</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../signal/tutorial.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Visual signal tutorial</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../signal/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../model/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.model — Models</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-13" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../model/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../ray/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.ray — Distributed computing</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-14" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-14" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../ray/train.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ray Train tutorial</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../skypilot/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SkyPilot — Compute orchestration</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-15" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-15" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../skypilot/training.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Launch a training run</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../skypilot/vscode.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">VS Code over SSH</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../skypilot/strix-halo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Local Strix Halo cluster</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../lean/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">LEAN — Backtesting engine</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-16" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-16" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lean/setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Install and initialize</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lean/workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Projects and backtests</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lean/fileformat.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Native data formats</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lean/sweden-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Generate Sweden data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lean/universes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Universes and composites</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lean/sma.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">20/100 SMA strategy</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lean/reports.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Generate reports</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lean/troubleshooting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Troubleshooting</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lean/qbt-integration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Future q.bt integration</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../gym/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.gym — Financial RL</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-17" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-17" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../gym/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../env/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.env — Environment</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-18" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-18" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../env/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../plot/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.plot — Plotting</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-19" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-19" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/correlation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Correlation Plots</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/correlation_heatmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Correlation heatmap</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/classification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Classification curves</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/barchart.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ranked bar charts</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/returns.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Return charts</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/report.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tearsheet report</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/simulation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simulation tests</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/trades.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Trade logs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/saving.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Saving figures</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../portfolio/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.portfolio — Portfolio</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-20" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-20" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../portfolio/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../stats/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.stats — Statistics</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-21" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-21" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats/risk.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Risk estimators</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats/netto-number.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Netto Number</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats/performance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Performance &amp; benchmark</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats/rolling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Rolling &amp; calendar returns</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats/factors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Factor analytics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats/chained.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chained API</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../utils/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.utils — Utilities</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-22" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-22" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../utils/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#importing-nasdaq-stockholm-equity-data-into-lean-cli" id="toc-importing-nasdaq-stockholm-equity-data-into-lean-cli" class="nav-link active" data-scroll-target="#importing-nasdaq-stockholm-equity-data-into-lean-cli">Importing Nasdaq Stockholm Equity Data into LEAN CLI</a></li>
+  <li><a href="#short-answer" id="toc-short-answer" class="nav-link" data-scroll-target="#short-answer">Short answer</a></li>
+  <li><a href="#what-is-required" id="toc-what-is-required" class="nav-link" data-scroll-target="#what-is-required">What is required</a></li>
+  <li><a href="#protect-local-database-changes" id="toc-protect-local-database-changes" class="nav-link" data-scroll-target="#protect-local-database-changes">1. Protect local database changes</a></li>
+  <li><a href="#register-a-sweden-market" id="toc-register-a-sweden-market" class="nav-link" data-scroll-target="#register-a-sweden-market">2. Register a Sweden market</a></li>
+  <li><a href="#add-nasdaq-stockholm-market-hours" id="toc-add-nasdaq-stockholm-market-hours" class="nav-link" data-scroll-target="#add-nasdaq-stockholm-market-hours">3. Add Nasdaq Stockholm market hours</a></li>
+  <li><a href="#add-sek-symbol-properties" id="toc-add-sek-symbol-properties" class="nav-link" data-scroll-target="#add-sek-symbol-properties">4. Add SEK symbol properties</a></li>
+  <li><a href="#design-symbols-and-map-files" id="toc-design-symbols-and-map-files" class="nav-link" data-scroll-target="#design-symbols-and-map-files">5. Design symbols and map files</a>
+  <ul class="collapse">
+  <li><a href="#identity-map" id="toc-identity-map" class="nav-link" data-scroll-target="#identity-map">Identity map</a></li>
+  <li><a href="#ticker-rename" id="toc-ticker-rename" class="nav-link" data-scroll-target="#ticker-rename">Ticker rename</a></li>
+  <li><a href="#delisting" id="toc-delisting" class="nav-link" data-scroll-target="#delisting">Delisting</a></li>
+  <li><a href="#reused-tickers" id="toc-reused-tickers" class="nav-link" data-scroll-target="#reused-tickers">Reused tickers</a></li>
+  <li><a href="#optional-identifier-database" id="toc-optional-identifier-database" class="nav-link" data-scroll-target="#optional-identifier-database">Optional identifier database</a></li>
+  <li><a href="#omx-universe-selection" id="toc-omx-universe-selection" class="nav-link" data-scroll-target="#omx-universe-selection">OMX universe selection</a></li>
+  </ul></li>
+  <li><a href="#build-the-price-data-tree" id="toc-build-the-price-data-tree" class="nav-link" data-scroll-target="#build-the-price-data-tree">6. Build the price data tree</a>
+  <ul class="collapse">
+  <li><a href="#rules-common-to-all-equity-price-files" id="toc-rules-common-to-all-equity-price-files" class="nav-link" data-scroll-target="#rules-common-to-all-equity-price-files">Rules common to all equity price files</a></li>
+  <li><a href="#tick-trade-data" id="toc-tick-trade-data" class="nav-link" data-scroll-target="#tick-trade-data">Tick trade data</a></li>
+  <li><a href="#tick-quote-data" id="toc-tick-quote-data" class="nav-link" data-scroll-target="#tick-quote-data">Tick quote data</a></li>
+  <li><a href="#second-and-minute-trade-bars" id="toc-second-and-minute-trade-bars" class="nav-link" data-scroll-target="#second-and-minute-trade-bars">Second and minute trade bars</a></li>
+  <li><a href="#second-and-minute-quote-bars" id="toc-second-and-minute-quote-bars" class="nav-link" data-scroll-target="#second-and-minute-quote-bars">Second and minute quote bars</a></li>
+  <li><a href="#hour-and-daily-trade-bars" id="toc-hour-and-daily-trade-bars" class="nav-link" data-scroll-target="#hour-and-daily-trade-bars">Hour and daily trade bars</a></li>
+  </ul></li>
+  <li><a href="#generate-bars-from-ticks" id="toc-generate-bars-from-ticks" class="nav-link" data-scroll-target="#generate-bars-from-ticks">7. Generate bars from ticks</a>
+  <ul class="collapse">
+  <li><a href="#what-lean-does-and-does-not-do" id="toc-what-lean-does-and-does-not-do" class="nav-link" data-scroll-target="#what-lean-does-and-does-not-do">What LEAN does and does not do</a></li>
+  <li><a href="#recommended-offline-aggregation" id="toc-recommended-offline-aggregation" class="nav-link" data-scroll-target="#recommended-offline-aggregation">Recommended offline aggregation</a></li>
+  </ul></li>
+  <li><a href="#store-splits-and-dividends-in-factor-files" id="toc-store-splits-and-dividends-in-factor-files" class="nav-link" data-scroll-target="#store-splits-and-dividends-in-factor-files">8. Store splits and dividends in factor files</a>
+  <ul class="collapse">
+  <li><a href="#row-date-and-formulas" id="toc-row-date-and-formulas" class="nav-link" data-scroll-target="#row-date-and-formulas">Row date and formulas</a></li>
+  <li><a href="#worked-example" id="toc-worked-example" class="nav-link" data-scroll-target="#worked-example">Worked example</a></li>
+  <li><a href="#normalization-behavior" id="toc-normalization-behavior" class="nav-link" data-scroll-target="#normalization-behavior">Normalization behavior</a></li>
+  </ul></li>
+  <li><a href="#end-to-end-ingestion-order" id="toc-end-to-end-ingestion-order" class="nav-link" data-scroll-target="#end-to-end-ingestion-order">9. End-to-end ingestion order</a></li>
+  <li><a href="#smoke-test-algorithm" id="toc-smoke-test-algorithm" class="nav-link" data-scroll-target="#smoke-test-algorithm">10. Smoke-test algorithm</a></li>
+  <li><a href="#validate-the-files" id="toc-validate-the-files" class="nav-link" data-scroll-target="#validate-the-files">11. Validate the files</a></li>
+  <li><a href="#proven-synthetic-fixture" id="toc-proven-synthetic-fixture" class="nav-link" data-scroll-target="#proven-synthetic-fixture">12. Proven synthetic fixture</a></li>
+  <li><a href="#common-failure-modes" id="toc-common-failure-modes" class="nav-link" data-scroll-target="#common-failure-modes">13. Common failure modes</a></li>
+  <li><a href="#source-references" id="toc-source-references" class="nav-link" data-scroll-target="#source-references">Source references</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/lean/fileformat.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/lean/fileformat.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lean/index.html">LEAN — Backtesting engine</a></li><li class="breadcrumb-item"><a href="../lean/fileformat.html">Native data formats</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Native data formats</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="importing-nasdaq-stockholm-equity-data-into-lean-cli" class="level2">
+<h2 class="anchored" data-anchor-id="importing-nasdaq-stockholm-equity-data-into-lean-cli">Importing Nasdaq Stockholm Equity Data into LEAN CLI</h2>
+<p>This guide describes how to load self-supplied Nasdaq Stockholm (OMX) equity data into LEAN’s native <code>Equity</code> data path for local <code>lean-cli</code> backtests. It covers prices, exchange hours, currencies, symbol identity, ticker changes, delistings, splits, dividends, and universe membership.</p>
+<p>The findings were checked against LEAN <code>master</code> commit <code>cd52034ddf55c0c9aa57264d2a148e563924100f</code> from 2026-07-23. Pin the LEAN Docker image used for production backtests because file readers and built-in market identifiers can change.</p>
+</section>
+<section id="short-answer" class="level2">
+<h2 class="anchored" data-anchor-id="short-answer">Short answer</h2>
+<p>LEAN can run Stockholm equities as native equities, but current upstream LEAN does not define a Sweden/Stockholm market. A complete local setup therefore needs:</p>
+<ol type="1">
+<li>A custom market name registered before any Swedish <code>Symbol</code> is created.</li>
+<li>A market-hours entry with the Stockholm timezone, sessions, holidays, and half days.</li>
+<li>Symbol properties that identify the quote currency as SEK.</li>
+<li>Price ZIP files at each resolution the algorithm requests.</li>
+<li>Map files for point-in-time ticker identity, listings, renames, and delistings.</li>
+<li>Factor files for splits, dividends, and adjusted price modes.</li>
+<li>Native point-in-time daily, ETF, or Index constituent files if the algorithm selects a Swedish universe instead of adding known tickers.</li>
+</ol>
+<p>Tick files do not automatically satisfy minute or daily subscriptions. LEAN can consolidate a tick subscription into bars while a backtest is running, but a minute subscription opens the minute path and a daily subscription opens the daily path. For repeated research, generate minute and daily files offline.</p>
+</section>
+<section id="what-is-required" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-required">What is required</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Component</th>
+<th>Path or location</th>
+<th>Requirement</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Market registration</td>
+<td>Algorithm initialization</td>
+<td>Mandatory until LEAN has a built-in Sweden market</td>
+</tr>
+<tr class="even">
+<td>Exchange calendar</td>
+<td><code>data/market-hours/market-hours-database.json</code></td>
+<td>Mandatory; a missing entry throws when the equity is added</td>
+</tr>
+<tr class="odd">
+<td>Trading metadata</td>
+<td><code>data/symbol-properties/symbol-properties-database.csv</code></td>
+<td>Operationally mandatory for SEK and correct increments</td>
+</tr>
+<tr class="even">
+<td>Trade/quote data</td>
+<td><code>data/equity/sweden/...</code></td>
+<td>Mandatory at every subscribed resolution</td>
+</tr>
+<tr class="odd">
+<td>Map files</td>
+<td><code>data/equity/sweden/map_files/*.csv</code></td>
+<td>Strongly recommended; mandatory for correct lifecycle and ticker changes</td>
+</tr>
+<tr class="even">
+<td>Factor files</td>
+<td><code>data/equity/sweden/factor_files/*.csv</code></td>
+<td>Mandatory for corporate actions and adjusted prices; optional for an action-free static ticker</td>
+</tr>
+<tr class="odd">
+<td>Fee/brokerage model</td>
+<td>Algorithm initialization</td>
+<td>Mandatory before trading if the default model rejects the custom market</td>
+</tr>
+<tr class="even">
+<td>Security identifier database</td>
+<td><code>data/symbol-properties/security-database.csv</code></td>
+<td>Optional; only for ISIN/FIGI/CUSIP/SEDOL lookup helpers</td>
+</tr>
+<tr class="odd">
+<td>Universe membership</td>
+<td><code>data/{equity|index}/sweden/universes/...</code></td>
+<td>Required only for dynamic OMX universe selection</td>
+</tr>
+</tbody>
+</table>
+<p>The current project has <code>"data-folder": "data"</code> in <code>.temp/leantest/lean.json</code>, so its mounted data root is:</p>
+<pre class="text"><code>/home/hi/qrt/.temp/leantest/data</code></pre>
+<p>Relative <code>data-folder</code> values are resolved from the directory containing <code>lean.json</code>.</p>
+<p>This repository installs Lean CLI through <code>uv</code> (<code>lean&gt;=1.0.227</code> in <code>pyproject.toml</code>). Activate its environment before working with the fixture:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /home/hi/qrt</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run lean <span class="at">--version</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">lean</span> <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The examples below assume that environment remains active. <code>uv run lean ...</code> and <code>uv run python ...</code> are equivalent one-command alternatives.</p>
+</section>
+<section id="protect-local-database-changes" class="level2">
+<h2 class="anchored" data-anchor-id="protect-local-database-changes">1. Protect local database changes</h2>
+<p>Current Lean CLI periodically downloads these two upstream files and replaces the local files in full:</p>
+<pre class="text"><code>data/market-hours/market-hours-database.json
+data/symbol-properties/symbol-properties-database.csv</code></pre>
+<p>It does not merge or preserve a custom Sweden entry. Disable the update before editing either file:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run lean config set database-update-frequency _</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run lean config list</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>database-update-frequency</code> is a global CLI setting stored under <code>~/.lean/config</code>. Any non-timespan value disables the update. On an older CLI without this option, set <code>file-database-last-update</code> in <code>lean.json</code> to a future value such as <code>12/31/2099 00:00:00</code>, or automatically reapply the custom entries after every update.</p>
+<p>Also keep the loose-file providers in <code>lean.json</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"map-file-provider"</span><span class="fu">:</span> <span class="st">"QuantConnect.Data.Auxiliary.LocalDiskMapFileProvider"</span><span class="fu">,</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"factor-file-provider"</span><span class="fu">:</span> <span class="st">"QuantConnect.Data.Auxiliary.LocalDiskFactorFileProvider"</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The provider setting is global, not per market. <code>LocalZipMapFileProvider</code> and <code>LocalZipFactorFileProvider</code> do not read loose Sweden CSV files. Lean CLI may switch to those providers after downloading bulk map/factor archives, so check the settings again if corporate actions disappear.</p>
+<p><code>lean data download</code> is a downloader for supported data providers and QuantConnect datasets. It is not a generic importer for an existing tick file. The conversion described below writes directly to the configured data folder.</p>
+</section>
+<section id="register-a-sweden-market" class="level2">
+<h2 class="anchored" data-anchor-id="register-a-sweden-market">2. Register a Sweden market</h2>
+<p>As of the LEAN revision above:</p>
+<ul>
+<li><code>Country.Sweden</code> exists, but it is only the ISO country code <code>SWE</code>.</li>
+<li><code>Market.Sweden</code> does not exist.</li>
+<li>The distributed market-hours database has only <code>usa</code> and <code>india</code> wildcard equity entries.</li>
+<li><code>Market.add</code> supports custom market identifiers from 1 through 999.</li>
+</ul>
+<p>Use one lower-case market name everywhere. This guide uses <code>sweden</code>. Register it before calling <code>add_equity</code>, creating a Swedish <code>Symbol</code>, or creating a manual universe:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>SWEDEN <span class="op">=</span> <span class="st">"sweden"</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>CUSTOM_SWEDEN_MARKET_ID <span class="op">=</span> <span class="dv">900</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> Market.encode(SWEDEN) <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    Market.add(SWEDEN, CUSTOM_SWEDEN_MARKET_ID)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Identifier <code>900</code> is free in the inspected revision and is intentionally far from current built-ins, but LEAN does not reserve a private range. Keep the ID stable, pin the engine version, and check for a collision when upgrading. The numeric ID is embedded in LEAN security identifiers. If upstream later adds a built-in <code>sweden</code> market, plan a one-time SID migration for any persisted symbols or optional <code>security-database.csv</code> rows.</p>
+<p>The same string must appear in all of these places:</p>
+<pre class="text"><code>Market.add("sweden", ...)
+add_equity(..., market="sweden")
+data/equity/sweden/
+Equity-sweden-[*]
+sweden,[*],equity,...</code></pre>
+<p>A LEAN source fork is not required for local backtests. Adding an official <code>Market.Sweden</code> constant is only needed if this is to become a shared upstream engine feature.</p>
+<p>The names above are the Python API. C# uses <code>Market.Add</code> and <code>Market.Encode</code>.</p>
+<p>Native data loading and order modeling are separate concerns. In the tested LEAN 2.5 image, the default <code>InteractiveBrokersFeeModel</code> rejects an equity whose market is <code>sweden</code>. For a data-format smoke test, assign a zero fee model after adding the security:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>security.set_fee_model(ConstantFeeModel(<span class="dv">0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For realistic research, replace this with a Sweden-aware fee model and review the buying-power, settlement, fill, slippage, and shorting models as well.</p>
+</section>
+<section id="add-nasdaq-stockholm-market-hours" class="level2">
+<h2 class="anchored" data-anchor-id="add-nasdaq-stockholm-market-hours">3. Add Nasdaq Stockholm market hours</h2>
+<p>Add an <code>Equity-sweden-[*]</code> member inside the top-level <code>entries</code> object in <code>data/market-hours/market-hours-database.json</code>. The following complete sample covers 2024 through 2026:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="st">"Equity-sweden-[*]"</span><span class="er">:</span> <span class="fu">{</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"dataTimeZone"</span><span class="fu">:</span> <span class="st">"Europe/Stockholm"</span><span class="fu">,</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"exchangeTimeZone"</span><span class="fu">:</span> <span class="st">"Europe/Stockholm"</span><span class="fu">,</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"sunday"</span><span class="fu">:</span> <span class="ot">[]</span><span class="fu">,</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"monday"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"start"</span><span class="fu">:</span> <span class="st">"09:00:00"</span><span class="fu">,</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"end"</span><span class="fu">:</span> <span class="st">"17:30:00"</span><span class="fu">,</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"state"</span><span class="fu">:</span> <span class="st">"market"</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"tuesday"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"start"</span><span class="fu">:</span> <span class="st">"09:00:00"</span><span class="fu">,</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"end"</span><span class="fu">:</span> <span class="st">"17:30:00"</span><span class="fu">,</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"state"</span><span class="fu">:</span> <span class="st">"market"</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"wednesday"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"start"</span><span class="fu">:</span> <span class="st">"09:00:00"</span><span class="fu">,</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"end"</span><span class="fu">:</span> <span class="st">"17:30:00"</span><span class="fu">,</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"state"</span><span class="fu">:</span> <span class="st">"market"</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"thursday"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"start"</span><span class="fu">:</span> <span class="st">"09:00:00"</span><span class="fu">,</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"end"</span><span class="fu">:</span> <span class="st">"17:30:00"</span><span class="fu">,</span></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"state"</span><span class="fu">:</span> <span class="st">"market"</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"friday"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"start"</span><span class="fu">:</span> <span class="st">"09:00:00"</span><span class="fu">,</span></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"end"</span><span class="fu">:</span> <span class="st">"17:30:00"</span><span class="fu">,</span></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"state"</span><span class="fu">:</span> <span class="st">"market"</span></span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"saturday"</span><span class="fu">:</span> <span class="ot">[]</span><span class="fu">,</span></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"holidays"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>    <span class="st">"1/1/2024"</span><span class="ot">,</span></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>    <span class="st">"3/29/2024"</span><span class="ot">,</span></span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>    <span class="st">"4/1/2024"</span><span class="ot">,</span></span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>    <span class="st">"5/1/2024"</span><span class="ot">,</span></span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>    <span class="st">"5/9/2024"</span><span class="ot">,</span></span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>    <span class="st">"6/6/2024"</span><span class="ot">,</span></span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>    <span class="st">"6/21/2024"</span><span class="ot">,</span></span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>    <span class="st">"12/24/2024"</span><span class="ot">,</span></span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>    <span class="st">"12/25/2024"</span><span class="ot">,</span></span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>    <span class="st">"12/26/2024"</span><span class="ot">,</span></span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>    <span class="st">"12/31/2024"</span><span class="ot">,</span></span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>    <span class="st">"1/1/2025"</span><span class="ot">,</span></span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>    <span class="st">"1/6/2025"</span><span class="ot">,</span></span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a>    <span class="st">"4/18/2025"</span><span class="ot">,</span></span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a>    <span class="st">"4/21/2025"</span><span class="ot">,</span></span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a>    <span class="st">"5/1/2025"</span><span class="ot">,</span></span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a>    <span class="st">"5/29/2025"</span><span class="ot">,</span></span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>    <span class="st">"6/6/2025"</span><span class="ot">,</span></span>
+<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a>    <span class="st">"6/20/2025"</span><span class="ot">,</span></span>
+<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a>    <span class="st">"12/24/2025"</span><span class="ot">,</span></span>
+<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a>    <span class="st">"12/25/2025"</span><span class="ot">,</span></span>
+<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a>    <span class="st">"12/26/2025"</span><span class="ot">,</span></span>
+<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a>    <span class="st">"12/31/2025"</span><span class="ot">,</span></span>
+<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a>    <span class="st">"1/1/2026"</span><span class="ot">,</span></span>
+<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a>    <span class="st">"1/6/2026"</span><span class="ot">,</span></span>
+<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a>    <span class="st">"4/3/2026"</span><span class="ot">,</span></span>
+<span id="cb9-68"><a href="#cb9-68" aria-hidden="true" tabindex="-1"></a>    <span class="st">"4/6/2026"</span><span class="ot">,</span></span>
+<span id="cb9-69"><a href="#cb9-69" aria-hidden="true" tabindex="-1"></a>    <span class="st">"5/1/2026"</span><span class="ot">,</span></span>
+<span id="cb9-70"><a href="#cb9-70" aria-hidden="true" tabindex="-1"></a>    <span class="st">"5/14/2026"</span><span class="ot">,</span></span>
+<span id="cb9-71"><a href="#cb9-71" aria-hidden="true" tabindex="-1"></a>    <span class="st">"6/19/2026"</span><span class="ot">,</span></span>
+<span id="cb9-72"><a href="#cb9-72" aria-hidden="true" tabindex="-1"></a>    <span class="st">"12/24/2026"</span><span class="ot">,</span></span>
+<span id="cb9-73"><a href="#cb9-73" aria-hidden="true" tabindex="-1"></a>    <span class="st">"12/25/2026"</span><span class="ot">,</span></span>
+<span id="cb9-74"><a href="#cb9-74" aria-hidden="true" tabindex="-1"></a>    <span class="st">"12/31/2026"</span></span>
+<span id="cb9-75"><a href="#cb9-75" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb9-76"><a href="#cb9-76" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"earlyCloses"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb9-77"><a href="#cb9-77" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"1/5/2024"</span><span class="fu">:</span> <span class="st">"13:00:00"</span><span class="fu">,</span></span>
+<span id="cb9-78"><a href="#cb9-78" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"3/28/2024"</span><span class="fu">:</span> <span class="st">"13:00:00"</span><span class="fu">,</span></span>
+<span id="cb9-79"><a href="#cb9-79" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"4/30/2024"</span><span class="fu">:</span> <span class="st">"13:00:00"</span><span class="fu">,</span></span>
+<span id="cb9-80"><a href="#cb9-80" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"5/8/2024"</span><span class="fu">:</span> <span class="st">"13:00:00"</span><span class="fu">,</span></span>
+<span id="cb9-81"><a href="#cb9-81" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"11/1/2024"</span><span class="fu">:</span> <span class="st">"13:00:00"</span><span class="fu">,</span></span>
+<span id="cb9-82"><a href="#cb9-82" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"4/17/2025"</span><span class="fu">:</span> <span class="st">"13:00:00"</span><span class="fu">,</span></span>
+<span id="cb9-83"><a href="#cb9-83" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"4/30/2025"</span><span class="fu">:</span> <span class="st">"13:00:00"</span><span class="fu">,</span></span>
+<span id="cb9-84"><a href="#cb9-84" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"5/28/2025"</span><span class="fu">:</span> <span class="st">"13:00:00"</span><span class="fu">,</span></span>
+<span id="cb9-85"><a href="#cb9-85" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"10/31/2025"</span><span class="fu">:</span> <span class="st">"13:00:00"</span><span class="fu">,</span></span>
+<span id="cb9-86"><a href="#cb9-86" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"1/5/2026"</span><span class="fu">:</span> <span class="st">"13:00:00"</span><span class="fu">,</span></span>
+<span id="cb9-87"><a href="#cb9-87" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"4/2/2026"</span><span class="fu">:</span> <span class="st">"13:00:00"</span><span class="fu">,</span></span>
+<span id="cb9-88"><a href="#cb9-88" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"4/30/2026"</span><span class="fu">:</span> <span class="st">"13:00:00"</span><span class="fu">,</span></span>
+<span id="cb9-89"><a href="#cb9-89" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"5/13/2026"</span><span class="fu">:</span> <span class="st">"13:00:00"</span><span class="fu">,</span></span>
+<span id="cb9-90"><a href="#cb9-90" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"10/30/2026"</span><span class="fu">:</span> <span class="st">"13:00:00"</span></span>
+<span id="cb9-91"><a href="#cb9-91" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb9-92"><a href="#cb9-92" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"lateOpens"</span><span class="fu">:</span> <span class="fu">{},</span></span>
+<span id="cb9-93"><a href="#cb9-93" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"bankHolidays"</span><span class="fu">:</span> <span class="ot">[]</span></span>
+<span id="cb9-94"><a href="#cb9-94" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The dates and hours above come from Nasdaq’s current official European market schedule. Extend both lists across the entire price history. Do not substitute a generic Swedish public-holiday calendar: Nasdaq has exchange-specific closure and half-day rules. An incomplete calendar can shift scheduled events, create fill-forward data on closed days, and put a split or dividend on the wrong next trading day.</p>
+<p>Nasdaq describes Stockholm equities as open 09:00-17:30 local time and half days as 09:00-13:00. The final five minutes of a normal day are a closing call with no continuous matching and a randomized uncross near the end. LEAN’s market-hours schema has no auction state. Keeping the market open through 17:30 preserves the official closing print, but the default fill model may allow an order during a phase where real matching is restricted. Strategies that trade near the close need an auction-aware execution/fill rule.</p>
+<p><code>Europe/Stockholm</code> is an IANA/TZDB zone and handles CET/CEST daylight saving. Avoid a fixed <code>CET</code> or UTC offset.</p>
+<p>This sample assumes the CSV timestamps and date partitions are Stockholm local time. If files are deliberately kept in UTC, set <code>dataTimeZone</code> to <code>UTC</code>, keep <code>exchangeTimeZone</code> as <code>Europe/Stockholm</code>, and partition each intraday file by the UTC data date. Converting input timestamps to Stockholm local time before writing is simpler and is recommended.</p>
+</section>
+<section id="add-sek-symbol-properties" class="level2">
+<h2 class="anchored" data-anchor-id="add-sek-symbol-properties">4. Add SEK symbol properties</h2>
+<p>Append a wildcard row to <code>data/symbol-properties/symbol-properties-database.csv</code>:</p>
+<pre class="csv"><code>sweden,[*],equity,,SEK,1,0.01,1</code></pre>
+<p>The columns are:</p>
+<pre class="text"><code>market,symbol,type,description,quote_currency,contract_multiplier,minimum_price_variation,lot_size,market_ticker,minimum_order_size,price_magnifier,strike_multiplier</code></pre>
+<p>The final four columns are optional. Add a symbol-specific row when metadata differs from the wildcard:</p>
+<pre class="csv"><code>sweden,VOLV-B,equity,Volvo AB Class B,SEK,1,0.01,1,VOLV B</code></pre>
+<p>Important details:</p>
+<ul>
+<li><code>quote_currency</code> must be the actual listing currency. Most Stockholm shares use SEK, but override exceptions.</li>
+<li><code>contract_multiplier</code> is normally <code>1</code> for cash equities.</li>
+<li><code>lot_size</code> is normally <code>1</code>; verify it from the source security master.</li>
+<li><code>minimum_price_variation</code> is static in this database. Nasdaq Stockholm uses MiFID II tick-size tables that can vary with price and liquidity band, which one static value cannot model exactly. Use a conservative per-symbol value or implement custom order validation for realistic limit-order simulation.</li>
+<li>The parser simply splits on commas. Do not put an unescaped comma in a description.</li>
+<li><code>market_ticker</code> is broker/vendor metadata. It does not rename the LEAN price folder.</li>
+</ul>
+<p>For a pure Swedish account, set the account currency before setting cash:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.set_account_currency(<span class="st">"SEK"</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.set_cash(<span class="dv">1_000_000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If the account currency is USD or EUR, LEAN also needs a conversion path for SEK cash. Supply the required FX data or conversion rate. Otherwise holdings may have a zero or stale account-currency value.</p>
+</section>
+<section id="design-symbols-and-map-files" class="level2">
+<h2 class="anchored" data-anchor-id="design-symbols-and-map-files">5. Design symbols and map files</h2>
+<p>LEAN does not require a central symbol master to add a known ticker. It creates a <code>Symbol</code> from the ticker, market, security type, and first date resolved from the map file. Map files are therefore the native point-in-time identity store for equities.</p>
+<p>Maintain an ingestion manifest outside LEAN with at least:</p>
+<pre class="text"><code>permanent_id,lean_ticker,vendor_ticker,isin,name,currency,listing_date,delisting_date</code></pre>
+<p>Use ISIN or another stable source ID to join prices and corporate actions. Keep share classes distinct. It is practical to use ASCII, filesystem-safe LEAN tickers such as <code>VOLV-A</code> and <code>VOLV-B</code>, then retain the official ticker in the manifest and <code>market_ticker</code> field. Whatever convention is chosen must remain stable.</p>
+<section id="identity-map" class="level3">
+<h3 class="anchored" data-anchor-id="identity-map">Identity map</h3>
+<p>For a continuously listed symbol with no ticker change, create:</p>
+<pre class="text"><code>data/equity/sweden/map_files/volv-b.csv</code></pre>
+<pre class="csv"><code>20000103,volv-b
+20501231,volv-b</code></pre>
+<p><code>20501231</code> is LEAN’s canonical <code>Time.EndOfTime</code> sentinel. The first row is the first listing/data date. Without the future row, LEAN treats the first row as the delisting date.</p>
+</section>
+<section id="ticker-rename" class="level3">
+<h3 class="anchored" data-anchor-id="ticker-rename">Ticker rename</h3>
+<p>Each map row is an inclusive end date for the ticker in that row. If <code>oldco</code> listed on 2010-01-04 and became <code>newco</code> on 2020-04-01:</p>
+<pre class="csv"><code>20100104,oldco
+20200331,oldco
+20501231,newco</code></pre>
+<p>Store price files under <code>oldco</code> through 2020-03-31 and under <code>newco</code> from 2020-04-01. The map filename is the stable permtick used to find the entity’s factor file. Keep its stem unchanged after a rename.</p>
+</section>
+<section id="delisting" class="level3">
+<h3 class="anchored" data-anchor-id="delisting">Delisting</h3>
+<p>For a symbol whose final trading date was 2024-05-17, omit the future sentinel:</p>
+<pre class="csv"><code>20100104,oldco
+20240517,oldco</code></pre>
+<p>The final map date drives LEAN’s delisting warning/event and prevents price-file searches after that date.</p>
+<p>Map rows may have a third primary-exchange column, but current LEAN does not recognize <code>XSTO</code>/Stockholm in its <code>Exchange</code> table. Omit that column rather than pretending the listing is on a US exchange. LEAN will use <code>Exchange.UNKNOWN</code>, which is sufficient for loading local prices.</p>
+</section>
+<section id="reused-tickers" class="level3">
+<h3 class="anchored" data-anchor-id="reused-tickers">Reused tickers</h3>
+<p>If two legal entities used the same ticker at different times, give them different stable permticks, similar to LEAN’s <code>.1</code> convention, and keep their mapping periods disjoint. Do not merge them into one return series.</p>
+</section>
+<section id="optional-identifier-database" class="level3">
+<h3 class="anchored" data-anchor-id="optional-identifier-database">Optional identifier database</h3>
+<p><code>data/symbol-properties/security-database.csv</code> maps a fully encoded LEAN SID to CUSIP, composite FIGI, SEDOL, ISIN, and CIK. It is consulted by explicit helper methods such as <code>Symbol.create_by_isin</code>; it is not consulted by ordinary <code>add_equity</code>, and it is not a universe-membership database. Populating it is optional and binds the rows to the chosen custom numeric market ID.</p>
+</section>
+<section id="omx-universe-selection" class="level3">
+<h3 class="anchored" data-anchor-id="omx-universe-selection">OMX universe selection</h3>
+<p>LEAN does not discover a universe by scanning price folders, map files, or the identifier database. For a survivorship-bias-free Swedish universe, retain point-in-time active listings and index/ETF constituents in native universe files. A current ticker list hard-coded into a historical backtest is survivorship biased. Map files handle a symbol after selection; they do not decide which symbols enter the universe.</p>
+<section id="broad-daily-universe" class="level4">
+<h4 class="anchored" data-anchor-id="broad-daily-universe">Broad daily universe</h4>
+<p>A preselected daily universe uses one uncompressed CSV per source date:</p>
+<pre class="text"><code>data/equity/sweden/universes/daily/sweden100/20240102.csv</code></pre>
+<p>Each row is:</p>
+<pre class="text"><code>ticker,full_lean_sid</code></pre>
+<p>For the synthetic fixture:</p>
+<pre class="csv"><code>AAA,AAA YDXSJNGP3GK1
+AAB,AAB YDXSJNGP3GK1
+AAC,AAC YDXSJNGP3GK1</code></pre>
+<p>The second field must be a valid full SID, not a ticker repeated twice. An equity SID encodes its security type, market numeric ID, and first map-file date. Keep market ID <code>900</code> and map dates stable, or regenerate every universe row when either changes.</p>
+<p>Create the matching universe in Python with:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>universe_ticker <span class="op">=</span> <span class="st">"constituents-universe-sweden100"</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>universe_symbol <span class="op">=</span> Symbol(</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    SecurityIdentifier.generate_constituent_identifier(</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>        universe_ticker,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>        SecurityType.EQUITY,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>        SWEDEN,</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    universe_ticker,</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.add_universe(</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>    ConstituentsUniverse(universe_symbol, <span class="va">self</span>.universe_settings)</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>ConstituentsUniverseData.GetSource</code> takes the folder name from the text after the final hyphen in the universe symbol. Therefore the example symbol resolves to the <code>sweden100</code> folder.</p>
+<p>A row is dated at <code>Time = source_date</code> and becomes available at <code>EndTime = source_date + 1 day</code>. LEAN’s generic constituent subscription uses custom-data scheduling and may request Sundays and exchange holidays in addition to market sessions. To avoid missing-request noise without changing membership, create a zero-byte CSV for every non-session calendar date in the covered range. Do not put <code>NONE,NONE 0</code> in those files unless the intended point-in-time selection is genuinely empty; that sentinel explicitly clears the universe.</p>
+</section>
+<section id="etf-and-index-constituents" class="level4">
+<h4 class="anchored" data-anchor-id="etf-and-index-constituents">ETF and index constituents</h4>
+<p>ETF and index universes share the same six-column reader but have different security-type roots:</p>
+<pre class="text"><code># A tradable ETF, used with self.universe.etf(...)
+data/equity/sweden/universes/etf/&lt;etf-ticker&gt;/20240102.csv
+
+# An index composite, used with self.universe.index(...)
+data/index/sweden/universes/etf/omxs30/20240102.csv</code></pre>
+<p>The <code>etf</code> directory name in the Index path is intentional: current LEAN reuses <code>ETFConstituentUniverse</code> as its Index constituent reader. Use the official symbol spelling <code>OMXS30</code>.</p>
+<p>Each row is:</p>
+<pre class="text"><code>ticker,full_lean_sid,last_update,weight,shares_held,market_value</code></pre>
+<p>Example:</p>
+<pre class="csv"><code>AAA,AAA YDXSJNGP3GK1,20231201,0.064516129032,1000000,
+AAB,AAB YDXSJNGP3GK1,20231201,0.062365591398,990000,</code></pre>
+<ul>
+<li><code>last_update</code> uses <code>YYYYMMDD</code> and describes when the holdings/composition source last changed; it may differ from the filename date.</li>
+<li><code>weight</code> is a decimal fraction, so all constituent weights normally sum to approximately <code>1</code>, not <code>100</code>.</li>
+<li><code>shares_held</code> and <code>market_value</code> are nullable. Preserve all six columns, including the trailing comma when market value is absent.</li>
+<li>Constituent SIDs identify the component equities, not the parent index.</li>
+</ul>
+<p>Add an OMXS30 constituent universe with:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.add_universe(</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.universe.index(</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"OMXS30"</span>,</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>        market<span class="op">=</span>SWEDEN,</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>        universe_settings<span class="op">=</span><span class="va">self</span>.universe_settings,</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>        universe_filter_func<span class="op">=</span><span class="kw">lambda</span> constituents: [</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>            constituent.symbol <span class="cf">for</span> constituent <span class="kw">in</span> constituents</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>        ],</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Also add <code>Index-sweden-[*]</code> to the market-hours database, an SEK wildcard Index row to the symbol-properties database, and <code>data/index/sweden/map_files/</code>. An identity <code>omxs30.csv</code> map is useful even when only constituent selection is tested. The parent Index does not need price files merely to select components; it does need native index price data if the algorithm subscribes to or uses the Index as a priced benchmark.</p>
+<p>As with the broad daily universe, provide zero-byte files on non-session dates that LEAN requests. On actual sessions, repeat the latest point-in-time composition until it changes. For a real OMXS30 import, source every historical addition/removal and weight effective date rather than applying today’s 30 members to the past.</p>
+</section>
+</section>
+</section>
+<section id="build-the-price-data-tree" class="level2">
+<h2 class="anchored" data-anchor-id="build-the-price-data-tree">6. Build the price data tree</h2>
+<p>A representative data tree is:</p>
+<pre class="text"><code>data/
+|-- equity/
+|   `-- sweden/
+|       |-- tick/
+|       |   `-- volv-b/
+|       |       |-- 20240102_trade.zip
+|       |       `-- 20240102_quote.zip
+|       |-- second/
+|       |   `-- volv-b/
+|       |       `-- 20240102_trade.zip
+|       |-- minute/
+|       |   `-- volv-b/
+|       |       `-- 20240102_trade.zip
+|       |-- hour/
+|       |   `-- volv-b.zip
+|       |-- daily/
+|       |   `-- volv-b.zip
+|       |-- map_files/
+|       |   `-- volv-b.csv
+|       `-- factor_files/
+|           `-- volv-b.csv
+|-- market-hours/
+|   `-- market-hours-database.json
+`-- symbol-properties/
+    `-- symbol-properties-database.csv</code></pre>
+<section id="rules-common-to-all-equity-price-files" class="level3">
+<h3 class="anchored" data-anchor-id="rules-common-to-all-equity-price-files">Rules common to all equity price files</h3>
+<ul>
+<li>Use lower-case market, resolution, ticker, folder, and ZIP names.</li>
+<li>Store one CSV member per ZIP with no header and no nested directory.</li>
+<li>Sort rows oldest to newest. Duplicate tick timestamps are allowed.</li>
+<li>Use invariant numeric formatting: <code>.</code> for decimals and no thousands separators.</li>
+<li>Store raw, unadjusted prices and actual historical quantities.</li>
+<li>Multiply every equity price by exactly <code>10,000</code>, regardless of currency. LEAN divides by <code>10,000</code> while reading.</li>
+<li>Omit intervals with no activity. LEAN can fill forward after reading if the subscription enables it.</li>
+<li>The timestamp is the start time of a bar, not its end time.</li>
+</ul>
+<p>For example, <code>287.35 SEK</code> is written as <code>2873500</code>.</p>
+</section>
+<section id="tick-trade-data" class="level3">
+<h3 class="anchored" data-anchor-id="tick-trade-data">Tick trade data</h3>
+<p>Path:</p>
+<pre class="text"><code>data/equity/sweden/tick/volv-b/20240102_trade.zip</code></pre>
+<p>ZIP member name:</p>
+<pre class="text"><code>20240102_volv-b_Trade_Tick.csv</code></pre>
+<p>Row schema:</p>
+<pre class="text"><code>milliseconds_since_midnight,price_x10000,quantity,exchange,sale_condition,suspicious</code></pre>
+<p>Example at 09:00:00.123456 Stockholm time:</p>
+<pre class="csv"><code>32400123.456,2873500,100,,0,0</code></pre>
+<p>Tick times may contain a decimal fraction of a millisecond. Convert the source timestamp to <code>Europe/Stockholm</code>, select the local date for the ZIP name, then compute elapsed milliseconds from local midnight.</p>
+<p>Current LEAN has no Stockholm exchange code. Leave <code>exchange</code> empty. A nonempty sale condition is parsed as hexadecimal when algorithms access <code>parsed_sale_condition</code>, so use <code>0</code> unless the source flags have been explicitly translated to LEAN’s condition bit mask. Set <code>suspicious</code> to <code>1</code> for a tick that should not update prices or consolidators; otherwise use <code>0</code>.</p>
+</section>
+<section id="tick-quote-data" class="level3">
+<h3 class="anchored" data-anchor-id="tick-quote-data">Tick quote data</h3>
+<p>Path and ZIP member:</p>
+<pre class="text"><code>data/equity/sweden/tick/volv-b/20240102_quote.zip
+20240102_volv-b_Quote_Tick.csv</code></pre>
+<p>Row schema:</p>
+<pre class="text"><code>milliseconds_since_midnight,bid_x10000,bid_size,ask_x10000,ask_size,exchange,quote_condition,suspicious</code></pre>
+<p>Example:</p>
+<pre class="csv"><code>32400123.456,2873000,500,2874000,400,,0,0</code></pre>
+<p>Full bid/ask snapshots can include both sides. For a one-sided update, use zero for the absent side, as the upstream sample data does. Do not synthesize quote ticks from trades.</p>
+</section>
+<section id="second-and-minute-trade-bars" class="level3">
+<h3 class="anchored" data-anchor-id="second-and-minute-trade-bars">Second and minute trade bars</h3>
+<p>Paths:</p>
+<pre class="text"><code>data/equity/sweden/second/volv-b/20240102_trade.zip
+data/equity/sweden/minute/volv-b/20240102_trade.zip</code></pre>
+<p>ZIP members:</p>
+<pre class="text"><code>20240102_volv-b_second_trade.csv
+20240102_volv-b_minute_trade.csv</code></pre>
+<p>Row schema:</p>
+<pre class="text"><code>integer_milliseconds_since_midnight,open_x10000,high_x10000,low_x10000,close_x10000,volume</code></pre>
+<p>Example 09:00 minute bar:</p>
+<pre class="csv"><code>32400000,2873000,2875000,2872000,2873500,12345</code></pre>
+<p>Unlike tick time, the trade-bar parser expects the intraday timestamp to be an integer.</p>
+</section>
+<section id="second-and-minute-quote-bars" class="level3">
+<h3 class="anchored" data-anchor-id="second-and-minute-quote-bars">Second and minute quote bars</h3>
+<p>Use <code>_quote.zip</code> and a <code>_quote.csv</code> ZIP member. The 11 columns are:</p>
+<pre class="text"><code>time,bid_open,bid_high,bid_low,bid_close,bid_size,ask_open,ask_high,ask_low,ask_close,ask_size</code></pre>
+<p>All bid/ask price fields are multiplied by <code>10,000</code>. Sizes are not scaled.</p>
+<pre class="csv"><code>32400000,2872000,2874000,2871000,2873000,500,2874000,2876000,2873000,2875000,400</code></pre>
+<p>This is not merely optional depth data for a clean standard equity run. In the tested LEAN 2.5 image, <code>add_equity(..., Resolution.MINUTE)</code> requested both the minute trade and minute quote ZIP for every session, even though the algorithm only consumed <code>Slice.bars</code>. A typed <code>Tick</code> history request likewise returned both trade and quote ticks. Missing quote ZIPs did not prevent trade bars from streaming, but they produced failed data requests. Generate matching quote files when zero missing-data requests are required.</p>
+</section>
+<section id="hour-and-daily-trade-bars" class="level3">
+<h3 class="anchored" data-anchor-id="hour-and-daily-trade-bars">Hour and daily trade bars</h3>
+<p>Hour and daily data use one ZIP per mapped ticker for the entire available history:</p>
+<pre class="text"><code>data/equity/sweden/hour/volv-b.zip
+data/equity/sweden/daily/volv-b.zip</code></pre>
+<p>Both ZIPs contain <code>volv-b.csv</code>. Rows use:</p>
+<pre class="text"><code>YYYYMMDD HH:MM,open_x10000,high_x10000,low_x10000,close_x10000,volume</code></pre>
+<p>Examples:</p>
+<pre class="csv"><code>20240102 09:00,2873000,2890000,2868000,2885000,120000
+20240102 00:00,2873000,2910000,2860000,2905000,2450000</code></pre>
+<p>Use <code>00:00</code> for a daily row. Native equity hour/daily subscriptions support trade bars, not quote bars.</p>
+</section>
+</section>
+<section id="generate-bars-from-ticks" class="level2">
+<h2 class="anchored" data-anchor-id="generate-bars-from-ticks">7. Generate bars from ticks</h2>
+<section id="what-lean-does-and-does-not-do" class="level3">
+<h3 class="anchored" data-anchor-id="what-lean-does-and-does-not-do">What LEAN does and does not do</h3>
+<p>LEAN does not transparently fall back to tick data when a strategy requests a coarser resolution. It chooses the data path directly from the requested subscription or history resolution:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Algorithm request</th>
+<th>File LEAN opens</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>Resolution.TICK</code></td>
+<td><code>equity/sweden/tick/...</code></td>
+</tr>
+<tr class="even">
+<td><code>Resolution.SECOND</code></td>
+<td><code>equity/sweden/second/...</code></td>
+</tr>
+<tr class="odd">
+<td><code>Resolution.MINUTE</code></td>
+<td><code>equity/sweden/minute/...</code></td>
+</tr>
+<tr class="even">
+<td><code>Resolution.HOUR</code></td>
+<td><code>equity/sweden/hour/...</code></td>
+</tr>
+<tr class="odd">
+<td><code>Resolution.DAILY</code></td>
+<td><code>equity/sweden/daily/...</code></td>
+</tr>
+</tbody>
+</table>
+<p>Therefore, storing only ticks and calling <code>add_equity(..., Resolution.MINUTE)</code> produces no minute data. The same applies to a call such as <code>history(..., Resolution.MINUTE)</code>: it requests minute files; it does not build the response from tick files.</p>
+<p>This does <strong>not</strong> mean every resolution must be materialized. Only resolutions that the algorithm directly requests must exist. Alternatively, subscribe to an available finer resolution and explicitly consolidate it while the algorithm runs.</p>
+<p>LEAN can consolidate a tick subscription while the backtest runs:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> timedelta</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>._security <span class="op">=</span> <span class="va">self</span>.add_equity(</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"VOLV-B"</span>,</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>    Resolution.TICK,</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>    market<span class="op">=</span>SWEDEN,</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>    data_normalization_mode<span class="op">=</span>DataNormalizationMode.RAW,</span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>._minute_consolidator <span class="op">=</span> TickConsolidator(timedelta(minutes<span class="op">=</span><span class="dv">1</span>))</span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>._minute_consolidator.data_consolidated <span class="op">+=</span> <span class="va">self</span>._on_minute_bar</span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.subscription_manager.add_consolidator(</span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>._security.symbol,</span>
+<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>._minute_consolidator,</span>
+<span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>TickConsolidator</code> consumes trade ticks and emits <code>TradeBar</code> objects. It does not write minute ZIPs to disk, and every run still reads every tick. The resulting bars exist only in that algorithm run: they do not make separate minute, hour, or daily subscriptions work, and they do not satisfy history requests at those resolutions. Use <code>TickQuoteBarConsolidator</code> separately for quote ticks.</p>
+<p>The same pattern works between bar resolutions. For example, an algorithm can subscribe to minute files and use <code>TradeBarConsolidator</code> to produce hourly bars. In that design, hour files are unnecessary unless the algorithm also directly requests <code>Resolution.HOUR</code> data or hourly history.</p>
+<p>For practical storage and backtest speed:</p>
+<ul>
+<li>Keep ticks as the authoritative raw archive and for microstructure research.</li>
+<li>Generate minute files for normal intraday strategies.</li>
+<li>Generate daily files for daily strategies, validation, and factor-file construction.</li>
+<li>Generate second or hour files only when strategies directly request them or repeated runtime consolidation is too expensive.</li>
+</ul>
+<p>In short, if an algorithm asks LEAN for resolution <code>R</code>, either files for <code>R</code> must exist, or the algorithm must instead subscribe to a finer available resolution and explicitly consolidate it forward.</p>
+</section>
+<section id="recommended-offline-aggregation" class="level3">
+<h3 class="anchored" data-anchor-id="recommended-offline-aggregation">Recommended offline aggregation</h3>
+<p>Generate minute and daily trade bars once as part of ingestion:</p>
+<ol type="1">
+<li>Convert all timestamps to Stockholm local time.</li>
+<li>Apply corrections/cancellations and flag or reject bad ticks.</li>
+<li>Sort by exchange event time and a deterministic source sequence.</li>
+<li>Group valid trade ticks into local minute buckets.</li>
+<li>Set open/close to first/last trade, high/low to extrema, and volume to the sum of trade quantities.</li>
+<li>Omit empty buckets.</li>
+<li>Aggregate daily bars by the exchange session, respecting holidays and 13:00 half-day closes.</li>
+<li>Include the official opening and closing auction prices in the session open and close. Prefer exchange event timestamps over delayed receipt timestamps.</li>
+<li>Write raw bars using the schemas above.</li>
+</ol>
+<p>Generate daily data before factor files because each corporate-action row needs the previous session’s raw close as its reference price. Minute plus daily is a good default. Add second/hour files only when a strategy directly subscribes to those resolutions.</p>
+</section>
+</section>
+<section id="store-splits-and-dividends-in-factor-files" class="level2">
+<h2 class="anchored" data-anchor-id="store-splits-and-dividends-in-factor-files">8. Store splits and dividends in factor files</h2>
+<p>Price files must remain raw. Do not pre-adjust the OHLC prices and then also add a factor file, because LEAN would adjust them twice.</p>
+<p>Factor file path:</p>
+<pre class="text"><code>data/equity/sweden/factor_files/volv-b.csv</code></pre>
+<p>The filename is the stable map-file permtick, not necessarily the current mapped ticker. With no usable map file, LEAN falls back to the requested ticker.</p>
+<p>Each row is:</p>
+<pre class="text"><code>YYYYMMDD,cumulative_price_factor,cumulative_split_factor,raw_reference_close</code></pre>
+<p>Rows are ascending by date. Include a terminal row:</p>
+<pre class="csv"><code>20501231,1,1,0</code></pre>
+<p>For a symbol with no actions, a complete identity factor file can be:</p>
+<pre class="csv"><code>20000103,1,1,100
+20501231,1,1,0</code></pre>
+<p>An absent/empty factor file also behaves as factor 1, but an explicit file is easier to audit.</p>
+<section id="row-date-and-formulas" class="level3">
+<h3 class="anchored" data-anchor-id="row-date-and-formulas">Row date and formulas</h3>
+<p>The row date is the last open trading day before the action’s effective/ex-date, not the effective date itself. LEAN compares the row to the next row and emits the action on the next trading day according to the market-hours calendar.</p>
+<p>Build factors backwards from the terminal row. Let:</p>
+<ul>
+<li><code>P_next</code> be the cumulative price factor after the event.</li>
+<li><code>S_next</code> be the cumulative split factor after the event.</li>
+<li><code>C</code> be the raw close on the previous trading day.</li>
+<li><code>D</code> be the cash dividend per share on the same share basis as <code>C</code>.</li>
+<li><code>r</code> be old shares divided by new shares for a split.</li>
+</ul>
+<p>For a dividend:</p>
+<pre class="text"><code>P_before = P_next * (C - D) / C
+S_before = S_next</code></pre>
+<p>For a split:</p>
+<pre class="text"><code>P_before = P_next
+S_before = S_next * r</code></pre>
+<p>Examples of <code>r</code>:</p>
+<ul>
+<li>2-for-1 split: <code>r = 0.5</code></li>
+<li>7-for-1 split: <code>r = 1/7</code></li>
+<li>1-for-10 reverse split: <code>r = 10</code></li>
+</ul>
+<p>If a split and dividend share an effective date, apply both changes to one row. The adjusted price scale is <code>P * S</code>.</p>
+</section>
+<section id="worked-example" class="level3">
+<h3 class="anchored" data-anchor-id="worked-example">Worked example</h3>
+<p>Assume:</p>
+<ul>
+<li>A 2-for-1 split is effective 2023-06-01; the 2023-05-31 raw close is 200.</li>
+<li>A 5 SEK dividend is ex-date 2024-04-05; the 2024-04-04 raw close is 100.</li>
+</ul>
+<p>Then the factor file can be:</p>
+<pre class="csv"><code>20200102,0.95,0.5,50
+20230531,0.95,0.5,200
+20240404,0.95,1,100
+20501231,1,1,0</code></pre>
+<p>The unchanged first row extends the earliest cumulative factors back to the first data date. LEAN infers:</p>
+<pre class="text"><code>split factor = 0.5 / 1 = 0.5
+dividend = 100 * (1 - 0.95 / 1) = 5 SEK</code></pre>
+<p>Write enough decimal precision for cumulative factors. LEAN’s own writer rounds price factors to 7 decimal places, split factors to 8, and reference prices to 4. The standard dividend event reconstruction rounds distributions to 2 decimal places.</p>
+</section>
+<section id="normalization-behavior" class="level3">
+<h3 class="anchored" data-anchor-id="normalization-behavior">Normalization behavior</h3>
+<ul>
+<li><code>RAW</code>: emits raw prices; LEAN adjusts held share quantity on a split and credits dividend cash.</li>
+<li><code>ADJUSTED</code>: applies split and dividend factors to historical prices; holdings are not separately changed for those already-normalized discontinuities.</li>
+<li><code>SPLIT_ADJUSTED</code>: adjusts prices for splits and still credits dividends.</li>
+<li><code>TOTAL_RETURN</code>: represents dividends in the normalized return series.</li>
+</ul>
+<p>Use <code>RAW</code> first when validating imported data and corporate actions. Factor files also generate <code>Split</code> and <code>Dividend</code> objects in the data slice.</p>
+<p>LEAN models the dividend at the ex-date and credits it then in a backtest; it does not model the later payable date. Tax withholding, stock dividends, rights, spin-offs, merger consideration, and venue-specific corporate-action details may require custom accounting beyond the standard factor file.</p>
+</section>
+</section>
+<section id="end-to-end-ingestion-order" class="level2">
+<h2 class="anchored" data-anchor-id="end-to-end-ingestion-order">9. End-to-end ingestion order</h2>
+<p>Use this order for a reproducible import:</p>
+<ol type="1">
+<li><strong>Freeze conventions.</strong> Choose <code>sweden</code>, custom market ID <code>900</code>, a ticker normalization rule, the source timezone, and the LEAN Docker image.</li>
+<li><strong>Build a security manifest.</strong> Join each vendor symbol to a stable entity, ISIN, share class, listing currency, and listing/delisting dates.</li>
+<li><strong>Normalize raw ticks.</strong> Convert to <code>Europe/Stockholm</code>, retain exchange event time and source sequence, process cancellations/corrections, and identify auction prints.</li>
+<li><strong>Write daily tick ZIPs.</strong> Write trade and quote archives separately with exact path/member names and prices multiplied by <code>10,000</code>.</li>
+<li><strong>Build raw bars.</strong> Generate minute and daily files from clean trade ticks. Keep volume in shares and omit empty bars.</li>
+<li><strong>Write map files.</strong> Encode first listing date, ticker periods, the future sentinel for active stocks, and the real final date for delisted stocks.</li>
+<li><strong>Write factor files.</strong> Join actions by stable entity, use raw previous closes, and calculate cumulative factors backwards.</li>
+<li><strong>Patch reference databases.</strong> Add the market-hours entry and SEK symbol properties after disabling CLI database replacement.</li>
+<li><strong>Run one-symbol smoke tests.</strong> Test <code>RAW</code> minute data first, then tick and daily, then a date around one split/dividend/rename/half day.</li>
+<li><strong>Add the universe.</strong> Only after single-symbol behavior is correct, write point-in-time active listings or index/ETF memberships in the native universe formats and validate additions, removals, weights, and effective dates.</li>
+<li><strong>Audit upgrades.</strong> On each LEAN/CLI upgrade, check the custom market ID, database entries, provider settings, and a golden backtest.</li>
+</ol>
+</section>
+<section id="smoke-test-algorithm" class="level2">
+<h2 class="anchored" data-anchor-id="smoke-test-algorithm">10. Smoke-test algorithm</h2>
+<p>Replace the ticker and dates with a range that exists in the imported files:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> AlgorithmImports <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>SWEDEN <span class="op">=</span> <span class="st">"sweden"</span></span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>CUSTOM_SWEDEN_MARKET_ID <span class="op">=</span> <span class="dv">900</span></span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> OmxDataSmokeTest(QCAlgorithm):</span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> initialize(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> Market.encode(SWEDEN) <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a>            Market.add(SWEDEN, CUSTOM_SWEDEN_MARKET_ID)</span>
+<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.set_start_date(<span class="dv">2024</span>, <span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb53-14"><a href="#cb53-14" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.set_end_date(<span class="dv">2024</span>, <span class="dv">1</span>, <span class="dv">5</span>)</span>
+<span id="cb53-15"><a href="#cb53-15" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.set_time_zone(<span class="st">"Europe/Stockholm"</span>)</span>
+<span id="cb53-16"><a href="#cb53-16" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.set_account_currency(<span class="st">"SEK"</span>)</span>
+<span id="cb53-17"><a href="#cb53-17" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.set_cash(<span class="dv">1_000_000</span>)</span>
+<span id="cb53-18"><a href="#cb53-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-19"><a href="#cb53-19" aria-hidden="true" tabindex="-1"></a>        security <span class="op">=</span> <span class="va">self</span>.add_equity(</span>
+<span id="cb53-20"><a href="#cb53-20" aria-hidden="true" tabindex="-1"></a>            <span class="st">"VOLV-B"</span>,</span>
+<span id="cb53-21"><a href="#cb53-21" aria-hidden="true" tabindex="-1"></a>            Resolution.MINUTE,</span>
+<span id="cb53-22"><a href="#cb53-22" aria-hidden="true" tabindex="-1"></a>            market<span class="op">=</span>SWEDEN,</span>
+<span id="cb53-23"><a href="#cb53-23" aria-hidden="true" tabindex="-1"></a>            fill_forward<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb53-24"><a href="#cb53-24" aria-hidden="true" tabindex="-1"></a>            extended_market_hours<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb53-25"><a href="#cb53-25" aria-hidden="true" tabindex="-1"></a>            data_normalization_mode<span class="op">=</span>DataNormalizationMode.RAW,</span>
+<span id="cb53-26"><a href="#cb53-26" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb53-27"><a href="#cb53-27" aria-hidden="true" tabindex="-1"></a>        security.set_fee_model(ConstantFeeModel(<span class="dv">0</span>))</span>
+<span id="cb53-28"><a href="#cb53-28" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._symbol <span class="op">=</span> security.symbol</span>
+<span id="cb53-29"><a href="#cb53-29" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._bar_count <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb53-30"><a href="#cb53-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-31"><a href="#cb53-31" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> on_data(<span class="va">self</span>, data: Slice) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb53-32"><a href="#cb53-32" aria-hidden="true" tabindex="-1"></a>        bar <span class="op">=</span> data.bars.get(<span class="va">self</span>._symbol)</span>
+<span id="cb53-33"><a href="#cb53-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> bar <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb53-34"><a href="#cb53-34" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span></span>
+<span id="cb53-35"><a href="#cb53-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-36"><a href="#cb53-36" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._bar_count <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb53-37"><a href="#cb53-37" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>._bar_count <span class="op">&lt;=</span> <span class="dv">3</span>:</span>
+<span id="cb53-38"><a href="#cb53-38" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.debug(</span>
+<span id="cb53-39"><a href="#cb53-39" aria-hidden="true" tabindex="-1"></a>                <span class="ss">f"</span><span class="sc">{</span>bar<span class="sc">.</span>time<span class="sc">}</span><span class="ss"> </span><span class="sc">{</span>bar<span class="sc">.</span><span class="bu">open</span><span class="sc">}</span><span class="ss"> </span><span class="sc">{</span>bar<span class="sc">.</span>high<span class="sc">}</span><span class="ss"> "</span></span>
+<span id="cb53-40"><a href="#cb53-40" aria-hidden="true" tabindex="-1"></a>                <span class="ss">f"</span><span class="sc">{</span>bar<span class="sc">.</span>low<span class="sc">}</span><span class="ss"> </span><span class="sc">{</span>bar<span class="sc">.</span>close<span class="sc">}</span><span class="ss"> </span><span class="sc">{</span>bar<span class="sc">.</span>volume<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb53-41"><a href="#cb53-41" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb53-42"><a href="#cb53-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-43"><a href="#cb53-43" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> on_splits(<span class="va">self</span>, splits: Splits) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb53-44"><a href="#cb53-44" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> symbol, split <span class="kw">in</span> splits.items():</span>
+<span id="cb53-45"><a href="#cb53-45" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.debug(<span class="ss">f"SPLIT </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>time<span class="sc">}</span><span class="ss"> </span><span class="sc">{</span>symbol<span class="sc">}</span><span class="ss"> </span><span class="sc">{</span>split<span class="sc">.</span>split_factor<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb53-46"><a href="#cb53-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-47"><a href="#cb53-47" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> on_dividends(<span class="va">self</span>, dividends: Dividends) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb53-48"><a href="#cb53-48" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> symbol, dividend <span class="kw">in</span> dividends.items():</span>
+<span id="cb53-49"><a href="#cb53-49" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.debug(<span class="ss">f"DIVIDEND </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>time<span class="sc">}</span><span class="ss"> </span><span class="sc">{</span>symbol<span class="sc">}</span><span class="ss"> </span><span class="sc">{</span>dividend<span class="sc">.</span>distribution<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb53-50"><a href="#cb53-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-51"><a href="#cb53-51" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> on_end_of_algorithm(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb53-52"><a href="#cb53-52" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.debug(<span class="ss">f"BARS=</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>_bar_count<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Temporarily set <code>"show-missing-data-logs": true</code> in <code>lean.json</code> while debugging. Run from the CLI root that owns the data folder:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb54"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /home/hi/qrt/.temp/leantest</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run lean backtest demo.py <span class="at">--no-update</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>--no-update</code> pins the already-downloaded engine image for that invocation. It does not replace the separate <code>database-update-frequency</code> protection.</p>
+</section>
+<section id="validate-the-files" class="level2">
+<h2 class="anchored" data-anchor-id="validate-the-files">11. Validate the files</h2>
+<p>Validate the full market-hours JSON after inserting the member:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb55"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> json.tool <span class="dt">\</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>  .temp/leantest/data/market-hours/market-hours-database.json <span class="dt">\</span></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">&gt;</span>/dev/null</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Inspect and test a ZIP:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb56"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unzip</span> <span class="at">-t</span> .temp/leantest/data/equity/sweden/minute/volv-b/20240102_trade.zip</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="fu">unzip</span> <span class="at">-Z1</span> .temp/leantest/data/equity/sweden/minute/volv-b/20240102_trade.zip</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a><span class="fu">unzip</span> <span class="at">-p</span> .temp/leantest/data/equity/sweden/minute/volv-b/20240102_trade.zip <span class="kw">|</span> <span class="fu">head</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Expected member:</p>
+<pre class="text"><code>20240102_volv-b_minute_trade.csv</code></pre>
+<p>For each symbol, assert in the ingestion job that:</p>
+<ul>
+<li>Timestamps are nondecreasing and belong to the partition’s local date.</li>
+<li>Tick and minute times are within the intended session, including valid auction prints.</li>
+<li><code>low &lt;= open &lt;= high</code>, <code>low &lt;= close &lt;= high</code>, and volume is nonnegative.</li>
+<li>Scaled prices divided by <code>10,000</code> match source prices exactly within the selected precision.</li>
+<li>Daily OHLCV matches aggregation from accepted ticks/minutes.</li>
+<li>Map intervals do not overlap across entities that reuse a ticker.</li>
+<li>Map first/final dates agree with listing status.</li>
+<li>Every factor reference close matches raw daily data.</li>
+<li>Reconstructed split ratios and dividend amounts match the action source.</li>
+<li>The holiday/half-day calendar covers every backtest year.</li>
+</ul>
+<p>Run focused backtests for:</p>
+<ol type="1">
+<li>An ordinary full session.</li>
+<li>A 13:00 half day.</li>
+<li>A daylight-saving period boundary.</li>
+<li>A split.</li>
+<li>A dividend.</li>
+<li>A ticker rename.</li>
+<li>A delisting, if present.</li>
+</ol>
+<p>Compare the first/last timestamp, OHLCV, event date, cash, and holdings against the source system.</p>
+</section>
+<section id="proven-synthetic-fixture" class="level2">
+<h2 class="anchored" data-anchor-id="proven-synthetic-fixture">12. Proven synthetic fixture</h2>
+<p>The repository contains a working, deterministic test workspace at <code>.temp/leansweden</code>. Its source generator uses <code>q.stats.random_walk</code> for prices and <code>q.calendar.schedule(..., exchange="XSTO")</code> for real Stockholm sessions, holidays, daylight saving, and half-days.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb58"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /home/hi/qrt</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run lean <span class="at">--version</span></span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python .temp/leansweden/source/generate_data.py</span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> .temp/leansweden</span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run lean backtest demo.py <span class="at">--no-update</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The generator creates 100 symbols (<code>AAA</code> through <code>ADV</code>) from 2023-12-01 through 2024-12-30. The native Sweden tree is about 1.1 GB across 108,400 files and contains 27.27 million trade ticks, 13.635 million minute trade bars, 240,500 hour bars, and 27,000 daily bars, plus required intraday quotes and 100 map and factor files.</p>
+<p>The stress backtest covers all 251 XSTO sessions in 2024. It simultaneously subscribes to all 100 daily streams, receives all 25,100 expected bars with no incomplete session, requests tick/minute/quote/hour/daily history across all symbols, fills 100 holdings in SEK, and completes 602 of 602 data requests. Look for this marker:</p>
+<pre class="text"><code>SWEDEN_MULTI_ASSET_VERIFIED</code></pre>
+<p>For a 09:00-10:00 history interval, LEAN returned 60 minute <code>TradeBar</code> and 60 minute <code>QuoteBar</code> rows per symbol because bars are filtered by <code>EndTime</code>. Typed tick history returned 242 rows per symbol because it included both trade and quote events and instantaneous ticks exactly at the 10:00 boundary.</p>
+<p>The fixture also generates:</p>
+<pre class="text"><code>data/equity/sweden/universes/daily/sweden100/
+data/index/sweden/universes/etf/omxs30/</code></pre>
+<p><code>universe_demo.py</code> validates both native APIs over the full year. The broad universe selected 100 assets on 251 updates. The synthetic OMXS30 selected 30 weighted assets on 251 updates and observed two compositions: <code>AAA</code>-<code>ABD</code> before July and <code>AAF</code>-<code>ABI</code> from July. All 100 unique securities were added, all 25,100 daily bars arrived, and 618 of 618 universe data requests succeeded. Look for:</p>
+<pre class="text"><code>SWEDEN_UNIVERSES_VERIFIED</code></pre>
+<p>LEAN 2.5’s post-backtest <code>ResultsAnalyzer</code> currently requests USA <code>SPY</code> daily history unconditionally, regardless of the algorithm benchmark. The isolated generator appends a small synthetic SPY daily series so an offline 2024 run does not end with <code>benchmarkSeries.Keys.First(): Sequence contains no elements</code>. That SPY series is an analyzer workaround, not part of the Sweden format.</p>
+<p>The standalone Report Creator has a similar custom-market boundary: it parses result SIDs in a fresh process that never executes <code>Market.add("sweden", 900)</code>. The fixture’s <code>source/prepare_report.py</code> writes a separate compatibility copy for <code>lean report</code>; it never modifies the original result. The safe default preserves closed trades, charts, returns, statistics, and parameters but omits the copied order dictionary, because current Report portfolio replay also leaves <code>TradingDaysPerYear</code> unset. See <code>.temp/leansweden/README.md</code> for the verified command.</p>
+</section>
+<section id="common-failure-modes" class="level2">
+<h2 class="anchored" data-anchor-id="common-failure-modes">13. Common failure modes</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Symptom</th>
+<th>Likely cause</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>market</code> is out of range/not found</td>
+<td><code>Market.add</code> ran after symbol creation, used another name, or the ID collided</td>
+</tr>
+<tr class="even">
+<td>Exchange-hours entry not found</td>
+<td>Missing/misspelled <code>Equity-sweden-[*]</code> or invalid JSON caused the entry to be skipped</td>
+</tr>
+<tr class="odd">
+<td>No data but no parser error</td>
+<td>Wrong subscribed resolution, mapped ticker path, ZIP date, or data-folder root</td>
+</tr>
+<tr class="even">
+<td>Trade bars load but data requests fail</td>
+<td>Matching intraday quote ZIPs are absent</td>
+</tr>
+<tr class="odd">
+<td>Price is 10,000 times too small/large</td>
+<td>Equity price scaling was omitted or applied twice</td>
+</tr>
+<tr class="even">
+<td>Data is shifted by one or two hours</td>
+<td>UTC timestamps were written as Stockholm local time, or a fixed timezone was used</td>
+</tr>
+<tr class="odd">
+<td>Data starts late or stops early</td>
+<td>Incorrect first/final map row; active ticker is missing the <code>20501231</code> sentinel</td>
+</tr>
+<tr class="even">
+<td>Rename never occurs</td>
+<td>Map intervals or old/new price folder names do not agree</td>
+</tr>
+<tr class="odd">
+<td>Split/dividend never occurs</td>
+<td>Factor filename does not match the map permtick, factors do not change, or a ZIP provider ignores loose CSVs</td>
+</tr>
+<tr class="even">
+<td>Dividend amount is wrong</td>
+<td>Reference close/dividend share basis is wrong, factor precision is too low, or the action used pay date instead of ex-date</td>
+</tr>
+<tr class="odd">
+<td>Equity is treated as USD</td>
+<td>Missing SEK symbol-properties row or account currency/conversion setup</td>
+</tr>
+<tr class="even">
+<td><code>InteractiveBrokersFeeModel(): unexpected equity Market sweden</code></td>
+<td>Assign a Sweden-aware fee model; use <code>ConstantFeeModel(0)</code> only for a format smoke test</td>
+</tr>
+<tr class="odd">
+<td>Custom metadata disappears</td>
+<td>Lean CLI replaced the two reference databases during its periodic update</td>
+</tr>
+<tr class="even">
+<td>Post-backtest analyzer throws on an empty sequence</td>
+<td>Local SPY daily history does not cover the backtest; LEAN 2.5’s analyzer hard-codes SPY</td>
+</tr>
+<tr class="odd">
+<td>Orders fill unrealistically near 17:30</td>
+<td>Default fill model cannot represent the Stockholm closing call</td>
+</tr>
+<tr class="even">
+<td>Historical universe contains only today’s survivors</td>
+<td>Current ticker list was used instead of point-in-time membership data</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="source-references" class="level2">
+<h2 class="anchored" data-anchor-id="source-references">Source references</h2>
+<ul>
+<li><a href="https://www.lean.io/docs/v2/lean-cli/datasets/format-and-storage">LEAN CLI: Dataset Format and Storage</a></li>
+<li><a href="https://github.com/QuantConnect/Lean/tree/master/Data">LEAN Data directory and equity README</a></li>
+<li><a href="https://github.com/QuantConnect/Lean/blob/master/Common/Market.cs">LEAN market registry</a></li>
+<li><a href="https://github.com/QuantConnect/Lean/blob/master/Common/Util/LeanData.cs">LEAN path, ZIP member, CSV, and 10,000x price generation</a></li>
+<li><a href="https://github.com/QuantConnect/Lean/blob/master/Common/Data/Market/Tick.cs">LEAN equity tick reader</a></li>
+<li><a href="https://github.com/QuantConnect/Lean/blob/master/Common/Data/Market/TradeBar.cs">LEAN trade-bar reader</a></li>
+<li><a href="https://github.com/QuantConnect/Lean/blob/master/Common/Securities/MarketHoursDatabase.cs">Market-hours lookup and required-entry behavior</a></li>
+<li><a href="https://github.com/QuantConnect/Lean/blob/master/Common/Securities/SymbolPropertiesDatabase.cs">Symbol-properties lookup and fallback behavior</a></li>
+<li><a href="https://github.com/QuantConnect/Lean/tree/master/Common/Data/Auxiliary">Map file implementation</a></li>
+<li><a href="https://github.com/QuantConnect/Lean/blob/master/Common/Data/Auxiliary/CorporateFactorRow.cs">Corporate factor row formulas</a></li>
+<li><a href="https://github.com/QuantConnect/Lean/blob/master/Common/Data/Auxiliary/CorporateFactorProvider.cs">Factor event detection</a></li>
+<li><a href="https://github.com/QuantConnect/Lean/blob/master/Common/Data/Consolidators/TickConsolidator.cs">LEAN tick consolidator</a></li>
+<li><a href="https://www.nasdaq.com/european-market-activity/trading-hours">Nasdaq European trading hours and Stockholm calendars</a></li>
+<li><a href="https://www.nasdaq.com/solutions/nordic-equities-exchange-and-market">Nasdaq Nordic cash-equity market</a></li>
+<li><a href="https://www.nasdaq.com/solutions/european-markets/stockholm">Nasdaq Stockholm</a></li>
+<li><a href="https://github.com/QuantConnect/lean-cli/blob/master/lean/components/cloud/data_downloader.py">Lean CLI database replacement implementation</a></li>
+</ul>
+
+
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/quantbert\.github\.io\/qrt\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../lean/workflow.html" class="pagination-link" aria-label="Projects and backtests">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Projects and backtests</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../lean/sweden-data.html" class="pagination-link" aria-label="Generate Sweden data">
+        <span class="nav-page-text">Generate Sweden data</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/lean/fileformat.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/lean/fileformat.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
