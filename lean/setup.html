@@ -1077,12 +1077,11 @@ Note
 </section>
 <section id="initialize-a-workspace" class="level2">
 <h2 class="anchored" data-anchor-id="initialize-a-workspace">Initialize a workspace</h2>
-<p>Create an empty directory and run <code>lean init</code> inside it:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> .temp/leansweden</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> .temp/leansweden</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run lean init <span class="at">--organization</span> <span class="op">&lt;</span>organization-name-or-id<span class="op">&gt;</span> --language python</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The tracked Sweden demo contains algorithms and generators but intentionally does not commit the organization-bound <code>lean.json</code>. Initialize it once per checkout:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /home/hi/qrt/lean/demo-generated-data</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run lean init <span class="at">--organization</span> <span class="op">&lt;</span>organization-name-or-id<span class="op">&gt;</span> --language python</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Initialization creates:</p>
-<pre class="text"><code>leansweden/
+<pre class="text"><code>demo-generated-data/
 ├── lean.json
 └── data/</code></pre>
 <ul>
@@ -1096,8 +1095,8 @@ Note
 <p>Run commands from the repository environment, even after changing into a LEAN workspace:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /home/hi/qrt</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run lean <span class="at">--version</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python .temp/leansweden/source/generate_data.py</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run lean backtest .temp/leansweden/demo.py <span class="at">--no-update</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python lean/demo-generated-data/source/generate_data.py</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run lean backtest lean/demo-generated-data/demo.py <span class="at">--no-update</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>uv run</code> resolves Python and Lean CLI from <code>/home/hi/qrt/.venv</code> without depending on shell activation state.</p>
 </section>
 <section id="protect-custom-metadata" class="level2">

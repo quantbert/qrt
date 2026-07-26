@@ -2519,7 +2519,7 @@
     "href": "lean/sma.html",
     "title": "Run the 20/100 SMA strategy",
     "section": "",
-    "text": ".temp/leansweden/demo_sma.py is a complete dynamic-universe strategy over native LEAN files.",
+    "text": "lean/demo-generated-data/demo_sma.py is a complete dynamic-universe strategy over native LEAN files.",
     "crumbs": [
       "Getting Started",
       "LEAN — Backtesting engine",
@@ -2543,7 +2543,7 @@
     "href": "lean/sma.html#run",
     "title": "Run the 20/100 SMA strategy",
     "section": "Run",
-    "text": "Run\ncd /home/hi/qrt\ncd .temp/leansweden\nuv run lean backtest demo_sma.py --no-update\nA successful run logs SWEDEN_SMA_CROSS_VERIFIED.\nThe verified synthetic result produced:\n\n100 ready SMA pairs;\n154 bullish entries and 106 bearish exits;\n107 batched rebalances;\n448 filled orders and zero invalid orders;\n47 final long positions;\n+1.806% net profit and 1.4% maximum drawdown;\nzero failed data requests.\n\nThree final-session orders remain submitted as market-on-open orders because the dataset contains no following XSTO session.",
+    "text": "Run\ncd /home/hi/qrt\ncd lean/demo-generated-data\nuv run lean backtest demo_sma.py --no-update\nA successful run logs SWEDEN_SMA_CROSS_VERIFIED.\nThe verified synthetic result produced:\n\n100 ready SMA pairs;\n154 bullish entries and 106 bearish exits;\n107 batched rebalances;\n448 filled orders and zero invalid orders;\n47 final long positions;\n+1.806% net profit and 1.4% maximum drawdown;\nzero failed data requests.\n\nThree final-session orders remain submitted as market-on-open orders because the dataset contains no following XSTO session.",
     "crumbs": [
       "Getting Started",
       "LEAN — Backtesting engine",
@@ -2603,7 +2603,7 @@
     "href": "lean/reports.html#custom-sweden-market",
     "title": "Generate reports",
     "section": "Custom Sweden market",
-    "text": "Custom Sweden market\nThe Report Creator starts in a separate process and never runs:\nMarket.add(\"sweden\", 900)\nIt therefore cannot deserialize native Sweden SIDs directly. Prepare a separate compatibility result:\ncd /home/hi/qrt\ncd .temp/leansweden\n\nuv run python source/prepare_report.py \\\n  backtests/2026-07-26_13-41-40/1641330887.json \\\n  report-results/1641330887-report.json\n\nuv run lean report \\\n  --backtest-results report-results/1641330887-report.json \\\n  --report-destination sma-report.html \\\n  --strategy-name \"Sweden 20/100 SMA\" \\\n  --strategy-description \"Synthetic 100-asset XSTO daily-universe SMA crossover\" \\\n  --overwrite\nThe helper never modifies the original result. It:\n\naliases custom market bits to a built-in market only in the copy;\nuses USD only for Report’s internal 1:1 replay metadata;\npreserves original SEK charts, runtime values, numeric statistics, closed trades, and parameters;\nomits the copied order dictionary by default.\n\nOrders are omitted because current Report PortfolioLooper cannot register custom markets and leaves TradingDaysPerYear unset during a large replay. Returns-per-trade and other closed-trade statistics remain available; the reconstructed asset-allocation chart has no order input.\nUse prepare_report.py --keep-orders ... only when allocation reconstruction is more important than the upstream replay warning.",
+    "text": "Custom Sweden market\nThe Report Creator starts in a separate process and never runs:\nMarket.add(\"sweden\", 900)\nIt therefore cannot deserialize native Sweden SIDs directly. Prepare a separate compatibility result:\ncd /home/hi/qrt\ncd lean/demo-generated-data\n\nuv run python source/prepare_report.py \\\n  backtests/2026-07-26_13-41-40/1641330887.json \\\n  report-results/1641330887-report.json\n\nuv run lean report \\\n  --backtest-results report-results/1641330887-report.json \\\n  --report-destination sma-report.html \\\n  --strategy-name \"Sweden 20/100 SMA\" \\\n  --strategy-description \"Synthetic 100-asset XSTO daily-universe SMA crossover\" \\\n  --overwrite\nThe helper never modifies the original result. It:\n\naliases custom market bits to a built-in market only in the copy;\nuses USD only for Report’s internal 1:1 replay metadata;\npreserves original SEK charts, runtime values, numeric statistics, closed trades, and parameters;\nomits the copied order dictionary by default.\n\nOrders are omitted because current Report PortfolioLooper cannot register custom markets and leaves TradingDaysPerYear unset during a large replay. Returns-per-trade and other closed-trade statistics remain available; the reconstructed asset-allocation chart has no order input.\nUse prepare_report.py --keep-orders ... only when allocation reconstruction is more important than the upstream replay warning.",
     "crumbs": [
       "Getting Started",
       "LEAN — Backtesting engine",
@@ -2627,7 +2627,7 @@
     "href": "lean/reports.html#verified-artifact",
     "title": "Generate reports",
     "section": "Verified artifact",
-    "text": "Verified artifact\nThe tested workflow creates .temp/leansweden/sma-report.html, approximately 610 KB with 15 embedded charts, strategy metadata, and SEK display values.",
+    "text": "Verified artifact\nThe tested workflow creates lean/demo-generated-data/sma-report.html, approximately 610 KB with 15 embedded charts, strategy metadata, and SEK display values.",
     "crumbs": [
       "Getting Started",
       "LEAN — Backtesting engine",
@@ -2661,7 +2661,7 @@
     "href": "lean/index.html#tested-fixture",
     "title": "LEAN",
     "section": "Tested fixture",
-    "text": "Tested fixture\nThe repository-local .temp/leansweden workspace is intentionally ignored by Git. Its generator creates:\n\n100 synthetic equities, AAA through ADV;\n270 XSTO sessions from 2023-12-01 through 2024-12-30;\nnative tick, minute, hour, and daily files with matching intraday quotes;\nmap files, factor files, market hours, and symbol properties;\na 100-member daily universe and weighted 30-member OMXS30 Index universe;\nvalidation algorithms for imports, universes, a 20/100 SMA crossover, and reports.\n\nThe fixture is test data, not a claim about historical Swedish prices or constituents.",
+    "text": "Tested fixture\nThe repository tracks the reusable fixture at lean/demo-generated-data. Generated data, backtests, reports, storage, and local Lean CLI identity remain ignored by Git. Its generator creates:\n\n100 synthetic equities, AAA through ADV;\n270 XSTO sessions from 2023-12-01 through 2024-12-30;\nnative tick, minute, hour, and daily files with matching intraday quotes;\nmap files, factor files, market hours, and symbol properties;\na 100-member daily universe and weighted 30-member OMXS30 Index universe;\nvalidation algorithms for imports, universes, a 20/100 SMA crossover, and reports.\n\nThe fixture is test data, not a claim about historical Swedish prices or constituents.",
     "crumbs": [
       "Getting Started",
       "LEAN — Backtesting engine"
@@ -2859,11 +2859,119 @@
     ]
   },
   {
-    "objectID": "data/roadmap.html#planned",
-    "href": "data/roadmap.html#planned",
+    "objectID": "data/roadmap.html#design-boundaries",
+    "href": "data/roadmap.html#design-boundaries",
     "title": "q.data Roadmap",
-    "section": "Planned",
-    "text": "Planned\nNo module-specific work is currently committed.",
+    "section": "Design boundaries",
+    "text": "Design boundaries\nQRT should model financial data independently of any execution engine. Generic objects must be usable with pandas/Parquet and other backtest engines before a LEAN serializer is involved.\n\nq.data owns normalized data models, transformations, quality reports, and point-in-time correctness.\nq.calendar owns exchange sessions, timestamp-to-session alignment, and trading-time grids.\nq.data.lean owns LEAN paths, ZIP members, scaling, CSV schemas, SIDs, and reference-database serialization.\nq.bt.lean owns Lean CLI processes and result artifacts; it consumes q.data.lean but does not duplicate its writers.\nVendor adapters own retrieval and source-specific translation. Core models must not depend on a vendor’s ticker or corporate-action schema.",
+    "crumbs": [
+      "Getting Started",
+      "q.data — Data",
+      "Roadmap"
+    ]
+  },
+  {
+    "objectID": "data/roadmap.html#canonical-security-identity",
+    "href": "data/roadmap.html#canonical-security-identity",
+    "title": "q.data Roadmap",
+    "section": "Canonical security identity",
+    "text": "Canonical security identity\n\nIntroduce a SecurityMaster or equivalent normalized table whose primary key is a stable source-independent security_id, not the current ticker.\nmaster = q.data.SecurityMaster.from_frame(\n    securities,\n    security_id=\"isin\",\n    ticker=\"ticker\",\n    listed_at=\"listed_at\",\n    delisted_at=\"delisted_at\",\n)\nDefine canonical fields for security type, share class, exchange, quote currency, display name, listing interval, and optional identifiers such as ISIN, FIGI, CUSIP, SEDOL, and vendor IDs.\nRepresent ticker/vendor aliases as dated intervals. Lookups must support both ticker_at(security_id, timestamp) and security_at(ticker, exchange, timestamp) without applying today’s ticker to historical data.\nValidate overlapping ticker intervals, reused tickers, missing listing bounds, duplicate permanent IDs, changing share classes, and conflicting currencies/exchanges.\nProvide deterministic map-interval generation from alias history. The generic result should describe identity periods; q.data.lean should be the only layer that converts those periods to LEAN map-file conventions.\nDefine serialization to canonical pandas and Parquet layouts with schema version metadata. Round trips must preserve nullable identifiers and timezone semantics.",
+    "crumbs": [
+      "Getting Started",
+      "q.data — Data",
+      "Roadmap"
+    ]
+  },
+  {
+    "objectID": "data/roadmap.html#point-in-time-universes",
+    "href": "data/roadmap.html#point-in-time-universes",
+    "title": "q.data Roadmap",
+    "section": "Point-in-time universes",
+    "text": "Point-in-time universes\n\nAdd a generic membership-event schema containing universe ID, permanent security ID, effective-from/effective-to timestamps, publication timestamp, weight, shares held, market value, and source metadata.\nBuild session-indexed snapshots without survivorship leakage:\nsnapshots = q.data.universe.snapshots(\n    memberships,\n    sessions=q.calendar.schedule(...),\n    id_column=\"isin\",\n    effective_from=\"added_at\",\n    effective_to=\"removed_at\",\n)\nKeep effective time and knowledge/publication time separate. Support an available_at policy so research can exclude a reconstitution that was not yet known at the simulated decision time.\nSupport additions, removals, full replacements, unchanged carry-forward, explicitly empty universes, and weighted constituent updates.\nValidate duplicate members, overlapping membership intervals, unknown securities, weights outside policy, sums materially different from one, publication after use, and snapshots outside listing intervals.\nReturn a normalized long table first. Dense matrices and engine-specific daily files are derived representations, not the source of truth.\nAdd diff/audit operations that explain why a member entered, exited, or changed weight between two snapshots.",
+    "crumbs": [
+      "Getting Started",
+      "q.data — Data",
+      "Roadmap"
+    ]
+  },
+  {
+    "objectID": "data/roadmap.html#corporate-actions-and-adjustment-factors",
+    "href": "data/roadmap.html#corporate-actions-and-adjustment-factors",
+    "title": "q.data Roadmap",
+    "section": "Corporate actions and adjustment factors",
+    "text": "Corporate actions and adjustment factors\n\nDefine canonical split and cash-dividend events keyed by permanent security ID. Preserve announcement, ex, record, and payable dates separately; factor construction should use the documented effective-date policy.\nImplement backward cumulative factor construction from raw daily closes:\nfactors = q.data.corporate_actions.factors(\n    prices=daily_prices,\n    splits=splits,\n    dividends=dividends,\n    exchange=\"XSTO\",\n)\nResolve each event to the previous exchange session through q.calendar, match the raw reference close, and retain enough intermediate columns to audit every cumulative factor change.\nSupport multiple actions on one effective date, reverse splits, currency metadata, action corrections/cancellations, and configurable numerical precision. Reject impossible split ratios and dividends that produce nonpositive adjustment factors.\nAdd forward and backward adjustment operations for OHLCV with explicit modes: raw, split-adjusted, price-adjusted, and total-return. Volume/share adjustment policy must be explicit rather than inferred from the price mode.\nReconstruct actions from adjacent factor rows as a validation step and compare split ratios/distributions with the input events.\nKeep taxes, withholding, rights, spin-offs, merger consideration, and stock dividends outside the first API unless their accounting semantics are modeled explicitly.",
+    "crumbs": [
+      "Getting Started",
+      "q.data — Data",
+      "Roadmap"
+    ]
+  },
+  {
+    "objectID": "data/roadmap.html#session-aware-market-data-aggregation",
+    "href": "data/roadmap.html#session-aware-market-data-aggregation",
+    "title": "q.data Roadmap",
+    "section": "Session-aware market-data aggregation",
+    "text": "Session-aware market-data aggregation\n\nAdd q.data.resample_trades for canonical trades using exchange intervals supplied by q.calendar:\nbars = q.data.resample_trades(\n    trades,\n    frequency=\"1min\",\n    exchange=\"XSTO\",\n    empty=\"omit\",\n)\nDefine open/high/low/close selection, quantity summation, timestamp label, interval closure, empty-bar behavior, and deterministic ordering for equal event timestamps.\nAggregate daily bars by exchange session rather than UTC or local calendar date. Respect early closes, late opens, exchange breaks, and official auction prints according to an explicit inclusion policy.\nAdd quote aggregation separately. Bid/ask OHLC, last size versus average size, one-sided updates, crossed quotes, and stale-side carry-forward need independent policies; quote bars must never be synthesized silently from trades.\nProvide bar reconciliation helpers that compare tick-to-minute, minute-to-hour, and intraday-to-daily results within configured tolerances.",
+    "crumbs": [
+      "Getting Started",
+      "q.data — Data",
+      "Roadmap"
+    ]
+  },
+  {
+    "objectID": "data/roadmap.html#structured-market-data-validation",
+    "href": "data/roadmap.html#structured-market-data-validation",
+    "title": "q.data Roadmap",
+    "section": "Structured market-data validation",
+    "text": "Structured market-data validation\n\nExpand beyond exception-only schema checks with a structured quality report:\nreport = q.data.validate_market_data(\n    trades=trades,\n    quotes=quotes,\n    bars=bars,\n    exchange=\"XSTO\",\n)\nEach finding should carry a stable code, severity, symbol, timestamp or session, affected column, observed value, expected rule, and optional sample rows. Reports should support raise_for_errors(), summary tables, JSON, and machine-readable pipeline thresholds.\nValidate timestamp ordering, duplicate policy, timezone awareness, session membership, missing sessions, incomplete normal/half-day sessions, OHLC invariants, finite prices, nonnegative quantities, and symbol metadata.\nAdd trade/quote checks for spread sign, zero or one-sided quotes, stale quotes, suspicious/corrected trades, exchange-condition mappings, and extreme price or size changes. Statistical anomaly checks must be warnings by default, not destructive cleaning.\nAdd cross-resolution reconciliation and corporate-action checks: scaled price reversibility, aggregate equality, map/listing bounds, factor reference closes, reconstructed events, and universe membership inside listing dates.\nSeparate validation from repair. Any repair operation must produce an audit table describing old value, new value, reason, and policy version.",
+    "crumbs": [
+      "Getting Started",
+      "q.data — Data",
+      "Roadmap"
+    ]
+  },
+  {
+    "objectID": "data/roadmap.html#lean-data-adapter",
+    "href": "data/roadmap.html#lean-data-adapter",
+    "title": "q.data Roadmap",
+    "section": "LEAN data adapter",
+    "text": "LEAN data adapter\n\nAdd an optional q.data.lean namespace that serializes canonical QRT objects into a user-selected LEAN workspace. Importing ordinary q.data must not require Lean CLI, Docker, or QuantConnect packages.\nProvide high-level writers with path-like destinations and dry-run plans:\nq.data.lean.write_equity(\n    trades=trades,\n    quotes=quotes,\n    bars=bars,\n    symbol=\"VOLV-B\",\n    market=\"sweden\",\n    root=workspace / \"data\",\n)\nq.data.lean.write_map_files(master, root=workspace / \"data\")\nq.data.lean.write_factor_files(factors, root=workspace / \"data\")\nq.data.lean.write_universe(snapshots, security_type=\"index\", ...)\nCentralize LEAN’s 10,000x equity price scaling, invariant numeric formatting, lowercase directory conventions, date partitioning, ZIP/member naming, and resolution-specific trade/quote schemas.\nSupport tick, second, minute, hour, and daily data without pretending LEAN automatically falls back between resolutions. Writers should state exactly which subscriptions/history calls the produced files satisfy.\nGenerate map files from canonical identity intervals and factor files from canonical factors. Preserve stable permanent identity across ticker changes, listings, delistings, and ticker reuse.\nImplement broad daily, ETF, and Index constituent writers. SID generation must be deterministic from security type, market numeric ID, and first map date; changing any SID input should require an explicit migration/regeneration.\nWrite or patch market-hours and symbol-properties databases atomically. Never silently overwrite unrelated custom entries. Surface the risk that Lean CLI database updates replace local files.\nTreat custom market name/ID as workspace configuration, detect collisions, and emit the required Python/C# registration snippet. Do not claim that data registration also supplies fee, fill, buying-power, settlement, or brokerage models.\nAdd a validate_tree operation that inspects paths, ZIP members, headers, scaling, row schemas, sort order, map/factor coverage, metadata entries, universe SIDs, and requested resolutions without launching a backtest.\nMake writes idempotent and atomic. Support dry_run=True, explicit replacement scopes, checksums, and a manifest recording source schema, generator version, market ID, calendar version, and output counts.\nAdd round-trip/read-back tests against LEAN’s readers or golden fixtures for XNYS and XSTO. The Sweden fixture under lean/demo-generated-data should become an integration test, not production API internals.",
+    "crumbs": [
+      "Getting Started",
+      "q.data — Data",
+      "Roadmap"
+    ]
+  },
+  {
+    "objectID": "data/roadmap.html#synthetic-market-data-helpers",
+    "href": "data/roadmap.html#synthetic-market-data-helpers",
+    "title": "q.data Roadmap",
+    "section": "Synthetic market-data helpers",
+    "text": "Synthetic market-data helpers\n\nKeep q.stats.random_walk as the price-path primitive and evaluate a separate q.data.synthetic namespace only after a second independent use case confirms the API.\nCandidate helpers include exchange-session intraday timestamp generation, configurable trade-size processes, and explicit quote generation from a supplied spread model:\nquotes = q.data.synthetic.quotes_from_trades(\n    trades,\n    spread=0.01,\n)\nSynthetic outputs must be visibly labeled, deterministic under a seed, schema-compatible with canonical data, and make no claim of realistic microstructure unless a calibrated model is supplied.\nDo not promote fixture-only constants, hard-coded symbols, or LEAN paths into generic APIs. Those belong in integration-test fixtures.",
+    "crumbs": [
+      "Getting Started",
+      "q.data — Data",
+      "Roadmap"
+    ]
+  },
+  {
+    "objectID": "data/roadmap.html#delivery-sequence",
+    "href": "data/roadmap.html#delivery-sequence",
+    "title": "q.data Roadmap",
+    "section": "Delivery sequence",
+    "text": "Delivery sequence\n\nStabilize security-master, membership-event, corporate-action, trade, quote, and quality-finding schemas.\nLand the required q.calendar session-label and interval APIs.\nImplement point-in-time universe snapshots and corporate-action factors.\nImplement session-aware trade/quote aggregation and structured validation.\nBuild q.data.lean writers and tree validation over the generic models.\nConvert the generated Sweden demo into golden and end-to-end tests.\nEvaluate reusable synthetic-data helpers after the core contracts settle.",
+    "crumbs": [
+      "Getting Started",
+      "q.data — Data",
+      "Roadmap"
+    ]
+  },
+  {
+    "objectID": "data/roadmap.html#acceptance-criteria",
+    "href": "data/roadmap.html#acceptance-criteria",
+    "title": "q.data Roadmap",
+    "section": "Acceptance criteria",
+    "text": "Acceptance criteria\n\nEvery canonical transformation has deterministic schema, timezone, sorting, nullability, and error policies documented and tested.\nPoint-in-time tests demonstrate that future ticker, constituent, and corporate-action information cannot leak into earlier snapshots.\nXSTO tests cover normal sessions, half days, holidays, DST, ticker changes, delistings, splits, dividends, and an index reconstitution.\nLEAN files generated from the golden fixture complete direct-data, universe, and SMA backtests with zero failed data requests.\nGeneric q.data tests run without Lean CLI or Docker installed.",
     "crumbs": [
       "Getting Started",
       "q.data — Data",
@@ -2911,7 +3019,91 @@
     "href": "calendar/roadmap.html",
     "title": "q.calendar Roadmap",
     "section": "",
-    "text": "Session and trading-minute ranges\nMarket-open, early-close, and holiday flags\nTimestamp-to-session alignment with explicit timezone policy\nCalendar-distance features for multiple exchanges\n\n\n\n\n Back to top",
+    "text": "title: q.calendar Roadmap\nOnly open work is listed here. The existing schedule and non_trading_days_after functions are the foundation for the work below.",
+    "crumbs": [
+      "Getting Started",
+      "q.calendar — Market time",
+      "Roadmap"
+    ]
+  },
+  {
+    "objectID": "calendar/roadmap.html#design-rules",
+    "href": "calendar/roadmap.html#design-rules",
+    "title": "q.calendar Roadmap",
+    "section": "Design rules",
+    "text": "Design rules\n\nEvery public operation requires an explicit ISO 10383 exchange identifier.\nSession labels are timezone-naive normalized dates; market timestamps are timezone-aware and expressed in either UTC or the exchange’s IANA timezone.\nAPIs must define their behavior for timestamps before the open, after the close, during holidays, and at daylight-saving transitions.\nEarly closes are ordinary trading sessions with a shorter interval, not holidays or incomplete observations.\nq.calendar owns exchange-time semantics. It may construct labels and time grids, but OHLCV aggregation and market-data mutation belong to q.data.",
+    "crumbs": [
+      "Getting Started",
+      "q.calendar — Market time",
+      "Roadmap"
+    ]
+  },
+  {
+    "objectID": "calendar/roadmap.html#session-navigation-and-classification",
+    "href": "calendar/roadmap.html#session-navigation-and-classification",
+    "title": "q.calendar Roadmap",
+    "section": "Session navigation and classification",
+    "text": "Session navigation and classification\n\nAdd scalar and vectorized session predicates:\nq.calendar.is_session(\"2024-03-28\", exchange=\"XSTO\")\nq.calendar.is_early_close(\"2024-03-28\", exchange=\"XSTO\")\nThe vectorized form should preserve the input index, reject missing dates by default, and distinguish a closed date from an unknown/out-of-range calendar.\nAdd previous_session and next_session with an explicit include_self option and positive integer offsets. The implementation must use exchange sessions rather than subtracting calendar days.\nAdd session_open, session_close, and session_bounds. Returned timestamps must be timezone-aware in the exchange’s local timezone by default, with tz=\"UTC\" as an explicit alternative.\nAdd session classification metadata to schedule, either through optional columns or a separate session_flags function: is_early_close, is_late_open, regular duration, actual duration, and the applicable local UTC offset.",
+    "crumbs": [
+      "Getting Started",
+      "q.calendar — Market time",
+      "Roadmap"
+    ]
+  },
+  {
+    "objectID": "calendar/roadmap.html#timestamp-to-session-alignment",
+    "href": "calendar/roadmap.html#timestamp-to-session-alignment",
+    "title": "q.calendar Roadmap",
+    "section": "Timestamp-to-session alignment",
+    "text": "Timestamp-to-session alignment\n\nAdd a vectorized session_labels operation:\nlabels = q.calendar.session_labels(\n        timestamps,\n        exchange=\"XSTO\",\n        direction=\"none\",\n        include_close=False,\n)\nIt should assign each timestamp to the exchange session that contains it. direction=\"none\" returns missing labels or raises for out-of-session values; \"previous\" and \"next\" explicitly opt into nearest-session alignment.\nDefine interval boundaries once and test them consistently. The proposed default is [open, close), with an opt-in policy for official closing prints timestamped exactly at the close.\nSupport timestamps supplied in UTC, the exchange timezone, or another timezone. Reject timezone-naive intraday timestamps unless the caller passes an explicit assume_timezone value; never silently interpret them as local.\nAdd session_for_timestamp as a scalar convenience wrapper over the same implementation. Scalar and vectorized results must not diverge.\nCover ambiguous and nonexistent local times around daylight-saving changes. Resolution must be explicit and deterministic rather than delegated to pandas defaults that can vary by operation.",
+    "crumbs": [
+      "Getting Started",
+      "q.calendar — Market time",
+      "Roadmap"
+    ]
+  },
+  {
+    "objectID": "calendar/roadmap.html#trading-time-grids",
+    "href": "calendar/roadmap.html#trading-time-grids",
+    "title": "q.calendar Roadmap",
+    "section": "Trading-time grids",
+    "text": "Trading-time grids\n\nAdd trading_minutes and a general trading_ranges API for one or many sessions. Inputs should support an exchange, frequency, start/end session, and interval-closure policy.\nEnsure generated grids respect holidays, half days, late opens, and any exchange breaks represented by the upstream calendar.\nAdd a compact session-offset representation suitable for assigning large tick tables without materializing every minute when only labels are needed.\nExpose enough interval metadata for q.data.resample_trades to aggregate by exchange session without duplicating calendar logic. q.calendar should not itself choose OHLC, volume, quote, or empty-bar policies.",
+    "crumbs": [
+      "Getting Started",
+      "q.calendar — Market time",
+      "Roadmap"
+    ]
+  },
+  {
+    "objectID": "calendar/roadmap.html#calendar-distance",
+    "href": "calendar/roadmap.html#calendar-distance",
+    "title": "q.calendar Roadmap",
+    "section": "Calendar distance",
+    "text": "Calendar distance\n\nAdd trading-session distance and trading-minute distance between two timestamps for one exchange.\nAdd multi-exchange overlap features: common sessions, union sessions, simultaneous open intervals, and distance to the next overlap. These are needed for cross-market features and FX/cash-conversion availability.\nDefine signed distance, endpoint inclusion, and non-session alignment explicitly. Calendar-day, session, and trading-minute distances must remain separate concepts in names and return metadata.",
+    "crumbs": [
+      "Getting Started",
+      "q.calendar — Market time",
+      "Roadmap"
+    ]
+  },
+  {
+    "objectID": "calendar/roadmap.html#performance-and-caching",
+    "href": "calendar/roadmap.html#performance-and-caching",
+    "title": "q.calendar Roadmap",
+    "section": "Performance and caching",
+    "text": "Performance and caching\n\nCache immutable exchange-calendar lookups and bounded schedules without leaking mutable DataFrames between callers.\nProvide vectorized implementations for million-row timestamp indexes; avoid Python loops over observations.\nBenchmark session labeling and minute-grid generation across XNYS, XSTO, and an exchange with an intraday break.",
+    "crumbs": [
+      "Getting Started",
+      "q.calendar — Market time",
+      "Roadmap"
+    ]
+  },
+  {
+    "objectID": "calendar/roadmap.html#acceptance-criteria",
+    "href": "calendar/roadmap.html#acceptance-criteria",
+    "title": "q.calendar Roadmap",
+    "section": "Acceptance criteria",
+    "text": "Acceptance criteria\n\nUnit tests for normal sessions, XSTO half days, holidays, weekends, daylight-saving boundaries, exact opens/closes, and out-of-range dates.\nProperty tests that every generated trading timestamp maps back to the session that generated it and no closed-date timestamp is emitted.\nCross-check representative schedules against exchange_calendars while keeping QRT’s public errors, timezone policy, and result schemas stable.\nIntegration tests with the future q.data session-aware resampler and point-in-time universe snapshot builder.",
     "crumbs": [
       "Getting Started",
       "q.calendar — Market time",
@@ -2935,7 +3127,127 @@
     "href": "bt/roadmap.html#planned",
     "title": "q.bt Roadmap",
     "section": "Planned",
-    "text": "Planned\n\nEvent-driven execution kernel shared by batch backtests and q.gym\nq.bt.run adapter for model signals\nLEAN CLI adapter for executing local backtests and reports through a typed q.bt API - configure a LEAN workspace, project, engine image, parameters, and data root - launch, monitor, cancel, and reproduce lean backtest runs - parse result JSON, logs, orders, trades, charts, and data-request reports into QRT-owned result objects - generate HTML/PDF reports and preserve links to the original LEAN artifacts - support custom-market registration and report compatibility without mutating source backtest results\nKeep the LEAN adapter optional: LEAN remains a standalone execution engine, while QRT’s in-process event kernel remains separately usable\nTransaction costs / slippage models\nTrade log output compatible with q.plot (tearsheets)",
+    "text": "Planned",
+    "crumbs": [
+      "Getting Started",
+      "q.bt — Backtesting",
+      "Roadmap"
+    ]
+  },
+  {
+    "objectID": "bt/roadmap.html#backend-boundaries",
+    "href": "bt/roadmap.html#backend-boundaries",
+    "title": "q.bt Roadmap",
+    "section": "Backend boundaries",
+    "text": "Backend boundaries\nq.bt will expose a common research-facing result contract over two independent execution backends:\n\na QRT-owned in-process event kernel shared with q.gym;\nan optional adapter that orchestrates the standalone Lean CLI and LEAN engine.\n\nThe backends may normalize summaries and trade logs, but they must not pretend to have identical execution semantics. Every result records its backend and backend-specific configuration. LEAN remains authoritative for its event loop, subscriptions, orders, fills, fees, buying power, settlement, portfolio state, native result JSON, and Report Creator output.",
+    "crumbs": [
+      "Getting Started",
+      "q.bt — Backtesting",
+      "Roadmap"
+    ]
+  },
+  {
+    "objectID": "bt/roadmap.html#in-process-qrt-backend",
+    "href": "bt/roadmap.html#in-process-qrt-backend",
+    "title": "q.bt Roadmap",
+    "section": "In-process QRT backend",
+    "text": "In-process QRT backend\n\nImplement an event-driven execution kernel shared by batch backtests and q.gym without depending on Lean CLI or Docker.\nAdd q.bt.run(signal, prices, ...) for canonical QRT signals and OHLCV data. Define timing explicitly: signal availability, order submission, execution bar, mark-to-market timestamp, and prevention of look-ahead.\nDefine pluggable transaction-cost, spread, slippage, order-sizing, fill, and position-limit interfaces. Default models should be simple and explicit, never silently market-specific.\nEmit the canonical QRT trade-log schema used by q.stats and q.plot, plus equity, cash, exposure, turnover, and rejected-order series.\nKeep the in-process engine useful when Lean CLI is not installed. LEAN integration must not become a dependency of q.bt.run.",
+    "crumbs": [
+      "Getting Started",
+      "q.bt — Backtesting",
+      "Roadmap"
+    ]
+  },
+  {
+    "objectID": "bt/roadmap.html#lean-adapter-api",
+    "href": "bt/roadmap.html#lean-adapter-api",
+    "title": "q.bt Roadmap",
+    "section": "LEAN adapter API",
+    "text": "LEAN adapter API\n\nAdd an optional q.bt.lean namespace with a typed entry point:\nrun = q.bt.lean.backtest(\n        workspace=\"lean/demo-generated-data\",\n        algorithm=\"demo_sma.py\",\n        parameters={\n                \"backtest-start\": \"2024-01-02\",\n                \"backtest-end\": \"2024-12-30\",\n        },\n        update_image=False,\n)\n\nresult = run.wait()\nreport = result.report(destination=\"sma-report.html\")\nThis sketch is not a compatibility promise until the lifecycle and result contracts below are implemented.\nAccept paths without changing the caller’s process-wide working directory. Resolve workspace, algorithm, data root, output root, and optional Lean CLI executable to absolute paths at validation time.\nValidate the workspace before launch: lean.json, project config.json, algorithm file, language, data folder, writable output directories, Docker availability, CLI version, and custom-market prerequisites.\nProvide an immutable run specification object that can be serialized to JSON and compared across runs. Parameters should be typed where a project schema exists and string-normalized only at the CLI boundary.\nSupport an explicit engine image tag or digest. update_image=False should map to Lean CLI’s no-update behavior for backtests; a digest should be recorded after Docker resolves the image.\nKeep custom market name/ID and data serialization in q.data.lean. q.bt.lean may validate those settings and inject algorithm parameters, but must not maintain a second SID or file-format implementation.",
+    "crumbs": [
+      "Getting Started",
+      "q.bt — Backtesting",
+      "Roadmap"
+    ]
+  },
+  {
+    "objectID": "bt/roadmap.html#process-lifecycle",
+    "href": "bt/roadmap.html#process-lifecycle",
+    "title": "q.bt Roadmap",
+    "section": "Process lifecycle",
+    "text": "Process lifecycle\n\nImplement launch, status, log streaming, wait, timeout, cancellation, and cleanup as a state machine. Proposed terminal states are succeeded, failed, cancelled, and timed_out.\nCapture stdout/stderr incrementally without requiring terminal scraping. Preserve raw streams and expose parsed progress/events separately.\nCancellation must terminate the CLI process and its run-specific Docker container without killing unrelated LEAN or Docker workloads. Record whether shutdown was graceful or forced.\nPrevent output-directory collisions under concurrent runs. Use a unique run ID and discover the engine’s timestamped result directory deterministically rather than selecting “latest” after completion.\nSurface interactive authentication or Docker permission failures as typed preflight errors. Never request API keys, tokens, passwords, or passphrases through ordinary function parameters that are persisted in run manifests.\nProvide synchronous and asynchronous orchestration without tying the core API to notebooks, a particular task queue, or an async event loop owned by the caller.",
+    "crumbs": [
+      "Getting Started",
+      "q.bt — Backtesting",
+      "Roadmap"
+    ]
+  },
+  {
+    "objectID": "bt/roadmap.html#result-and-artifact-model",
+    "href": "bt/roadmap.html#result-and-artifact-model",
+    "title": "q.bt Roadmap",
+    "section": "Result and artifact model",
+    "text": "Result and artifact model\n\nParse the canonical LEAN result JSON, summary JSON, engine log, algorithm log, order events, succeeded/failed data-request reports, and generated code snapshot into a LeanBacktestResult.\nPreserve every native artifact path and checksum. Parsed QRT objects are derived views and must never replace or rewrite the source files.\nNormalize run metadata, statistics, runtime statistics, charts/series, orders, order events, holdings, closed trades, parameters, and errors while retaining unknown fields for forward compatibility.\nConvert LEAN closed trades/order events to QRT’s canonical trade log with a documented mapping. Preserve the original LEAN identifiers and expose conversion warnings when partial fills, assignments, multi-leg orders, or currency conversions cannot be represented losslessly.\nDistinguish process success from research success. A zero CLI exit code can still accompany failed data requests, algorithm ERROR:: messages, invalid orders, unfilled final-session orders, or analyzer failures.\nAdd structured diagnostics with stable codes and severities for missing data, custom-market failures, model rejection, Docker problems, result parse drift, and report failures. Retain raw matching log lines as evidence.\nExpose charts and tabular results in backend-neutral forms consumable by q.plot, but do not discard backend-specific chart metadata or precision.",
+    "crumbs": [
+      "Getting Started",
+      "q.bt — Backtesting",
+      "Roadmap"
+    ]
+  },
+  {
+    "objectID": "bt/roadmap.html#reports",
+    "href": "bt/roadmap.html#reports",
+    "title": "q.bt Roadmap",
+    "section": "Reports",
+    "text": "Reports\n\nWrap lean report with exact result-file selection. Never pass a result directory or infer an arbitrary JSON when several candidates exist.\nSupport HTML and PDF destinations, strategy metadata, custom templates, overwrite policy, and local image selection while reflecting the actual Lean CLI options (lean report has --update, not --no-update).\nDetect custom-market SIDs before invoking Report Creator. If compatibility conversion is required, write a derived copy under a separate artifact path and retain a manifest of every transformed field.\nNever mutate the original backtest JSON. Report compatibility should be a pure transformation from source result to derived result plus an audit record.\nMake order omission/aliasing explicit when working around upstream Report replay limitations. Surface which report sections lose reconstruction input, such as asset allocation, while preserving closed-trade statistics and charts.\nVersion compatibility transforms by LEAN engine and CLI version so a workaround is not applied after upstream behavior changes.",
+    "crumbs": [
+      "Getting Started",
+      "q.bt — Backtesting",
+      "Roadmap"
+    ]
+  },
+  {
+    "objectID": "bt/roadmap.html#reproducibility-and-provenance",
+    "href": "bt/roadmap.html#reproducibility-and-provenance",
+    "title": "q.bt Roadmap",
+    "section": "Reproducibility and provenance",
+    "text": "Reproducibility and provenance\n\nStore a run manifest containing at least:\nQRT version and adapter schema version\nworkspace and algorithm paths\nalgorithm source and project-config hashes\nLEAN CLI version\nDocker image tag and digest\nlean.json hash with secrets redacted\nparameters and data-root identity\nq.data.lean generation manifest, when available\nstart/end timestamps, host platform, and exit state\nresult/log/artifact paths and checksums\nAdd result.reproduce() or an exported run specification that checks missing inputs and version drift before launching. Reproduction should not silently update the engine image or reference databases.\nIntegrate with q.experiment as an optional artifact/lineage sink while keeping local execution usable without an experiment backend.\nDefine retention and cleanup separately from execution. Cleanup must be scoped to one run manifest and never delete shared market data or Docker images by default.",
+    "crumbs": [
+      "Getting Started",
+      "q.bt — Backtesting",
+      "Roadmap"
+    ]
+  },
+  {
+    "objectID": "bt/roadmap.html#packaging-and-compatibility",
+    "href": "bt/roadmap.html#packaging-and-compatibility",
+    "title": "q.bt Roadmap",
+    "section": "Packaging and compatibility",
+    "text": "Packaging and compatibility\n\nKeep Lean CLI/Docker support optional. Importing qrt or q.bt must work when neither is installed; invoking q.bt.lean should produce actionable dependency diagnostics.\nDetect CLI capability/version rather than assuming flags. Maintain a small compatibility matrix for supported CLI and engine versions.\nAvoid importing QuantConnect algorithm classes into QRT’s public result or configuration models. Serialized boundaries should remain plain Python, pandas, and path-like objects.",
+    "crumbs": [
+      "Getting Started",
+      "q.bt — Backtesting",
+      "Roadmap"
+    ]
+  },
+  {
+    "objectID": "bt/roadmap.html#testing-and-acceptance-criteria",
+    "href": "bt/roadmap.html#testing-and-acceptance-criteria",
+    "title": "q.bt Roadmap",
+    "section": "Testing and acceptance criteria",
+    "text": "Testing and acceptance criteria\n\nUnit-test command construction, path handling, manifest redaction, state transitions, log parsing, JSON parsing, and report transforms without Docker.\nUse fake subprocesses for cancellation, timeout, partial output, malformed JSON, nonzero exit, and successful-process/failed-research combinations.\nRun Docker integration tests only in an opt-in environment with pinned CLI and image versions.\nUse lean/demo-generated-data as the golden custom-market workflow. The direct-data, universe, and SMA runs must preserve their verification markers, expected data-request counts, orders, and statistics within documented tolerances.\nVerify report generation for an ordinary built-in market and the custom Sweden compatibility path. Assert that source result hashes are unchanged.\nDemonstrate concurrent runs, deterministic artifact association, graceful cancellation, and reproduction from a saved manifest.",
+    "crumbs": [
+      "Getting Started",
+      "q.bt — Backtesting",
+      "Roadmap"
+    ]
+  },
+  {
+    "objectID": "bt/roadmap.html#delivery-sequence",
+    "href": "bt/roadmap.html#delivery-sequence",
+    "title": "q.bt Roadmap",
+    "section": "Delivery sequence",
+    "text": "Delivery sequence\n\nDefine immutable run specification, lifecycle states, artifact manifest, diagnostics, and result schemas.\nImplement preflight and synchronous local execution with exact artifact discovery.\nParse results and produce canonical QRT trade logs without reporting.\nAdd streaming, cancellation, timeout, concurrency, and async wrappers.\nAdd safe Report Creator orchestration and versioned compatibility copies.\nIntegrate q.data.lean manifests and optional q.experiment tracking.\nStabilize the public API only after the pinned Sweden and built-in-market integration suites pass.",
     "crumbs": [
       "Getting Started",
       "q.bt — Backtesting",
@@ -3668,7 +3980,7 @@
     "href": "lean/fileformat.html#proven-synthetic-fixture",
     "title": "Native data formats",
     "section": "12. Proven synthetic fixture",
-    "text": "12. Proven synthetic fixture\nThe repository contains a working, deterministic test workspace at .temp/leansweden. Its source generator uses q.stats.random_walk for prices and q.calendar.schedule(..., exchange=\"XSTO\") for real Stockholm sessions, holidays, daylight saving, and half-days.\ncd /home/hi/qrt\nuv run lean --version\nuv run python .temp/leansweden/source/generate_data.py\ncd .temp/leansweden\nuv run lean backtest demo.py --no-update\nThe generator creates 100 symbols (AAA through ADV) from 2023-12-01 through 2024-12-30. The native Sweden tree is about 1.1 GB across 108,400 files and contains 27.27 million trade ticks, 13.635 million minute trade bars, 240,500 hour bars, and 27,000 daily bars, plus required intraday quotes and 100 map and factor files.\nThe stress backtest covers all 251 XSTO sessions in 2024. It simultaneously subscribes to all 100 daily streams, receives all 25,100 expected bars with no incomplete session, requests tick/minute/quote/hour/daily history across all symbols, fills 100 holdings in SEK, and completes 602 of 602 data requests. Look for this marker:\nSWEDEN_MULTI_ASSET_VERIFIED\nFor a 09:00-10:00 history interval, LEAN returned 60 minute TradeBar and 60 minute QuoteBar rows per symbol because bars are filtered by EndTime. Typed tick history returned 242 rows per symbol because it included both trade and quote events and instantaneous ticks exactly at the 10:00 boundary.\nThe fixture also generates:\ndata/equity/sweden/universes/daily/sweden100/\ndata/index/sweden/universes/etf/omxs30/\nuniverse_demo.py validates both native APIs over the full year. The broad universe selected 100 assets on 251 updates. The synthetic OMXS30 selected 30 weighted assets on 251 updates and observed two compositions: AAA-ABD before July and AAF-ABI from July. All 100 unique securities were added, all 25,100 daily bars arrived, and 618 of 618 universe data requests succeeded. Look for:\nSWEDEN_UNIVERSES_VERIFIED\nLEAN 2.5’s post-backtest ResultsAnalyzer currently requests USA SPY daily history unconditionally, regardless of the algorithm benchmark. The isolated generator appends a small synthetic SPY daily series so an offline 2024 run does not end with benchmarkSeries.Keys.First(): Sequence contains no elements. That SPY series is an analyzer workaround, not part of the Sweden format.\nThe standalone Report Creator has a similar custom-market boundary: it parses result SIDs in a fresh process that never executes Market.add(\"sweden\", 900). The fixture’s source/prepare_report.py writes a separate compatibility copy for lean report; it never modifies the original result. The safe default preserves closed trades, charts, returns, statistics, and parameters but omits the copied order dictionary, because current Report portfolio replay also leaves TradingDaysPerYear unset. See .temp/leansweden/README.md for the verified command.",
+    "text": "12. Proven synthetic fixture\nThe repository contains a working, deterministic test workspace at lean/demo-generated-data. Its source generator uses q.stats.random_walk for prices and q.calendar.schedule(..., exchange=\"XSTO\") for real Stockholm sessions, holidays, daylight saving, and half-days.\ncd /home/hi/qrt\nuv run lean --version\nuv run python lean/demo-generated-data/source/generate_data.py\ncd lean/demo-generated-data\nuv run lean backtest demo.py --no-update\nThe generator creates 100 symbols (AAA through ADV) from 2023-12-01 through 2024-12-30. The native Sweden tree is about 1.1 GB across 108,400 files and contains 27.27 million trade ticks, 13.635 million minute trade bars, 240,500 hour bars, and 27,000 daily bars, plus required intraday quotes and 100 map and factor files.\nThe stress backtest covers all 251 XSTO sessions in 2024. It simultaneously subscribes to all 100 daily streams, receives all 25,100 expected bars with no incomplete session, requests tick/minute/quote/hour/daily history across all symbols, fills 100 holdings in SEK, and completes 602 of 602 data requests. Look for this marker:\nSWEDEN_MULTI_ASSET_VERIFIED\nFor a 09:00-10:00 history interval, LEAN returned 60 minute TradeBar and 60 minute QuoteBar rows per symbol because bars are filtered by EndTime. Typed tick history returned 242 rows per symbol because it included both trade and quote events and instantaneous ticks exactly at the 10:00 boundary.\nThe fixture also generates:\ndata/equity/sweden/universes/daily/sweden100/\ndata/index/sweden/universes/etf/omxs30/\nuniverse_demo.py validates both native APIs over the full year. The broad universe selected 100 assets on 251 updates. The synthetic OMXS30 selected 30 weighted assets on 251 updates and observed two compositions: AAA-ABD before July and AAF-ABI from July. All 100 unique securities were added, all 25,100 daily bars arrived, and 618 of 618 universe data requests succeeded. Look for:\nSWEDEN_UNIVERSES_VERIFIED\nLEAN 2.5’s post-backtest ResultsAnalyzer currently requests USA SPY daily history unconditionally, regardless of the algorithm benchmark. The isolated generator appends a small synthetic SPY daily series so an offline 2024 run does not end with benchmarkSeries.Keys.First(): Sequence contains no elements. That SPY series is an analyzer workaround, not part of the Sweden format.\nThe standalone Report Creator has a similar custom-market boundary: it parses result SIDs in a fresh process that never executes Market.add(\"sweden\", 900). The fixture’s source/prepare_report.py writes a separate compatibility copy for lean report; it never modifies the original result. The safe default preserves closed trades, charts, returns, statistics, and parameters but omits the copied order dictionary, because current Report portfolio replay also leaves TradingDaysPerYear unset. See lean/demo-generated-data/README.md for the verified command.",
     "crumbs": [
       "Getting Started",
       "LEAN — Backtesting engine",
@@ -3716,7 +4028,7 @@
     "href": "lean/qbt-integration.html#proposed-responsibilities",
     "title": "Future q.bt integration",
     "section": "Proposed responsibilities",
-    "text": "Proposed responsibilities\nA typed QRT API should be able to:\n\nidentify a LEAN workspace and algorithm file;\nselect a pinned engine image and data root;\nvalidate parameters and custom-market registration requirements;\nlaunch, monitor, cancel, and reproduce local backtests;\nparse result JSON, logs, order events, charts, and data-request reports;\nexpose original artifact paths alongside QRT-normalized summaries;\nprepare and generate HTML/PDF reports;\nrecord command, image, parameters, environment, and artifact hashes.\n\nA possible user-facing shape is:\nimport qrt as q\n\nrun = q.bt.lean.backtest(\n    workspace=\".temp/leansweden\",\n    algorithm=\"demo_sma.py\",\n    parameters={\n        \"backtest-start\": \"2024-01-02\",\n        \"backtest-end\": \"2024-12-30\",\n    },\n    update_image=False,\n)\n\nresult = run.wait()\nreport = result.report(destination=\"sma-report.html\")\nThis sketch is not yet a compatibility promise.",
+    "text": "Proposed responsibilities\nA typed QRT API should be able to:\n\nidentify a LEAN workspace and algorithm file;\nselect a pinned engine image and data root;\nvalidate parameters and custom-market registration requirements;\nlaunch, monitor, cancel, and reproduce local backtests;\nparse result JSON, logs, order events, charts, and data-request reports;\nexpose original artifact paths alongside QRT-normalized summaries;\nprepare and generate HTML/PDF reports;\nrecord command, image, parameters, environment, and artifact hashes.\n\nA possible user-facing shape is:\nimport qrt as q\n\nrun = q.bt.lean.backtest(\n    workspace=\"lean/demo-generated-data\",\n    algorithm=\"demo_sma.py\",\n    parameters={\n        \"backtest-start\": \"2024-01-02\",\n        \"backtest-end\": \"2024-12-30\",\n    },\n    update_image=False,\n)\n\nresult = run.wait()\nreport = result.report(destination=\"sma-report.html\")\nThis sketch is not yet a compatibility promise.",
     "crumbs": [
       "Getting Started",
       "LEAN — Backtesting engine",
@@ -3788,7 +4100,7 @@
     "href": "lean/setup.html#initialize-a-workspace",
     "title": "Install and initialize Lean CLI",
     "section": "Initialize a workspace",
-    "text": "Initialize a workspace\nCreate an empty directory and run lean init inside it:\nmkdir -p .temp/leansweden\ncd .temp/leansweden\nuv run lean init --organization &lt;organization-name-or-id&gt; --language python\nInitialization creates:\nleansweden/\n├── lean.json\n└── data/\n\nlean.json configures the engine and points data-folder at data.\ndata/ contains sample native LEAN data, market hours, and symbol properties.\n\nCreate ordinary projects with lean create-project NAME. The tested fixture instead keeps demo.py, universe_demo.py, and demo_sma.py at the workspace root and always passes the desired file explicitly.",
+    "text": "Initialize a workspace\nThe tracked Sweden demo contains algorithms and generators but intentionally does not commit the organization-bound lean.json. Initialize it once per checkout:\ncd /home/hi/qrt/lean/demo-generated-data\nuv run lean init --organization &lt;organization-name-or-id&gt; --language python\nInitialization creates:\ndemo-generated-data/\n├── lean.json\n└── data/\n\nlean.json configures the engine and points data-folder at data.\ndata/ contains sample native LEAN data, market hours, and symbol properties.\n\nCreate ordinary projects with lean create-project NAME. The tested fixture instead keeps demo.py, universe_demo.py, and demo_sma.py at the workspace root and always passes the desired file explicitly.",
     "crumbs": [
       "Getting Started",
       "LEAN — Backtesting engine",
@@ -3800,7 +4112,7 @@
     "href": "lean/setup.html#run-commands-through-uv",
     "title": "Install and initialize Lean CLI",
     "section": "Run commands through uv",
-    "text": "Run commands through uv\nRun commands from the repository environment, even after changing into a LEAN workspace:\ncd /home/hi/qrt\nuv run lean --version\nuv run python .temp/leansweden/source/generate_data.py\nuv run lean backtest .temp/leansweden/demo.py --no-update\nuv run resolves Python and Lean CLI from /home/hi/qrt/.venv without depending on shell activation state.",
+    "text": "Run commands through uv\nRun commands from the repository environment, even after changing into a LEAN workspace:\ncd /home/hi/qrt\nuv run lean --version\nuv run python lean/demo-generated-data/source/generate_data.py\nuv run lean backtest lean/demo-generated-data/demo.py --no-update\nuv run resolves Python and Lean CLI from /home/hi/qrt/.venv without depending on shell activation state.",
     "crumbs": [
       "Getting Started",
       "LEAN — Backtesting engine",
@@ -3836,7 +4148,7 @@
     "href": "lean/sweden-data.html",
     "title": "Generate the Sweden fixture",
     "section": "",
-    "text": "The .temp/leansweden/source/generate_data.py script is a reproducible integration fixture for LEAN’s custom-market data paths. It uses QRT for synthetic prices and exchange sessions, then writes native LEAN files.",
+    "text": "The lean/demo-generated-data/source/generate_data.py script is a reproducible integration fixture for LEAN’s custom-market data paths. It uses QRT for synthetic prices and exchange sessions, then writes native LEAN files.",
     "crumbs": [
       "Getting Started",
       "LEAN — Backtesting engine",
@@ -3848,7 +4160,7 @@
     "href": "lean/sweden-data.html#generate-the-data",
     "title": "Generate the Sweden fixture",
     "section": "Generate the data",
-    "text": "Generate the data\ncd /home/hi/qrt\nuv run python .temp/leansweden/source/generate_data.py\nThe generator replaces only the fixture’s Sweden data tree and patches its isolated metadata/configuration. It is idempotent and writes progress every ten assets.",
+    "text": "Generate the data\ncd /home/hi/qrt\nuv run python lean/demo-generated-data/source/generate_data.py\nThe generator replaces only the fixture’s Sweden data tree and patches its isolated metadata/configuration. It is idempotent and writes progress every ten assets.",
     "crumbs": [
       "Getting Started",
       "LEAN — Backtesting engine",
@@ -3860,7 +4172,7 @@
     "href": "lean/sweden-data.html#what-it-creates",
     "title": "Generate the Sweden fixture",
     "section": "What it creates",
-    "text": "What it creates\nThe current fixture contains 100 symbols from AAA through ADV:\n.temp/leansweden/data/\n├── equity/sweden/\n│   ├── tick/&lt;symbol&gt;/&lt;date&gt;_{trade|quote}.zip\n│   ├── minute/&lt;symbol&gt;/&lt;date&gt;_{trade|quote}.zip\n│   ├── hour/&lt;symbol&gt;.zip\n│   ├── daily/&lt;symbol&gt;.zip\n│   ├── map_files/&lt;symbol&gt;.csv\n│   ├── factor_files/&lt;symbol&gt;.csv\n│   └── universes/\n├── index/sweden/universes/etf/omxs30/\n├── market-hours/market-hours-database.json\n└── symbol-properties/symbol-properties-database.csv\nMeasured scale:\n\n27,270,000 trade ticks and matching quote ticks;\n13,635,000 minute trade bars and matching quote bars;\n240,500 hourly bars;\n27,000 daily bars;\napproximately 1.1 GB and 108,400 native Sweden files before universe snapshots.",
+    "text": "What it creates\nThe current fixture contains 100 symbols from AAA through ADV:\nlean/demo-generated-data/data/\n├── equity/sweden/\n│   ├── tick/&lt;symbol&gt;/&lt;date&gt;_{trade|quote}.zip\n│   ├── minute/&lt;symbol&gt;/&lt;date&gt;_{trade|quote}.zip\n│   ├── hour/&lt;symbol&gt;.zip\n│   ├── daily/&lt;symbol&gt;.zip\n│   ├── map_files/&lt;symbol&gt;.csv\n│   ├── factor_files/&lt;symbol&gt;.csv\n│   └── universes/\n├── index/sweden/universes/etf/omxs30/\n├── market-hours/market-hours-database.json\n└── symbol-properties/symbol-properties-database.csv\nMeasured scale:\n\n27,270,000 trade ticks and matching quote ticks;\n13,635,000 minute trade bars and matching quote bars;\n240,500 hourly bars;\n27,000 daily bars;\napproximately 1.1 GB and 108,400 native Sweden files before universe snapshots.",
     "crumbs": [
       "Getting Started",
       "LEAN — Backtesting engine",
@@ -3896,7 +4208,7 @@
     "href": "lean/sweden-data.html#validate-generation",
     "title": "Generate the Sweden fixture",
     "section": "Validate generation",
-    "text": "Validate generation\ncd .temp/leansweden\n\nunzip -t data/equity/sweden/tick/aaa/20231228_trade.zip\nunzip -t data/equity/sweden/minute/adv/20240105_quote.zip\n\nfind data/equity/sweden/tick -mindepth 1 -maxdepth 1 -type d | wc -l\nfind data/equity/sweden/map_files -type f | wc -l\nBoth counts should be 100. See Native data formats for every path and row schema.",
+    "text": "Validate generation\ncd lean/demo-generated-data\n\nunzip -t data/equity/sweden/tick/aaa/20231228_trade.zip\nunzip -t data/equity/sweden/minute/adv/20240105_quote.zip\n\nfind data/equity/sweden/tick -mindepth 1 -maxdepth 1 -type d | wc -l\nfind data/equity/sweden/map_files -type f | wc -l\nBoth counts should be 100. See Native data formats for every path and row schema.",
     "crumbs": [
       "Getting Started",
       "LEAN — Backtesting engine",
@@ -3956,7 +4268,7 @@
     "href": "lean/universes.html#run-the-validation",
     "title": "Universes and composites",
     "section": "Run the validation",
-    "text": "Run the validation\ncd /home/hi/qrt\ncd .temp/leansweden\nuv run lean backtest universe_demo.py --no-update\nA successful run logs SWEDEN_UNIVERSES_VERIFIED and reports:\n\n251 broad updates at 100 members;\n251 OMXS30 updates at 30 members;\ntwo OMXS30 compositions;\nall 100 unique equities added;\nall 25,100 daily bars received;\n618 successful universe requests and zero failures.",
+    "text": "Run the validation\ncd /home/hi/qrt\ncd lean/demo-generated-data\nuv run lean backtest universe_demo.py --no-update\nA successful run logs SWEDEN_UNIVERSES_VERIFIED and reports:\n\n251 broad updates at 100 members;\n251 OMXS30 updates at 30 members;\ntwo OMXS30 compositions;\nall 100 unique equities added;\nall 25,100 daily bars received;\n618 successful universe requests and zero failures.",
     "crumbs": [
       "Getting Started",
       "LEAN — Backtesting engine",
@@ -4876,11 +5188,22 @@
     ]
   },
   {
+    "objectID": "roadmap.html#market-data-and-lean-program",
+    "href": "roadmap.html#market-data-and-lean-program",
+    "title": "Roadmap",
+    "section": "Market-data and LEAN program",
+    "text": "Market-data and LEAN program\nThe generated Nasdaq Stockholm workflow established an end-to-end reference case: exchange sessions, synthetic ticks and bars, security identity, corporate actions, point-in-time universes, native LEAN serialization, custom-market backtests, result parsing, and reports. Future implementation should extract general capabilities without turning QRT’s core into a LEAN-specific package.\n\nOwnership\n\n\n\nConcern\nOwning module\nBoundary\n\n\n\n\nExchange sessions and timestamp alignment\nq.calendar\nNo OHLCV mutation or engine-specific files\n\n\nSecurity identity, actions, universes, aggregation, validation\nq.data\nCanonical models remain engine/vendor independent\n\n\nLEAN paths, scaling, ZIP/CSV schemas, SIDs, metadata\nq.data.lean on the q.data roadmap\nNo process orchestration or portfolio simulation\n\n\nIn-process execution and Lean CLI orchestration\nq.bt\nNo duplicate market-data writer or LEAN event engine\n\n\nRun lineage and artifact retention\nq.experiment, integrated optionally by q.bt\nLocal runs remain usable without a tracking backend\n\n\n\n\n\nProgram principles\n\nBuild and test canonical QRT models before adding engine serializers. Security IDs, membership events, corporate actions, trades, quotes, and bars must remain useful without Lean CLI or Docker.\nKeep optional dependencies at their boundary. Importing qrt, q.data, or the in-process q.bt backend must not require Lean CLI, Docker, or QuantConnect packages.\nPreserve source artifacts and provenance. Conversions produce derived outputs with manifests and checksums; they do not mutate vendor inputs or native backtest result JSON.\nMake point-in-time behavior explicit. Effective time, publication time, listing intervals, ticker intervals, and simulated availability must not be collapsed into one date.\nRequire explicit exchange, timezone, currency, market ID, normalization, and execution policies. Defaults must not silently assume US equities.\nTreat the tracked lean/demo-generated-data workspace as a golden integration fixture. Fixture constants and workarounds should not leak into generic public APIs.\n\n\n\nDependency order\n\nComplete q.calendar session lookup, timestamp alignment, and trading interval APIs.\nStabilize canonical security-master, membership, corporate-action, trade, quote, bar, and quality-finding schemas in q.data.\nImplement point-in-time universe snapshots, factor construction, session-aware aggregation, and structured validation.\nBuild q.data.lean as a serializer/validator over those models, then reproduce the Sweden data tree and zero-failure validation backtests.\nBuild q.bt.lean process lifecycle, result parsing, manifests, and non-mutating report compatibility over the stable data adapter.\nAdd optional q.experiment lineage and retention after local manifests and reproduction are proven.\nEvaluate promotion of fixture-derived synthetic quote/tick helpers only after a second independent use case defines a general contract.\n\n\n\nProgram acceptance gates\n\nGeneric calendar/data unit tests pass in an environment without Lean CLI or Docker.\nPoint-in-time tests prove no future ticker, constituent, or action data leaks into earlier decisions.\nThe XSTO fixture covers normal sessions, half days, holidays, DST, index reconstitution, and all requested data resolutions.\nGenerated LEAN files pass structural validation before an engine is launched and complete direct, universe, and SMA integration runs with zero failed data requests.\nA saved run manifest can identify the exact source, algorithm, parameters, data generation, CLI version, engine image digest, results, and reports.\nCustom-market report preparation leaves the native result checksum unchanged and records every compatibility transformation.",
+    "crumbs": [
+      "Getting Started",
+      "Roadmap"
+    ]
+  },
+  {
     "objectID": "roadmap.html#ideas",
     "href": "roadmap.html#ideas",
     "title": "Roadmap",
     "section": "Ideas",
-    "text": "Ideas\nExploratory candidates that fit qrt’s unified quant-research API. These are not yet committed roadmap items. Candidates with a clear existing owner live on that module’s roadmap; the items below would introduce or span namespaces.\n\nq.config — layer defaults, JSON/TOML files, .env values, and explicit overrides with validation\nq.calendar — exchange calendars, sessions, holidays, market hours, and timestamp alignment using exchange-calendars\nq.optimize — mean-variance, risk-parity, minimum-variance, and constrained portfolio optimization\nq.validate — validate OHLCV/trade schemas, timestamps, missing sessions, suspicious returns, and look-ahead risks\nq.execution — shared fee, slippage, spread, order-sizing, and fill models for backtests\n\n\nPortable compute orchestration\n\nSkyPilot tutorials need actual testing and reviews",
+    "text": "Ideas\nExploratory candidates that fit qrt’s unified quant-research API. These are not yet committed roadmap items. Candidates with a clear existing owner live on that module’s roadmap; the items below would introduce or span namespaces.\n\nq.config — layer defaults, JSON/TOML files, .env values, and explicit overrides with validation\nq.optimize — mean-variance, risk-parity, minimum-variance, and constrained portfolio optimization\n\n\nPortable compute orchestration\n\nSkyPilot tutorials need actual testing and reviews",
     "crumbs": [
       "Getting Started",
       "Roadmap"
@@ -6759,7 +7082,7 @@
     "href": "env/index.html#inspect-the-runtime",
     "title": "Environment",
     "section": "Inspect the runtime",
-    "text": "Inspect the runtime\nThe other half of q.env describes the current machine: operating system, filesystem capacity, usable PyTorch accelerators, and preferred device. info combines those details into an immutable, JSON-friendly snapshot.\n\nenvironment = q.env.info()\nenvironment.as_dict()\n\n{'operating_system': {'name': 'Linux',\n  'release': '7.0.0-27-generic',\n  'version': '#27-Ubuntu SMP PREEMPT_DYNAMIC Thu Jun 18 19:13:49 UTC 2026',\n  'machine': 'x86_64'},\n 'disk': {'path': '/home/hi/qrt/docs/env',\n  'total': 2011838955520,\n  'used': 177057288192,\n  'free': 1732510277632},\n 'accelerators': (),\n 'device': 'cpu',\n 'cpu_count': 24}\n\n\n\nEnvironment report\nreport presents the same snapshot as a compact Rich table and returns it for programmatic use.\n\n_ = q.env.report()\n\n                            qrt environment                            \n┌──────────────────┬──────────────────────────────────────────────────┐\n│ OS               │ Linux 7.0.0-27-generic (x86_64)                  │\n│ CPU cores        │ 24                                               │\n│ Disk             │ 1.6 TiB free of 1.8 TiB at /home/hi/qrt/docs/env │\n│ Accelerator      │ None detected                                    │\n│ Preferred device │ cpu                                              │\n└──────────────────┴──────────────────────────────────────────────────┘",
+    "text": "Inspect the runtime\nThe other half of q.env describes the current machine: operating system, filesystem capacity, usable PyTorch accelerators, and preferred device. info combines those details into an immutable, JSON-friendly snapshot.\n\nenvironment = q.env.info()\nenvironment.as_dict()\n\n{'operating_system': {'name': 'Linux',\n  'release': '7.0.0-27-generic',\n  'version': '#27-Ubuntu SMP PREEMPT_DYNAMIC Thu Jun 18 19:13:49 UTC 2026',\n  'machine': 'x86_64'},\n 'disk': {'path': '/home/hi/qrt/docs/env',\n  'total': 2011838955520,\n  'used': 177042227200,\n  'free': 1732525338624},\n 'accelerators': (),\n 'device': 'cpu',\n 'cpu_count': 24}\n\n\n\nEnvironment report\nreport presents the same snapshot as a compact Rich table and returns it for programmatic use.\n\n_ = q.env.report()\n\n                            qrt environment                            \n┌──────────────────┬──────────────────────────────────────────────────┐\n│ OS               │ Linux 7.0.0-27-generic (x86_64)                  │\n│ CPU cores        │ 24                                               │\n│ Disk             │ 1.6 TiB free of 1.8 TiB at /home/hi/qrt/docs/env │\n│ Accelerator      │ None detected                                    │\n│ Preferred device │ cpu                                              │\n└──────────────────┴──────────────────────────────────────────────────┘",
     "crumbs": [
       "Getting Started",
       "q.env — Environment"

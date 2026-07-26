@@ -1053,17 +1053,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>The <code>.temp/leansweden/source/generate_data.py</code> script is a reproducible integration fixture for LEAN’s custom-market data paths. It uses QRT for synthetic prices and exchange sessions, then writes native LEAN files.</p>
+<p>The <code>lean/demo-generated-data/source/generate_data.py</code> script is a reproducible integration fixture for LEAN’s custom-market data paths. It uses QRT for synthetic prices and exchange sessions, then writes native LEAN files.</p>
 <section id="generate-the-data" class="level2">
 <h2 class="anchored" data-anchor-id="generate-the-data">Generate the data</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /home/hi/qrt</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python .temp/leansweden/source/generate_data.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python lean/demo-generated-data/source/generate_data.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The generator replaces only the fixture’s Sweden data tree and patches its isolated metadata/configuration. It is idempotent and writes progress every ten assets.</p>
 </section>
 <section id="what-it-creates" class="level2">
 <h2 class="anchored" data-anchor-id="what-it-creates">What it creates</h2>
 <p>The current fixture contains 100 symbols from <code>AAA</code> through <code>ADV</code>:</p>
-<pre class="text"><code>.temp/leansweden/data/
+<pre class="text"><code>lean/demo-generated-data/data/
 ├── equity/sweden/
 │   ├── tick/&lt;symbol&gt;/&lt;date&gt;_{trade|quote}.zip
 │   ├── minute/&lt;symbol&gt;/&lt;date&gt;_{trade|quote}.zip
@@ -1101,7 +1101,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="validate-generation" class="level2">
 <h2 class="anchored" data-anchor-id="validate-generation">Validate generation</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> .temp/leansweden</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> lean/demo-generated-data</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">unzip</span> <span class="at">-t</span> data/equity/sweden/tick/aaa/20231228_trade.zip</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">unzip</span> <span class="at">-t</span> data/equity/sweden/minute/adv/20240105_quote.zip</span>

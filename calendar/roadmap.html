@@ -23,6 +23,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -983,8 +1018,20 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#design-rules" id="toc-design-rules" class="nav-link active" data-scroll-target="#design-rules">Design rules</a></li>
+  <li><a href="#session-navigation-and-classification" id="toc-session-navigation-and-classification" class="nav-link" data-scroll-target="#session-navigation-and-classification">Session navigation and classification</a></li>
+  <li><a href="#timestamp-to-session-alignment" id="toc-timestamp-to-session-alignment" class="nav-link" data-scroll-target="#timestamp-to-session-alignment">Timestamp-to-session alignment</a></li>
+  <li><a href="#trading-time-grids" id="toc-trading-time-grids" class="nav-link" data-scroll-target="#trading-time-grids">Trading-time grids</a></li>
+  <li><a href="#calendar-distance" id="toc-calendar-distance" class="nav-link" data-scroll-target="#calendar-distance">Calendar distance</a></li>
+  <li><a href="#performance-and-caching" id="toc-performance-and-caching" class="nav-link" data-scroll-target="#performance-and-caching">Performance and caching</a></li>
+  <li><a href="#acceptance-criteria" id="toc-acceptance-criteria" class="nav-link" data-scroll-target="#acceptance-criteria">Acceptance criteria</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/calendar/roadmap.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/calendar/roadmap.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -1008,14 +1055,83 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<p>title: q.calendar Roadmap</p>
+<p>Only open work is listed here. The existing <code>schedule</code> and <code>non_trading_days_after</code> functions are the foundation for the work below.</p>
+<section id="design-rules" class="level2">
+<h2 class="anchored" data-anchor-id="design-rules">Design rules</h2>
+<ul>
+<li>Every public operation requires an explicit ISO 10383 exchange identifier.</li>
+<li>Session labels are timezone-naive normalized dates; market timestamps are timezone-aware and expressed in either UTC or the exchange’s IANA timezone.</li>
+<li>APIs must define their behavior for timestamps before the open, after the close, during holidays, and at daylight-saving transitions.</li>
+<li>Early closes are ordinary trading sessions with a shorter interval, not holidays or incomplete observations.</li>
+<li><code>q.calendar</code> owns exchange-time semantics. It may construct labels and time grids, but OHLCV aggregation and market-data mutation belong to <code>q.data</code>.</li>
+</ul>
+</section>
+<section id="session-navigation-and-classification" class="level2">
+<h2 class="anchored" data-anchor-id="session-navigation-and-classification">Session navigation and classification</h2>
 <ul class="task-list">
-<li><label><input type="checkbox">Session and trading-minute ranges</label></li>
-<li><label><input type="checkbox">Market-open, early-close, and holiday flags</label></li>
-<li><label><input type="checkbox">Timestamp-to-session alignment with explicit timezone policy</label></li>
-<li><label><input type="checkbox">Calendar-distance features for multiple exchanges</label></li>
+<li><p><label><input type="checkbox">Add scalar and vectorized session predicates:</label></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>q.calendar.is_session(<span class="st">"2024-03-28"</span>, exchange<span class="op">=</span><span class="st">"XSTO"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>q.calendar.is_early_close(<span class="st">"2024-03-28"</span>, exchange<span class="op">=</span><span class="st">"XSTO"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The vectorized form should preserve the input index, reject missing dates by default, and distinguish a closed date from an unknown/out-of-range calendar.</p></li>
+<li><p><label><input type="checkbox">Add <code>previous_session</code> and <code>next_session</code> with an explicit <code>include_self</code> option and positive integer offsets. The implementation must use exchange sessions rather than subtracting calendar days.</label></p></li>
+<li><p><label><input type="checkbox">Add <code>session_open</code>, <code>session_close</code>, and <code>session_bounds</code>. Returned timestamps must be timezone-aware in the exchange’s local timezone by default, with <code>tz="UTC"</code> as an explicit alternative.</label></p></li>
+<li><p><label><input type="checkbox">Add session classification metadata to <code>schedule</code>, either through optional columns or a separate <code>session_flags</code> function: <code>is_early_close</code>, <code>is_late_open</code>, regular duration, actual duration, and the applicable local UTC offset.</label></p></li>
+</ul>
+</section>
+<section id="timestamp-to-session-alignment" class="level2">
+<h2 class="anchored" data-anchor-id="timestamp-to-session-alignment">Timestamp-to-session alignment</h2>
+<ul class="task-list">
+<li><p><label><input type="checkbox">Add a vectorized <code>session_labels</code> operation:</label></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> q.calendar.session_labels(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>        timestamps,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        exchange<span class="op">=</span><span class="st">"XSTO"</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>        direction<span class="op">=</span><span class="st">"none"</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        include_close<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>It should assign each timestamp to the exchange session that contains it. <code>direction="none"</code> returns missing labels or raises for out-of-session values; <code>"previous"</code> and <code>"next"</code> explicitly opt into nearest-session alignment.</p></li>
+<li><p><label><input type="checkbox">Define interval boundaries once and test them consistently. The proposed default is <code>[open, close)</code>, with an opt-in policy for official closing prints timestamped exactly at the close.</label></p></li>
+<li><p><label><input type="checkbox">Support timestamps supplied in UTC, the exchange timezone, or another timezone. Reject timezone-naive intraday timestamps unless the caller passes an explicit <code>assume_timezone</code> value; never silently interpret them as local.</label></p></li>
+<li><p><label><input type="checkbox">Add <code>session_for_timestamp</code> as a scalar convenience wrapper over the same implementation. Scalar and vectorized results must not diverge.</label></p></li>
+<li><p><label><input type="checkbox">Cover ambiguous and nonexistent local times around daylight-saving changes. Resolution must be explicit and deterministic rather than delegated to pandas defaults that can vary by operation.</label></p></li>
+</ul>
+</section>
+<section id="trading-time-grids" class="level2">
+<h2 class="anchored" data-anchor-id="trading-time-grids">Trading-time grids</h2>
+<ul class="task-list">
+<li><p><label><input type="checkbox">Add <code>trading_minutes</code> and a general <code>trading_ranges</code> API for one or many sessions. Inputs should support an exchange, frequency, start/end session, and interval-closure policy.</label></p></li>
+<li><p><label><input type="checkbox">Ensure generated grids respect holidays, half days, late opens, and any exchange breaks represented by the upstream calendar.</label></p></li>
+<li><p><label><input type="checkbox">Add a compact session-offset representation suitable for assigning large tick tables without materializing every minute when only labels are needed.</label></p></li>
+<li><p><label><input type="checkbox">Expose enough interval metadata for <code>q.data.resample_trades</code> to aggregate by exchange session without duplicating calendar logic. <code>q.calendar</code> should not itself choose OHLC, volume, quote, or empty-bar policies.</label></p></li>
+</ul>
+</section>
+<section id="calendar-distance" class="level2">
+<h2 class="anchored" data-anchor-id="calendar-distance">Calendar distance</h2>
+<ul class="task-list">
+<li><p><label><input type="checkbox">Add trading-session distance and trading-minute distance between two timestamps for one exchange.</label></p></li>
+<li><p><label><input type="checkbox">Add multi-exchange overlap features: common sessions, union sessions, simultaneous open intervals, and distance to the next overlap. These are needed for cross-market features and FX/cash-conversion availability.</label></p></li>
+<li><p><label><input type="checkbox">Define signed distance, endpoint inclusion, and non-session alignment explicitly. Calendar-day, session, and trading-minute distances must remain separate concepts in names and return metadata.</label></p></li>
+</ul>
+</section>
+<section id="performance-and-caching" class="level2">
+<h2 class="anchored" data-anchor-id="performance-and-caching">Performance and caching</h2>
+<ul class="task-list">
+<li><p><label><input type="checkbox">Cache immutable exchange-calendar lookups and bounded schedules without leaking mutable DataFrames between callers.</label></p></li>
+<li><p><label><input type="checkbox">Provide vectorized implementations for million-row timestamp indexes; avoid Python loops over observations.</label></p></li>
+<li><p><label><input type="checkbox">Benchmark session labeling and minute-grid generation across XNYS, XSTO, and an exchange with an intraday break.</label></p></li>
+</ul>
+</section>
+<section id="acceptance-criteria" class="level2">
+<h2 class="anchored" data-anchor-id="acceptance-criteria">Acceptance criteria</h2>
+<ul class="task-list">
+<li><label><input type="checkbox">Unit tests for normal sessions, XSTO half days, holidays, weekends, daylight-saving boundaries, exact opens/closes, and out-of-range dates.</label></li>
+<li><label><input type="checkbox">Property tests that every generated trading timestamp maps back to the session that generated it and no closed-date timestamp is emitted.</label></li>
+<li><label><input type="checkbox">Cross-check representative schedules against <code>exchange_calendars</code> while keeping QRT’s public errors, timezone policy, and result schemas stable.</label></li>
+<li><label><input type="checkbox">Integration tests with the future <code>q.data</code> session-aware resampler and point-in-time universe snapshot builder.</label></li>
 </ul>
 
 
+</section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -1435,4 +1551,4 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/calendar/roadmap.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/calendar/roadmap.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/calendar/roadmap.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/calendar/roadmap.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

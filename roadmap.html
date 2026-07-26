@@ -989,6 +989,13 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#module-roadmaps" id="toc-module-roadmaps" class="nav-link active" data-scroll-target="#module-roadmaps">Module roadmaps</a></li>
   <li><a href="#project-wide-work" id="toc-project-wide-work" class="nav-link" data-scroll-target="#project-wide-work">Project-wide work</a></li>
+  <li><a href="#market-data-and-lean-program" id="toc-market-data-and-lean-program" class="nav-link" data-scroll-target="#market-data-and-lean-program">Market-data and LEAN program</a>
+  <ul class="collapse">
+  <li><a href="#ownership" id="toc-ownership" class="nav-link" data-scroll-target="#ownership">Ownership</a></li>
+  <li><a href="#program-principles" id="toc-program-principles" class="nav-link" data-scroll-target="#program-principles">Program principles</a></li>
+  <li><a href="#dependency-order" id="toc-dependency-order" class="nav-link" data-scroll-target="#dependency-order">Dependency order</a></li>
+  <li><a href="#program-acceptance-gates" id="toc-program-acceptance-gates" class="nav-link" data-scroll-target="#program-acceptance-gates">Program acceptance gates</a></li>
+  </ul></li>
   <li><a href="#ideas" id="toc-ideas" class="nav-link" data-scroll-target="#ideas">Ideas</a>
   <ul class="collapse">
   <li><a href="#portable-compute-orchestration" id="toc-portable-compute-orchestration" class="nav-link" data-scroll-target="#portable-compute-orchestration">Portable compute orchestration</a></li>
@@ -1132,15 +1139,89 @@ ul.task-list li input[type="checkbox"] {
 <li><label><input type="checkbox">Evaluate and adopt <a href="https://fireducks-dev.github.io/">FireDucks</a> as a drop-in replacement for the pandas backend, subject to API-compatibility and performance benchmarking across qrt workflows</label></li>
 </ul>
 </section>
+<section id="market-data-and-lean-program" class="level2">
+<h2 class="anchored" data-anchor-id="market-data-and-lean-program">Market-data and LEAN program</h2>
+<p>The generated Nasdaq Stockholm workflow established an end-to-end reference case: exchange sessions, synthetic ticks and bars, security identity, corporate actions, point-in-time universes, native LEAN serialization, custom-market backtests, result parsing, and reports. Future implementation should extract general capabilities without turning QRT’s core into a LEAN-specific package.</p>
+<section id="ownership" class="level3">
+<h3 class="anchored" data-anchor-id="ownership">Ownership</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Concern</th>
+<th>Owning module</th>
+<th>Boundary</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Exchange sessions and timestamp alignment</td>
+<td><a href="./calendar/roadmap.html"><code>q.calendar</code></a></td>
+<td>No OHLCV mutation or engine-specific files</td>
+</tr>
+<tr class="even">
+<td>Security identity, actions, universes, aggregation, validation</td>
+<td><a href="./data/roadmap.html"><code>q.data</code></a></td>
+<td>Canonical models remain engine/vendor independent</td>
+</tr>
+<tr class="odd">
+<td>LEAN paths, scaling, ZIP/CSV schemas, SIDs, metadata</td>
+<td><code>q.data.lean</code> on the <a href="./data/roadmap.html"><code>q.data</code> roadmap</a></td>
+<td>No process orchestration or portfolio simulation</td>
+</tr>
+<tr class="even">
+<td>In-process execution and Lean CLI orchestration</td>
+<td><a href="./bt/roadmap.html"><code>q.bt</code></a></td>
+<td>No duplicate market-data writer or LEAN event engine</td>
+</tr>
+<tr class="odd">
+<td>Run lineage and artifact retention</td>
+<td><code>q.experiment</code>, integrated optionally by <code>q.bt</code></td>
+<td>Local runs remain usable without a tracking backend</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="program-principles" class="level3">
+<h3 class="anchored" data-anchor-id="program-principles">Program principles</h3>
+<ul class="task-list">
+<li><p><label><input type="checkbox">Build and test canonical QRT models before adding engine serializers. Security IDs, membership events, corporate actions, trades, quotes, and bars must remain useful without Lean CLI or Docker.</label></p></li>
+<li><p><label><input type="checkbox">Keep optional dependencies at their boundary. Importing <code>qrt</code>, <code>q.data</code>, or the in-process <code>q.bt</code> backend must not require Lean CLI, Docker, or QuantConnect packages.</label></p></li>
+<li><p><label><input type="checkbox">Preserve source artifacts and provenance. Conversions produce derived outputs with manifests and checksums; they do not mutate vendor inputs or native backtest result JSON.</label></p></li>
+<li><p><label><input type="checkbox">Make point-in-time behavior explicit. Effective time, publication time, listing intervals, ticker intervals, and simulated availability must not be collapsed into one date.</label></p></li>
+<li><p><label><input type="checkbox">Require explicit exchange, timezone, currency, market ID, normalization, and execution policies. Defaults must not silently assume US equities.</label></p></li>
+<li><p><label><input type="checkbox">Treat the tracked <code>lean/demo-generated-data</code> workspace as a golden integration fixture. Fixture constants and workarounds should not leak into generic public APIs.</label></p></li>
+</ul>
+</section>
+<section id="dependency-order" class="level3">
+<h3 class="anchored" data-anchor-id="dependency-order">Dependency order</h3>
+<ol type="1">
+<li><label><input type="checkbox">Complete <code>q.calendar</code> session lookup, timestamp alignment, and trading interval APIs.</label></li>
+<li><label><input type="checkbox">Stabilize canonical security-master, membership, corporate-action, trade, quote, bar, and quality-finding schemas in <code>q.data</code>.</label></li>
+<li><label><input type="checkbox">Implement point-in-time universe snapshots, factor construction, session-aware aggregation, and structured validation.</label></li>
+<li><label><input type="checkbox">Build <code>q.data.lean</code> as a serializer/validator over those models, then reproduce the Sweden data tree and zero-failure validation backtests.</label></li>
+<li><label><input type="checkbox">Build <code>q.bt.lean</code> process lifecycle, result parsing, manifests, and non-mutating report compatibility over the stable data adapter.</label></li>
+<li><label><input type="checkbox">Add optional <code>q.experiment</code> lineage and retention after local manifests and reproduction are proven.</label></li>
+<li><label><input type="checkbox">Evaluate promotion of fixture-derived synthetic quote/tick helpers only after a second independent use case defines a general contract.</label></li>
+</ol>
+</section>
+<section id="program-acceptance-gates" class="level3">
+<h3 class="anchored" data-anchor-id="program-acceptance-gates">Program acceptance gates</h3>
+<ul class="task-list">
+<li><label><input type="checkbox">Generic calendar/data unit tests pass in an environment without Lean CLI or Docker.</label></li>
+<li><label><input type="checkbox">Point-in-time tests prove no future ticker, constituent, or action data leaks into earlier decisions.</label></li>
+<li><label><input type="checkbox">The XSTO fixture covers normal sessions, half days, holidays, DST, index reconstitution, and all requested data resolutions.</label></li>
+<li><label><input type="checkbox">Generated LEAN files pass structural validation before an engine is launched and complete direct, universe, and SMA integration runs with zero failed data requests.</label></li>
+<li><label><input type="checkbox">A saved run manifest can identify the exact source, algorithm, parameters, data generation, CLI version, engine image digest, results, and reports.</label></li>
+<li><label><input type="checkbox">Custom-market report preparation leaves the native result checksum unchanged and records every compatibility transformation.</label></li>
+</ul>
+</section>
+</section>
 <section id="ideas" class="level2">
 <h2 class="anchored" data-anchor-id="ideas">Ideas</h2>
 <p>Exploratory candidates that fit qrt’s unified quant-research API. These are not yet committed roadmap items. Candidates with a clear existing owner live on that module’s roadmap; the items below would introduce or span namespaces.</p>
 <ul class="task-list">
 <li><label><input type="checkbox"><code>q.config</code> — layer defaults, JSON/TOML files, <code>.env</code> values, and explicit overrides with validation</label></li>
-<li><label><input type="checkbox"><code>q.calendar</code> — exchange calendars, sessions, holidays, market hours, and timestamp alignment using <code>exchange-calendars</code></label></li>
 <li><label><input type="checkbox"><code>q.optimize</code> — mean-variance, risk-parity, minimum-variance, and constrained portfolio optimization</label></li>
-<li><label><input type="checkbox"><code>q.validate</code> — validate OHLCV/trade schemas, timestamps, missing sessions, suspicious returns, and look-ahead risks</label></li>
-<li><label><input type="checkbox"><code>q.execution</code> — shared fee, slippage, spread, order-sizing, and fill models for backtests</label></li>
 </ul>
 <section id="portable-compute-orchestration" class="level3">
 <h3 class="anchored" data-anchor-id="portable-compute-orchestration">Portable compute orchestration</h3>

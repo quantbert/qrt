@@ -23,6 +23,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -989,6 +1024,16 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#planned" id="toc-planned" class="nav-link active" data-scroll-target="#planned">Planned</a></li>
+  <li><a href="#backend-boundaries" id="toc-backend-boundaries" class="nav-link" data-scroll-target="#backend-boundaries">Backend boundaries</a></li>
+  <li><a href="#in-process-qrt-backend" id="toc-in-process-qrt-backend" class="nav-link" data-scroll-target="#in-process-qrt-backend">In-process QRT backend</a></li>
+  <li><a href="#lean-adapter-api" id="toc-lean-adapter-api" class="nav-link" data-scroll-target="#lean-adapter-api">LEAN adapter API</a></li>
+  <li><a href="#process-lifecycle" id="toc-process-lifecycle" class="nav-link" data-scroll-target="#process-lifecycle">Process lifecycle</a></li>
+  <li><a href="#result-and-artifact-model" id="toc-result-and-artifact-model" class="nav-link" data-scroll-target="#result-and-artifact-model">Result and artifact model</a></li>
+  <li><a href="#reports" id="toc-reports" class="nav-link" data-scroll-target="#reports">Reports</a></li>
+  <li><a href="#reproducibility-and-provenance" id="toc-reproducibility-and-provenance" class="nav-link" data-scroll-target="#reproducibility-and-provenance">Reproducibility and provenance</a></li>
+  <li><a href="#packaging-and-compatibility" id="toc-packaging-and-compatibility" class="nav-link" data-scroll-target="#packaging-and-compatibility">Packaging and compatibility</a></li>
+  <li><a href="#testing-and-acceptance-criteria" id="toc-testing-and-acceptance-criteria" class="nav-link" data-scroll-target="#testing-and-acceptance-criteria">Testing and acceptance criteria</a></li>
+  <li><a href="#delivery-sequence" id="toc-delivery-sequence" class="nav-link" data-scroll-target="#delivery-sequence">Delivery sequence</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/bt/roadmap.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/bt/roadmap.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -1017,14 +1062,133 @@ ul.task-list li input[type="checkbox"] {
 <p>Only open work is listed here. Completed items are removed.</p>
 <section id="planned" class="level2">
 <h2 class="anchored" data-anchor-id="planned">Planned</h2>
+</section>
+<section id="backend-boundaries" class="level2">
+<h2 class="anchored" data-anchor-id="backend-boundaries">Backend boundaries</h2>
+<p><code>q.bt</code> will expose a common research-facing result contract over two independent execution backends:</p>
+<ol type="1">
+<li>a QRT-owned in-process event kernel shared with <code>q.gym</code>;</li>
+<li>an optional adapter that orchestrates the standalone Lean CLI and LEAN engine.</li>
+</ol>
+<p>The backends may normalize summaries and trade logs, but they must not pretend to have identical execution semantics. Every result records its backend and backend-specific configuration. LEAN remains authoritative for its event loop, subscriptions, orders, fills, fees, buying power, settlement, portfolio state, native result JSON, and Report Creator output.</p>
+</section>
+<section id="in-process-qrt-backend" class="level2">
+<h2 class="anchored" data-anchor-id="in-process-qrt-backend">In-process QRT backend</h2>
 <ul class="task-list">
-<li><label><input type="checkbox">Event-driven execution kernel shared by batch backtests and <code>q.gym</code></label></li>
-<li><label><input type="checkbox"><code>q.bt.run</code> adapter for model signals</label></li>
-<li><label><input type="checkbox">LEAN CLI adapter for executing local backtests and reports through a typed <code>q.bt</code> API - configure a LEAN workspace, project, engine image, parameters, and data root - launch, monitor, cancel, and reproduce <code>lean backtest</code> runs - parse result JSON, logs, orders, trades, charts, and data-request reports into QRT-owned result objects - generate HTML/PDF reports and preserve links to the original LEAN artifacts - support custom-market registration and report compatibility without mutating source backtest results</label></li>
-<li><label><input type="checkbox">Keep the LEAN adapter optional: LEAN remains a standalone execution engine, while QRT’s in-process event kernel remains separately usable</label></li>
-<li><label><input type="checkbox">Transaction costs / slippage models</label></li>
-<li><label><input type="checkbox">Trade log output compatible with <code>q.plot</code> (tearsheets)</label></li>
+<li><p><label><input type="checkbox">Implement an event-driven execution kernel shared by batch backtests and <code>q.gym</code> without depending on Lean CLI or Docker.</label></p></li>
+<li><p><label><input type="checkbox">Add <code>q.bt.run(signal, prices, ...)</code> for canonical QRT signals and OHLCV data. Define timing explicitly: signal availability, order submission, execution bar, mark-to-market timestamp, and prevention of look-ahead.</label></p></li>
+<li><p><label><input type="checkbox">Define pluggable transaction-cost, spread, slippage, order-sizing, fill, and position-limit interfaces. Default models should be simple and explicit, never silently market-specific.</label></p></li>
+<li><p><label><input type="checkbox">Emit the canonical QRT trade-log schema used by <code>q.stats</code> and <code>q.plot</code>, plus equity, cash, exposure, turnover, and rejected-order series.</label></p></li>
+<li><p><label><input type="checkbox">Keep the in-process engine useful when Lean CLI is not installed. LEAN integration must not become a dependency of <code>q.bt.run</code>.</label></p></li>
 </ul>
+</section>
+<section id="lean-adapter-api" class="level2">
+<h2 class="anchored" data-anchor-id="lean-adapter-api">LEAN adapter API</h2>
+<ul class="task-list">
+<li><p><label><input type="checkbox">Add an optional <code>q.bt.lean</code> namespace with a typed entry point:</label></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>run <span class="op">=</span> q.bt.lean.backtest(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>        workspace<span class="op">=</span><span class="st">"lean/demo-generated-data"</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>        algorithm<span class="op">=</span><span class="st">"demo_sma.py"</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>        parameters<span class="op">=</span>{</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>                <span class="st">"backtest-start"</span>: <span class="st">"2024-01-02"</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>                <span class="st">"backtest-end"</span>: <span class="st">"2024-12-30"</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        },</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        update_image<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> run.wait()</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>report <span class="op">=</span> result.report(destination<span class="op">=</span><span class="st">"sma-report.html"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This sketch is not a compatibility promise until the lifecycle and result contracts below are implemented.</p></li>
+<li><p><label><input type="checkbox">Accept paths without changing the caller’s process-wide working directory. Resolve workspace, algorithm, data root, output root, and optional Lean CLI executable to absolute paths at validation time.</label></p></li>
+<li><p><label><input type="checkbox">Validate the workspace before launch: <code>lean.json</code>, project <code>config.json</code>, algorithm file, language, data folder, writable output directories, Docker availability, CLI version, and custom-market prerequisites.</label></p></li>
+<li><p><label><input type="checkbox">Provide an immutable run specification object that can be serialized to JSON and compared across runs. Parameters should be typed where a project schema exists and string-normalized only at the CLI boundary.</label></p></li>
+<li><p><label><input type="checkbox">Support an explicit engine image tag or digest. <code>update_image=False</code> should map to Lean CLI’s no-update behavior for backtests; a digest should be recorded after Docker resolves the image.</label></p></li>
+<li><p><label><input type="checkbox">Keep custom market name/ID and data serialization in <code>q.data.lean</code>. <code>q.bt.lean</code> may validate those settings and inject algorithm parameters, but must not maintain a second SID or file-format implementation.</label></p></li>
+</ul>
+</section>
+<section id="process-lifecycle" class="level2">
+<h2 class="anchored" data-anchor-id="process-lifecycle">Process lifecycle</h2>
+<ul class="task-list">
+<li><p><label><input type="checkbox">Implement launch, status, log streaming, wait, timeout, cancellation, and cleanup as a state machine. Proposed terminal states are <code>succeeded</code>, <code>failed</code>, <code>cancelled</code>, and <code>timed_out</code>.</label></p></li>
+<li><p><label><input type="checkbox">Capture stdout/stderr incrementally without requiring terminal scraping. Preserve raw streams and expose parsed progress/events separately.</label></p></li>
+<li><p><label><input type="checkbox">Cancellation must terminate the CLI process and its run-specific Docker container without killing unrelated LEAN or Docker workloads. Record whether shutdown was graceful or forced.</label></p></li>
+<li><p><label><input type="checkbox">Prevent output-directory collisions under concurrent runs. Use a unique run ID and discover the engine’s timestamped result directory deterministically rather than selecting “latest” after completion.</label></p></li>
+<li><p><label><input type="checkbox">Surface interactive authentication or Docker permission failures as typed preflight errors. Never request API keys, tokens, passwords, or passphrases through ordinary function parameters that are persisted in run manifests.</label></p></li>
+<li><p><label><input type="checkbox">Provide synchronous and asynchronous orchestration without tying the core API to notebooks, a particular task queue, or an async event loop owned by the caller.</label></p></li>
+</ul>
+</section>
+<section id="result-and-artifact-model" class="level2">
+<h2 class="anchored" data-anchor-id="result-and-artifact-model">Result and artifact model</h2>
+<ul class="task-list">
+<li><p><label><input type="checkbox">Parse the canonical LEAN result JSON, summary JSON, engine log, algorithm log, order events, succeeded/failed data-request reports, and generated code snapshot into a <code>LeanBacktestResult</code>.</label></p></li>
+<li><p><label><input type="checkbox">Preserve every native artifact path and checksum. Parsed QRT objects are derived views and must never replace or rewrite the source files.</label></p></li>
+<li><p><label><input type="checkbox">Normalize run metadata, statistics, runtime statistics, charts/series, orders, order events, holdings, closed trades, parameters, and errors while retaining unknown fields for forward compatibility.</label></p></li>
+<li><p><label><input type="checkbox">Convert LEAN closed trades/order events to QRT’s canonical trade log with a documented mapping. Preserve the original LEAN identifiers and expose conversion warnings when partial fills, assignments, multi-leg orders, or currency conversions cannot be represented losslessly.</label></p></li>
+<li><p><label><input type="checkbox">Distinguish process success from research success. A zero CLI exit code can still accompany failed data requests, algorithm <code>ERROR::</code> messages, invalid orders, unfilled final-session orders, or analyzer failures.</label></p></li>
+<li><p><label><input type="checkbox">Add structured diagnostics with stable codes and severities for missing data, custom-market failures, model rejection, Docker problems, result parse drift, and report failures. Retain raw matching log lines as evidence.</label></p></li>
+<li><p><label><input type="checkbox">Expose charts and tabular results in backend-neutral forms consumable by <code>q.plot</code>, but do not discard backend-specific chart metadata or precision.</label></p></li>
+</ul>
+</section>
+<section id="reports" class="level2">
+<h2 class="anchored" data-anchor-id="reports">Reports</h2>
+<ul class="task-list">
+<li><p><label><input type="checkbox">Wrap <code>lean report</code> with exact result-file selection. Never pass a result directory or infer an arbitrary JSON when several candidates exist.</label></p></li>
+<li><p><label><input type="checkbox">Support HTML and PDF destinations, strategy metadata, custom templates, overwrite policy, and local image selection while reflecting the actual Lean CLI options (<code>lean report</code> has <code>--update</code>, not <code>--no-update</code>).</label></p></li>
+<li><p><label><input type="checkbox">Detect custom-market SIDs before invoking Report Creator. If compatibility conversion is required, write a derived copy under a separate artifact path and retain a manifest of every transformed field.</label></p></li>
+<li><p><label><input type="checkbox">Never mutate the original backtest JSON. Report compatibility should be a pure transformation from source result to derived result plus an audit record.</label></p></li>
+<li><p><label><input type="checkbox">Make order omission/aliasing explicit when working around upstream Report replay limitations. Surface which report sections lose reconstruction input, such as asset allocation, while preserving closed-trade statistics and charts.</label></p></li>
+<li><p><label><input type="checkbox">Version compatibility transforms by LEAN engine and CLI version so a workaround is not applied after upstream behavior changes.</label></p></li>
+</ul>
+</section>
+<section id="reproducibility-and-provenance" class="level2">
+<h2 class="anchored" data-anchor-id="reproducibility-and-provenance">Reproducibility and provenance</h2>
+<ul class="task-list">
+<li><p><label><input type="checkbox">Store a run manifest containing at least:</label></p>
+<pre class="text"><code>QRT version and adapter schema version
+workspace and algorithm paths
+algorithm source and project-config hashes
+LEAN CLI version
+Docker image tag and digest
+lean.json hash with secrets redacted
+parameters and data-root identity
+q.data.lean generation manifest, when available
+start/end timestamps, host platform, and exit state
+result/log/artifact paths and checksums</code></pre></li>
+<li><p><label><input type="checkbox">Add <code>result.reproduce()</code> or an exported run specification that checks missing inputs and version drift before launching. Reproduction should not silently update the engine image or reference databases.</label></p></li>
+<li><p><label><input type="checkbox">Integrate with <code>q.experiment</code> as an optional artifact/lineage sink while keeping local execution usable without an experiment backend.</label></p></li>
+<li><p><label><input type="checkbox">Define retention and cleanup separately from execution. Cleanup must be scoped to one run manifest and never delete shared market data or Docker images by default.</label></p></li>
+</ul>
+</section>
+<section id="packaging-and-compatibility" class="level2">
+<h2 class="anchored" data-anchor-id="packaging-and-compatibility">Packaging and compatibility</h2>
+<ul class="task-list">
+<li><p><label><input type="checkbox">Keep Lean CLI/Docker support optional. Importing <code>qrt</code> or <code>q.bt</code> must work when neither is installed; invoking <code>q.bt.lean</code> should produce actionable dependency diagnostics.</label></p></li>
+<li><p><label><input type="checkbox">Detect CLI capability/version rather than assuming flags. Maintain a small compatibility matrix for supported CLI and engine versions.</label></p></li>
+<li><p><label><input type="checkbox">Avoid importing QuantConnect algorithm classes into QRT’s public result or configuration models. Serialized boundaries should remain plain Python, pandas, and path-like objects.</label></p></li>
+</ul>
+</section>
+<section id="testing-and-acceptance-criteria" class="level2">
+<h2 class="anchored" data-anchor-id="testing-and-acceptance-criteria">Testing and acceptance criteria</h2>
+<ul class="task-list">
+<li><p><label><input type="checkbox">Unit-test command construction, path handling, manifest redaction, state transitions, log parsing, JSON parsing, and report transforms without Docker.</label></p></li>
+<li><p><label><input type="checkbox">Use fake subprocesses for cancellation, timeout, partial output, malformed JSON, nonzero exit, and successful-process/failed-research combinations.</label></p></li>
+<li><p><label><input type="checkbox">Run Docker integration tests only in an opt-in environment with pinned CLI and image versions.</label></p></li>
+<li><p><label><input type="checkbox">Use <code>lean/demo-generated-data</code> as the golden custom-market workflow. The direct-data, universe, and SMA runs must preserve their verification markers, expected data-request counts, orders, and statistics within documented tolerances.</label></p></li>
+<li><p><label><input type="checkbox">Verify report generation for an ordinary built-in market and the custom Sweden compatibility path. Assert that source result hashes are unchanged.</label></p></li>
+<li><p><label><input type="checkbox">Demonstrate concurrent runs, deterministic artifact association, graceful cancellation, and reproduction from a saved manifest.</label></p></li>
+</ul>
+</section>
+<section id="delivery-sequence" class="level2">
+<h2 class="anchored" data-anchor-id="delivery-sequence">Delivery sequence</h2>
+<ol type="1">
+<li><label><input type="checkbox">Define immutable run specification, lifecycle states, artifact manifest, diagnostics, and result schemas.</label></li>
+<li><label><input type="checkbox">Implement preflight and synchronous local execution with exact artifact discovery.</label></li>
+<li><label><input type="checkbox">Parse results and produce canonical QRT trade logs without reporting.</label></li>
+<li><label><input type="checkbox">Add streaming, cancellation, timeout, concurrency, and async wrappers.</label></li>
+<li><label><input type="checkbox">Add safe Report Creator orchestration and versioned compatibility copies.</label></li>
+<li><label><input type="checkbox">Integrate <code>q.data.lean</code> manifests and optional <code>q.experiment</code> tracking.</label></li>
+<li><label><input type="checkbox">Stabilize the public API only after the pinned Sweden and built-in-market integration suites pass.</label></li>
+</ol>
 
 
 </section>

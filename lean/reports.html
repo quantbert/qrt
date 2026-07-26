@@ -1070,7 +1070,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Market.add(<span class="st">"sweden"</span>, <span class="dv">900</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>It therefore cannot deserialize native Sweden SIDs directly. Prepare a separate compatibility result:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /home/hi/qrt</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> .temp/leansweden</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> lean/demo-generated-data</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python source/prepare_report.py <span class="dt">\</span></span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  backtests/2026-07-26_13-41-40/1641330887.json <span class="dt">\</span></span>
@@ -1100,7 +1100,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="verified-artifact" class="level2">
 <h2 class="anchored" data-anchor-id="verified-artifact">Verified artifact</h2>
-<p>The tested workflow creates <code>.temp/leansweden/sma-report.html</code>, approximately 610 KB with 15 embedded charts, strategy metadata, and SEK display values.</p>
+<p>The tested workflow creates <code>lean/demo-generated-data/sma-report.html</code>, approximately 610 KB with 15 embedded charts, strategy metadata, and SEK display values.</p>
 
 
 </section>

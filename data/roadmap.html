@@ -23,6 +23,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -988,7 +1023,16 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#planned" id="toc-planned" class="nav-link active" data-scroll-target="#planned">Planned</a></li>
+  <li><a href="#design-boundaries" id="toc-design-boundaries" class="nav-link active" data-scroll-target="#design-boundaries">Design boundaries</a></li>
+  <li><a href="#canonical-security-identity" id="toc-canonical-security-identity" class="nav-link" data-scroll-target="#canonical-security-identity">Canonical security identity</a></li>
+  <li><a href="#point-in-time-universes" id="toc-point-in-time-universes" class="nav-link" data-scroll-target="#point-in-time-universes">Point-in-time universes</a></li>
+  <li><a href="#corporate-actions-and-adjustment-factors" id="toc-corporate-actions-and-adjustment-factors" class="nav-link" data-scroll-target="#corporate-actions-and-adjustment-factors">Corporate actions and adjustment factors</a></li>
+  <li><a href="#session-aware-market-data-aggregation" id="toc-session-aware-market-data-aggregation" class="nav-link" data-scroll-target="#session-aware-market-data-aggregation">Session-aware market-data aggregation</a></li>
+  <li><a href="#structured-market-data-validation" id="toc-structured-market-data-validation" class="nav-link" data-scroll-target="#structured-market-data-validation">Structured market-data validation</a></li>
+  <li><a href="#lean-data-adapter" id="toc-lean-data-adapter" class="nav-link" data-scroll-target="#lean-data-adapter">LEAN data adapter</a></li>
+  <li><a href="#synthetic-market-data-helpers" id="toc-synthetic-market-data-helpers" class="nav-link" data-scroll-target="#synthetic-market-data-helpers">Synthetic market-data helpers</a></li>
+  <li><a href="#delivery-sequence" id="toc-delivery-sequence" class="nav-link" data-scroll-target="#delivery-sequence">Delivery sequence</a></li>
+  <li><a href="#acceptance-criteria" id="toc-acceptance-criteria" class="nav-link" data-scroll-target="#acceptance-criteria">Acceptance criteria</a></li>
   <li><a href="#ideas" id="toc-ideas" class="nav-link" data-scroll-target="#ideas">Ideas</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/data/roadmap.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/data/roadmap.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
@@ -1016,9 +1060,166 @@ ul.task-list li input[type="checkbox"] {
 
 
 <p>Only open work is listed here. Completed items are removed.</p>
-<section id="planned" class="level2">
-<h2 class="anchored" data-anchor-id="planned">Planned</h2>
-<p>No module-specific work is currently committed.</p>
+<section id="design-boundaries" class="level2">
+<h2 class="anchored" data-anchor-id="design-boundaries">Design boundaries</h2>
+<p>QRT should model financial data independently of any execution engine. Generic objects must be usable with pandas/Parquet and other backtest engines before a LEAN serializer is involved.</p>
+<ul>
+<li><code>q.data</code> owns normalized data models, transformations, quality reports, and point-in-time correctness.</li>
+<li><code>q.calendar</code> owns exchange sessions, timestamp-to-session alignment, and trading-time grids.</li>
+<li><code>q.data.lean</code> owns LEAN paths, ZIP members, scaling, CSV schemas, SIDs, and reference-database serialization.</li>
+<li><code>q.bt.lean</code> owns Lean CLI processes and result artifacts; it consumes <code>q.data.lean</code> but does not duplicate its writers.</li>
+<li>Vendor adapters own retrieval and source-specific translation. Core models must not depend on a vendor’s ticker or corporate-action schema.</li>
+</ul>
+</section>
+<section id="canonical-security-identity" class="level2">
+<h2 class="anchored" data-anchor-id="canonical-security-identity">Canonical security identity</h2>
+<ul class="task-list">
+<li><p><label><input type="checkbox">Introduce a <code>SecurityMaster</code> or equivalent normalized table whose primary key is a stable source-independent <code>security_id</code>, not the current ticker.</label></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>master <span class="op">=</span> q.data.SecurityMaster.from_frame(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    securities,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    security_id<span class="op">=</span><span class="st">"isin"</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    ticker<span class="op">=</span><span class="st">"ticker"</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    listed_at<span class="op">=</span><span class="st">"listed_at"</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    delisted_at<span class="op">=</span><span class="st">"delisted_at"</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p><label><input type="checkbox">Define canonical fields for security type, share class, exchange, quote currency, display name, listing interval, and optional identifiers such as ISIN, FIGI, CUSIP, SEDOL, and vendor IDs.</label></p></li>
+<li><p><label><input type="checkbox">Represent ticker/vendor aliases as dated intervals. Lookups must support both <code>ticker_at(security_id, timestamp)</code> and <code>security_at(ticker, exchange, timestamp)</code> without applying today’s ticker to historical data.</label></p></li>
+<li><p><label><input type="checkbox">Validate overlapping ticker intervals, reused tickers, missing listing bounds, duplicate permanent IDs, changing share classes, and conflicting currencies/exchanges.</label></p></li>
+<li><p><label><input type="checkbox">Provide deterministic map-interval generation from alias history. The generic result should describe identity periods; <code>q.data.lean</code> should be the only layer that converts those periods to LEAN map-file conventions.</label></p></li>
+<li><p><label><input type="checkbox">Define serialization to canonical pandas and Parquet layouts with schema version metadata. Round trips must preserve nullable identifiers and timezone semantics.</label></p></li>
+</ul>
+</section>
+<section id="point-in-time-universes" class="level2">
+<h2 class="anchored" data-anchor-id="point-in-time-universes">Point-in-time universes</h2>
+<ul class="task-list">
+<li><p><label><input type="checkbox">Add a generic membership-event schema containing universe ID, permanent security ID, effective-from/effective-to timestamps, publication timestamp, weight, shares held, market value, and source metadata.</label></p></li>
+<li><p><label><input type="checkbox">Build session-indexed snapshots without survivorship leakage:</label></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>snapshots <span class="op">=</span> q.data.universe.snapshots(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    memberships,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    sessions<span class="op">=</span>q.calendar.schedule(...),</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    id_column<span class="op">=</span><span class="st">"isin"</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    effective_from<span class="op">=</span><span class="st">"added_at"</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    effective_to<span class="op">=</span><span class="st">"removed_at"</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p><label><input type="checkbox">Keep effective time and knowledge/publication time separate. Support an <code>available_at</code> policy so research can exclude a reconstitution that was not yet known at the simulated decision time.</label></p></li>
+<li><p><label><input type="checkbox">Support additions, removals, full replacements, unchanged carry-forward, explicitly empty universes, and weighted constituent updates.</label></p></li>
+<li><p><label><input type="checkbox">Validate duplicate members, overlapping membership intervals, unknown securities, weights outside policy, sums materially different from one, publication after use, and snapshots outside listing intervals.</label></p></li>
+<li><p><label><input type="checkbox">Return a normalized long table first. Dense matrices and engine-specific daily files are derived representations, not the source of truth.</label></p></li>
+<li><p><label><input type="checkbox">Add diff/audit operations that explain why a member entered, exited, or changed weight between two snapshots.</label></p></li>
+</ul>
+</section>
+<section id="corporate-actions-and-adjustment-factors" class="level2">
+<h2 class="anchored" data-anchor-id="corporate-actions-and-adjustment-factors">Corporate actions and adjustment factors</h2>
+<ul class="task-list">
+<li><p><label><input type="checkbox">Define canonical split and cash-dividend events keyed by permanent security ID. Preserve announcement, ex, record, and payable dates separately; factor construction should use the documented effective-date policy.</label></p></li>
+<li><p><label><input type="checkbox">Implement backward cumulative factor construction from raw daily closes:</label></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>factors <span class="op">=</span> q.data.corporate_actions.factors(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    prices<span class="op">=</span>daily_prices,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    splits<span class="op">=</span>splits,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    dividends<span class="op">=</span>dividends,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    exchange<span class="op">=</span><span class="st">"XSTO"</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p><label><input type="checkbox">Resolve each event to the previous exchange session through <code>q.calendar</code>, match the raw reference close, and retain enough intermediate columns to audit every cumulative factor change.</label></p></li>
+<li><p><label><input type="checkbox">Support multiple actions on one effective date, reverse splits, currency metadata, action corrections/cancellations, and configurable numerical precision. Reject impossible split ratios and dividends that produce nonpositive adjustment factors.</label></p></li>
+<li><p><label><input type="checkbox">Add forward and backward adjustment operations for OHLCV with explicit modes: raw, split-adjusted, price-adjusted, and total-return. Volume/share adjustment policy must be explicit rather than inferred from the price mode.</label></p></li>
+<li><p><label><input type="checkbox">Reconstruct actions from adjacent factor rows as a validation step and compare split ratios/distributions with the input events.</label></p></li>
+<li><p><label><input type="checkbox">Keep taxes, withholding, rights, spin-offs, merger consideration, and stock dividends outside the first API unless their accounting semantics are modeled explicitly.</label></p></li>
+</ul>
+</section>
+<section id="session-aware-market-data-aggregation" class="level2">
+<h2 class="anchored" data-anchor-id="session-aware-market-data-aggregation">Session-aware market-data aggregation</h2>
+<ul class="task-list">
+<li><p><label><input type="checkbox">Add <code>q.data.resample_trades</code> for canonical trades using exchange intervals supplied by <code>q.calendar</code>:</label></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>bars <span class="op">=</span> q.data.resample_trades(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    trades,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    frequency<span class="op">=</span><span class="st">"1min"</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    exchange<span class="op">=</span><span class="st">"XSTO"</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    empty<span class="op">=</span><span class="st">"omit"</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p><label><input type="checkbox">Define open/high/low/close selection, quantity summation, timestamp label, interval closure, empty-bar behavior, and deterministic ordering for equal event timestamps.</label></p></li>
+<li><p><label><input type="checkbox">Aggregate daily bars by exchange session rather than UTC or local calendar date. Respect early closes, late opens, exchange breaks, and official auction prints according to an explicit inclusion policy.</label></p></li>
+<li><p><label><input type="checkbox">Add quote aggregation separately. Bid/ask OHLC, last size versus average size, one-sided updates, crossed quotes, and stale-side carry-forward need independent policies; quote bars must never be synthesized silently from trades.</label></p></li>
+<li><p><label><input type="checkbox">Provide bar reconciliation helpers that compare tick-to-minute, minute-to-hour, and intraday-to-daily results within configured tolerances.</label></p></li>
+</ul>
+</section>
+<section id="structured-market-data-validation" class="level2">
+<h2 class="anchored" data-anchor-id="structured-market-data-validation">Structured market-data validation</h2>
+<ul class="task-list">
+<li><p><label><input type="checkbox">Expand beyond exception-only schema checks with a structured quality report:</label></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>report <span class="op">=</span> q.data.validate_market_data(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    trades<span class="op">=</span>trades,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    quotes<span class="op">=</span>quotes,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    bars<span class="op">=</span>bars,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    exchange<span class="op">=</span><span class="st">"XSTO"</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p><label><input type="checkbox">Each finding should carry a stable code, severity, symbol, timestamp or session, affected column, observed value, expected rule, and optional sample rows. Reports should support <code>raise_for_errors()</code>, summary tables, JSON, and machine-readable pipeline thresholds.</label></p></li>
+<li><p><label><input type="checkbox">Validate timestamp ordering, duplicate policy, timezone awareness, session membership, missing sessions, incomplete normal/half-day sessions, OHLC invariants, finite prices, nonnegative quantities, and symbol metadata.</label></p></li>
+<li><p><label><input type="checkbox">Add trade/quote checks for spread sign, zero or one-sided quotes, stale quotes, suspicious/corrected trades, exchange-condition mappings, and extreme price or size changes. Statistical anomaly checks must be warnings by default, not destructive cleaning.</label></p></li>
+<li><p><label><input type="checkbox">Add cross-resolution reconciliation and corporate-action checks: scaled price reversibility, aggregate equality, map/listing bounds, factor reference closes, reconstructed events, and universe membership inside listing dates.</label></p></li>
+<li><p><label><input type="checkbox">Separate validation from repair. Any repair operation must produce an audit table describing old value, new value, reason, and policy version.</label></p></li>
+</ul>
+</section>
+<section id="lean-data-adapter" class="level2">
+<h2 class="anchored" data-anchor-id="lean-data-adapter">LEAN data adapter</h2>
+<ul class="task-list">
+<li><p><label><input type="checkbox">Add an optional <code>q.data.lean</code> namespace that serializes canonical QRT objects into a user-selected LEAN workspace. Importing ordinary <code>q.data</code> must not require Lean CLI, Docker, or QuantConnect packages.</label></p></li>
+<li><p><label><input type="checkbox">Provide high-level writers with path-like destinations and dry-run plans:</label></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>q.data.lean.write_equity(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    trades<span class="op">=</span>trades,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    quotes<span class="op">=</span>quotes,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    bars<span class="op">=</span>bars,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    symbol<span class="op">=</span><span class="st">"VOLV-B"</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    market<span class="op">=</span><span class="st">"sweden"</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    root<span class="op">=</span>workspace <span class="op">/</span> <span class="st">"data"</span>,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>q.data.lean.write_map_files(master, root<span class="op">=</span>workspace <span class="op">/</span> <span class="st">"data"</span>)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>q.data.lean.write_factor_files(factors, root<span class="op">=</span>workspace <span class="op">/</span> <span class="st">"data"</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>q.data.lean.write_universe(snapshots, security_type<span class="op">=</span><span class="st">"index"</span>, ...)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p><label><input type="checkbox">Centralize LEAN’s 10,000x equity price scaling, invariant numeric formatting, lowercase directory conventions, date partitioning, ZIP/member naming, and resolution-specific trade/quote schemas.</label></p></li>
+<li><p><label><input type="checkbox">Support tick, second, minute, hour, and daily data without pretending LEAN automatically falls back between resolutions. Writers should state exactly which subscriptions/history calls the produced files satisfy.</label></p></li>
+<li><p><label><input type="checkbox">Generate map files from canonical identity intervals and factor files from canonical factors. Preserve stable permanent identity across ticker changes, listings, delistings, and ticker reuse.</label></p></li>
+<li><p><label><input type="checkbox">Implement broad daily, ETF, and Index constituent writers. SID generation must be deterministic from security type, market numeric ID, and first map date; changing any SID input should require an explicit migration/regeneration.</label></p></li>
+<li><p><label><input type="checkbox">Write or patch market-hours and symbol-properties databases atomically. Never silently overwrite unrelated custom entries. Surface the risk that Lean CLI database updates replace local files.</label></p></li>
+<li><p><label><input type="checkbox">Treat custom market name/ID as workspace configuration, detect collisions, and emit the required Python/C# registration snippet. Do not claim that data registration also supplies fee, fill, buying-power, settlement, or brokerage models.</label></p></li>
+<li><p><label><input type="checkbox">Add a <code>validate_tree</code> operation that inspects paths, ZIP members, headers, scaling, row schemas, sort order, map/factor coverage, metadata entries, universe SIDs, and requested resolutions without launching a backtest.</label></p></li>
+<li><p><label><input type="checkbox">Make writes idempotent and atomic. Support <code>dry_run=True</code>, explicit replacement scopes, checksums, and a manifest recording source schema, generator version, market ID, calendar version, and output counts.</label></p></li>
+<li><p><label><input type="checkbox">Add round-trip/read-back tests against LEAN’s readers or golden fixtures for XNYS and XSTO. The Sweden fixture under <code>lean/demo-generated-data</code> should become an integration test, not production API internals.</label></p></li>
+</ul>
+</section>
+<section id="synthetic-market-data-helpers" class="level2">
+<h2 class="anchored" data-anchor-id="synthetic-market-data-helpers">Synthetic market-data helpers</h2>
+<ul class="task-list">
+<li><p><label><input type="checkbox">Keep <code>q.stats.random_walk</code> as the price-path primitive and evaluate a separate <code>q.data.synthetic</code> namespace only after a second independent use case confirms the API.</label></p></li>
+<li><p><label><input type="checkbox">Candidate helpers include exchange-session intraday timestamp generation, configurable trade-size processes, and explicit quote generation from a supplied spread model:</label></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>quotes <span class="op">=</span> q.data.synthetic.quotes_from_trades(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    trades,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    spread<span class="op">=</span><span class="fl">0.01</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p><label><input type="checkbox">Synthetic outputs must be visibly labeled, deterministic under a seed, schema-compatible with canonical data, and make no claim of realistic microstructure unless a calibrated model is supplied.</label></p></li>
+<li><p><label><input type="checkbox">Do not promote fixture-only constants, hard-coded symbols, or LEAN paths into generic APIs. Those belong in integration-test fixtures.</label></p></li>
+</ul>
+</section>
+<section id="delivery-sequence" class="level2">
+<h2 class="anchored" data-anchor-id="delivery-sequence">Delivery sequence</h2>
+<ol type="1">
+<li><label><input type="checkbox">Stabilize security-master, membership-event, corporate-action, trade, quote, and quality-finding schemas.</label></li>
+<li><label><input type="checkbox">Land the required <code>q.calendar</code> session-label and interval APIs.</label></li>
+<li><label><input type="checkbox">Implement point-in-time universe snapshots and corporate-action factors.</label></li>
+<li><label><input type="checkbox">Implement session-aware trade/quote aggregation and structured validation.</label></li>
+<li><label><input type="checkbox">Build <code>q.data.lean</code> writers and tree validation over the generic models.</label></li>
+<li><label><input type="checkbox">Convert the generated Sweden demo into golden and end-to-end tests.</label></li>
+<li><label><input type="checkbox">Evaluate reusable synthetic-data helpers after the core contracts settle.</label></li>
+</ol>
+</section>
+<section id="acceptance-criteria" class="level2">
+<h2 class="anchored" data-anchor-id="acceptance-criteria">Acceptance criteria</h2>
+<ul class="task-list">
+<li><label><input type="checkbox">Every canonical transformation has deterministic schema, timezone, sorting, nullability, and error policies documented and tested.</label></li>
+<li><label><input type="checkbox">Point-in-time tests demonstrate that future ticker, constituent, and corporate-action information cannot leak into earlier snapshots.</label></li>
+<li><label><input type="checkbox">XSTO tests cover normal sessions, half days, holidays, DST, ticker changes, delistings, splits, dividends, and an index reconstitution.</label></li>
+<li><label><input type="checkbox">LEAN files generated from the golden fixture complete direct-data, universe, and SMA backtests with zero failed data requests.</label></li>
+<li><label><input type="checkbox">Generic <code>q.data</code> tests run without Lean CLI or Docker installed.</label></li>
+</ul>
 </section>
 <section id="ideas" class="level2">
 <h2 class="anchored" data-anchor-id="ideas">Ideas</h2>
