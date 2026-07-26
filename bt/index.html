@@ -188,6 +188,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../lean/qbt-integration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">LEAN adapter and reports</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../bt/roadmap.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Roadmap</span></a>
   </div>
@@ -813,12 +819,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Troubleshooting</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../lean/qbt-integration.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Future q.bt integration</span></a>
-  </div>
-</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -1079,8 +1079,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>result.figure</span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>result.diagnostics</span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>result.margin_allocation</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>result.save(<span class="st">"another-report.html"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>result.save(<span class="st">"another-report.html"</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>result.display()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The HTML is self-contained. <code>q.bt.report</code> reads LEAN’s recorded equity, benchmark, diagnostics, orders, and closed trades without replaying orders or decoding security identifiers. Original result files and custom market SIDs are left unchanged. Its shared tearsheet uses semantic strategy/benchmark colors, ranked drawdown windows, and sign-colored daily returns. When LEAN records portfolio margin, the report adds a latest-margin composition chart explicitly labelled as margin usage rather than market-value asset allocation.</p>
+<p><code>result.display()</code> is the notebook-friendly renderer. It isolates the self-contained report in an iframe so global report CSS does not recolor the rest of a Jupyter or VS Code notebook. Pass <code>height=1200</code> when a taller viewport is useful.</p>
 <p><code>q.plot.report(returns, ...)</code> remains the generic returns-only tearsheet; <code>q.bt.report(result, ...)</code> is the artifact-aware report orchestrator and uses the plotting implementation internally.</p>
 </section>
 <section id="run-lean-from-python" class="level2">
@@ -1092,16 +1094,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    parameters<span class="op">=</span>{</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"backtest-start"</span>: <span class="st">"2024-01-02"</span>,</span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"backtest-end"</span>: <span class="st">"2024-12-30"</span>,</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    },</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    update_image<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> run.wait()</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>report <span class="op">=</span> result.report(</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    destination<span class="op">=</span><span class="st">"sma-report.html"</span>,</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"Sweden 20/100 SMA"</span>,</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"daily-universe-name"</span>: <span class="st">"sweden100"</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"expected-daily-universe-members"</span>: <span class="st">"100"</span>,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    update_image<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> run.wait(timeout<span class="op">=</span><span class="dv">30</span> <span class="op">*</span> <span class="dv">60</span>)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>report <span class="op">=</span> result.report(</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    destination<span class="op">=</span><span class="st">"sma-report.html"</span>,</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"Sweden 20/100 SMA"</span>,</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>report.display()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>backtest</code> launches asynchronously. The handle exposes <code>state</code>, incrementally captured <code>stdout</code>/<code>stderr</code>, <code>wait(timeout=...)</code>, and <code>cancel()</code>. Every run uses a unique output directory and <code>result.result_path</code> points to that run’s exact LEAN JSON. <code>update_image=False</code> passes <code>--no-update</code>.</p>
+<p>Pass every parameter required by the algorithm. Supplying a partial <code>parameters</code> mapping can leave omitted values unavailable at runtime rather than merging all defaults from <code>config.json</code>.</p>
 <p>Initialize a new workspace synchronously:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>q.bt.lean.init(</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    workspace<span class="op">=</span><span class="st">"lean/my-strategy"</span>,</span>
@@ -1116,7 +1122,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> command.wait()</span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(result.stdout)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>All paths are resolved before launch, and the caller’s process-wide working directory is never changed. LEAN CLI and Docker remain responsible for the actual engine execution.</p>
-<p>See the runnable <a href="../bt/lean.html">LEAN backtest notebook</a> for the complete workflow, including saving the self-contained report and rendering it directly in a Jupyter output cell.</p>
+<p>Docker must be available without <code>sudo</code> to the user running Python. Group changes do not update an existing Remote SSH server or Jupyter kernel; see the <a href="../lean/setup.html#configure-docker-access">Docker setup</a> and <a href="../lean/troubleshooting.html#docker-permission-denied">permission troubleshooting</a> guides.</p>
+<p>See the runnable <a href="../bt/lean.html">LEAN backtest notebook</a> for the complete workflow, including saving the self-contained report and rendering it in an isolated Jupyter output cell.</p>
 </section>
 <section id="planned-event-driven-runner" class="level2">
 <h2 class="anchored" data-anchor-id="planned-event-driven-runner">Planned event-driven runner</h2>

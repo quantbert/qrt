@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>data.datasets – qrt</title>
+<title>bt.lean – qrt</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -68,8 +68,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../reference/data.sources.html" rel="next">
-<link href="../reference/data.local.html" rel="prev">
+<link href="../reference/experiment.html" rel="next">
+<link href="../reference/bt.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -153,7 +153,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/data.html">q.data</a></li><li class="breadcrumb-item"><a href="../reference/data.datasets.html">data.datasets</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/bt.html">q.bt</a></li><li class="breadcrumb-item"><a href="../reference/bt.lean.html">bt.lean</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -173,13 +173,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
  <span class="menu-text">q.bt</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../reference/bt.html" class="sidebar-item-text sidebar-link">
@@ -188,7 +188,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/bt.lean.html" class="sidebar-item-text sidebar-link">
+  <a href="../reference/bt.lean.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">bt.lean</span></a>
   </div>
 </li>
@@ -521,13 +521,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="false">
  <span class="menu-text">q.data</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-13" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-13" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../reference/data.html" class="sidebar-item-text sidebar-link">
@@ -548,7 +548,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/data.datasets.html" class="sidebar-item-text sidebar-link active">
+  <a href="../reference/data.datasets.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">data.datasets</span></a>
   </div>
 </li>
@@ -674,35 +674,349 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#qrt.data.datasets" id="toc-qrt.data.datasets" class="nav-link active" data-scroll-target="#qrt.data.datasets">data.datasets</a>
+  <li><a href="#qrt.bt.lean" id="toc-qrt.bt.lean" class="nav-link active" data-scroll-target="#qrt.bt.lean">bt.lean</a>
   <ul class="collapse">
+  <li><a href="#classes" id="toc-classes" class="nav-link" data-scroll-target="#classes">Classes</a>
+  <ul class="collapse">
+  <li><a href="#qrt.bt.lean.LeanArtifactError" id="toc-qrt.bt.lean.LeanArtifactError" class="nav-link" data-scroll-target="#qrt.bt.lean.LeanArtifactError">LeanArtifactError</a></li>
+  <li><a href="#qrt.bt.lean.LeanBacktestResult" id="toc-qrt.bt.lean.LeanBacktestResult" class="nav-link" data-scroll-target="#qrt.bt.lean.LeanBacktestResult">LeanBacktestResult</a></li>
+  <li><a href="#qrt.bt.lean.LeanBacktestRun" id="toc-qrt.bt.lean.LeanBacktestRun" class="nav-link" data-scroll-target="#qrt.bt.lean.LeanBacktestRun">LeanBacktestRun</a></li>
+  <li><a href="#qrt.bt.lean.LeanCommandError" id="toc-qrt.bt.lean.LeanCommandError" class="nav-link" data-scroll-target="#qrt.bt.lean.LeanCommandError">LeanCommandError</a></li>
+  <li><a href="#qrt.bt.lean.LeanCommandResult" id="toc-qrt.bt.lean.LeanCommandResult" class="nav-link" data-scroll-target="#qrt.bt.lean.LeanCommandResult">LeanCommandResult</a></li>
+  <li><a href="#qrt.bt.lean.LeanDependencyError" id="toc-qrt.bt.lean.LeanDependencyError" class="nav-link" data-scroll-target="#qrt.bt.lean.LeanDependencyError">LeanDependencyError</a></li>
+  <li><a href="#qrt.bt.lean.LeanError" id="toc-qrt.bt.lean.LeanError" class="nav-link" data-scroll-target="#qrt.bt.lean.LeanError">LeanError</a></li>
+  <li><a href="#qrt.bt.lean.LeanRun" id="toc-qrt.bt.lean.LeanRun" class="nav-link" data-scroll-target="#qrt.bt.lean.LeanRun">LeanRun</a></li>
+  <li><a href="#qrt.bt.lean.LeanRunSpecification" id="toc-qrt.bt.lean.LeanRunSpecification" class="nav-link" data-scroll-target="#qrt.bt.lean.LeanRunSpecification">LeanRunSpecification</a></li>
+  <li><a href="#qrt.bt.lean.LeanRunState" id="toc-qrt.bt.lean.LeanRunState" class="nav-link" data-scroll-target="#qrt.bt.lean.LeanRunState">LeanRunState</a></li>
+  <li><a href="#qrt.bt.lean.LeanTimeoutError" id="toc-qrt.bt.lean.LeanTimeoutError" class="nav-link" data-scroll-target="#qrt.bt.lean.LeanTimeoutError">LeanTimeoutError</a></li>
+  <li><a href="#qrt.bt.lean.LeanValidationError" id="toc-qrt.bt.lean.LeanValidationError" class="nav-link" data-scroll-target="#qrt.bt.lean.LeanValidationError">LeanValidationError</a></li>
+  </ul></li>
   <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions">Functions</a>
   <ul class="collapse">
-  <li><a href="#qrt.data.datasets.load" id="toc-qrt.data.datasets.load" class="nav-link" data-scroll-target="#qrt.data.datasets.load">load</a></li>
-  <li><a href="#qrt.data.datasets.refresh" id="toc-qrt.data.datasets.refresh" class="nav-link" data-scroll-target="#qrt.data.datasets.refresh">refresh</a></li>
+  <li><a href="#qrt.bt.lean.backtest" id="toc-qrt.bt.lean.backtest" class="nav-link" data-scroll-target="#qrt.bt.lean.backtest">backtest</a></li>
+  <li><a href="#qrt.bt.lean.init" id="toc-qrt.bt.lean.init" class="nav-link" data-scroll-target="#qrt.bt.lean.init">init</a></li>
+  <li><a href="#qrt.bt.lean.run" id="toc-qrt.bt.lean.run" class="nav-link" data-scroll-target="#qrt.bt.lean.run">run</a></li>
   </ul></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/data.datasets.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/data.datasets.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/bt.lean.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/bt.lean.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/data.html">q.data</a></li><li class="breadcrumb-item"><a href="../reference/data.datasets.html">data.datasets</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/bt.html">q.bt</a></li><li class="breadcrumb-item"><a href="../reference/bt.lean.html">bt.lean</a></li></ol></nav></header>
 
 
 
 
-<section id="qrt.data.datasets" class="level1">
-<h1>data.datasets</h1>
-<p><code>data.datasets</code></p>
-<p>Prepackaged sample datasets shipped with qrt for offline use – handy for tests, demos, and tutorials without hitting yfinance every time you just need some SPY or AAPL data on hand.</p>
-<p>Two kinds of datasets are bundled:</p>
-<ul>
-<li><p>Daily OHLCV price history (<code>"aapl"</code>, <code>"spy"</code>, <code>"btcusd"</code>), indexed by <code>datetime</code>.</p></li>
-<li><p>Demo strategy <strong>trade logs</strong> in qrt’s canonical trades format (<code>"spy_ema_cross"</code>, <code>"spy_rsi2"</code>, <code>"spy_random"</code>, <code>"spy_breakout"</code>) – one row per round-trip trade with entry/exit time, price and reason, direction (<code>1</code> = long, <code>-1</code> = short), direction-adjusted decimal <code>return</code>, MAE/MFE, and per-strategy entry-time feature snapshots. Generated deterministically from the bundled SPY data by <code>tools/gen_demo_strategies.py</code>.</p>
-<p>import qrt as q</p>
-<p>spy = q.data.datasets.load(“spy”) trades = q.data.datasets.load(“spy_rsi2”)</p></li>
-</ul>
-<p>The bundled parquet files are refreshed via :func:<code>refresh</code> (see <code>tools/update_datasets.py</code>, wired into <code>make datasets</code> / <code>make publish</code>) so released versions of qrt always ship reasonably current data – but they are not guaranteed to be fully up to date for a given install. Fetch live data via :mod:<code>qrt.data.sources</code> if you need the latest bar.</p>
+<section id="qrt.bt.lean" class="level1">
+<h1>bt.lean</h1>
+<p><code>bt.lean</code></p>
+<p>Typed local Lean CLI orchestration.</p>
+<p>The adapter launches the standalone <code>lean</code> command without changing the caller’s working directory. LEAN remains responsible for execution and native artifacts; QRT adds lifecycle handling and report integration.</p>
+<section id="classes" class="level2">
+<h2 class="anchored" data-anchor-id="classes">Classes</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#qrt.bt.lean.LeanArtifactError">LeanArtifactError</a></td>
+<td>Raised when a successful backtest did not produce a result artifact.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.bt.lean.LeanBacktestResult">LeanBacktestResult</a></td>
+<td>Completed Lean backtest with preserved native artifact paths.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.bt.lean.LeanBacktestRun">LeanBacktestRun</a></td>
+<td>A running Lean backtest with deterministic artifact ownership.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.bt.lean.LeanCommandError">LeanCommandError</a></td>
+<td>Raised when a Lean CLI command exits unsuccessfully.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.bt.lean.LeanCommandResult">LeanCommandResult</a></td>
+<td>Terminal result of a general Lean CLI command.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.bt.lean.LeanDependencyError">LeanDependencyError</a></td>
+<td>Raised when the Lean CLI executable cannot be located.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.bt.lean.LeanError">LeanError</a></td>
+<td>Base class for Lean adapter failures.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.bt.lean.LeanRun">LeanRun</a></td>
+<td>A running Lean CLI process.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.bt.lean.LeanRunSpecification">LeanRunSpecification</a></td>
+<td>Immutable, JSON-serializable Lean command specification.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.bt.lean.LeanRunState">LeanRunState</a></td>
+<td>Lifecycle state for a Lean CLI process.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.bt.lean.LeanTimeoutError">LeanTimeoutError</a></td>
+<td>Raised after a command exceeds its wait timeout and is terminated.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.bt.lean.LeanValidationError">LeanValidationError</a></td>
+<td>Raised when a workspace or command input is invalid.</td>
+</tr>
+</tbody>
+</table>
+<section id="qrt.bt.lean.LeanArtifactError" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.bt.lean.LeanArtifactError">LeanArtifactError</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>bt.lean.LeanArtifactError()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Raised when a successful backtest did not produce a result artifact.</p>
+</section>
+<section id="qrt.bt.lean.LeanBacktestResult" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.bt.lean.LeanBacktestResult">LeanBacktestResult</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>bt.lean.LeanBacktestResult(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    specification,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    state,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    returncode,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    stdout,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    stderr,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    started_at,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    ended_at,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    algorithm,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    output_directory,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    result_path,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    artifacts,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    parameters,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Completed Lean backtest with preserved native artifact paths.</p>
+<section id="methods" class="level4">
+<h4 class="anchored" data-anchor-id="methods">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#qrt.bt.lean.LeanBacktestResult.report">report</a></td>
+<td>Create a native QRT report from this run’s exact result JSON.</td>
+</tr>
+</tbody>
+</table>
+<section id="qrt.bt.lean.LeanBacktestResult.report" class="level5">
+<h5 class="anchored" data-anchor-id="qrt.bt.lean.LeanBacktestResult.report">report</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>bt.lean.LeanBacktestResult.report(destination, <span class="op">*</span>, title<span class="op">=</span><span class="va">None</span>, description<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create a native QRT report from this run’s exact result JSON.</p>
+</section>
+</section>
+</section>
+<section id="qrt.bt.lean.LeanBacktestRun" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.bt.lean.LeanBacktestRun">LeanBacktestRun</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>bt.lean.LeanBacktestRun(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    specification,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    algorithm,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    output_directory,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    parameters,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A running Lean backtest with deterministic artifact ownership.</p>
+<section id="methods-1" class="level4">
+<h4 class="anchored" data-anchor-id="methods-1">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#qrt.bt.lean.LeanBacktestRun.cancel">cancel</a></td>
+<td>Terminate this backtest and retain any artifacts already written.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.bt.lean.LeanBacktestRun.wait">wait</a></td>
+<td>Wait for LEAN and resolve this run’s exact native artifacts.</td>
+</tr>
+</tbody>
+</table>
+<section id="qrt.bt.lean.LeanBacktestRun.cancel" class="level5">
+<h5 class="anchored" data-anchor-id="qrt.bt.lean.LeanBacktestRun.cancel">cancel</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>bt.lean.LeanBacktestRun.cancel(grace_period<span class="op">=</span><span class="fl">5.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Terminate this backtest and retain any artifacts already written.</p>
+</section>
+<section id="qrt.bt.lean.LeanBacktestRun.wait" class="level5">
+<h5 class="anchored" data-anchor-id="qrt.bt.lean.LeanBacktestRun.wait">wait</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>bt.lean.LeanBacktestRun.wait(timeout<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, check<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Wait for LEAN and resolve this run’s exact native artifacts.</p>
+</section>
+</section>
+</section>
+<section id="qrt.bt.lean.LeanCommandError" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.bt.lean.LeanCommandError">LeanCommandError</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>bt.lean.LeanCommandError(result)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Raised when a Lean CLI command exits unsuccessfully.</p>
+</section>
+<section id="qrt.bt.lean.LeanCommandResult" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.bt.lean.LeanCommandResult">LeanCommandResult</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>bt.lean.LeanCommandResult(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    specification,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    state,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    returncode,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    stdout,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    stderr,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    started_at,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    ended_at,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Terminal result of a general Lean CLI command.</p>
+</section>
+<section id="qrt.bt.lean.LeanDependencyError" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.bt.lean.LeanDependencyError">LeanDependencyError</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>bt.lean.LeanDependencyError()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Raised when the Lean CLI executable cannot be located.</p>
+</section>
+<section id="qrt.bt.lean.LeanError" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.bt.lean.LeanError">LeanError</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>bt.lean.LeanError()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Base class for Lean adapter failures.</p>
+</section>
+<section id="qrt.bt.lean.LeanRun" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.bt.lean.LeanRun">LeanRun</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>bt.lean.LeanRun(specification)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A running Lean CLI process.</p>
+<section id="attributes" class="level4">
+<h4 class="anchored" data-anchor-id="attributes">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#qrt.bt.lean.LeanRun.state">state</a></td>
+<td>Return the current lifecycle state.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.bt.lean.LeanRun.stderr">stderr</a></td>
+<td>Return stderr captured so far.</td>
+</tr>
+<tr class="odd">
+<td><a href="#qrt.bt.lean.LeanRun.stdout">stdout</a></td>
+<td>Return stdout captured so far.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="methods-2" class="level4">
+<h4 class="anchored" data-anchor-id="methods-2">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#qrt.bt.lean.LeanRun.cancel">cancel</a></td>
+<td>Terminate this command and return its cancelled result.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.bt.lean.LeanRun.wait">wait</a></td>
+<td>Wait for completion, optionally terminating after <code>timeout</code> seconds.</td>
+</tr>
+</tbody>
+</table>
+<section id="qrt.bt.lean.LeanRun.cancel" class="level5">
+<h5 class="anchored" data-anchor-id="qrt.bt.lean.LeanRun.cancel">cancel</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>bt.lean.LeanRun.cancel(grace_period<span class="op">=</span><span class="fl">5.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Terminate this command and return its cancelled result.</p>
+</section>
+<section id="qrt.bt.lean.LeanRun.wait" class="level5">
+<h5 class="anchored" data-anchor-id="qrt.bt.lean.LeanRun.wait">wait</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>bt.lean.LeanRun.wait(timeout<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, check<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Wait for completion, optionally terminating after <code>timeout</code> seconds.</p>
+</section>
+</section>
+</section>
+<section id="qrt.bt.lean.LeanRunSpecification" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.bt.lean.LeanRunSpecification">LeanRunSpecification</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>bt.lean.LeanRunSpecification(workspace, executable, arguments)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Immutable, JSON-serializable Lean command specification.</p>
+<section id="attributes-1" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#qrt.bt.lean.LeanRunSpecification.command">command</a></td>
+<td>Return the complete argv passed to the operating system.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="methods-3" class="level4">
+<h4 class="anchored" data-anchor-id="methods-3">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#qrt.bt.lean.LeanRunSpecification.to_dict">to_dict</a></td>
+<td>Return a JSON-compatible representation.</td>
+</tr>
+<tr class="even">
+<td><a href="#qrt.bt.lean.LeanRunSpecification.to_json">to_json</a></td>
+<td>Serialize this specification to JSON.</td>
+</tr>
+</tbody>
+</table>
+<section id="qrt.bt.lean.LeanRunSpecification.to_dict" class="level5">
+<h5 class="anchored" data-anchor-id="qrt.bt.lean.LeanRunSpecification.to_dict">to_dict</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>bt.lean.LeanRunSpecification.to_dict()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return a JSON-compatible representation.</p>
+</section>
+<section id="qrt.bt.lean.LeanRunSpecification.to_json" class="level5">
+<h5 class="anchored" data-anchor-id="qrt.bt.lean.LeanRunSpecification.to_json">to_json</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>bt.lean.LeanRunSpecification.to_json(indent<span class="op">=</span><span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Serialize this specification to JSON.</p>
+</section>
+</section>
+</section>
+<section id="qrt.bt.lean.LeanRunState" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.bt.lean.LeanRunState">LeanRunState</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>bt.lean.LeanRunState()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Lifecycle state for a Lean CLI process.</p>
+</section>
+<section id="qrt.bt.lean.LeanTimeoutError" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.bt.lean.LeanTimeoutError">LeanTimeoutError</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>bt.lean.LeanTimeoutError(result)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Raised after a command exceeds its wait timeout and is terminated.</p>
+</section>
+<section id="qrt.bt.lean.LeanValidationError" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.bt.lean.LeanValidationError">LeanValidationError</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>bt.lean.LeanValidationError()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Raised when a workspace or command input is invalid.</p>
+</section>
+</section>
 <section id="functions" class="level2">
 <h2 class="anchored" data-anchor-id="functions">Functions</h2>
 <table class="caption-top table">
@@ -714,161 +1028,50 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#qrt.data.datasets.load">load</a></td>
-<td>Load a bundled sample dataset (offline, no network required).</td>
+<td><a href="#qrt.bt.lean.backtest">backtest</a></td>
+<td>Launch a local LEAN backtest and return its asynchronous run handle.</td>
 </tr>
 <tr class="even">
-<td><a href="#qrt.data.datasets.refresh">refresh</a></td>
-<td>Re-download bundled OHLCV datasets from Yahoo Finance and overwrite their parquet files.</td>
+<td><a href="#qrt.bt.lean.init">init</a></td>
+<td>Create a workspace and run <code>lean init</code> in it synchronously.</td>
 </tr>
-</tbody>
-</table>
-<section id="qrt.data.datasets.load" class="level3">
-<h3 class="anchored" data-anchor-id="qrt.data.datasets.load">load</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>data.datasets.load(name)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Load a bundled sample dataset (offline, no network required).</p>
-<section id="parameters" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h4>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 4%">
-<col style="width: 4%">
-<col style="width: 83%">
-<col style="width: 6%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-<th>Default</th>
-</tr>
-</thead>
-<tbody>
 <tr class="odd">
-<td>name</td>
-<td>str</td>
-<td>One of :data:<code>AVAILABLE</code> – a daily OHLCV dataset (<code>"aapl"</code>, <code>"btcusd"</code>, <code>"spy"</code>) or a demo strategy trade log (see :data:<code>TRADE_LOGS</code>).</td>
-<td><em>required</em></td>
+<td><a href="#qrt.bt.lean.run">run</a></td>
+<td>Launch whatever follows the <code>lean</code> command inside <code>workspace</code>.</td>
 </tr>
 </tbody>
 </table>
+<section id="qrt.bt.lean.backtest" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.bt.lean.backtest">backtest</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>bt.lean.backtest(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    workspace,</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    algorithm,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    parameters<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    update_image<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    executable<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    output_root<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Launch a local LEAN backtest and return its asynchronous run handle.</p>
 </section>
-<section id="returns" class="level4 doc-section doc-section-returns">
-<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns">Returns</h4>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 9%">
-<col style="width: 15%">
-<col style="width: 75%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td></td>
-<td>pd.DataFrame</td>
-<td>For OHLCV datasets, a daily OHLCV DataFrame indexed by</td>
-</tr>
-<tr class="even">
-<td></td>
-<td>pd.DataFrame</td>
-<td><code>datetime</code>. For trade logs, a trades-format DataFrame (one row</td>
-</tr>
-<tr class="odd">
-<td></td>
-<td>pd.DataFrame</td>
-<td>per trade, plain integer index).</td>
-</tr>
-</tbody>
-</table>
+<section id="qrt.bt.lean.init" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.bt.lean.init">init</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>bt.lean.init(</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    workspace,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    organization<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    language<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    executable<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    timeout<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create a workspace and run <code>lean init</code> in it synchronously.</p>
 </section>
-<section id="raises" class="level4 doc-section doc-section-raises">
-<h4 class="doc-section doc-section-raises anchored" data-anchor-id="raises">Raises</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td></td>
-<td>KeyError</td>
-<td>If <code>name</code> isn’t a bundled dataset.</td>
-</tr>
-</tbody>
-</table>
-</section>
-</section>
-<section id="qrt.data.datasets.refresh" class="level3">
-<h3 class="anchored" data-anchor-id="qrt.data.datasets.refresh">refresh</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data.datasets.refresh(names<span class="op">=</span><span class="va">None</span>, end_date<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Re-download bundled OHLCV datasets from Yahoo Finance and overwrite their parquet files.</p>
-<p>Trade-log datasets (:data:<code>TRADE_LOGS</code>) are not refreshed here – they are regenerated from the bundled SPY data by <code>tools/gen_demo_strategies.py</code> (run it after refreshing).</p>
-<section id="parameters-1" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 10%">
-<col style="width: 21%">
-<col style="width: 57%">
-<col style="width: 11%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-<th>Default</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>names</td>
-<td>list[str] | None</td>
-<td>OHLCV dataset names to refresh (default: all of them).</td>
-<td><code>None</code></td>
-</tr>
-<tr class="even">
-<td>end_date</td>
-<td>str | date | None</td>
-<td>Last date to fetch, <code>YYYY-MM-DD</code> (default: today).</td>
-<td><code>None</code></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="raises-1" class="level4 doc-section doc-section-raises">
-<h4 class="doc-section doc-section-raises anchored" data-anchor-id="raises-1">Raises</h4>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 11%">
-<col style="width: 17%">
-<col style="width: 71%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td></td>
-<td>ValueError</td>
-<td>If <code>names</code> contains a non-OHLCV dataset name.</td>
-</tr>
-</tbody>
-</table>
+<section id="qrt.bt.lean.run" class="level3">
+<h3 class="anchored" data-anchor-id="qrt.bt.lean.run">run</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>bt.lean.run(command, <span class="op">*</span>, workspace<span class="op">=</span><span class="st">'.'</span>, executable<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Launch whatever follows the <code>lean</code> command inside <code>workspace</code>.</p>
+<section id="examples" class="level4 doc-section doc-section-examples">
+<h4 class="doc-section doc-section-examples anchored" data-anchor-id="examples">Examples</h4>
+<p><code>q.bt.lean.run("config get engine-image", workspace="lean/project")</code></p>
 
 
 </section>
@@ -1279,13 +1482,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../reference/data.local.html" class="pagination-link" aria-label="data.local">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">data.local</span>
+      <a href="../reference/bt.html" class="pagination-link" aria-label="bt">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">bt</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../reference/data.sources.html" class="pagination-link" aria-label="data.sources">
-        <span class="nav-page-text">data.sources</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../reference/experiment.html" class="pagination-link" aria-label="experiment">
+        <span class="nav-page-text">experiment</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -1294,4 +1497,4 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/data.datasets.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/data.datasets.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/reference/bt.lean.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/reference/bt.lean.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

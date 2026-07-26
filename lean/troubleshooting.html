@@ -68,7 +68,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../lean/qbt-integration.html" rel="next">
+<link href="../gym/index.html" rel="next">
 <link href="../lean/reports.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -184,6 +184,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../bt/lean.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Run LEAN backtests</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lean/qbt-integration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">LEAN adapter and reports</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -813,12 +819,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Troubleshooting</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../lean/qbt-integration.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Future q.bt integration</span></a>
-  </div>
-</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -1030,6 +1030,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#command-not-found" id="toc-command-not-found" class="nav-link active" data-scroll-target="#command-not-found">Command not found</a></li>
+  <li><a href="#docker-permission-denied" id="toc-docker-permission-denied" class="nav-link" data-scroll-target="#docker-permission-denied">Docker permission denied</a></li>
+  <li><a href="#missing-algorithm-parameter" id="toc-missing-algorithm-parameter" class="nav-link" data-scroll-target="#missing-algorithm-parameter">Missing algorithm parameter</a></li>
   <li><a href="#multiple-python-files" id="toc-multiple-python-files" class="nav-link" data-scroll-target="#multiple-python-files">Multiple Python files</a></li>
   <li><a href="#custom-market-not-found" id="toc-custom-market-not-found" class="nav-link" data-scroll-target="#custom-market-not-found">Custom market not found</a></li>
   <li><a href="#market-hours-entry-not-found" id="toc-market-hours-entry-not-found" class="nav-link" data-scroll-target="#market-hours-entry-not-found">Market hours entry not found</a></li>
@@ -1073,17 +1075,49 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /home/hi/qrt</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run lean <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
+<section id="docker-permission-denied" class="level2">
+<h2 class="anchored" data-anchor-id="docker-permission-denied">Docker permission denied</h2>
+<p><code>q.bt.lean.backtest</code> validates Docker access before launch. This error means the Python or Jupyter process cannot open the Docker socket:</p>
+<pre class="text"><code>Docker is not accessible to this Python/Jupyter user
+permission denied while trying to connect to the docker API at
+unix:///var/run/docker.sock</code></pre>
+<p>Compare the socket group, the account database, and the groups active in the current process:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">stat</span> <span class="at">-c</span> <span class="st">'owner=%U group=%G mode=%A'</span> /var/run/docker.sock</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">getent</span> group docker</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">id</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> version</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For the usual <code>root:docker</code> socket with mode <code>660</code>, the user must appear in the <code>docker</code> group in both <code>getent group docker</code> and <code>id</code>. If the group database contains the user but <code>id</code> does not, the current login predates the group change. Activating or recreating a Python virtual environment does not change Linux group membership.</p>
+<p>VS Code Remote SSH can keep its remote server, extension host, terminals, and Jupyter kernels alive after the local window disconnects. Save all work, run <strong>Remote-SSH: Kill VS Code Server on Host…</strong>, close every connection to that host, and reconnect. Then confirm <code>id</code> and <code>docker version</code> in a new integrated terminal before starting a new kernel.</p>
+<p>If stale sessions remain, an administrator can terminate every process for the user:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> loginctl terminate-user <span class="op">&lt;</span>username<span class="op">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This immediately disconnects all SSH sessions and stops all notebooks for that user. <code>newgrp docker</code> can repair one terminal temporarily, but it does not change an already-running VS Code server or Jupyter kernel.</p>
+<p>Do not use <code>sudo docker</code>, start Jupyter as root, or pass credentials through the Python API. Configure Docker group or rootless access instead.</p>
+</section>
+<section id="missing-algorithm-parameter" class="level2">
+<h2 class="anchored" data-anchor-id="missing-algorithm-parameter">Missing algorithm parameter</h2>
+<p>An initialization error such as:</p>
+<pre class="text"><code>int() argument must be a string, a bytes-like object or a real number,
+not 'NoneType'</code></pre>
+<p>usually means <code>self.get_parameter(...)</code> returned <code>None</code>. When the Python adapter receives <code>parameters={...}</code>, treat it as the complete runtime parameter set rather than relying on values in <code>config.json</code>. The SMA demo requires:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>parameters<span class="op">=</span>{</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"backtest-start"</span>: <span class="st">"2024-01-02"</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"backtest-end"</span>: <span class="st">"2024-12-30"</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"daily-universe-name"</span>: <span class="st">"sweden100"</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"expected-daily-universe-members"</span>: <span class="st">"100"</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Read the first <code>ERROR::</code> entry in the run-specific <code>log.txt</code>; the final <code>PythonInitializer.Shutdown()</code> lines are cleanup messages, not the root cause.</p>
+</section>
 <section id="multiple-python-files" class="level2">
 <h2 class="anchored" data-anchor-id="multiple-python-files">Multiple Python files</h2>
 <p>Pass the desired file explicitly:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run lean backtest demo_sma.py <span class="at">--no-update</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run lean backtest demo_sma.py <span class="at">--no-update</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Directory mode requires <code>main.py</code> or <code>Main.cs</code>. Multiple sibling demo files do not affect <code>lean report</code>, which consumes JSON only.</p>
 </section>
 <section id="custom-market-not-found" class="level2">
 <h2 class="anchored" data-anchor-id="custom-market-not-found">Custom market not found</h2>
 <p>Register the market before creating any Swedish symbols:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> Market.encode(<span class="st">"sweden"</span>) <span class="kw">is</span> <span class="va">None</span>:</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    Market.add(<span class="st">"sweden"</span>, <span class="dv">900</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> Market.encode(<span class="st">"sweden"</span>) <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    Market.add(<span class="st">"sweden"</span>, <span class="dv">900</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Keep ID 900 stable because it is encoded into stored SIDs and universe rows.</p>
 </section>
 <section id="market-hours-entry-not-found" class="level2">
@@ -1095,7 +1129,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="no-data-or-failed-requests" class="level2">
 <h2 class="anchored" data-anchor-id="no-data-or-failed-requests">No data or failed requests</h2>
 <p>Enable missing-data logs in <code>lean.json</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="st">"show-missing-data-logs"</span><span class="er">:</span> <span class="kw">true</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="st">"show-missing-data-logs"</span><span class="er">:</span> <span class="kw">true</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Then inspect <code>failed-data-requests-*.txt</code>. Common causes are:</p>
 <ul>
 <li>wrong resolution folder;</li>
@@ -1118,7 +1152,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="fee-model-rejects-sweden" class="level2">
 <h2 class="anchored" data-anchor-id="fee-model-rejects-sweden">Fee model rejects Sweden</h2>
 <p>The default Interactive Brokers fee model rejects unknown equity market <code>sweden</code>. For a format test:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>security.set_fee_model(ConstantFeeModel(<span class="dv">0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>security.set_fee_model(ConstantFeeModel(<span class="dv">0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Use a Sweden-aware model for real research.</p>
 </section>
 <section id="docker-owned-files" class="level2">
@@ -1128,8 +1162,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="report-option-errors" class="level2">
 <h2 class="anchored" data-anchor-id="report-option-errors">Report option errors</h2>
 <p>These are invalid:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run lean report <span class="at">--no-update</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run lean report <span class="at">--backtest-results</span> backtests/<span class="op">&lt;</span>timestamp<span class="op">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run lean report <span class="at">--no-update</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run lean report <span class="at">--backtest-results</span> backtests/<span class="op">&lt;</span>timestamp<span class="op">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Use an exact JSON file and omit <code>--no-update</code>.</p>
 </section>
 <section id="report-cannot-parse-market-900" class="level2">
@@ -1143,11 +1177,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="validate-a-run" class="level2">
 <h2 class="anchored" data-anchor-id="validate-a-run">Validate a run</h2>
 <p>A robust check combines the algorithm marker, engine log, and data monitor:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="va">LATEST</span><span class="op">=</span><span class="va">$(</span><span class="fu">find</span> backtests <span class="at">-mindepth</span> 1 <span class="at">-maxdepth</span> 1 <span class="at">-type</span> d <span class="kw">|</span> <span class="fu">sort</span> <span class="kw">|</span> <span class="fu">tail</span> <span class="at">-n</span> 1<span class="va">)</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="st">'VERIFIED'</span> <span class="st">"</span><span class="va">$LATEST</span><span class="st">/log.txt"</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="ot">! </span><span class="fu">grep</span> <span class="st">' ERROR::'</span> <span class="st">"</span><span class="va">$LATEST</span><span class="st">/log.txt"</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="st">'Failed data requests 0'</span> <span class="st">"</span><span class="va">$LATEST</span><span class="st">/log.txt"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="va">LATEST</span><span class="op">=</span><span class="va">$(</span><span class="fu">find</span> backtests <span class="at">-mindepth</span> 1 <span class="at">-maxdepth</span> 1 <span class="at">-type</span> d <span class="kw">|</span> <span class="fu">sort</span> <span class="kw">|</span> <span class="fu">tail</span> <span class="at">-n</span> 1<span class="va">)</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="st">'VERIFIED'</span> <span class="st">"</span><span class="va">$LATEST</span><span class="st">/log.txt"</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="ot">! </span><span class="fu">grep</span> <span class="st">' ERROR::'</span> <span class="st">"</span><span class="va">$LATEST</span><span class="st">/log.txt"</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="st">'Failed data requests 0'</span> <span class="st">"</span><span class="va">$LATEST</span><span class="st">/log.txt"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>
@@ -1560,8 +1594,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../lean/qbt-integration.html" class="pagination-link" aria-label="Future q.bt integration">
-        <span class="nav-page-text">Future q.bt integration</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../gym/index.html" class="pagination-link" aria-label="q.gym — Financial RL">
+        <span class="nav-page-text">q.gym — Financial RL</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

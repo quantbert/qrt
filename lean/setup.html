@@ -188,6 +188,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../lean/qbt-integration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">LEAN adapter and reports</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../bt/roadmap.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Roadmap</span></a>
   </div>
@@ -813,12 +819,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Troubleshooting</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../lean/qbt-integration.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Future q.bt integration</span></a>
-  </div>
-</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -1030,6 +1030,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link active" data-scroll-target="#prerequisites">Prerequisites</a></li>
+  <li><a href="#configure-docker-access" id="toc-configure-docker-access" class="nav-link" data-scroll-target="#configure-docker-access">Configure Docker access</a></li>
   <li><a href="#initialize-a-workspace" id="toc-initialize-a-workspace" class="nav-link" data-scroll-target="#initialize-a-workspace">Initialize a workspace</a></li>
   <li><a href="#run-commands-through-uv" id="toc-run-commands-through-uv" class="nav-link" data-scroll-target="#run-commands-through-uv">Run commands through uv</a></li>
   <li><a href="#protect-custom-metadata" id="toc-protect-custom-metadata" class="nav-link" data-scroll-target="#protect-custom-metadata">Protect custom metadata</a></li>
@@ -1081,11 +1082,48 @@ Note
 </div>
 </div>
 </section>
+<section id="configure-docker-access" class="level2">
+<h2 class="anchored" data-anchor-id="configure-docker-access">Configure Docker access</h2>
+<p>LEAN must reach Docker without <code>sudo</code> from the same Linux user that starts Python or Jupyter. With a system Docker daemon, add that user to the socket’s group:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> usermod <span class="at">-aG</span> docker <span class="op">&lt;</span>username<span class="op">&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">getent</span> group docker</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Group membership is captured when a login session starts. End every existing SSH, VS Code Remote SSH, terminal, and Jupyter session for that user, then reconnect. Verify the new session before opening the notebook:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">id</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">stat</span> <span class="at">-c</span> <span class="st">'owner=%U group=%G mode=%A'</span> /var/run/docker.sock</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> version</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>id</code> must include the socket group (normally <code>docker</code>), and <code>docker version</code> must print both <strong>Client</strong> and <strong>Server</strong> sections. Rootless Docker is also supported when it is configured for the Jupyter user.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Membership in the <code>docker</code> group is effectively root-level access to the host. Grant it only to trusted users. Never run the notebook as root, invoke the backtest with <code>sudo</code>, or pass a sudo password to <code>q.bt.lean</code>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Closing a local VS Code window may leave its remote server and Jupyter kernels running. After changing groups, use <strong>Remote-SSH: Kill VS Code Server on Host…</strong>, close all connections to that host, and reconnect. See <a href="../lean/troubleshooting.html#docker-permission-denied">Docker permission denied</a>.</p>
+</div>
+</div>
+</section>
 <section id="initialize-a-workspace" class="level2">
 <h2 class="anchored" data-anchor-id="initialize-a-workspace">Initialize a workspace</h2>
 <p>The tracked Sweden demo contains algorithms and generators but intentionally does not commit the organization-bound <code>lean.json</code>. Initialize it once per checkout:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /home/hi/qrt/lean/demo-generated-data</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run lean init <span class="at">--organization</span> <span class="op">&lt;</span>organization-name-or-id<span class="op">&gt;</span> --language python</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /home/hi/qrt/lean/demo-generated-data</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run lean init <span class="at">--organization</span> <span class="op">&lt;</span>organization-name-or-id<span class="op">&gt;</span> --language python</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Initialization creates:</p>
 <pre class="text"><code>demo-generated-data/
 ├── lean.json
@@ -1099,22 +1137,22 @@ Note
 <section id="run-commands-through-uv" class="level2">
 <h2 class="anchored" data-anchor-id="run-commands-through-uv">Run commands through uv</h2>
 <p>Run commands from the repository environment, even after changing into a LEAN workspace:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /home/hi/qrt</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run lean <span class="at">--version</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python lean/demo-generated-data/source/generate_data.py</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run lean backtest lean/demo-generated-data/demo.py <span class="at">--no-update</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /home/hi/qrt</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run lean <span class="at">--version</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python lean/demo-generated-data/source/generate_data.py</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run lean backtest lean/demo-generated-data/demo.py <span class="at">--no-update</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>uv run</code> resolves Python and Lean CLI from <code>/home/hi/qrt/.venv</code> without depending on shell activation state.</p>
 </section>
 <section id="protect-custom-metadata" class="level2">
 <h2 class="anchored" data-anchor-id="protect-custom-metadata">Protect custom metadata</h2>
 <p>Lean CLI periodically replaces the public market-hours and symbol-properties databases. Disable the global refresh while maintaining custom entries:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run lean config set database-update-frequency _</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run lean config list</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run lean config set database-update-frequency _</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run lean config list</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The fixture also sets this workspace value in <code>lean.json</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="st">"file-database-last-update"</span><span class="er">:</span> <span class="st">"12/31/2099 00:00:00"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="st">"file-database-last-update"</span><span class="er">:</span> <span class="st">"12/31/2099 00:00:00"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Keep the loose CSV providers when custom map and factor files are not packaged in LEAN’s bulk ZIP format:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="st">"map-file-provider"</span><span class="er">:</span> <span class="st">"QuantConnect.Data.Auxiliary.LocalDiskMapFileProvider"</span><span class="er">,</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="st">"factor-file-provider"</span><span class="er">:</span> <span class="st">"QuantConnect.Data.Auxiliary.LocalDiskFactorFileProvider"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="st">"map-file-provider"</span><span class="er">:</span> <span class="st">"QuantConnect.Data.Auxiliary.LocalDiskMapFileProvider"</span><span class="er">,</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="st">"factor-file-provider"</span><span class="er">:</span> <span class="st">"QuantConnect.Data.Auxiliary.LocalDiskFactorFileProvider"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="pin-the-engine-for-reproducibility" class="level2">
 <h2 class="anchored" data-anchor-id="pin-the-engine-for-reproducibility">Pin the engine for reproducibility</h2>

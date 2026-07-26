@@ -188,6 +188,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../lean/qbt-integration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">LEAN adapter and reports</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../bt/roadmap.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Roadmap</span></a>
   </div>
@@ -813,12 +819,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Troubleshooting</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../lean/qbt-integration.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Future q.bt integration</span></a>
-  </div>
-</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -1067,7 +1067,7 @@ Warning
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>LEAN and Lean CLI are standalone QuantConnect tools. They do not depend on QRT. These guides document a tested local workflow and how QRT can help prepare data. A future optional <code>q.bt</code> adapter will orchestrate the same commands through Python without replacing LEAN as the execution engine.</p>
+<p>LEAN and Lean CLI are standalone QuantConnect tools. They do not depend on QRT. These guides document a tested local workflow. The optional <code>q.bt.lean</code> adapter orchestrates the same commands through Python without replacing LEAN as the execution engine.</p>
 </div>
 </div>
 <p><a href="https://github.com/QuantConnect/Lean">LEAN</a> is an event-driven trading engine. <a href="https://www.lean.io/docs/v2/lean-cli">Lean CLI</a> manages its local Docker image, workspaces, projects, data, backtests, and reports.</p>
@@ -1082,7 +1082,7 @@ Warning
 <li><a href="../lean/sma.html">20/100 SMA strategy</a>: run a dynamic-universe crossover strategy over the 100-asset fixture.</li>
 <li><a href="../lean/reports.html">Generate reports</a>: create reports, select exact result JSON files, and handle custom-market SIDs safely.</li>
 <li><a href="../lean/troubleshooting.html">Troubleshooting</a>: diagnose missing files, currencies, models, permissions, result selection, and report errors.</li>
-<li><a href="../lean/qbt-integration.html">Future <code>q.bt</code> integration</a>: planned API ownership and artifact contracts.</li>
+<li><a href="../lean/qbt-integration.html"><code>q.bt</code> integration</a>: run Lean CLI from Python, retain exact artifacts, and build native QRT reports.</li>
 </ul>
 </section>
 <section id="tested-fixture" class="level2">
@@ -1113,7 +1113,7 @@ Warning
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    paths<span class="op">=</span><span class="dv">100</span>,</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    seed<span class="op">=</span><span class="dv">42</span>,</span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>LEAN owns event progression, subscriptions, orders, fills, portfolio accounting, and result production. QRT should not duplicate those responsibilities merely to wrap the CLI.</p>
+<p>LEAN owns event progression, subscriptions, orders, fills, portfolio accounting, and result production. QRT’s adapter owns validation, process lifecycle, artifact selection, normalization, and native report generation.</p>
 
 
 </section>
