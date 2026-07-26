@@ -11,6 +11,78 @@ cd /home/hi/qrt
 uv run lean --version
 ```
 
+## Docker permission denied
+
+`q.bt.lean.backtest` validates Docker access before launch. This error means the
+Python or Jupyter process cannot open the Docker socket:
+
+```text
+Docker is not accessible to this Python/Jupyter user
+permission denied while trying to connect to the docker API at
+unix:///var/run/docker.sock
+```
+
+Compare the socket group, the account database, and the groups active in the
+current process:
+
+```bash
+stat -c 'owner=%U group=%G mode=%A' /var/run/docker.sock
+getent group docker
+id
+docker version
+```
+
+For the usual `root:docker` socket with mode `660`, the user must appear in the
+`docker` group in both `getent group docker` and `id`. If the group database
+contains the user but `id` does not, the current login predates the group
+change. Activating or recreating a Python virtual environment does not change
+Linux group membership.
+
+VS Code Remote SSH can keep its remote server, extension host, terminals, and
+Jupyter kernels alive after the local window disconnects. Save all work, run
+**Remote-SSH: Kill VS Code Server on Host...**, close every connection to that
+host, and reconnect. Then confirm `id` and `docker version` in a new integrated
+terminal before starting a new kernel.
+
+If stale sessions remain, an administrator can terminate every process for the
+user:
+
+```bash
+sudo loginctl terminate-user <username>
+```
+
+This immediately disconnects all SSH sessions and stops all notebooks for that
+user. `newgrp docker` can repair one terminal temporarily, but it does not
+change an already-running VS Code server or Jupyter kernel.
+
+Do not use `sudo docker`, start Jupyter as root, or pass credentials through
+the Python API. Configure Docker group or rootless access instead.
+
+## Missing algorithm parameter
+
+An initialization error such as:
+
+```text
+int() argument must be a string, a bytes-like object or a real number,
+not 'NoneType'
+```
+
+usually means `self.get_parameter(...)` returned `None`. When the Python
+adapter receives `parameters={...}`, treat it as the complete runtime parameter
+set rather than relying on values in `config.json`. The SMA demo requires:
+
+```python
+parameters={
+    "backtest-start": "2024-01-02",
+    "backtest-end": "2024-12-30",
+    "daily-universe-name": "sweden100",
+    "expected-daily-universe-members": "100",
+}
+```
+
+Read the first `ERROR::` entry in the run-specific `log.txt`; the final
+`PythonInitializer.Shutdown()` lines are cleanup messages, not the root cause.
+
 ## Multiple Python files
 
 Pass the desired file explicitly:

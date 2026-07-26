@@ -49,6 +49,10 @@ website:
         - section: "q.bt — Backtesting"
           href: bt/index.qmd
           contents:
+            - text: "Run LEAN backtests"
+              href: bt/lean.ipynb
+            - text: "LEAN adapter and reports"
+              href: lean/qbt-integration.qmd
             - text: "Roadmap"
               href: bt/roadmap.qmd
         - section: "q.data — Data"
@@ -247,8 +251,6 @@ website:
               href: lean/reports.qmd
             - text: "Troubleshooting"
               href: lean/troubleshooting.qmd
-            - text: "Future q.bt integration"
-              href: lean/qbt-integration.qmd
         - section: "q.gym — Financial RL"
           href: gym/index.qmd
           contents:
@@ -330,6 +332,12 @@ quartodoc:
   css: reference/_styles-quartodoc.css
   parser: google
   sections:
+    - title: q.bt
+      desc: "LEAN backtest orchestration, exact native artifacts, and isolated interactive reports."
+      contents:
+        - name: bt
+          include_imports: true
+        - bt.lean
     - title: q.experiment
       desc: "Backend-neutral experiment runs, parameters, metrics, datasets, models, and artifacts with local and MLflow tracking."
       contents:

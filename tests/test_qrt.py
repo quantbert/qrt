@@ -103,6 +103,10 @@ def test_trade_plots():
     assert isinstance(q.plot.trades(trades, spy), PlotlyFigure)  # OHLCV frame accepted
     assert isinstance(q.plot.mae_mfe(trades), PlotlyFigure)
     assert isinstance(q.plot.trade_distribution(trades, by="exit_reason"), PlotlyFigure)
+    histogram = q.plot.trade_distribution(trades, by=None)
+    assert isinstance(histogram, PlotlyFigure)
+    assert histogram.layout.title.text == "Returns per Trade"
+    assert histogram.data[0].type == "bar"
     with pytest.raises(ValueError):
         q.plot.trade_distribution(trades, by="not-a-column")
 

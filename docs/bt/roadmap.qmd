@@ -4,12 +4,11 @@ title: q.bt Roadmap
 
 Only open work is listed here. Completed items are removed.
 
-## Planned
-
 ## Backend boundaries
 
-`q.bt` will expose a common research-facing result contract over two independent
-execution backends:
+`q.bt` currently provides native LEAN result reporting and an optional Lean CLI
+adapter. The longer-term design exposes a common research-facing result contract
+over two independent execution backends:
 
 1. a QRT-owned in-process event kernel shared with `q.gym`;
 2. an optional adapter that orchestrates the standalone Lean CLI and LEAN engine.
@@ -41,37 +40,13 @@ native result JSON, and Report Creator output.
 
 ## LEAN adapter API
 
-- [ ] Add an optional `q.bt.lean` namespace with a typed entry point:
+- [ ] Extend preflight validation beyond the implemented workspace files,
+	writable output directory, and Docker access to cover CLI compatibility,
+	project language, configured data roots, and custom-market prerequisites.
 
-	```python
-	run = q.bt.lean.backtest(
-			workspace="lean/demo-generated-data",
-			algorithm="demo_sma.py",
-			parameters={
-					"backtest-start": "2024-01-02",
-					"backtest-end": "2024-12-30",
-			},
-			update_image=False,
-	)
-
-	result = run.wait()
-	report = result.report(destination="sma-report.html")
-	```
-
-	This sketch is not a compatibility promise until the lifecycle and result
-	contracts below are implemented.
-
-- [ ] Accept paths without changing the caller's process-wide working directory.
-	Resolve workspace, algorithm, data root, output root, and optional Lean CLI
-	executable to absolute paths at validation time.
-
-- [ ] Validate the workspace before launch: `lean.json`, project `config.json`,
-	algorithm file, language, data folder, writable output directories, Docker
-	availability, CLI version, and custom-market prerequisites.
-
-- [ ] Provide an immutable run specification object that can be serialized to
-	JSON and compared across runs. Parameters should be typed where a project
-	schema exists and string-normalized only at the CLI boundary.
+- [ ] Extend the immutable, JSON-serializable run specification with typed
+	project parameter schemas, source/config hashes, and explicit data-root
+	identity.
 
 - [ ] Support an explicit engine image tag or digest. `update_image=False`
 	should map to Lean CLI's no-update behavior for backtests; a digest should be
@@ -83,34 +58,27 @@ native result JSON, and Report Creator output.
 
 ## Process lifecycle
 
-- [ ] Implement launch, status, log streaming, wait, timeout, cancellation, and
-	cleanup as a state machine. Proposed terminal states are `succeeded`,
-	`failed`, `cancelled`, and `timed_out`.
-
-- [ ] Capture stdout/stderr incrementally without requiring terminal scraping.
-	Preserve raw streams and expose parsed progress/events separately.
+- [ ] Parse stable progress and diagnostic events from the implemented
+	incremental stdout/stderr capture while retaining the raw streams.
 
 - [ ] Cancellation must terminate the CLI process and its run-specific Docker
 	container without killing unrelated LEAN or Docker workloads. Record whether
 	shutdown was graceful or forced.
 
-- [ ] Prevent output-directory collisions under concurrent runs. Use a unique
-	run ID and discover the engine's timestamped result directory deterministically
-	rather than selecting "latest" after completion.
+- [ ] Add stable typed diagnostics for interactive authentication and CLI
+	capability failures alongside the implemented Docker/workspace validation.
+	Never request API keys, tokens, passwords, or passphrases through ordinary
+	function parameters that are persisted in run manifests.
 
-- [ ] Surface interactive authentication or Docker permission failures as typed
-	preflight errors. Never request API keys, tokens, passwords, or passphrases
-	through ordinary function parameters that are persisted in run manifests.
-
-- [ ] Provide synchronous and asynchronous orchestration without tying the core
-	API to notebooks, a particular task queue, or an async event loop owned by the
-	caller.
+- [ ] Add an awaitable orchestration API alongside the implemented synchronous
+	`wait()` interface without tying the core API to notebooks or an event loop
+	owned by the caller.
 
 ## Result and artifact model
 
-- [ ] Parse the canonical LEAN result JSON, summary JSON, engine log, algorithm
-	log, order events, succeeded/failed data-request reports, and generated code
-	snapshot into a `LeanBacktestResult`.
+- [ ] Parse summary JSON, engine and algorithm logs, order events, data-request
+	reports, and the generated code snapshot into structured views attached to
+	the existing `LeanBacktestResult`.
 
 - [ ] Preserve every native artifact path and checksum. Parsed QRT objects are
 	derived views and must never replace or rewrite the source files.
@@ -136,6 +104,15 @@ native result JSON, and Report Creator output.
 	`q.plot`, but do not discard backend-specific chart metadata or precision.
 
 ## Reports
+
+- [ ] Add backend-neutral adapters beyond LEAN result JSON while retaining the
+	native `q.bt.BacktestReport` contract.
+
+- [ ] Add optional PDF export, custom HTML themes, and report-section selection
+	to the native QRT reporter.
+
+- [ ] Normalize partial fills, assignments, multi-leg orders, and currency
+	conversions with explicit conversion warnings.
 
 - [ ] Wrap `lean report` with exact result-file selection. Never pass a result
 	directory or infer an arbitrary JSON when several candidates exist.
@@ -201,8 +178,9 @@ native result JSON, and Report Creator output.
 
 ## Testing and acceptance criteria
 
-- [ ] Unit-test command construction, path handling, manifest redaction, state
-	transitions, log parsing, JSON parsing, and report transforms without Docker.
+- [ ] Extend the existing command, path, state, result-selection, and native
+	report unit tests with manifest redaction, structured log parsing, and
+	compatibility transforms.
 
 - [ ] Use fake subprocesses for cancellation, timeout, partial output, malformed
 	JSON, nonzero exit, and successful-process/failed-research combinations.
@@ -223,13 +201,11 @@ native result JSON, and Report Creator output.
 
 ## Delivery sequence
 
-1. [ ] Define immutable run specification, lifecycle states, artifact manifest,
-	 diagnostics, and result schemas.
-2. [ ] Implement preflight and synchronous local execution with exact artifact
-	 discovery.
-3. [ ] Parse results and produce canonical QRT trade logs without reporting.
-4. [ ] Add streaming, cancellation, timeout, concurrency, and async wrappers.
-5. [ ] Add safe Report Creator orchestration and versioned compatibility copies.
-6. [ ] Integrate `q.data.lean` manifests and optional `q.experiment` tracking.
-7. [ ] Stabilize the public API only after the pinned Sweden and built-in-market
-	 integration suites pass.
+1. [ ] Add manifests, hashes, Docker image identity, and structured diagnostics
+	to the implemented run specification and lifecycle.
+2. [ ] Parse auxiliary artifacts and produce canonical QRT trade logs.
+3. [ ] Add awaitable orchestration and run-container-aware cancellation.
+4. [ ] Add safe Report Creator orchestration and versioned compatibility copies.
+5. [ ] Integrate `q.data.lean` manifests and optional `q.experiment` tracking.
+6. [ ] Stabilize the public API after pinned Sweden and built-in-market
+	integration suites pass.

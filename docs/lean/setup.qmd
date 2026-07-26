@@ -20,6 +20,44 @@ The tested version is `lean 1.0.227`. `uv run lean ...` is equivalent when the v
 Lean CLI and the LEAN engine are different versioned components. The Python package supplies the CLI; local backtests run a Docker image such as `quantconnect/lean:latest`.
 :::
 
+## Configure Docker access
+
+LEAN must reach Docker without `sudo` from the same Linux user that starts
+Python or Jupyter. With a system Docker daemon, add that user to the socket's
+group:
+
+```bash
+sudo usermod -aG docker <username>
+getent group docker
+```
+
+Group membership is captured when a login session starts. End every existing
+SSH, VS Code Remote SSH, terminal, and Jupyter session for that user, then
+reconnect. Verify the new session before opening the notebook:
+
+```bash
+id
+stat -c 'owner=%U group=%G mode=%A' /var/run/docker.sock
+docker version
+```
+
+`id` must include the socket group (normally `docker`), and `docker version`
+must print both **Client** and **Server** sections. Rootless Docker is also
+supported when it is configured for the Jupyter user.
+
+::: {.callout-warning}
+Membership in the `docker` group is effectively root-level access to the host.
+Grant it only to trusted users. Never run the notebook as root, invoke the
+backtest with `sudo`, or pass a sudo password to `q.bt.lean`.
+:::
+
+::: {.callout-tip}
+Closing a local VS Code window may leave its remote server and Jupyter kernels
+running. After changing groups, use **Remote-SSH: Kill VS Code Server on
+Host...**, close all connections to that host, and reconnect. See
+[Docker permission denied](troubleshooting.qmd#docker-permission-denied).
+:::
+
 ## Initialize a workspace
 
 The tracked Sweden demo contains algorithms and generators but intentionally

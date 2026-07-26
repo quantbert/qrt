@@ -4,6 +4,29 @@ title: Generate reports
 
 `lean report` runs a standalone .NET Report Creator against a backtest result JSON. It does not import project Python files, so multiple algorithms in one workspace are not a problem.
 
+For a report that supports custom market SIDs without preprocessing, use the
+native QRT reporter:
+
+```python
+import qrt as q
+
+report = q.bt.report(
+    "backtests/",
+    title="Sweden 20/100 SMA",
+    output="sma-report.html",
+)
+report.display()
+```
+
+This reads recorded LEAN charts and tables directly and does not replay orders.
+The newest timestamped folder containing a completed result is selected;
+provide an exact result JSON when you need a particular historical run.
+`report.display()` embeds the report in an iframe, which prevents its
+standalone CSS from overriding notebook colors. Use
+`report.display(height=1200)` to change the viewport; use `report.to_html()`
+when you need the HTML string rather than notebook output.
+The sections below document the upstream Report Creator.
+
 ## Ordinary built-in markets
 
 Generate the latest report:

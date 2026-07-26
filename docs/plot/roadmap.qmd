@@ -24,5 +24,4 @@ Opinionated plotting helpers with sensible defaults for quant research.
   - [ ] Multi-strategy support — several return columns as side-by-side metrics columns and overlaid curves
   - [ ] Active-returns mode — plot/tabulate strategy *minus* benchmark (quantstats `active_returns=True`)
   - [ ] KDE overlay + outlier marking on the daily-returns distribution panel
-  - [ ] Self-contained HTML report export (quantstats `reports.html`)
   - [ ] Full 3-panel "snapshot" report: cumulative return / drawdown / daily returns in one figure (quantstats `snapshot`)

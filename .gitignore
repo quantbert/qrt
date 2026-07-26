@@ -2,12 +2,12 @@
 docs/_site/
 
 # Generated artifacts and local Lean CLI identity for the tracked Sweden demo.
-lean/demo-generated-data/backtests/
-lean/demo-generated-data/data/
-lean/demo-generated-data/report-results/
-lean/demo-generated-data/storage/
-lean/demo-generated-data/lean.json
-lean/demo-generated-data/*.html
+lean/demo/backtests/
+lean/demo/data/
+lean/demo/report-results/
+lean/demo/storage/
+lean/demo/lean.json
+lean/demo/*.html
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

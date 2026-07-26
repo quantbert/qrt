@@ -104,6 +104,29 @@ backtest contains no following session; there were zero invalid orders.
 
 ## Generate The SMA Report
 
+Generate a native QRT report directly from the original result JSON:
+
+```python
+import qrt as q
+
+q.bt.report(
+	"backtests/",
+	title="Sweden 20/100 SMA",
+	description="Synthetic 100-asset XSTO daily-universe SMA crossover",
+	output="sma-report.html",
+)
+```
+
+Directory input selects the latest timestamped folder containing a completed
+LEAN result. Pass an exact JSON path to report an older run.
+
+This produces a self-contained interactive HTML report from LEAN's recorded
+charts, statistics, orders, and closed trades. It does not decode SIDs, replay
+orders, modify the source result, or require Docker, so custom Sweden market ID
+`900` works without preprocessing.
+
+### Upstream LEAN Report Creator
+
 Multiple Python source files in this project do not affect `lean report`.
 Reports consume a result JSON and never import the algorithm source. The
 standalone Report Creator also cannot register custom market ID `900`, so it

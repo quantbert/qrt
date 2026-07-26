@@ -39,6 +39,19 @@ uv run lean backtest demo_sma.py \
   --no-update
 ```
 
+When using `q.bt.lean.backtest(parameters=...)`, pass the complete set required
+by the selected algorithm. Do not assume a partial Python mapping will merge
+with every value in `config.json`. For `demo_sma.py`, the complete set is:
+
+```python
+parameters={
+    "backtest-start": "2024-01-02",
+    "backtest-end": "2024-12-30",
+    "daily-universe-name": "sweden100",
+    "expected-daily-universe-members": "100",
+}
+```
+
 ## Result artifacts
 
 A run writes a timestamped directory:

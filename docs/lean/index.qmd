@@ -3,7 +3,10 @@ title: LEAN
 ---
 
 ::: {.callout-warning}
-LEAN and Lean CLI are standalone QuantConnect tools. They do not depend on QRT. These guides document a tested local workflow and how QRT can help prepare data. A future optional `q.bt` adapter will orchestrate the same commands through Python without replacing LEAN as the execution engine.
+LEAN and Lean CLI are standalone QuantConnect tools. They do not depend on QRT.
+These guides document a tested local workflow. The optional `q.bt.lean` adapter
+orchestrates the same commands through Python without replacing LEAN as the
+execution engine.
 :::
 
 [LEAN](https://github.com/QuantConnect/Lean) is an event-driven trading engine. [Lean CLI](https://www.lean.io/docs/v2/lean-cli) manages its local Docker image, workspaces, projects, data, backtests, and reports.
@@ -18,7 +21,7 @@ LEAN and Lean CLI are standalone QuantConnect tools. They do not depend on QRT. 
 - [20/100 SMA strategy](sma.qmd): run a dynamic-universe crossover strategy over the 100-asset fixture.
 - [Generate reports](reports.qmd): create reports, select exact result JSON files, and handle custom-market SIDs safely.
 - [Troubleshooting](troubleshooting.qmd): diagnose missing files, currencies, models, permissions, result selection, and report errors.
-- [Future `q.bt` integration](qbt-integration.qmd): planned API ownership and artifact contracts.
+- [`q.bt` integration](qbt-integration.qmd): run Lean CLI from Python, retain exact artifacts, and build native QRT reports.
 
 ## Tested fixture
 
@@ -54,4 +57,6 @@ prices = q.stats.random_walk(
 )
 ```
 
-LEAN owns event progression, subscriptions, orders, fills, portfolio accounting, and result production. QRT should not duplicate those responsibilities merely to wrap the CLI.
+LEAN owns event progression, subscriptions, orders, fills, portfolio accounting,
+and result production. QRT's adapter owns validation, process lifecycle,
+artifact selection, normalization, and native report generation.

@@ -2,9 +2,133 @@
 title: Backtesting
 ---
 
-`q.bt` is qrt's **planned** event-driven backtesting module. It is scaffolded but
-not implemented yet — `q.bt.run` currently raises `NotImplementedError`. The
-design goal:
+`q.bt` provides native reporting for LEAN backtest results. Its in-process
+event-driven runner remains planned — `q.bt.run` currently raises
+`NotImplementedError`.
+
+## Report an existing LEAN backtest
+
+Pass the original LEAN result JSON directly:
+
+```python
+import qrt as q
+
+result = q.bt.report(
+    "lean/demo-generated-data/backtests/",
+    title="Sweden 20/100 SMA",
+    description="Synthetic XSTO universe strategy",
+    output="sma-report.html",
+)
+```
+
+When passed a directory, `q.bt.report` selects the newest timestamped folder
+that contains a completed LEAN result. You can still pass an exact
+`<timestamp>/<algorithm-id>.json` path to reproduce a specific run.
+
+The returned `q.bt.BacktestReport` exposes normalized data and figures:
+
+```python
+result.returns
+result.benchmark
+result.orders
+result.trades
+result.statistics
+result.figure
+result.diagnostics
+result.margin_allocation
+result.save("another-report.html")
+result.display()
+```
+
+The HTML is self-contained. `q.bt.report` reads LEAN's recorded equity,
+benchmark, diagnostics, orders, and closed trades without replaying orders or
+decoding security identifiers. Original result files and custom market SIDs are
+left unchanged. Its shared tearsheet uses semantic strategy/benchmark colors,
+ranked drawdown windows, and sign-colored daily returns. When LEAN records
+portfolio margin, the report adds a latest-margin composition chart explicitly
+labelled as margin usage rather than market-value asset allocation.
+
+`result.display()` is the notebook-friendly renderer. It isolates the
+self-contained report in an iframe so global report CSS does not recolor the
+rest of a Jupyter or VS Code notebook. Pass `height=1200` when a taller viewport
+is useful.
+
+`q.plot.report(returns, ...)` remains the generic returns-only tearsheet;
+`q.bt.report(result, ...)` is the artifact-aware report orchestrator and uses
+the plotting implementation internally.
+
+## Run LEAN from Python
+
+`q.bt.lean` wraps the local Lean CLI while preserving its native artifacts:
+
+```python
+run = q.bt.lean.backtest(
+    workspace="lean/demo-generated-data",
+    algorithm="demo_sma.py",
+    parameters={
+        "backtest-start": "2024-01-02",
+        "backtest-end": "2024-12-30",
+        "daily-universe-name": "sweden100",
+        "expected-daily-universe-members": "100",
+    },
+    update_image=False,
+)
+
+result = run.wait(timeout=30 * 60)
+report = result.report(
+    destination="sma-report.html",
+    title="Sweden 20/100 SMA",
+)
+report.display()
+```
+
+`backtest` launches asynchronously. The handle exposes `state`, incrementally
+captured `stdout`/`stderr`, `wait(timeout=...)`, and `cancel()`. Every run uses
+a unique output directory and `result.result_path` points to that run's exact
+LEAN JSON. `update_image=False` passes `--no-update`.
+
+Pass every parameter required by the algorithm. Supplying a partial
+`parameters` mapping can leave omitted values unavailable at runtime rather
+than merging all defaults from `config.json`.
+
+Initialize a new workspace synchronously:
+
+```python
+q.bt.lean.init(
+    workspace="lean/my-strategy",
+    organization="my-organization",
+    language="python",
+)
+```
+
+For any other Lean CLI operation, pass what normally follows `lean`:
+
+```python
+command = q.bt.lean.run(
+    "config get engine-image",
+    workspace="lean/my-strategy",
+)
+result = command.wait()
+print(result.stdout)
+```
+
+All paths are resolved before launch, and the caller's process-wide working
+directory is never changed. LEAN CLI and Docker remain responsible for the
+actual engine execution.
+
+Docker must be available without `sudo` to the user running Python. Group
+changes do not update an existing Remote SSH server or Jupyter kernel; see the
+[Docker setup](../lean/setup.qmd#configure-docker-access) and
+[permission troubleshooting](../lean/troubleshooting.qmd#docker-permission-denied)
+guides.
+
+See the runnable [LEAN backtest notebook](lean.ipynb) for the complete workflow,
+including saving the self-contained report and rendering it in an isolated
+Jupyter output cell.
+
+## Planned event-driven runner
+
+The execution design goal is:
 
 ```python
 trades = q.bt.run(signal, prices)
@@ -21,5 +145,5 @@ trades = q.bt.run(signal, prices)
 - Additional concerns (transaction cost models, slippage, ...) land as further
   submodules, following the same convention as `q.data`.
 
-Until `q.bt.run` lands, the bundled demo trade logs let you exercise the entire
-trades workflow end to end. Follow progress on the [Roadmap](../roadmap.qmd).
+Until `q.bt.run` lands, use LEAN or the bundled demo trade logs for execution.
+Follow progress on the [Roadmap](roadmap.qmd).

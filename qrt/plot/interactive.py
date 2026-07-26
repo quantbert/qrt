@@ -45,6 +45,12 @@ if TYPE_CHECKING:
     from plotly.graph_objects import Figure
 
 _QUANT_COLORS = ("#4C78A8", "#F58518", "#54A24B", "#E45756", "#72B7B2", "#B279A2")
+_REPORT_STRATEGY = "#58B4E9"
+_REPORT_BENCHMARK = "#AEB8BD"
+_REPORT_NEGATIVE = "#AEB8BD"
+_REPORT_ACCENT = "#F5A623"
+_REPORT_DRAWDOWN = "#AEB8BD"
+_REPORT_DRAWDOWN_RANKS = ("#F5B7B1", "#FAD7A0", "#FCF3CF", "#D5F5E3", "#D6EAF8")
 
 
 def _monthly_heatmap_row_height(n_years: int) -> int:
@@ -1906,12 +1912,12 @@ def report(
             if reference_curve is not None:
                 figure.add_scatter(
                     x=reference_curve.index, y=reference_curve - offset, mode="lines", name=series_reference.name or "Benchmark",
-                    line={"color": _QUANT_COLORS[1], "width": 2}, showlegend=(kind == "cumulative_linear"),
+                    line={"color": _REPORT_BENCHMARK, "width": 1.8}, showlegend=(kind == "cumulative_linear"),
                     legendgroup="benchmark", row=row_index, col=1,
                 )
             figure.add_scatter(
                 x=strategy_curve.index, y=strategy_curve - offset, mode="lines", name=strategy_name,
-                line={"color": _QUANT_COLORS[0], "width": 2}, showlegend=(kind == "cumulative_linear"),
+                line={"color": _REPORT_STRATEGY, "width": 2.2}, showlegend=(kind == "cumulative_linear"),
                 legendgroup="strategy", row=row_index, col=1,
             )
             figure.add_hline(
@@ -1926,10 +1932,15 @@ def report(
             else:
                 figure.update_yaxes(title_text="Cumulative return", tickformat=".0%", row=row_index, col=1)
         elif kind == "eoy_bar":
-            for index, column in enumerate(yearly_frame.columns):
+            for column in yearly_frame.columns:
+                values = yearly_frame[column]
+                is_strategy = str(column) == strategy_name
+                positive = _REPORT_STRATEGY if is_strategy else _REPORT_BENCHMARK
+                negative = _REPORT_NEGATIVE if is_strategy else "#87949A"
                 figure.add_bar(
-                    x=yearly_frame.index.astype(str), y=yearly_frame[column], name=str(column),
-                    marker_color=_QUANT_COLORS[index % len(_QUANT_COLORS)], showlegend=False, row=row_index, col=1,
+                    x=yearly_frame.index.astype(str), y=values, name=str(column),
+                    marker_color=np.where(values >= 0, positive, negative),
+                    showlegend=False, row=row_index, col=1,
                 )
             figure.update_xaxes(type="category", row=row_index, col=1)
             figure.update_yaxes(title_text="Return", tickformat=".0%", row=row_index, col=1)
@@ -1937,16 +1948,32 @@ def report(
             if reference is not None:
                 figure.add_histogram(
                     x=aggregate_returns(reference, "M") * 100, name=reference.name or "Benchmark",
-                    marker_color=_QUANT_COLORS[1], opacity=0.65, showlegend=False, row=row_index, col=1,
+                    marker_color=_REPORT_BENCHMARK, opacity=0.65, showlegend=False, row=row_index, col=1,
                 )
             figure.add_histogram(
                 x=aggregate_returns(strategy, "M") * 100, name=strategy_name,
-                marker_color=_QUANT_COLORS[0], opacity=0.65, showlegend=False, row=row_index, col=1,
+                marker_color=_REPORT_STRATEGY, opacity=0.72, showlegend=False, row=row_index, col=1,
+            )
+            figure.add_vline(
+                x=0.0, line={"color": "#6B7280", "width": 1, "dash": "dot"},
+                row=row_index, col=1, exclude_empty_subplots=False,
             )
             figure.update_xaxes(title_text="Monthly return", ticksuffix="%", row=row_index, col=1)
             figure.update_yaxes(title_text="Frequency", row=row_index, col=1)
         elif kind == "daily_returns":
-            figure.add_bar(x=strategy.index, y=strategy, name=strategy_name, marker_color=_QUANT_COLORS[0], showlegend=False, row=row_index, col=1)
+            figure.add_bar(
+                x=strategy.index,
+                y=strategy,
+                name=strategy_name,
+                marker_color=np.where(strategy >= 0, _REPORT_STRATEGY, _REPORT_NEGATIVE),
+                showlegend=False,
+                row=row_index,
+                col=1,
+            )
+            figure.add_hline(
+                y=0.0, line={"color": "#6B7280", "width": 1},
+                row=row_index, col=1, exclude_empty_subplots=False,
+            )
             _set_date_range(figure, strategy.index, row=row_index, col=1)
             figure.update_yaxes(title_text="Return", tickformat=".0%", row=row_index, col=1)
         elif kind == "rolling_beta":
@@ -1967,18 +1994,18 @@ def report(
             figure.update_yaxes(title_text="Beta", row=row_index, col=1)
         elif kind == "rolling_vol":
             series = rolling_volatility_stats(strategy, 126, periods_per_year=periods)
-            figure.add_scatter(x=series.index, y=series, mode="lines", name=strategy_name, line={"color": _QUANT_COLORS[0], "width": 1.6}, showlegend=False, row=row_index, col=1)
+            figure.add_scatter(x=series.index, y=series, mode="lines", name=strategy_name, line={"color": _REPORT_STRATEGY, "width": 1.8}, showlegend=False, row=row_index, col=1)
             if reference is not None:
                 bench_series = rolling_volatility_stats(reference, 126, periods_per_year=periods)
                 figure.add_scatter(
                     x=bench_series.index, y=bench_series, mode="lines", name=reference.name or "Benchmark",
-                    line={"color": _QUANT_COLORS[1], "width": 1.6}, showlegend=False, row=row_index, col=1,
+                    line={"color": _REPORT_BENCHMARK, "width": 1.6}, showlegend=False, row=row_index, col=1,
                 )
             _set_date_range(figure, series.index, row=row_index, col=1)
             figure.update_yaxes(title_text="Volatility (ann.)", tickformat=".0%", row=row_index, col=1)
         elif kind == "rolling_sharpe":
             series = rolling_sharpe_stats(strategy, 126, periods_per_year=periods, rf=rf)
-            figure.add_scatter(x=series.index, y=series, mode="lines", name="Sharpe", line={"color": _QUANT_COLORS[0], "width": 1.6}, showlegend=False, row=row_index, col=1)
+            figure.add_scatter(x=series.index, y=series, mode="lines", name="Sharpe", line={"color": _REPORT_STRATEGY, "width": 1.8}, showlegend=False, row=row_index, col=1)
             figure.add_hline(
                 y=0.0, line={"color": "#6B7280", "width": 1, "dash": "dash"},
                 row=row_index, col=1, exclude_empty_subplots=False,
@@ -1987,7 +2014,7 @@ def report(
             figure.update_yaxes(title_text="Sharpe", row=row_index, col=1)
         elif kind == "rolling_sortino":
             series = rolling_sortino_stats(strategy, 126, periods_per_year=periods, rf=rf)
-            figure.add_scatter(x=series.index, y=series, mode="lines", name="Sortino", line={"color": _QUANT_COLORS[0], "width": 1.6}, showlegend=False, row=row_index, col=1)
+            figure.add_scatter(x=series.index, y=series, mode="lines", name="Sortino", line={"color": _REPORT_STRATEGY, "width": 1.8}, showlegend=False, row=row_index, col=1)
             figure.add_hline(
                 y=0.0, line={"color": "#6B7280", "width": 1, "dash": "dash"},
                 row=row_index, col=1, exclude_empty_subplots=False,
@@ -1998,12 +2025,13 @@ def report(
             strategy_curve = (1.0 + strategy).cumprod() - 1.0
             figure.add_scatter(
                 x=strategy_curve.index, y=strategy_curve, mode="lines", name=strategy_name,
-                line={"color": _QUANT_COLORS[0], "width": 2}, showlegend=False, row=row_index, col=1,
+                line={"color": _REPORT_STRATEGY, "width": 2.2}, showlegend=False, row=row_index, col=1,
             )
-            for _, episode in dd_episodes.head(worst_drawdowns_count).iterrows():
+            for rank, (_, episode) in enumerate(dd_episodes.head(worst_drawdowns_count).iterrows()):
                 figure.add_vrect(
                     x0=episode["Start"].isoformat(), x1=episode["End"].isoformat(), layer="below", line_width=0,
-                    fillcolor="#E45756", opacity=0.15, row=row_index, col=1, exclude_empty_subplots=False,
+                    fillcolor=_REPORT_DRAWDOWN_RANKS[rank % len(_REPORT_DRAWDOWN_RANKS)],
+                    opacity=0.45, row=row_index, col=1, exclude_empty_subplots=False,
                 )
             _set_date_range(figure, strategy_curve.index, row=row_index, col=1)
             figure.update_yaxes(title_text="Cumulative return", tickformat=".0%", row=row_index, col=1)
@@ -2011,8 +2039,32 @@ def report(
             drawdown_curve = to_drawdown_series_(strategy)
             figure.add_scatter(
                 x=drawdown_curve.index, y=drawdown_curve, mode="lines", name="Drawdown", fill="tozeroy",
-                fillcolor="rgba(228, 87, 86, 0.25)", line={"color": _QUANT_COLORS[3], "width": 1.5}, showlegend=False, row=row_index, col=1,
+                fillcolor="rgba(174, 184, 189, 0.78)",
+                line={"color": _REPORT_DRAWDOWN, "width": 1.2},
+                showlegend=False, row=row_index, col=1,
             )
+            rank_labels = ("1st worst", "2nd worst", "3rd worst", "4th worst", "5th worst")
+            for rank, (_, episode) in enumerate(dd_episodes.head(worst_drawdowns_count).iterrows()):
+                color = _REPORT_DRAWDOWN_RANKS[rank % len(_REPORT_DRAWDOWN_RANKS)]
+                figure.add_vrect(
+                    x0=episode["Start"].isoformat(), x1=episode["End"].isoformat(),
+                    layer="below", line_width=0, fillcolor=color, opacity=0.62,
+                    row=row_index, col=1, exclude_empty_subplots=False,
+                )
+                figure.add_vline(
+                    x=episode["Valley"].isoformat(), line={"color": "#4B5563", "width": 1, "dash": "dot"},
+                    row=row_index, col=1, exclude_empty_subplots=False,
+                )
+                figure.add_annotation(
+                    x=episode["Valley"].isoformat(),
+                    y=episode["Max Drawdown"] * 0.52,
+                    text=rank_labels[rank] if rank < len(rank_labels) else f"#{rank + 1} worst",
+                    textangle=-90,
+                    showarrow=False,
+                    font={"size": 10, "color": "#1F2937"},
+                    row=row_index,
+                    col=1,
+                )
             _set_date_range(figure, drawdown_curve.index, row=row_index, col=1)
             figure.update_yaxes(title_text="Drawdown", tickformat=".0%", row=row_index, col=1)
         elif kind == "heatmap":
@@ -2024,7 +2076,9 @@ def report(
             figure.add_trace(
                 go.Heatmap(
                     z=values, x=[pd.Timestamp(2000, month, 1).strftime("%b") for month in table.columns], y=table.index.astype(str),
-                    text=text, texttemplate="%{text}", textfont={"size": 10}, colorscale="RdYlGn", zmid=0, zmin=-limit, zmax=limit,
+                    text=text, texttemplate="%{text}", textfont={"size": 10},
+                    colorscale=((0.0, "#E9A66B"), (0.5, "#F8FAFC"), (1.0, _REPORT_STRATEGY)),
+                    zmid=0, zmin=-limit, zmax=limit,
                     showscale=False, hovertemplate="Year %{y}<br>Month %{x}<br>Return %{z:.2%}<extra></extra>",
                 ),
                 row=row_index, col=1,
@@ -2037,6 +2091,9 @@ def report(
         height=total_height,
         showlegend=True,
         legend={"orientation": "h", "y": 1.0, "x": 0, "xanchor": "left", "yanchor": "bottom"},
+        font={"family": "Inter, ui-sans-serif, system-ui, sans-serif", "color": "#1F2937"},
+        paper_bgcolor="#FFFFFF",
+        plot_bgcolor="#FFFFFF",
         margin={"l": 60, "r": 30, "t": margin_top, "b": margin_bottom},
     )
     figure.update_xaxes(showgrid=False)
@@ -2913,17 +2970,21 @@ def mae_mfe(
 
 def trade_distribution(
     trades: pd.DataFrame,
-    by: str = "exit_reason",
+    by: str | None = "exit_reason",
     *,
     title: str | None = None,
     height: int = 430,
 ) -> Figure:
-    """Create an interactive box plot of per-trade returns grouped by a column.
+    """Create a per-trade return distribution.
+
+    With ``by=None``, renders a sign-colored histogram with zero and mean
+    reference lines. With a column name, renders the existing grouped box plot.
 
     Args:
         trades: Canonical trades-format DataFrame (see :mod:`qrt.data.datasets`).
         by: Trades column to group by (e.g. ``"exit_reason"``,
-            ``"direction"``, or any feature-snapshot column).
+            ``"direction"``, or any feature-snapshot column). Set to ``None``
+            for an overall returns-per-trade histogram.
         title: Figure title.
         height: Figure height in pixels.
 
@@ -2936,6 +2997,41 @@ def trade_distribution(
     from qrt.stats.core import _validate_trades
 
     _validate_trades(trades, ("entry_time", "exit_time", "direction", "return"))
+    if by is None:
+        returns = trades["return"].dropna().to_numpy(dtype=float)
+        returns = returns[np.isfinite(returns)]
+        if not len(returns):
+            raise ValueError("trades has no finite returns")
+        bin_count = min(40, max(10, int(np.sqrt(len(returns)) * 2)))
+        counts, edges = np.histogram(returns, bins=bin_count)
+        centers = (edges[:-1] + edges[1:]) / 2
+        widths = np.diff(edges)
+        figure = go.Figure(
+            go.Bar(
+                x=centers,
+                y=counts,
+                width=widths,
+                marker={
+                    "color": np.where(centers >= 0, _REPORT_STRATEGY, _REPORT_NEGATIVE),
+                    "line": {"width": 0},
+                },
+                name="Trades",
+                hovertemplate="Return %{x:.2%}<br>Trades %{y}<extra></extra>",
+            )
+        )
+        figure.add_vline(x=0.0, line={"color": "#4B5563", "width": 1, "dash": "dot"})
+        figure.add_vline(
+            x=float(np.mean(returns)),
+            line={"color": _REPORT_ACCENT, "width": 1.5, "dash": "dash"},
+            annotation_text=f"Mean {np.mean(returns):.2%}",
+            annotation_position="top",
+        )
+        _base_layout(figure, title=title or "Returns per Trade", height=height, time_axis=False)
+        figure.update_layout(hovermode="closest", showlegend=False, bargap=0.02)
+        figure.update_xaxes(title_text="Trade return", tickformat=".0%")
+        figure.update_yaxes(title_text="Trades", rangemode="tozero")
+        return figure
+
     if by not in trades.columns:
         raise ValueError(f"by={by!r} is not a trades column. Available: {list(trades.columns)}")
 

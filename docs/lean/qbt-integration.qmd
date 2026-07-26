@@ -1,32 +1,64 @@
 ---
-title: Future q.bt integration
+title: q.bt integration
 ---
 
-::: {.callout-important}
-The API on this page is planned, not implemented. Today, use Lean CLI directly as described in the other guides.
-:::
+Native result reporting and local Lean CLI orchestration are implemented.
+
+## Native QRT report
+
+`q.bt.report` consumes an original LEAN result JSON without invoking the
+standalone Report Creator:
+
+```python
+import qrt as q
+
+report = q.bt.report(
+    "backtests/2026-07-26_16-55-07/1920060547.json",
+    title="Sweden 20/100 SMA",
+    description="Synthetic 100-asset XSTO daily-universe SMA crossover",
+    output="sma-report.html",
+)
+```
+
+It uses the recorded Strategy Equity, Benchmark, Exposure, Portfolio Turnover,
+Capacity, statistics, orders, and closed trades. It does not replay orders,
+decode SIDs, start Docker, or change the source result. This makes custom market
+results such as `sweden` market ID `900` work without a report compatibility
+copy.
+
+The returned object exposes the normalized inputs:
+
+```python
+report.returns
+report.orders
+report.trades
+report.statistics
+report.figure
+```
+
+Display it safely in Jupyter or VS Code:
+
+```python
+report.display()
+```
+
+`display()` uses an iframe so the report's standalone `html`, `body`, and
+typography styles cannot override the notebook theme. Customize the viewport
+with `report.display(width="100%", height=1200)`. Use
+`report.save("report.html")` to write another self-contained HTML copy.
+
+## Execution adapter
 
 `q.bt` is intended to support two independent execution backends:
 
 1. a future in-process QRT event kernel shared with `q.gym`;
 2. an optional adapter that orchestrates the standalone Lean CLI.
 
-The LEAN adapter should not reimplement LEAN's event engine or hide its native artifacts.
+The LEAN adapter does not reimplement LEAN's event engine or hide its native artifacts.
 
-## Proposed responsibilities
-
-A typed QRT API should be able to:
-
-- identify a LEAN workspace and algorithm file;
-- select a pinned engine image and data root;
-- validate parameters and custom-market registration requirements;
-- launch, monitor, cancel, and reproduce local backtests;
-- parse result JSON, logs, order events, charts, and data-request reports;
-- expose original artifact paths alongside QRT-normalized summaries;
-- prepare and generate HTML/PDF reports;
-- record command, image, parameters, environment, and artifact hashes.
-
-A possible user-facing shape is:
+The typed orchestration API identifies the workspace and algorithm, validates
+the local project, launches LEAN without changing the caller's working
+directory, captures output, and owns an exact run-specific artifact directory:
 
 ```python
 import qrt as q
@@ -37,15 +69,34 @@ run = q.bt.lean.backtest(
     parameters={
         "backtest-start": "2024-01-02",
         "backtest-end": "2024-12-30",
+        "daily-universe-name": "sweden100",
+        "expected-daily-universe-members": "100",
     },
     update_image=False,
 )
 
-result = run.wait()
+result = run.wait(timeout=30 * 60)
 report = result.report(destination="sma-report.html")
+report.display()
 ```
 
-This sketch is not yet a compatibility promise.
+The returned handle supports `state`, `stdout`, `stderr`, `wait(timeout=...)`,
+and `cancel()`. `result.result_path` is the exact native result used by
+`result.report(...)`; selection never depends on another process's latest run.
+
+Use `q.bt.lean.init(workspace=..., organization=..., language="python")` to
+initialize a workspace. Use `q.bt.lean.run("config get engine-image",
+workspace=...)` for general commands, passing only what follows `lean`.
+
+The adapter treats `parameters={...}` as the runtime parameter set. Supply
+every value required by the algorithm; a partial mapping can leave
+`self.get_parameter(...)` as `None` even when `config.json` has a default.
+
+Docker must be accessible without `sudo` to the Python/Jupyter user. On Remote
+SSH, changing group membership also requires replacing the remote VS Code
+server and notebook kernel, not merely closing the local window. Follow
+[Install and initialize](setup.qmd#configure-docker-access) for setup and
+[Troubleshooting](troubleshooting.qmd#docker-permission-denied) for recovery.
 
 ## Ownership boundaries
 
@@ -56,25 +107,28 @@ The adapter should own orchestration and normalization, while LEAN continues to 
 - native market-data and universe formats;
 - result JSON and Report Creator behavior.
 
-QRT should preserve raw LEAN artifacts even when it creates derived result objects. A report compatibility transform must write a copy and never mutate the original result.
+QRT preserves raw LEAN artifacts when it creates derived result objects. Native
+QRT reports require no compatibility transform.
 
 ## Reproducibility record
 
-Every adapter run should retain at least:
+The current immutable command specification records:
 
 ```text
-workspace path
-algorithm source path and hash
-LEAN CLI version
-Docker image tag and digest
-lean.json/config.json hashes
-parameters
-data root identity
-start/end timestamps
-result and log paths
-exit status
+workspace and algorithm paths
+complete CLI argument vector
+normalized parameters
+start/end timestamps and exit state
+stdout and stderr
+run-specific output directory
+result and native artifact paths
 ```
+
+Content hashes, Docker image digests, structured diagnostics, and reproduction
+manifests remain roadmap items.
 
 ## Roadmap
 
-Track implementation on the [q.bt roadmap](../bt/roadmap.qmd). The standalone tutorials remain valid after an adapter lands because the API will invoke the same underlying commands and consume the same artifacts.
+Track remaining work on the [q.bt roadmap](../bt/roadmap.qmd). The standalone
+tutorials remain valid because the adapter invokes the same underlying
+commands and consumes the same artifacts.

@@ -1,12 +1,14 @@
-"""Event-driven backtesting of model signals against price data.
+"""Backtest execution and reporting.
 
-    q.bt.run(signal, prices)
-
-Add new concerns (transaction cost models, trade logs, ...) as additional
-modules in this package as they land.
+``q.bt.report(...)`` turns a LEAN result JSON into a native qrt report without
+starting LEAN's standalone Report Creator or replaying its orders.
 """
 
-__all__ = ["run"]
+from qrt.bt import lean as lean
+from qrt.bt._report import BacktestReport, report
+
+
+__all__ = ["BacktestReport", "lean", "report", "run"]
 
 
 def run(signal, prices):
