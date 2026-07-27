@@ -53,6 +53,18 @@ def _lean_result() -> dict:
                     "OTHERS": {"values": [[timestamp, 0.5] for timestamp in chart_days]},
                 }
             },
+            "Asset Returns": {
+                "series": {
+                    "AAA": {"values": [[chart_days[1], 0.01], [chart_days[2], 0.02]]},
+                    "BBB": {"values": [[chart_days[2], -0.01]]},
+                }
+            },
+            "Asset Weights": {
+                "series": {
+                    "AAA": {"values": [[chart_days[1], 1.0], [chart_days[2], 0.6]]},
+                    "BBB": {"values": [[chart_days[2], 0.4]]},
+                }
+            },
         },
         "orders": {
             "1": {
@@ -119,8 +131,22 @@ def test_bt_report_reads_original_lean_result_without_sid_decoding(tmp_path):
     assert result.configuration["accountCurrency"] == "SEK"
     assert result.diagnostics is not None
     assert result.margin_allocation is not None
+    assert result.performance_treemap is not None
+    assert list(result.performance_treemap.frames[0].data[0].labels) == ["AAA"]
+    assert list(result.performance_treemap.frames[1].data[0].labels) == ["AAA", "BBB"]
+    assert list(result.performance_treemap.frames[1].data[0].values) == [0.8, 0.2]
+    assert list(result.performance_treemap.frames[1].data[0].customdata) == pytest.approx([0.0302, -0.01])
     assert result.trade_returns.layout.title.text == "Returns per Trade"
     assert result.trade_returns.data[0].type == "bar"
+    assert "Confidence That Sharpe Exceeds Threshold" in [annotation.text for annotation in result.figure.layout.annotations]
+    assert "Confidence That Sortino Exceeds Threshold" in [annotation.text for annotation in result.figure.layout.annotations]
+    psr_trace = next(trace for trace in result.figure.data if trace.name == "PSR")
+    psor_trace = next(trace for trace in result.figure.data if trace.name == "PSoR")
+    assert psr_trace.x[0] == 0.0
+    assert psr_trace.x[-1] >= 3.0
+    assert psr_trace.y[0] >= psr_trace.y[-1]
+    assert psor_trace.x[0] == 0.0
+    assert psor_trace.x[-1] >= 3.0
 
 
 def test_bt_report_selects_latest_completed_result_from_directory(tmp_path):
@@ -177,6 +203,14 @@ def test_bt_report_writes_self_contained_html(tmp_path):
     assert "Stockholm strategy" in html
     assert "Native report for custom market 900" in html
     assert "<span>CAGR</span>" in html
+    assert "<span>PSR @ Th = 0</span>" in html
+    assert "<span>PSoR @ Th = 0</span>" in html
+    assert "<span>Sortino</span>" in html
+    assert "<span>Calmar</span>" in html
+    assert "<span>Volatility</span>" in html
+    assert html.count('class="card ') == 11
+    assert "grid-template-columns: repeat(auto-fit, minmax(108px, 1fr))" in html
+    assert "min-height: 108px" in html
     assert "plotly.js" in html
     assert "Closed Trades" in html
     assert "Trade Analytics" in html
@@ -184,6 +218,23 @@ def test_bt_report_writes_self_contained_html(tmp_path):
     assert "margin usage, not market-value asset allocation" in html
     assert "AAA" in html
     assert "CUSTOM900SID" not in html
+
+
+def test_bt_report_embeds_supplied_asset_performance_treemap():
+    index = pd.date_range("2024-01-02", periods=3)
+    asset_returns = pd.DataFrame(
+        {"AAA": [0.01, 0.02, float("nan")], "BBB": [float("nan"), -0.01, 0.03]},
+        index=index,
+    )
+
+    result = q.bt.report(_lean_result(), asset_returns=asset_returns)
+    html = result.to_html()
+
+    assert result.performance_treemap is not None
+    assert result.performance_treemap.layout.title.text == "Portfolio Performance Treemap"
+    assert "Portfolio Performance Treemap" in html
+    assert "As of " in html
+    assert "Plotly.animate(document.getElementById" not in html
 
 
 def test_bt_report_displays_in_isolated_iframe(monkeypatch):

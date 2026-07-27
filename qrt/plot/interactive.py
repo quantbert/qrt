@@ -19,6 +19,7 @@ from qrt.stats.core import (
     CovarianceType,
     ReturnType,
     _aligned_returns,
+    _excess_returns,
     _periods_per_year,
     _simple_returns,
     aggregate_returns,
@@ -29,11 +30,15 @@ from qrt.stats.core import (
     metrics as metrics_stats,
     monthly_returns,
     performance as performance_stats,
+    probabilistic_ratio as probabilistic_ratio_stats,
+    probabilistic_sortino_ratio as probabilistic_sortino_ratio_stats,
     rolling_beta as rolling_beta_stats,
     rolling_factor_regression as rolling_factor_regression_stats,
     rolling_sharpe as rolling_sharpe_stats,
     rolling_sortino as rolling_sortino_stats,
     rolling_volatility as rolling_volatility_stats,
+    sharpe as sharpe_stats,
+    sortino as sortino_stats,
     to_drawdown_series as to_drawdown_series_,
 )
 from qrt.stats.classification import (
@@ -51,6 +56,16 @@ _REPORT_NEGATIVE = "#AEB8BD"
 _REPORT_ACCENT = "#F5A623"
 _REPORT_DRAWDOWN = "#AEB8BD"
 _REPORT_DRAWDOWN_RANKS = ("#F5B7B1", "#FAD7A0", "#FCF3CF", "#D5F5E3", "#D6EAF8")
+
+
+class _PausedAnimationFigure(go.Figure):
+    def _repr_mimebundle_(self, *args, **kwargs):
+        kwargs.setdefault("auto_play", False)
+        return super()._repr_mimebundle_(*args, **kwargs)
+
+    def to_html(self, *args, **kwargs):
+        kwargs.setdefault("auto_play", False)
+        return super().to_html(*args, **kwargs)
 
 
 def _monthly_heatmap_row_height(n_years: int) -> int:
@@ -1027,7 +1042,7 @@ _METRIC_PCT_ROWS = frozenset(
     {
         "Risk-Free Rate", "Time in Market",
         "Cumulative Return", "CAGR", "Expected Daily", "Expected Monthly", "Expected Yearly",
-        "Prob. Sharpe Ratio",
+        "Prob. Sharpe Ratio", "Prob. Sortino Ratio",
         "Volatility (ann.)", "Historical VaR (95%)", "Historical Expected Shortfall (95%)", "Kelly Criterion", "Risk of Ruin",
         "Max Drawdown", "Avg. Drawdown",
         "MTD", "3M", "6M", "YTD", "1Y", "3Y (ann.)", "5Y (ann.)", "10Y (ann.)", "All-time (ann.)",
@@ -1416,6 +1431,297 @@ def rolling_sharpe(
     return figure
 
 
+def _psr_threshold_curve(
+    returns: pd.Series,
+    *,
+    return_type: ReturnType,
+    periods_per_year: int | None,
+    rf: float,
+    threshold_max: float | None,
+    points: int,
+) -> tuple[pd.Series, float, dict[str, float | int]]:
+    """Return PSR values indexed by annualized Sharpe thresholds."""
+    strategy = _simple_returns(returns, return_type, "Strategy")
+    periods = _periods_per_year(periods_per_year, strategy.index)
+    observed_sharpe = sharpe_stats(strategy, periods_per_year=periods, rf=rf)
+    if threshold_max is None:
+        threshold_max = max(3.0, float(np.ceil(max(observed_sharpe, 0.0) * 1.25 * 2.0) / 2.0)) if np.isfinite(observed_sharpe) else 3.0
+    if not np.isfinite(threshold_max) or threshold_max <= 0:
+        raise ValueError("threshold_max must be a finite positive number")
+    if points < 2:
+        raise ValueError("points must be at least 2")
+    thresholds = np.linspace(0.0, threshold_max, points)
+    probabilities = [
+        probabilistic_ratio_stats(
+            strategy,
+            threshold=float(threshold),
+            periods_per_year=periods,
+            rf=rf,
+        )
+        for threshold in thresholds
+    ]
+    excess = _excess_returns(strategy, rf, periods)
+    diagnostics: dict[str, float | int] = {
+        "sample_size": len(strategy),
+        "skewness": float(strategy.skew()),
+        "kurtosis": float(strategy.kurtosis()) + 3.0,
+        "downside_count": int((excess < 0.0).sum()),
+    }
+    return pd.Series(probabilities, index=thresholds, name="PSR"), observed_sharpe, diagnostics
+
+
+def _maximum_supported_threshold(curve: pd.Series, confidence: float = 0.95) -> float:
+    """Interpolate the largest nonnegative threshold meeting ``confidence``."""
+    valid = curve.dropna()
+    if valid.empty or valid.iloc[0] < confidence:
+        return float("nan")
+    return float(np.interp(confidence, valid.to_numpy()[::-1], valid.index.to_numpy()[::-1]))
+
+
+def _ratio_hover_data(curve: pd.Series, diagnostics: Mapping[str, float | int]) -> np.ndarray:
+    """Repeat ratio diagnostics for each point in a Plotly threshold curve."""
+    values = [
+        diagnostics["sample_size"],
+        diagnostics["skewness"],
+        diagnostics["kurtosis"],
+        diagnostics["downside_count"],
+    ]
+    return np.tile(values, (len(curve), 1))
+
+
+def psr(
+    returns: pd.Series,
+    *,
+    return_type: ReturnType = "simple",
+    periods_per_year: int | None = None,
+    rf: float = 0.0,
+    threshold_max: float | None = None,
+    points: int = 121,
+    title: str = "Confidence That Sharpe Exceeds Threshold",
+    height: int = 360,
+) -> Figure:
+    """Plot the probability that Sharpe exceeds a sweep of target thresholds.
+
+    Args:
+        returns: Periodic return series.
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        periods_per_year: Annualization frequency. Inferred from the index
+            when not given.
+        rf: Annualized risk-free rate. Defaults to ``0.0``.
+        threshold_max: Upper annualized Sharpe threshold. Defaults to at least
+            ``3.0``, extending 25% beyond the observed Sharpe when necessary.
+        points: Number of evenly spaced thresholds in the sweep.
+        title: Figure title.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure`` containing the PSR threshold curve.
+    """
+    curve, observed_sharpe, diagnostics = _psr_threshold_curve(
+        returns,
+        return_type=return_type,
+        periods_per_year=periods_per_year,
+        rf=rf,
+        threshold_max=threshold_max,
+        points=points,
+    )
+    figure = go.Figure(
+        go.Scatter(
+            x=curve.index,
+            y=curve,
+            mode="lines",
+            name="PSR",
+            line={"color": _REPORT_STRATEGY, "width": 2.2},
+            fill="tozeroy",
+            fillcolor="rgba(88, 180, 233, 0.12)",
+            customdata=_ratio_hover_data(curve, diagnostics),
+            hovertemplate=(
+                "Threshold %{x:.2f}<br>PSR %{y:.2%}"
+                "<br>Sample size %{customdata[0]:.0f}"
+                "<br>Skewness %{customdata[1]:.3f}"
+                "<br>Kurtosis %{customdata[2]:.3f}"
+                "<br>Downside count %{customdata[3]:.0f}<extra></extra>"
+            ),
+        )
+    )
+    maximum_supported = _maximum_supported_threshold(curve)
+    confidence_annotation = (
+        f"95% confidence, max threshold {maximum_supported:.2f}"
+        if np.isfinite(maximum_supported)
+        else "95% confidence, no threshold >= 0"
+    )
+    figure.add_hline(
+        y=0.95,
+        line={"color": _REPORT_ACCENT, "width": 1.2, "dash": "dash"},
+        annotation_text=confidence_annotation,
+        annotation_position="top right",
+    )
+    if np.isfinite(maximum_supported):
+        figure.add_vline(
+            x=maximum_supported,
+            line={"color": _REPORT_ACCENT, "width": 1.2, "dash": "dot"},
+        )
+        figure.add_scatter(
+            x=[maximum_supported], y=[0.95], mode="markers", name="95% threshold",
+            marker={"color": _REPORT_ACCENT, "size": 8}, showlegend=False,
+            hovertemplate="Maximum threshold at 95% confidence: %{x:.2f}<extra></extra>",
+        )
+    if np.isfinite(observed_sharpe) and 0.0 <= observed_sharpe <= curve.index[-1]:
+        figure.add_vline(
+            x=observed_sharpe,
+            line={"color": "#6B7280", "width": 1.2, "dash": "dot"},
+            annotation_text=f"Observed Sharpe {observed_sharpe:.2f}, 50%",
+            annotation_position="top left",
+        )
+        figure.add_scatter(
+            x=[observed_sharpe], y=[0.5], mode="markers", name="Observed Sharpe",
+            marker={"color": "#6B7280", "size": 8}, showlegend=False,
+            hovertemplate="Observed Sharpe %{x:.2f}<br>PSR 50%<extra></extra>",
+        )
+    _base_layout(figure, title=title, height=height, time_axis=False)
+    figure.update_xaxes(title_text="Annualized Sharpe threshold", range=[0.0, curve.index[-1]])
+    figure.update_yaxes(title_text="Probability", tickformat=".0%", range=[0.0, 1.02])
+    return figure
+
+
+def _psor_threshold_curve(
+    returns: pd.Series,
+    *,
+    return_type: ReturnType,
+    periods_per_year: int | None,
+    rf: float,
+    threshold_max: float | None,
+    points: int,
+) -> tuple[pd.Series, float, dict[str, float | int]]:
+    """Return PSoR values indexed by annualized Sortino thresholds."""
+    strategy = _simple_returns(returns, return_type, "Strategy")
+    periods = _periods_per_year(periods_per_year, strategy.index)
+    observed_sortino = sortino_stats(strategy, periods_per_year=periods, rf=rf)
+    if threshold_max is None:
+        threshold_max = max(3.0, float(np.ceil(max(observed_sortino, 0.0) * 1.25 * 2.0) / 2.0)) if np.isfinite(observed_sortino) else 3.0
+    if not np.isfinite(threshold_max) or threshold_max <= 0:
+        raise ValueError("threshold_max must be a finite positive number")
+    if points < 2:
+        raise ValueError("points must be at least 2")
+    thresholds = np.linspace(0.0, threshold_max, points)
+    probabilities = [
+        probabilistic_sortino_ratio_stats(
+            strategy,
+            threshold=float(threshold),
+            periods_per_year=periods,
+            rf=rf,
+        )
+        for threshold in thresholds
+    ]
+    excess = _excess_returns(strategy, rf, periods)
+    downside = excess[excess < 0.0]
+    diagnostics: dict[str, float | int] = {
+        "sample_size": len(strategy),
+        "skewness": float(downside.skew()),
+        "kurtosis": float(strategy.kurtosis()) + 3.0,
+        "downside_count": len(downside),
+    }
+    return pd.Series(probabilities, index=thresholds, name="PSoR"), observed_sortino, diagnostics
+
+
+def psor(
+    returns: pd.Series,
+    *,
+    return_type: ReturnType = "simple",
+    periods_per_year: int | None = None,
+    rf: float = 0.0,
+    threshold_max: float | None = None,
+    points: int = 121,
+    title: str = "Confidence That Sortino Exceeds Threshold",
+    height: int = 360,
+) -> Figure:
+    """Plot the probability that Sortino exceeds a sweep of target thresholds.
+
+    The probability uses only negative excess-return observations for its
+    effective sample size and skewness correction.
+
+    Args:
+        returns: Periodic return series.
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        periods_per_year: Annualization frequency. Inferred from the index
+            when not given.
+        rf: Annualized risk-free rate and minimum acceptable return.
+        threshold_max: Upper annualized Sortino threshold. Defaults to at least
+            ``3.0``, extending 25% beyond the observed Sortino when necessary.
+        points: Number of evenly spaced thresholds in the sweep.
+        title: Figure title.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure`` containing the PSoR threshold curve.
+    """
+    curve, observed_sortino, diagnostics = _psor_threshold_curve(
+        returns,
+        return_type=return_type,
+        periods_per_year=periods_per_year,
+        rf=rf,
+        threshold_max=threshold_max,
+        points=points,
+    )
+    figure = go.Figure(
+        go.Scatter(
+            x=curve.index,
+            y=curve,
+            mode="lines",
+            name="PSoR",
+            line={"color": _REPORT_ACCENT, "width": 2.2},
+            fill="tozeroy",
+            fillcolor="rgba(245, 166, 35, 0.12)",
+            customdata=_ratio_hover_data(curve, diagnostics),
+            hovertemplate=(
+                "Threshold %{x:.2f}<br>PSoR %{y:.2%}"
+                "<br>Sample size %{customdata[0]:.0f}"
+                "<br>Downside skewness %{customdata[1]:.3f}"
+                "<br>Kurtosis %{customdata[2]:.3f}"
+                "<br>Downside count %{customdata[3]:.0f}<extra></extra>"
+            ),
+        )
+    )
+    maximum_supported = _maximum_supported_threshold(curve)
+    confidence_annotation = (
+        f"95% confidence, max threshold {maximum_supported:.2f}"
+        if np.isfinite(maximum_supported)
+        else "95% confidence, no threshold >= 0"
+    )
+    figure.add_hline(
+        y=0.95,
+        line={"color": _REPORT_STRATEGY, "width": 1.2, "dash": "dash"},
+        annotation_text=confidence_annotation,
+        annotation_position="top right",
+    )
+    if np.isfinite(maximum_supported):
+        figure.add_vline(
+            x=maximum_supported,
+            line={"color": _REPORT_STRATEGY, "width": 1.2, "dash": "dot"},
+        )
+        figure.add_scatter(
+            x=[maximum_supported], y=[0.95], mode="markers", name="95% threshold",
+            marker={"color": _REPORT_STRATEGY, "size": 8}, showlegend=False,
+            hovertemplate="Maximum threshold at 95% confidence: %{x:.2f}<extra></extra>",
+        )
+    if np.isfinite(observed_sortino) and 0.0 <= observed_sortino <= curve.index[-1]:
+        figure.add_vline(
+            x=observed_sortino,
+            line={"color": "#6B7280", "width": 1.2, "dash": "dot"},
+            annotation_text=f"Observed Sortino {observed_sortino:.2f}, 50%",
+            annotation_position="top left",
+        )
+        figure.add_scatter(
+            x=[observed_sortino], y=[0.5], mode="markers", name="Observed Sortino",
+            marker={"color": "#6B7280", "size": 8}, showlegend=False,
+            hovertemplate="Observed Sortino %{x:.2f}<br>PSoR 50%<extra></extra>",
+        )
+    _base_layout(figure, title=title, height=height, time_axis=False)
+    figure.update_xaxes(title_text="Annualized Sortino threshold", range=[0.0, curve.index[-1]])
+    figure.update_yaxes(title_text="Probability", tickformat=".0%", range=[0.0, 1.02])
+    return figure
+
+
 def rolling_sortino(
     returns: pd.Series,
     *,
@@ -1744,6 +2050,188 @@ def return_quantiles(
     return figure
 
 
+def tree_plot(
+    asset_returns: pd.DataFrame,
+    *,
+    weights: pd.DataFrame | pd.Series | None = None,
+    title: str = "Portfolio Performance Treemap",
+    height: int = 600,
+) -> Figure:
+    """Create historical and point-in-time performance treemaps for portfolio assets.
+
+    The default accumulated mode includes every asset held on or before each
+    timestamp. Returns compound only while held, then remain at their terminal
+    value after exit. Point-in-time mode shows only the assets held at the
+    selected timestamp and their accumulated held-period returns through that
+    date. A finite return marks a held
+    period when weights are omitted; with weights, a finite return and nonzero
+    finite weight are both required. Tiles have equal area unless weights are
+    supplied. Dynamic weights use cumulative average absolute exposure in
+    accumulated mode and current absolute exposure in point-in-time mode.
+
+    Args:
+        asset_returns: Wide frame of simple returns, indexed by timestamp with
+            one asset per column.
+        weights: Optional matching weight frame, or static weight series indexed
+            by asset. Dynamic absolute weights are averaged cumulatively for tile
+            area; static absolute weights are used directly.
+        title: Figure title.
+        height: Figure height in pixels.
+
+    Returns:
+        A Plotly ``Figure`` with a timestamp slider.
+    """
+    if not isinstance(asset_returns, pd.DataFrame) or asset_returns.empty:
+        raise ValueError("asset_returns must be a non-empty DataFrame")
+    if not isinstance(asset_returns.index, pd.DatetimeIndex):
+        raise TypeError("asset_returns must have a DatetimeIndex")
+    non_numeric = asset_returns.select_dtypes(exclude="number").columns.tolist()
+    if non_numeric:
+        raise TypeError(f"asset_returns columns must be numeric; got {non_numeric}")
+
+    returns = asset_returns.sort_index()
+    if returns.index.has_duplicates:
+        returns = returns.groupby(level=0).last()
+    if isinstance(weights, pd.DataFrame):
+        weights = weights.reindex(index=returns.index, columns=returns.columns)
+    elif isinstance(weights, pd.Series):
+        weights = weights.reindex(returns.columns)
+    elif weights is not None:
+        raise TypeError("weights must be a DataFrame, Series, or None")
+
+    held = returns.notna() & np.isfinite(returns)
+    if isinstance(weights, pd.DataFrame):
+        finite_weights = weights.notna() & np.isfinite(weights) & weights.ne(0)
+        held &= finite_weights
+        point_sizes = weights.abs().where(held, 0.0)
+        historical_sizes = point_sizes.cumsum()
+        historical_sizes = historical_sizes.div(np.arange(1, len(historical_sizes) + 1), axis=0)
+    elif isinstance(weights, pd.Series):
+        finite_weights = weights.notna() & np.isfinite(weights) & weights.ne(0)
+        held &= finite_weights
+        point_sizes = pd.DataFrame(
+            np.broadcast_to(weights.abs().to_numpy(), returns.shape),
+            index=returns.index,
+            columns=returns.columns,
+        )
+        historical_sizes = point_sizes
+    else:
+        point_sizes = pd.DataFrame(1.0, index=returns.index, columns=returns.columns)
+        historical_sizes = point_sizes
+
+    historical = held.cummax()
+    cumulative_returns = (1.0 + returns.where(held).fillna(0.0)).cumprod() - 1.0
+    cumulative_returns = cumulative_returns.where(historical)
+    finite = cumulative_returns.to_numpy(dtype=float).ravel()
+    finite = finite[np.isfinite(finite)]
+    if not len(finite):
+        raise ValueError("No held asset returns remain after applying weights")
+    color_limit = max(float(np.abs(finite).max()), 0.01)
+
+    def treemap_trace(
+        labels: list[str],
+        values: list[float],
+        colors: list[float],
+        *,
+        accumulated: bool,
+    ) -> go.Treemap:
+        return go.Treemap(
+            labels=labels,
+            parents=[""] * len(labels),
+            values=values,
+            customdata=colors,
+            marker={
+                "colors": colors,
+                "colorscale": "RdBu",
+                "cmid": 0,
+                "cmin": -color_limit,
+                "cmax": color_limit,
+                "colorbar": {
+                    "title": "Cumulative return",
+                    "tickformat": ".1%",
+                },
+                "line": {"color": "white", "width": 2},
+            },
+            texttemplate="<b>%{label}</b><br>%{customdata:.2%}",
+            hovertemplate=(
+                "%{label}<br>Cumulative return: %{customdata:.2%}"
+                + (
+                    f"<br>{'Average |weight|' if accumulated else '|Weight|'}: %{{value:.2%}}"
+                    if weights is not None
+                    else ""
+                )
+                + "<extra></extra>"
+            ),
+            branchvalues="total",
+        )
+
+    frames: list[go.Frame] = []
+    for timestamp, row in cumulative_returns.iterrows():
+        historical_shown = historical.loc[timestamp]
+        point_shown = held.loc[timestamp]
+        frame_name = timestamp.isoformat()
+        frames.append(go.Frame(
+            name=frame_name,
+            data=[
+                treemap_trace(
+                    returns.columns[historical_shown].astype(str).tolist(),
+                    historical_sizes.loc[timestamp, historical_shown].astype(float).tolist(),
+                    row[historical_shown].astype(float).tolist(),
+                    accumulated=True,
+                ),
+                treemap_trace(
+                    returns.columns[point_shown].astype(str).tolist(),
+                    point_sizes.loc[timestamp, point_shown].astype(float).tolist(),
+                    row[point_shown].astype(float).tolist(),
+                    accumulated=False,
+                ),
+            ],
+            traces=[0, 1],
+        ))
+
+    visible_frames = [frame for frame in frames if len(frame.data[0].labels)]
+    if not visible_frames:
+        raise ValueError("No historical holdings remain after applying weights")
+    initial = visible_frames[-1]
+    steps = [
+        {
+            "label": pd.Timestamp(frame.name).strftime("%Y-%m-%d"),
+            "method": "animate",
+            "args": [[frame.name], {"mode": "immediate", "frame": {"duration": 0, "redraw": True}, "transition": {"duration": 0}}],
+        }
+        for frame in visible_frames
+    ]
+    figure = _PausedAnimationFigure(data=initial.data, frames=visible_frames)
+    figure.data[1].visible = False
+    _base_layout(figure, title=title, height=height, time_axis=False)
+    figure.update_layout(
+        hovermode="closest",
+        margin={"l": 20, "r": 20, "t": 90, "b": 130},
+        sliders=[{
+            "active": len(steps) - 1,
+            "currentvalue": {"prefix": "As of ", "font": {"size": 14}},
+            "x": 0,
+            "len": 1.0,
+            "pad": {"t": 30},
+            "steps": steps,
+        }],
+        updatemenus=[{
+            "type": "buttons",
+            "direction": "down",
+            "active": 0,
+            "x": 1.07,
+            "xanchor": "center",
+            "y": -0.08,
+            "yanchor": "top",
+            "buttons": [
+                {"label": "Accumulated", "method": "restyle", "args": [{"visible": [True, False]}]},
+                {"label": "Point in time", "method": "restyle", "args": [{"visible": [False, True]}]},
+            ],
+        }],
+    )
+    return figure
+
+
 def report(
     returns: pd.Series,
     *,
@@ -1753,6 +2241,8 @@ def report(
     rf: float = 0.0,
     mode: Literal["basic", "full"] = "full",
     worst_drawdowns_count: int = 5,
+    psr_threshold_max: float | None = None,
+    psor_threshold_max: float | None = None,
     title: str | None = None,
 ) -> Figure:
     """Create a full quantstats-style multi-panel strategy tearsheet.
@@ -1763,7 +2253,8 @@ def report(
     drawdowns) in a single scrollable Plotly figure. Individual panels are
     also available standalone (:func:`metrics_table`, :func:`cumulative_returns`,
     :func:`eoy_returns`, :func:`monthly_distribution`, :func:`daily_returns`,
-    :func:`rolling_volatility`, :func:`rolling_sharpe`, :func:`rolling_sortino`,
+    :func:`rolling_volatility`, :func:`rolling_sharpe`, :func:`psr`,
+    :func:`rolling_sortino`, :func:`psor`,
     :func:`rolling_beta`, :func:`worst_drawdowns`, :func:`drawdown`,
     :func:`monthly_heatmap`, :func:`return_quantiles`).
 
@@ -1782,6 +2273,12 @@ def report(
             table, ``"basic"`` for a compact headline subset. See
             :func:`qrt.stats.metrics`.
         worst_drawdowns_count: Number of worst drawdown episodes to shade/list.
+        psr_threshold_max: Upper bound of the annualized Sharpe threshold sweep.
+            Defaults to at least ``3.0``, extending 25% beyond the observed
+            Sharpe ratio when necessary.
+        psor_threshold_max: Upper bound of the annualized Sortino threshold
+            sweep. Defaults to at least ``3.0``, extending 25% beyond the
+            observed Sortino ratio when necessary.
         title: Figure title.
 
     Returns:
@@ -1794,6 +2291,22 @@ def report(
     periods = _periods_per_year(periods_per_year, strategy.index)
     strategy_name = strategy.name or "Strategy"
     has_benchmark = reference is not None
+    psr_curve, observed_sharpe, psr_diagnostics = _psr_threshold_curve(
+        strategy,
+        return_type="simple",
+        periods_per_year=periods,
+        rf=rf,
+        threshold_max=psr_threshold_max,
+        points=121,
+    )
+    psor_curve, observed_sortino, psor_diagnostics = _psor_threshold_curve(
+        strategy,
+        return_type="simple",
+        periods_per_year=periods,
+        rf=rf,
+        threshold_max=psor_threshold_max,
+        points=121,
+    )
 
     metrics_frame = _metrics_frame(strategy, reference, periods_per_year=periods, rf=rf, mode=mode)
     yearly_frame = _yearly_frame(strategy, reference)
@@ -1818,7 +2331,9 @@ def report(
         rows.append(("Rolling Beta to Benchmark", "rolling_beta", 220))
     rows.append(("Rolling Volatility (6-Months)", "rolling_vol", 220))
     rows.append(("Rolling Sharpe (6-Months)", "rolling_sharpe", 220))
+    rows.append(("Confidence That Sharpe Exceeds Threshold", "psr_threshold", 240))
     rows.append(("Rolling Sortino (6-Months)", "rolling_sortino", 220))
+    rows.append(("Confidence That Sortino Exceeds Threshold", "psor_threshold", 240))
     rows.append((f"Worst {worst_drawdowns_count} Drawdown Periods", "worst_dd", 280))
     rows.append(("Underwater Plot", "underwater", 220))
     rows.append(("Monthly Returns", "heatmap", _monthly_heatmap_row_height(len(monthly_returns(strategy)))))
@@ -2012,6 +2527,66 @@ def report(
             )
             _set_date_range(figure, series.index, row=row_index, col=1)
             figure.update_yaxes(title_text="Sharpe", row=row_index, col=1)
+        elif kind == "psr_threshold":
+            maximum_supported = _maximum_supported_threshold(psr_curve)
+            figure.add_scatter(
+                x=psr_curve.index,
+                y=psr_curve,
+                mode="lines",
+                name="PSR",
+                line={"color": _REPORT_STRATEGY, "width": 2.2},
+                fill="tozeroy",
+                fillcolor="rgba(88, 180, 233, 0.12)",
+                customdata=_ratio_hover_data(psr_curve, psr_diagnostics),
+                hovertemplate=(
+                    "Threshold %{x:.2f}<br>PSR %{y:.2%}"
+                    "<br>Sample size %{customdata[0]:.0f}"
+                    "<br>Skewness %{customdata[1]:.3f}"
+                    "<br>Kurtosis %{customdata[2]:.3f}"
+                    "<br>Downside count %{customdata[3]:.0f}<extra></extra>"
+                ),
+                showlegend=False,
+                row=row_index,
+                col=1,
+            )
+            figure.add_hline(
+                y=0.95,
+                line={"color": _REPORT_ACCENT, "width": 1.2, "dash": "dash"},
+                annotation_text=(
+                    f"95% max threshold {maximum_supported:.2f}"
+                    if np.isfinite(maximum_supported)
+                    else "No threshold >= 0 at 95%"
+                ),
+                annotation_position="top right",
+                row=row_index,
+                col=1,
+                exclude_empty_subplots=False,
+            )
+            if np.isfinite(maximum_supported):
+                figure.add_scatter(
+                    x=[maximum_supported], y=[0.95], mode="markers", name="95% threshold",
+                    marker={"color": _REPORT_ACCENT, "size": 7}, showlegend=False,
+                    hovertemplate="Maximum threshold at 95% confidence: %{x:.2f}<extra></extra>",
+                    row=row_index, col=1,
+                )
+            if np.isfinite(observed_sharpe) and 0.0 <= observed_sharpe <= psr_curve.index[-1]:
+                figure.add_vline(
+                    x=observed_sharpe,
+                    line={"color": "#6B7280", "width": 1.2, "dash": "dot"},
+                    annotation_text=f"Observed Sharpe {observed_sharpe:.2f}, 50%",
+                    annotation_position="top left",
+                    row=row_index,
+                    col=1,
+                    exclude_empty_subplots=False,
+                )
+                figure.add_scatter(
+                    x=[observed_sharpe], y=[0.5], mode="markers", name="Observed Sharpe",
+                    marker={"color": "#6B7280", "size": 7}, showlegend=False,
+                    hovertemplate="Observed Sharpe %{x:.2f}<br>PSR 50%<extra></extra>",
+                    row=row_index, col=1,
+                )
+            figure.update_xaxes(title_text="Annualized Sharpe threshold", range=[0.0, psr_curve.index[-1]], row=row_index, col=1)
+            figure.update_yaxes(title_text="Probability", tickformat=".0%", range=[0.0, 1.02], row=row_index, col=1)
         elif kind == "rolling_sortino":
             series = rolling_sortino_stats(strategy, 126, periods_per_year=periods, rf=rf)
             figure.add_scatter(x=series.index, y=series, mode="lines", name="Sortino", line={"color": _REPORT_STRATEGY, "width": 1.8}, showlegend=False, row=row_index, col=1)
@@ -2021,6 +2596,66 @@ def report(
             )
             _set_date_range(figure, series.index, row=row_index, col=1)
             figure.update_yaxes(title_text="Sortino", row=row_index, col=1)
+        elif kind == "psor_threshold":
+            maximum_supported = _maximum_supported_threshold(psor_curve)
+            figure.add_scatter(
+                x=psor_curve.index,
+                y=psor_curve,
+                mode="lines",
+                name="PSoR",
+                line={"color": _REPORT_ACCENT, "width": 2.2},
+                fill="tozeroy",
+                fillcolor="rgba(245, 166, 35, 0.12)",
+                customdata=_ratio_hover_data(psor_curve, psor_diagnostics),
+                hovertemplate=(
+                    "Threshold %{x:.2f}<br>PSoR %{y:.2%}"
+                    "<br>Sample size %{customdata[0]:.0f}"
+                    "<br>Downside skewness %{customdata[1]:.3f}"
+                    "<br>Kurtosis %{customdata[2]:.3f}"
+                    "<br>Downside count %{customdata[3]:.0f}<extra></extra>"
+                ),
+                showlegend=False,
+                row=row_index,
+                col=1,
+            )
+            figure.add_hline(
+                y=0.95,
+                line={"color": _REPORT_STRATEGY, "width": 1.2, "dash": "dash"},
+                annotation_text=(
+                    f"95% max threshold {maximum_supported:.2f}"
+                    if np.isfinite(maximum_supported)
+                    else "No threshold >= 0 at 95%"
+                ),
+                annotation_position="top right",
+                row=row_index,
+                col=1,
+                exclude_empty_subplots=False,
+            )
+            if np.isfinite(maximum_supported):
+                figure.add_scatter(
+                    x=[maximum_supported], y=[0.95], mode="markers", name="95% threshold",
+                    marker={"color": _REPORT_STRATEGY, "size": 7}, showlegend=False,
+                    hovertemplate="Maximum threshold at 95% confidence: %{x:.2f}<extra></extra>",
+                    row=row_index, col=1,
+                )
+            if np.isfinite(observed_sortino) and 0.0 <= observed_sortino <= psor_curve.index[-1]:
+                figure.add_vline(
+                    x=observed_sortino,
+                    line={"color": "#6B7280", "width": 1.2, "dash": "dot"},
+                    annotation_text=f"Observed Sortino {observed_sortino:.2f}, 50%",
+                    annotation_position="top left",
+                    row=row_index,
+                    col=1,
+                    exclude_empty_subplots=False,
+                )
+                figure.add_scatter(
+                    x=[observed_sortino], y=[0.5], mode="markers", name="Observed Sortino",
+                    marker={"color": "#6B7280", "size": 7}, showlegend=False,
+                    hovertemplate="Observed Sortino %{x:.2f}<br>PSoR 50%<extra></extra>",
+                    row=row_index, col=1,
+                )
+            figure.update_xaxes(title_text="Annualized Sortino threshold", range=[0.0, psor_curve.index[-1]], row=row_index, col=1)
+            figure.update_yaxes(title_text="Probability", tickformat=".0%", range=[0.0, 1.02], row=row_index, col=1)
         elif kind == "worst_dd":
             strategy_curve = (1.0 + strategy).cumprod() - 1.0
             figure.add_scatter(
@@ -3114,6 +3749,7 @@ __all__ = [
     "show",
     "trade_distribution",
     "trades",
+    "tree_plot",
     "variance_test",
     "worst_drawdowns",
 ]

@@ -274,8 +274,12 @@ website:
               href: plot/barchart.ipynb
             - text: "Return charts"
               href: plot/returns.ipynb
+            - text: "Performance treemap"
+              href: plot/performance_treemap.ipynb
             - text: "Tearsheet report"
               href: plot/report.ipynb
+            - text: "Probabilistic ratios"
+              href: plot/psr_and_psor.ipynb
             - text: "Simulation tests"
               href: plot/simulation.ipynb
             - text: "Trade logs"

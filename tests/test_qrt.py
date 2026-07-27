@@ -1,4 +1,5 @@
 import math
+from statistics import NormalDist
 
 import numpy as np
 import pandas as pd
@@ -49,6 +50,27 @@ def test_datasets_load_trade_logs():
 def test_datasets_load_unknown_raises():
     with pytest.raises(KeyError):
         q.data.datasets.load("not-a-real-dataset")
+
+
+def test_datasets_refresh_drops_incomplete_ohlcv_rows(monkeypatch, tmp_path):
+    index = pd.date_range("2025-01-01", periods=2, name="datetime")
+    downloaded = pd.DataFrame(
+        {
+            "open": [100.0, np.nan],
+            "high": [101.0, np.nan],
+            "low": [99.0, np.nan],
+            "close": [100.5, np.nan],
+            "volume": [1_000, 500],
+        },
+        index=index,
+    )
+    monkeypatch.setattr(q.data.datasets, "_DIR", tmp_path)
+    monkeypatch.setattr(q.data.sources.yfinance, "read", lambda *args: downloaded)
+
+    q.data.datasets.refresh(["spy"], end_date="2025-01-02")
+
+    result = q.data.datasets.load("spy")
+    pd.testing.assert_frame_equal(result, downloaded.iloc[:1], check_dtype=False, check_freq=False)
 
 
 def test_trades_to_returns():
@@ -139,6 +161,138 @@ def test_performance_plot_creates_interactive_report():
     assert figure.layout.title.text == "strategy"
 
 
+def test_tree_plot_accumulates_returns_and_retains_historical_holdings():
+    index = pd.date_range("2025-01-01", periods=3)
+    asset_returns = pd.DataFrame(
+        {"AAA": [0.01, 0.02, float("nan")], "BBB": [float("nan"), -0.03, 0.01]},
+        index=index,
+    )
+
+    figure = q.plot.tree_plot(asset_returns)
+
+    assert isinstance(figure, PlotlyFigure)
+    assert figure.layout.sliders[0].active == len(figure.frames) - 1
+    assert "Plotly.animate(" not in figure.to_html(full_html=False, include_plotlyjs=False)
+    assert [button.label for button in figure.layout.updatemenus[0].buttons] == [
+        "Accumulated", "Point in time",
+    ]
+    assert figure.layout.updatemenus[0].direction == "down"
+    assert figure.layout.updatemenus[0].x == pytest.approx(1.07)
+    assert figure.layout.updatemenus[0].xanchor == "center"
+    assert figure.layout.updatemenus[0].y == pytest.approx(-0.08)
+    assert figure.layout.sliders[0].len == pytest.approx(1.0)
+    assert [trace.visible for trace in figure.data] == [None, False]
+    assert [list(frame.data[0].labels) for frame in figure.frames] == [
+        ["AAA"], ["AAA", "BBB"], ["AAA", "BBB"],
+    ]
+    assert [list(frame.data[1].labels) for frame in figure.frames] == [
+        ["AAA"], ["AAA", "BBB"], ["BBB"],
+    ]
+    assert list(figure.data[0].labels) == ["AAA", "BBB"]
+    assert list(figure.frames[1].data[0].customdata) == pytest.approx([0.0302, -0.03])
+    assert list(figure.frames[1].data[1].customdata) == pytest.approx([0.0302, -0.03])
+    assert figure.frames[1].data[1].marker.colorbar.title.text == "Cumulative return"
+    assert "Cumulative return" in figure.frames[1].data[1].hovertemplate
+    assert list(figure.data[0].customdata) == pytest.approx([0.0302, -0.0203])
+    assert [step.label for step in figure.layout.sliders[0].steps] == [
+        "2025-01-01", "2025-01-02", "2025-01-03",
+    ]
+
+
+def test_tree_plot_uses_cumulative_average_weight_for_historical_area():
+    index = pd.date_range("2025-01-01", periods=2)
+    asset_returns = pd.DataFrame({"AAA": [0.01, 0.02], "BBB": [-0.01, -0.02]}, index=index)
+    weights = pd.DataFrame({"AAA": [0.75, 0.0], "BBB": [0.25, 1.0]}, index=index)
+
+    figure = q.plot.tree_plot(asset_returns, weights=weights)
+
+    assert list(figure.frames[0].data[0].labels) == ["AAA", "BBB"]
+    assert list(figure.frames[0].data[0].values) == [0.75, 0.25]
+    assert list(figure.frames[1].data[0].labels) == ["AAA", "BBB"]
+    assert list(figure.frames[1].data[0].values) == [0.375, 0.625]
+    assert list(figure.frames[1].data[0].customdata) == pytest.approx([0.01, -0.0298])
+    assert list(figure.frames[1].data[1].labels) == ["BBB"]
+    assert list(figure.frames[1].data[1].values) == [1.0]
+    assert list(figure.frames[1].data[1].customdata) == pytest.approx([-0.0298])
+
+
+def test_report_plots_psr_threshold_sweep():
+    returns = pd.Series(
+        [0.01, -0.008] * 20,
+        index=pd.date_range("2025-01-01", periods=40),
+        name="strategy",
+    )
+
+    figure = q.plot.report(returns, psr_threshold_max=2.0, psor_threshold_max=2.5)
+    psr_trace = next(trace for trace in figure.data if trace.name == "PSR")
+    psor_trace = next(trace for trace in figure.data if trace.name == "PSoR")
+
+    assert psr_trace.x[0] == 0.0
+    assert psr_trace.x[-1] == 2.0
+    assert psr_trace.y[0] >= psr_trace.y[-1]
+    assert psor_trace.x[0] == 0.0
+    assert psor_trace.x[-1] == 2.5
+    assert psor_trace.y[0] >= psor_trace.y[-1]
+    with pytest.raises(ValueError, match="threshold_max"):
+        q.plot.report(returns, psr_threshold_max=0.0)
+    with pytest.raises(ValueError, match="threshold_max"):
+        q.plot.report(returns, psor_threshold_max=0.0)
+
+
+def test_psr_plot_is_available_as_standalone_feature():
+    returns = pd.Series(
+        [0.01, -0.008] * 20,
+        index=pd.date_range("2025-01-01", periods=40),
+        name="strategy",
+    )
+
+    figure = q.plot.psr(returns, threshold_max=2.5, points=51)
+
+    assert isinstance(figure, PlotlyFigure)
+    assert figure.layout.title.text == "Confidence That Sharpe Exceeds Threshold"
+    assert figure.data[0].name == "PSR"
+    assert len(figure.data[0].x) == 51
+    assert figure.data[0].x[-1] == 2.5
+    assert figure.data[0].y[0] >= figure.data[0].y[-1]
+    assert list(figure.data[0].customdata[0]) == pytest.approx(
+        [40, returns.skew(), returns.kurtosis() + 3.0, 20]
+    )
+    assert "Sample size" in figure.data[0].hovertemplate
+    assert any(annotation.text.startswith("95% confidence,") for annotation in figure.layout.annotations)
+    assert any(annotation.text.startswith("Observed Sharpe") and annotation.text.endswith("50%") for annotation in figure.layout.annotations)
+    observed_trace = next(trace for trace in figure.data if trace.name == "Observed Sharpe")
+    assert observed_trace.y[0] == 0.5
+    with pytest.raises(ValueError, match="points"):
+        q.plot.psr(returns, points=1)
+
+
+def test_psor_plot_is_available_as_standalone_feature():
+    returns = pd.Series(
+        [0.01, -0.008] * 20,
+        index=pd.date_range("2025-01-01", periods=40),
+        name="strategy",
+    )
+
+    figure = q.plot.psor(returns, threshold_max=4.0, points=51)
+
+    assert isinstance(figure, PlotlyFigure)
+    assert figure.layout.title.text == "Confidence That Sortino Exceeds Threshold"
+    assert figure.data[0].name == "PSoR"
+    assert len(figure.data[0].x) == 51
+    assert figure.data[0].x[-1] == 4.0
+    assert figure.data[0].y[0] >= figure.data[0].y[-1]
+    assert figure.data[0].customdata[0][0] == 40
+    assert figure.data[0].customdata[0][3] == 20
+    assert "Downside skewness" in figure.data[0].hovertemplate
+    assert "Kurtosis" in figure.data[0].hovertemplate
+    assert any(annotation.text.startswith("95% confidence,") for annotation in figure.layout.annotations)
+    assert any(annotation.text.startswith("Observed Sortino") and annotation.text.endswith("50%") for annotation in figure.layout.annotations)
+    observed_trace = next(trace for trace in figure.data if trace.name == "Observed Sortino")
+    assert observed_trace.y[0] == 0.5
+    with pytest.raises(ValueError, match="points"):
+        q.plot.psor(returns, points=1)
+
+
 def test_performance_plot_accepts_log_returns():
     simple_returns = pd.Series([0.01, -0.02, 0.03], name="strategy")
     log_returns = (1.0 + simple_returns).apply(math.log)
@@ -164,7 +318,7 @@ def test_metrics_builds_full_quantstats_table():
     assert list(frame.columns) == ["SPY", "strategy"]
     assert frame.index.names == ["Section", "Metric"]
     metric_names = frame.index.get_level_values("Metric")
-    assert {"Cumulative Return", "Prob. Sharpe Ratio", "Kelly Criterion", "Gain/Pain (1M)", "MTD", "Best Month", "Win Year"}.issubset(metric_names)
+    assert {"Cumulative Return", "Prob. Sharpe Ratio", "Prob. Sortino Ratio", "Kelly Criterion", "Gain/Pain (1M)", "MTD", "Best Month", "Win Year"}.issubset(metric_names)
     assert frame.loc[("Returns", "Cumulative Return"), "strategy"] == pytest.approx((1.0 + returns).prod() - 1.0)
     # vs. Benchmark rows are strategy-only
     assert pd.isna(frame.loc[("vs. Benchmark", "Beta"), "SPY"])
@@ -179,6 +333,7 @@ def test_metrics_builds_full_quantstats_table():
     basic = q.stats.metrics(returns, benchmark, mode="basic")
     assert len(basic) < len(frame)
     assert "Prob. Sharpe Ratio" not in basic.index.get_level_values("Metric")
+    assert "Prob. Sortino Ratio" not in basic.index.get_level_values("Metric")
 
     no_benchmark = q.stats.metrics(returns)
     assert list(no_benchmark.columns) == ["strategy"]
@@ -261,8 +416,23 @@ def test_sharpe_sortino_smart_and_adjusted_variants():
     for base in ("sharpe", "sortino", "adjusted_sortino"):
         prob = q.stats.probabilistic_ratio(returns, base=base)
         assert 0.0 <= prob <= 1.0
+    assert q.stats.probabilistic_ratio(returns, threshold=0.0) == q.stats.probabilistic_ratio(returns)
+    assert q.stats.probabilistic_ratio(returns, threshold=1.0) < q.stats.probabilistic_ratio(returns, threshold=0.0)
     with pytest.raises(ValueError):
         q.stats.probabilistic_ratio(returns, base="not-a-ratio")
+
+    psor = q.stats.probabilistic_sortino_ratio(returns)
+    assert 0.0 <= psor <= 1.0
+    assert q.stats.probabilistic_sortino_ratio(returns, threshold=1.0) < psor
+    periods = q.stats.infer_periods_per_year(returns.index)
+    annualized_sortino = q.stats.sortino(returns, periods_per_year=periods)
+    periodic_sortino = annualized_sortino / math.sqrt(periods)
+    downside = returns[returns < 0.0]
+    variance = 1.0 + periodic_sortino**2 / 2.0 - downside.skew() * periodic_sortino
+    expected = NormalDist().cdf(periodic_sortino * math.sqrt(len(downside) - 1) / math.sqrt(variance))
+    assert psor == pytest.approx(expected)
+    assert q.stats.probabilistic_sortino_ratio(returns, threshold=annualized_sortino) == pytest.approx(0.5)
+    assert math.isnan(q.stats.probabilistic_sortino_ratio(pd.Series([0.01, -0.01, 0.02])))
 
     stats = q.stats.performance(returns, smart=True)
     assert stats["Sharpe"] == pytest.approx(q.stats.sharpe(returns, smart=True))

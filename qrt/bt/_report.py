@@ -7,6 +7,7 @@ from collections.abc import Mapping
 from dataclasses import dataclass, field
 from html import escape
 import json
+from math import isfinite
 from pathlib import Path
 from typing import Any
 
@@ -15,8 +16,8 @@ import plotly.graph_objects as go
 from plotly.io import to_html as plotly_to_html
 from plotly.subplots import make_subplots
 
-from qrt.plot import mae_mfe, report as returns_report, trade_distribution
-from qrt.stats import trade_stats
+from qrt.plot import mae_mfe, report as returns_report, trade_distribution, tree_plot
+from qrt.stats import metrics as performance_metrics, trade_stats
 
 
 JsonObject = Mapping[str, Any]
@@ -39,6 +40,13 @@ _HEADLINE_STATISTICS = (
 _STATISTIC_LABELS = {
     "Compounding Annual Return": "CAGR",
 }
+_QRT_HEADLINE_METRICS = (
+    ("Risk-Adjusted", "Prob. Sharpe Ratio", "PSR @ Th = 0", "positive", ".2%"),
+    ("Risk-Adjusted", "Prob. Sortino Ratio", "PSoR @ Th = 0", "positive", ".2%"),
+    ("Risk-Adjusted", "Sortino", "Sortino", "positive", ".2f"),
+    ("Risk-Adjusted", "Calmar", "Calmar", "positive", ".2f"),
+    ("Risk", "Volatility (ann.)", "Volatility", "risk", ".2%"),
+)
 _REPORT_BLUE = "#58B4E9"
 _REPORT_GRAY = "#AEB8BD"
 _REPORT_ORANGE = "#F5A623"
@@ -136,6 +144,22 @@ def _series_values(result: JsonObject, chart: str, series: str) -> pd.Series:
         dtype=float,
     )
     return extracted.groupby(level=0).last().sort_index()
+
+
+def _chart_frame(result: JsonObject, chart: str) -> pd.DataFrame | None:
+    """Extract all numeric series from a LEAN chart into a wide frame."""
+    raw_chart = result.get("charts", {}).get(chart, {})
+    raw_series = raw_chart.get("series", {}) if isinstance(raw_chart, Mapping) else {}
+    series = [
+        _series_values(result, chart, str(name)).rename(str(name))
+        for name in raw_series
+    ]
+    series = [values for values in series if not values.empty]
+    if not series:
+        return None
+    frame = pd.concat(series, axis=1).sort_index()
+    frame.index = frame.index.tz_convert(None)
+    return frame
 
 
 def _returns(result: JsonObject) -> tuple[pd.Series, pd.Series, pd.Series | None]:
@@ -400,6 +424,7 @@ class BacktestReport:
     figure: go.Figure
     diagnostics: go.Figure | None = None
     margin_allocation: go.Figure | None = None
+    performance_treemap: go.Figure | None = None
     trade_excursions: go.Figure | None = None
     trade_returns: go.Figure | None = None
     _raw: dict[str, Any] = field(default_factory=dict, repr=False)
@@ -413,7 +438,7 @@ class BacktestReport:
             "Drawdown": "risk",
             "Win Rate": "positive",
         }
-        cards = "".join(
+        lean_cards = [
             (
                 f'<div class="card {card_kinds.get(name, "neutral")}">'
                 f"<span>{escape(_STATISTIC_LABELS.get(name, name))}</span>"
@@ -421,7 +446,24 @@ class BacktestReport:
                 "</div>"
             )
             for name in _HEADLINE_STATISTICS
-        )
+        ]
+        periods_per_year = self.configuration.get("tradingDaysPerYear")
+        qrt_metrics = performance_metrics(
+            self.returns,
+            periods_per_year=int(periods_per_year) if periods_per_year else None,
+        ).iloc[:, -1]
+        qrt_cards = []
+        for section, name, label, kind, format_spec in _QRT_HEADLINE_METRICS:
+            value = qrt_metrics.get((section, name))
+            number = float(value) if value is not None and not pd.isna(value) else float("nan")
+            formatted = format(number, format_spec) if isfinite(number) else "—"
+            qrt_cards.append(
+                f'<div class="card {kind}">'
+                f"<span>{escape(label)}</span>"
+                f"<strong>{escape(formatted)}</strong>"
+                "</div>"
+            )
+        cards = "".join([*lean_cards, *qrt_cards])
         config_bits = [
             self.configuration.get("accountCurrency"),
             self.configuration.get("startDate", "")[:10],
@@ -440,6 +482,7 @@ class BacktestReport:
                 full_html=False,
                 include_plotlyjs=False,
                 config={"responsive": True, "displaylogo": False},
+                auto_play=False,
             )
             if self.diagnostics is not None
             else ""
@@ -452,6 +495,16 @@ class BacktestReport:
                 config={"responsive": True, "displaylogo": False},
             )
             if self.margin_allocation is not None
+            else ""
+        )
+        performance_treemap = (
+            plotly_to_html(
+                self.performance_treemap,
+                full_html=False,
+                include_plotlyjs=False,
+                config={"responsive": True, "displaylogo": False},
+            )
+            if self.performance_treemap is not None
             else ""
         )
         trade_figures = "".join(
@@ -484,8 +537,8 @@ h1 {{ margin: 0 0 8px; font-size: 30px; }}
 h2 {{ margin: 0 0 18px; font-size: 21px; }}
 p {{ color: #4b5563; }}
 .subtitle, .source {{ margin: 5px 0; font-size: 14px; }}
-.cards {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin: 18px 0; }}
-.card {{ background: white; border: 1px solid #e5e7eb; border-top: 3px solid #94a3b8; border-radius: 12px; padding: 16px; }}
+.cards {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(108px, 1fr)); gap: 12px; margin: 18px 0; }}
+.card {{ min-height: 108px; background: white; border: 1px solid #e5e7eb; border-top: 3px solid #94a3b8; border-radius: 12px; padding: 16px; }}
 .card.positive {{ border-top-color: #58b4e9; }}
 .card.risk {{ border-top-color: #f5a623; }}
 .card span {{ display: block; color: #6b7280; font-size: 13px; margin-bottom: 7px; }}
@@ -516,6 +569,7 @@ details > div {{ margin-top: 18px; }}
 <div class="cards">{cards}</div>
 <section class="plot">{tearsheet}</section>
 {f'<section class="plot">{diagnostics}</section>' if diagnostics else ''}
+{f'<section class="plot">{performance_treemap}</section>' if performance_treemap else ''}
 {f'<section class="plot">{margin_allocation}<p class="chart-note">Based on the latest positive values recorded in LEAN’s Portfolio Margin chart; this is margin usage, not market-value asset allocation.</p></section>' if margin_allocation else ''}
 {f'<section><h2>Trade Analytics</h2><div class="trade-grid">{trade_figures}</div>{_table(self.trade_statistics.reset_index(names="Metric"))}</section>' if trade_figures else ''}
 <section><h2>Closed Trades</h2>{_table(self.trades, limit=500)}</section>
@@ -566,6 +620,8 @@ details > div {{ margin-top: 18px; }}
 def report(
     source: str | Path | JsonObject,
     *,
+    asset_returns: pd.DataFrame | None = None,
+    asset_weights: pd.DataFrame | pd.Series | None = None,
     title: str | None = None,
     description: str = "",
     output: str | Path | None = None,
@@ -580,6 +636,11 @@ def report(
         source: LEAN result JSON path, a backtests directory from which the
             newest completed result is selected, or an already loaded result
             mapping.
+        asset_returns: Optional wide simple-return frame used for the portfolio
+            performance treemap. ``NaN`` means the asset is not in the portfolio
+            at that timestamp.
+        asset_weights: Optional time-varying or static portfolio weights. When
+            supplied, nonzero absolute weights determine membership and tile area.
         title: Report title. Inferred from the project/configuration when omitted.
         description: Optional strategy description.
         output: Optional destination for a self-contained HTML report.
@@ -590,6 +651,9 @@ def report(
     result, source_path = _read_result(source)
     configuration = dict(result.get("algorithmConfiguration") or {})
     equity, strategy_returns, benchmark = _returns(result)
+    if asset_returns is None:
+        asset_returns = _chart_frame(result, "Asset Returns")
+        asset_weights = _chart_frame(result, "Asset Weights")
     inferred_title = str(configuration.get("name") or "").strip()
     if not inferred_title or inferred_title == "local":
         inferred_title = source_path.parents[2].name if source_path is not None and len(source_path.parents) > 2 else "LEAN Backtest"
@@ -619,6 +683,11 @@ def report(
         figure=figure,
         diagnostics=_diagnostics_figure(result),
         margin_allocation=_margin_allocation_figure(result),
+        performance_treemap=(
+            tree_plot(asset_returns, weights=asset_weights)
+            if asset_returns is not None
+            else None
+        ),
         trade_excursions=mae_mfe(trades) if not trades.empty else None,
         trade_returns=trade_distribution(trades, by=None) if not trades.empty else None,
         _raw=result,

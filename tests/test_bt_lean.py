@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import subprocess
 
+import pandas as pd
 import pytest
 
 import qrt as q
@@ -141,7 +142,15 @@ def test_backtest_owns_exact_output_and_generates_report(monkeypatch, tmp_path):
     )
     result = run.wait()
     report_path = tmp_path / "report.html"
-    report = result.report(report_path, title="Adapter report")
+    asset_returns = pd.DataFrame(
+        {"AAA": [0.01, 0.02]},
+        index=pd.date_range("2024-01-02", periods=2),
+    )
+    report = result.report(
+        report_path,
+        asset_returns=asset_returns,
+        title="Adapter report",
+    )
 
     command = observed["process"].command
     assert result.succeeded
@@ -153,6 +162,7 @@ def test_backtest_owns_exact_output_and_generates_report(monkeypatch, tmp_path):
     assert ("--parameter", "count", "10") == command[command.index("--parameter", 5) + 3:][:3]
     assert "true" in command
     assert report.title == "Adapter report"
+    assert report.performance_treemap is not None
     assert report_path.is_file()
 
 

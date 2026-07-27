@@ -51,6 +51,7 @@ START_DATE = "2000-01-01"
 TRADE_LOGS = ("spy_breakout", "spy_ema_cross", "spy_random", "spy_rsi2")
 
 _DIR = Path(__file__).parent
+_OHLCV_COLUMNS = ("open", "high", "low", "close", "volume")
 
 AVAILABLE = tuple(sorted((*_SYMBOLS, *TRADE_LOGS)))
 
@@ -108,5 +109,8 @@ def refresh(names: list[str] | None = None, end_date: str | date | None = None) 
     for name in names:
         symbol = _SYMBOLS[name]
         df = _yfinance.read(symbol, START_DATE, end, "1D")
+        df = df.dropna(subset=list(_OHLCV_COLUMNS))
+        if df.empty:
+            raise ValueError(f"Downloaded {symbol} data contains no complete OHLCV rows")
         _save_file(df, _DIR / f"{name}.parquet", index=True)
         print(f"Updated {name}.parquet: {len(df)} rows ({symbol}, {df.index[0]:%Y-%m-%d} to {df.index[-1]:%Y-%m-%d})")

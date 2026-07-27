@@ -45,6 +45,7 @@ class SwedenSmaCrossAlgorithm(QCAlgorithm):
             self.get_parameter("expected-daily-universe-members")
         )
         self._states: dict[Symbol, SmaPair] = {}
+        self._previous_closes: dict[Symbol, float] = {}
         self._target_symbols: set[Symbol] = set()
         self._seen_symbols: set[Symbol] = set()
         self._ready_symbols: set[Symbol] = set()
@@ -80,15 +81,20 @@ class SwedenSmaCrossAlgorithm(QCAlgorithm):
             if self.portfolio[symbol].invested:
                 self.liquidate(symbol, tag="Removed from Sweden universe")
             self._states.pop(symbol, None)
+            self._previous_closes.pop(symbol, None)
             self._target_symbols.discard(symbol)
             self._ready_symbols.discard(symbol)
 
     def on_data(self, data: Slice) -> None:
         regime_changed = False
+        closes: dict[Symbol, float] = {}
 
         for symbol, state in self._states.items():
             bar = data.bars.get(symbol)
-            if bar is None or not state.update(bar.end_time, bar.close):
+            if bar is None:
+                continue
+            closes[symbol] = float(bar.close)
+            if not state.update(bar.end_time, bar.close):
                 continue
 
             self._ready_symbols.add(symbol)
@@ -108,6 +114,21 @@ class SwedenSmaCrossAlgorithm(QCAlgorithm):
 
         if regime_changed:
             self._rebalance()
+        self._record_asset_performance(closes)
+
+    def _record_asset_performance(self, closes: dict[Symbol, float]) -> None:
+        portfolio_value = float(self.portfolio.total_portfolio_value)
+        for symbol, close in closes.items():
+            previous = self._previous_closes.get(symbol)
+            holding = self.portfolio[symbol]
+            if holding.invested and previous not in (None, 0) and portfolio_value:
+                self.plot("Asset Returns", symbol.value, close / previous - 1)
+                self.plot(
+                    "Asset Weights",
+                    symbol.value,
+                    float(holding.holdings_value) / portfolio_value,
+                )
+            self._previous_closes[symbol] = close
 
     def _rebalance(self) -> None:
         bullish = {

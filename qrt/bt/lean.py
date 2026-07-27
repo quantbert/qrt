@@ -22,6 +22,8 @@ from threading import Lock, Thread
 from typing import Any, TextIO
 from uuid import uuid4
 
+import pandas as pd
+
 from qrt.bt._report import BacktestReport, _latest_result, report as create_report
 
 
@@ -112,6 +114,8 @@ class LeanBacktestResult(LeanCommandResult):
         self,
         destination: str | Path,
         *,
+        asset_returns: pd.DataFrame | None = None,
+        asset_weights: pd.DataFrame | pd.Series | None = None,
         title: str | None = None,
         description: str = "",
     ) -> BacktestReport:
@@ -120,6 +124,8 @@ class LeanBacktestResult(LeanCommandResult):
             raise LeanArtifactError("This backtest has no LEAN result JSON")
         return create_report(
             self.result_path,
+            asset_returns=asset_returns,
+            asset_weights=asset_weights,
             title=title,
             description=description,
             output=destination,

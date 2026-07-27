@@ -47,9 +47,15 @@ Pages:
   DataFrame column selection, sorting, aggregation, and custom color schemes.
 - [Return charts](returns.ipynb) — column charts, equity curves, drawdowns,
   full performance reports, and monthly heatmaps.
+- [Portfolio performance treemap](performance_treemap.ipynb) — switch between
+  accumulated held-period performance and point-in-time holdings with a shared
+  date slider and optional exposure sizing.
 - [Tearsheet report](report.ipynb) — full quantstats-style strategy tearsheet
   (`q.plot.report`) plus its individual panels (metrics table, cumulative
   returns, EOY returns, rolling diagnostics, worst drawdowns, ...).
+- [Probabilistic ratios](psr_and_psor.ipynb) — Sharpe and Sortino point
+  estimates, PSR/PSoR sampling confidence, annualized thresholds, and
+  standalone probability curves.
 - [Simulation tests](simulation.ipynb) — Monte Carlo fan charts and outcome
   distributions, variance testing, and noise testing.
 - [Trade logs](trades.ipynb) — trade markers on price, MAE/MFE excursions,

@@ -1040,6 +1040,7 @@ def metrics(
             ("Risk-Adjusted", "Prob. Sharpe Ratio"): probabilistic_ratio(series, base="sharpe", periods_per_year=periods, rf=rf),
             ("Risk-Adjusted", "Smart Sharpe"): sharpe(series, periods_per_year=periods, rf=rf, smart=True),
             ("Risk-Adjusted", "Sortino"): sortino(series, periods_per_year=periods, rf=rf),
+            ("Risk-Adjusted", "Prob. Sortino Ratio"): probabilistic_sortino_ratio(series, periods_per_year=periods, rf=rf),
             ("Risk-Adjusted", "Smart Sortino"): sortino(series, periods_per_year=periods, rf=rf, smart=True),
             ("Risk-Adjusted", "Sortino/√2"): adjusted_sortino(series, periods_per_year=periods, rf=rf),
             ("Risk-Adjusted", "Smart Sortino/√2"): adjusted_sortino(series, periods_per_year=periods, rf=rf, smart=True),
@@ -1606,12 +1607,13 @@ def probabilistic_ratio(
     returns: pd.Series,
     *,
     base: Literal["sharpe", "sortino", "adjusted_sortino"] = "sharpe",
+    threshold: float = 0.0,
     return_type: ReturnType = "simple",
     periods_per_year: int | None = None,
     rf: float = 0.0,
     smart: bool = False,
 ) -> float:
-    """Calculate the probability that a risk-adjusted ratio is truly positive.
+    """Calculate the probability that a risk-adjusted ratio exceeds a threshold.
 
     The Probabilistic Sharpe Ratio (Bailey & Lopez de Prado, 2012) converts a point-estimate ratio
     into a confidence level by accounting for sample size, skew, and kurtosis, all of which affect
@@ -1621,6 +1623,8 @@ def probabilistic_ratio(
     Args:
         returns: Periodic return series (simple or log, per ``return_type``).
         base: Which ratio to convert: ``"sharpe"``, ``"sortino"``, or ``"adjusted_sortino"``.
+        threshold: Annualized benchmark ratio the observed ratio must exceed.
+            Defaults to ``0.0``.
         return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
         periods_per_year: Annualization frequency. Inferred from the index
             when not given.
@@ -1630,7 +1634,7 @@ def probabilistic_ratio(
             :func:`sharpe`/:func:`sortino`.
 
     Returns:
-        Probability (0-1) that the true ratio is greater than zero.
+        Probability (0-1) that the true ratio is greater than ``threshold``.
     """
     if base not in ("sharpe", "sortino", "adjusted_sortino"):
         raise ValueError("base must be one of 'sharpe', 'sortino', or 'adjusted_sortino'")
@@ -1639,15 +1643,65 @@ def probabilistic_ratio(
     base_fn = {"sharpe": sharpe, "sortino": sortino, "adjusted_sortino": adjusted_sortino}[base]
     annualized = base_fn(series, periods_per_year=periods, rf=rf, smart=smart)
     ratio = annualized / periods**0.5
+    threshold_ratio = threshold / periods**0.5
     n = len(series)
-    if n < 2 or not np.isfinite(ratio):
+    if n < 2 or not np.isfinite(ratio) or not np.isfinite(threshold_ratio):
         return float("nan")
     skewness = float(series.skew())
     kurtosis_raw = float(series.kurtosis()) + 3.0
     variance = 1.0 - skewness * ratio + (kurtosis_raw - 1.0) / 4.0 * ratio**2
     if variance <= 0:
         return float("nan")
-    z = ratio * (n - 1) ** 0.5 / variance**0.5
+    z = (ratio - threshold_ratio) * (n - 1) ** 0.5 / variance**0.5
+    return float(norm.cdf(z))
+
+
+def probabilistic_sortino_ratio(
+    returns: pd.Series,
+    *,
+    threshold: float = 0.0,
+    return_type: ReturnType = "simple",
+    periods_per_year: int | None = None,
+    rf: float = 0.0,
+    smart: bool = False,
+) -> float:
+    """Calculate the probability that the Sortino ratio exceeds a threshold.
+
+    Unlike :func:`probabilistic_ratio`, this downside-specific estimate uses
+    only negative excess-return observations for its effective sample size and
+    skewness correction. The public ratio and threshold are annualized, then
+    converted to per-period units before evaluating sampling uncertainty.
+
+    Args:
+        returns: Periodic return series (simple or log, per ``return_type``).
+        threshold: Annualized Sortino ratio benchmark. Defaults to ``0.0``.
+        return_type: Whether ``returns`` are ``"simple"`` or ``"log"`` returns.
+        periods_per_year: Annualization frequency. Inferred from the index
+            when not given.
+        rf: Annualized risk-free rate used as the minimum acceptable return.
+            Defaults to ``0.0``.
+        smart: Whether to penalize the observed Sortino ratio for return
+            autocorrelation. Defaults to ``False``.
+
+    Returns:
+        Probability (0-1) that the true Sortino ratio exceeds ``threshold``.
+        Returns NaN when fewer than three downside observations are available
+        or the estimated variance is not positive.
+    """
+    series = _simple_returns(returns, return_type)
+    periods = _periods_per_year(periods_per_year, series.index)
+    excess = _excess_returns(series, rf, periods)
+    downside = excess[excess < 0.0]
+    annualized = sortino(series, periods_per_year=periods, rf=rf, smart=smart)
+    ratio = annualized / periods**0.5
+    threshold_ratio = threshold / periods**0.5
+    if len(downside) < 3 or not np.isfinite(ratio) or not np.isfinite(threshold_ratio):
+        return float("nan")
+    downside_skew = float(downside.skew())
+    variance = 1.0 + ratio**2 / 2.0 - downside_skew * ratio
+    if not np.isfinite(variance) or variance <= 0:
+        return float("nan")
+    z = (ratio - threshold_ratio) * (len(downside) - 1) ** 0.5 / variance**0.5
     return float(norm.cdf(z))
 
 

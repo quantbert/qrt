@@ -37,6 +37,8 @@ from qrt.plot.interactive import (
     montecarlo_distribution,
     noise_test,
     precision_recall,
+    psr,
+    psor,
     report,
     return_quantiles,
     rolling_beta,
@@ -48,6 +50,7 @@ from qrt.plot.interactive import (
     show,
     trade_distribution,
     trades,
+    tree_plot,
     variance_test,
     worst_drawdowns,
 )
@@ -155,6 +158,8 @@ __all__ = [
     "noise_test",
     "performance",
     "precision_recall",
+    "psr",
+    "psor",
     "report",
     "return_quantiles",
     "rolling_beta",
@@ -167,6 +172,7 @@ __all__ = [
     "tearsheet",
     "trade_distribution",
     "trades",
+    "tree_plot",
     "variance_test",
     "worst_drawdowns",
 ]
