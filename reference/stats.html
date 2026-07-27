@@ -5295,7 +5295,7 @@ window.Quarto = {
 <span id="cb70-8"><a href="#cb70-8" aria-hidden="true" tabindex="-1"></a>    smart<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb70-9"><a href="#cb70-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate the probability that the Sortino ratio exceeds a threshold.</p>
-<p>Unlike :func:<code>probabilistic_ratio</code>, this downside-specific estimate uses only negative excess-return observations for its effective sample size and skewness correction.</p>
+<p>Unlike :func:<code>probabilistic_ratio</code>, this downside-specific estimate uses only negative excess-return observations for its effective sample size and skewness correction. The public ratio and threshold are annualized, then converted to per-period units before evaluating sampling uncertainty.</p>
 <section id="parameters-49" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-49">Parameters</h4>
 <table class="caption-top table">

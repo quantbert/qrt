@@ -1,0 +1,2344 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Probabilistic Sharpe and Sortino ratios – qrt</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../plot/simulation.html" rel="next">
+<link href="../plot/report.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-234273dcd3ff8f4bdb782b4fb3f12a13.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+<script>
+window.PlotlyConfig = {MathJaxConfig: 'local'};
+if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}
+</script>
+<script type="module">import "https://cdn.plot.ly/plotly-3.7.0.min"</script>
+
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../reference/_styles-quartodoc.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">qrt — Quant Research Tools</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Getting Started</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../reference/index.html"> 
+<span class="menu-text">API Reference</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../roadmap.html"> 
+<span class="menu-text">Roadmap</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+    <a href="https://github.com/quantbert/qrt" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../plot/index.html">q.plot — Plotting</a></li><li class="breadcrumb-item"><a href="../plot/psr_and_psor.html">Probabilistic ratios</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Getting Started</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../bt/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.bt — Backtesting</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../bt/lean.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Run LEAN backtests</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lean/qbt-integration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">LEAN adapter and reports</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../bt/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../data/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.data — Data</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data/datasets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sample datasets</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data/schemas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data schemas</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data/local.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Local files</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data/sources.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Market data sources</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../ai/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.ai — Generative AI</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../ai/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../experiment/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.experiment — Experiment tracking</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../experiment/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../indicator/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.indicator — Indicators</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
+ <span class="menu-text">QRT indicators</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/sma.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simple moving average (SMA)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/ema.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Exponential moving average (EMA)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/madev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Mean absolute deviation (MADEV)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/returns.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simple returns</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/momentum.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Price momentum</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/rolling_volatility.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Rolling volatility</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/volume_ratio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Relative volume</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/volume_spike_ratio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Volume spike ratio</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/price_spikes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Price spikes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/log_returns.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Log returns</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/realized_variance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Realized variance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/realized_quarticity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Realized quarticity</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/bipower_variation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bipower variation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/med_rv.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Median realized volatility</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/min_rv.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Minimum realized volatility</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/realized_volatility.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Realized volatility by session</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/relative_strength.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Relative strength</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/rsma.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Relative-strength moving average</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/rs_days.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Relative-strength days</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/rs_phase.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Relative-strength phase</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/qrt/rsnhbp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">RS new high before price</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/talib.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TA-Lib</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/pandas_ta.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">pandas-ta-classic</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../indicator/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../cross_section/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.cross_section — Cross-sectional analysis</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../cross_section/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../label/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.label — Financial labels</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/cusum_filter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CUSUM event filter</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/vertical_barriers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Vertical barriers</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/fixed_horizon.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Fixed-horizon labels</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/triple_barrier.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Triple-barrier labels</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/meta_label.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Meta-labels</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/trend_scanning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Trend-scanning labels</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/prune_labels.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Rare-label pruning</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/concurrency.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Label concurrency</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/indicator_matrix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Event indicator matrix</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/average_uniqueness.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Average label uniqueness</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/sequential_bootstrap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sequential bootstrap</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/purging_metadata.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Purging and embargo metadata</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/sample_weights.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Return-attribution weights</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/time_decay.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Linear time decay</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/class_balance_weights.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Class-balance weights</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/combine_weights.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Combine sample weights</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../label/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../dataset/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.dataset — ML datasets</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../dataset/temporal_split.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Temporal split</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../dataset/time_series_split.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Time-series split</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../dataset/splitting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Splitting datasets</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../dataset/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../transform/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.transform — Transformations</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../transform/impute.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Missing data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../transform/scale.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Scaling</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../transform/outlier.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Outliers</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../transform/encode.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Encoding</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../transform/reduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Reduction</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../transform/selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Selection</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../transform/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../calendar/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.calendar — Market time</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../calendar/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../signal/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.signal — Signals</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../signal/tutorial.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Visual signal tutorial</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../signal/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../model/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.model — Models</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-13" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../model/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../ray/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.ray — Distributed computing</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-14" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-14" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../ray/train.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ray Train tutorial</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../skypilot/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SkyPilot — Compute orchestration</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-15" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-15" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../skypilot/training.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Launch a training run</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../skypilot/vscode.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">VS Code over SSH</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../skypilot/strix-halo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Local Strix Halo cluster</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../lean/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">LEAN — Backtesting engine</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-16" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-16" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lean/setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Install and initialize</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lean/workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Projects and backtests</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lean/fileformat.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Native data formats</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lean/sweden-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Generate Sweden data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lean/universes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Universes and composites</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lean/sma.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">20/100 SMA strategy</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lean/reports.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Generate reports</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lean/troubleshooting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Troubleshooting</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../gym/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.gym — Financial RL</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-17" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-17" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../gym/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../env/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.env — Environment</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-18" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-18" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../env/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../plot/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.plot — Plotting</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-19" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-19" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/correlation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Correlation Plots</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/correlation_heatmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Correlation heatmap</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/classification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Classification curves</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/barchart.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ranked bar charts</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/returns.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Return charts</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/report.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tearsheet report</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/psr_and_psor.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Probabilistic ratios</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/simulation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simulation tests</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/trades.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Trade logs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/saving.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Saving figures</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plot/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../portfolio/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.portfolio — Portfolio</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-20" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-20" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../portfolio/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../stats/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.stats — Statistics</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-21" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-21" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats/risk.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Risk estimators</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats/netto-number.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Netto Number</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats/performance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Performance &amp; benchmark</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats/rolling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Rolling &amp; calendar returns</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats/factors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Factor analytics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats/chained.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chained API</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../utils/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.utils — Utilities</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-22" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-22" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../utils/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#from-ratios-to-probabilities" id="toc-from-ratios-to-probabilities" class="nav-link active" data-scroll-target="#from-ratios-to-probabilities">From ratios to probabilities</a>
+  <ul class="collapse">
+  <li><a href="#imports-and-reproducible-return-series" id="toc-imports-and-reproducible-return-series" class="nav-link" data-scroll-target="#imports-and-reproducible-return-series">1. Imports and reproducible return series</a></li>
+  <li><a href="#sharpe-ratio-reward-per-unit-of-total-variability" id="toc-sharpe-ratio-reward-per-unit-of-total-variability" class="nav-link" data-scroll-target="#sharpe-ratio-reward-per-unit-of-total-variability">2. Sharpe ratio: reward per unit of total variability</a></li>
+  <li><a href="#sortino-ratio-reward-relative-to-harmful-variation" id="toc-sortino-ratio-reward-relative-to-harmful-variation" class="nav-link" data-scroll-target="#sortino-ratio-reward-relative-to-harmful-variation">3. Sortino ratio: reward relative to harmful variation</a></li>
+  <li><a href="#sampling-uncertainty-and-higher-moments" id="toc-sampling-uncertainty-and-higher-moments" class="nav-link" data-scroll-target="#sampling-uncertainty-and-higher-moments">4. Sampling uncertainty and higher moments</a></li>
+  <li><a href="#probabilistic-sharpe-ratio-psr" id="toc-probabilistic-sharpe-ratio-psr" class="nav-link" data-scroll-target="#probabilistic-sharpe-ratio-psr">5. Probabilistic Sharpe Ratio (PSR)</a></li>
+  <li><a href="#probabilistic-sortino-ratio-psor" id="toc-probabilistic-sortino-ratio-psor" class="nav-link" data-scroll-target="#probabilistic-sortino-ratio-psor">6. Probabilistic Sortino Ratio (PSoR)</a></li>
+  <li><a href="#validate-the-manual-calculations" id="toc-validate-the-manual-calculations" class="nav-link" data-scroll-target="#validate-the-manual-calculations">7. Validate the manual calculations</a></li>
+  <li><a href="#compare-return-distributions" id="toc-compare-return-distributions" class="nav-link" data-scroll-target="#compare-return-distributions">8. Compare return distributions</a></li>
+  <li><a href="#probability-across-annualized-thresholds" id="toc-probability-across-annualized-thresholds" class="nav-link" data-scroll-target="#probability-across-annualized-thresholds">9. Probability across annualized thresholds</a></li>
+  <li><a href="#cards-must-name-their-threshold" id="toc-cards-must-name-their-threshold" class="nav-link" data-scroll-target="#cards-must-name-their-threshold">10. Cards must name their threshold</a></li>
+  <li><a href="#edge-cases-and-numerical-stability" id="toc-edge-cases-and-numerical-stability" class="nav-link" data-scroll-target="#edge-cases-and-numerical-stability">11. Edge cases and numerical stability</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.dev/quantbert/qrt/blob/main/plot/psr_and_psor.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/plot/psr_and_psor.ipynb" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../plot/index.html">q.plot — Plotting</a></li><li class="breadcrumb-item"><a href="../plot/psr_and_psor.html">Probabilistic ratios</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Probabilistic Sharpe and Sortino ratios</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="from-ratios-to-probabilities" class="level1">
+<h1>From ratios to probabilities</h1>
+<p>Sharpe and Sortino answer <strong>how much reward was observed per unit of risk</strong>. PSR and PSoR answer a different question: <strong>how strong is the statistical evidence that the corresponding population ratio exceeds a chosen threshold?</strong></p>
+<p>That distinction matters because a large ratio from a short, skewed, or fat-tailed sample can be much less persuasive than the same ratio from a long, well-behaved sample. This notebook derives all four measures using QRT’s exact conventions, validates manual calculations against <code>q.stats</code>, and visualizes how confidence changes with the threshold.</p>
+<p>The examples are educational diagnostics, not forecasts. None of these statistics removes selection bias, regime change, transaction costs, or dependence between observations.</p>
+<section id="imports-and-reproducible-return-series" class="level2">
+<h2 class="anchored" data-anchor-id="imports-and-reproducible-return-series">1. Imports and reproducible return series</h2>
+<p>We use 252 observations per year and a fixed random seed. Four synthetic series isolate common distribution shapes; bundled AAPL returns provide a realistic, offline example. Keeping <code>periods_per_year</code> explicit prevents daily and annualized ratios from being mixed accidentally.</p>
+<div id="143446ff" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> norm</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> qrt <span class="im">as</span> q</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>pd.options.display.float_format <span class="op">=</span> <span class="st">"</span><span class="sc">{:.4f}</span><span class="st">"</span>.<span class="bu">format</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">42</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>periods_per_year <span class="op">=</span> <span class="dv">252</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>n_observations <span class="op">=</span> <span class="dv">756</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>dates <span class="op">=</span> pd.bdate_range(<span class="st">"2023-01-02"</span>, periods<span class="op">=</span>n_observations)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>normal_returns <span class="op">=</span> pd.Series(rng.normal(<span class="fl">0.0005</span>, <span class="fl">0.012</span>, n_observations), index<span class="op">=</span>dates, name<span class="op">=</span><span class="st">"Normal"</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>negative_skew_returns <span class="op">=</span> pd.Series(</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="fl">0.0015</span> <span class="op">-</span> rng.lognormal(<span class="op">-</span><span class="fl">5.2</span>, <span class="fl">0.9</span>, n_observations), index<span class="op">=</span>dates, name<span class="op">=</span><span class="st">"Negative skew"</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a> )</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>fat_tailed_returns <span class="op">=</span> pd.Series(</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="fl">0.0005</span> <span class="op">+</span> rng.standard_t(<span class="dv">4</span>, n_observations) <span class="op">*</span> <span class="fl">0.0085</span>, index<span class="op">=</span>dates, name<span class="op">=</span><span class="st">"Fat tailed"</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a> )</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>lottery_returns <span class="op">=</span> pd.Series(</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    np.where(rng.random(n_observations) <span class="op">&lt;</span> <span class="fl">0.025</span>, <span class="op">-</span><span class="fl">0.075</span>, <span class="fl">0.0025</span>),</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span>dates,</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">"Frequent gains / rare losses"</span>,</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>synthetic_returns <span class="op">=</span> {</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    series.name: series</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> series <span class="kw">in</span> [normal_returns, negative_skew_returns, fat_tailed_returns, lottery_returns]</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>aapl <span class="op">=</span> q.data.datasets.load(<span class="st">"aapl"</span>)</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>returns <span class="op">=</span> aapl[<span class="st">"close"</span>].pct_change().dropna().loc[<span class="st">"2016"</span>:].rename(<span class="st">"AAPL"</span>)</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>returns.describe()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>count   2653.0000
+mean       0.0011
+std        0.0182
+min       -0.1286
+25%       -0.0071
+50%        0.0011
+75%        0.0100
+max        0.1533
+Name: AAPL, dtype: float64</code></pre>
+</div>
+</div>
+</section>
+<section id="sharpe-ratio-reward-per-unit-of-total-variability" class="level2">
+<h2 class="anchored" data-anchor-id="sharpe-ratio-reward-per-unit-of-total-variability">2. Sharpe ratio: reward per unit of total variability</h2>
+<p>For periodic returns <span class="math inline">\(r_t\)</span> and annualized risk-free rate <span class="math inline">\(r_f\)</span>, QRT first converts the risk-free rate to a per-period rate:</p>
+<p><span class="math display">\[r_{f,p}=(1+r_f)^{1/q}-1,\]</span></p>
+<p>where <span class="math inline">\(q\)</span> is the number of periods per year. With excess returns <span class="math inline">\(x_t=r_t-r_{f,p}\)</span>, QRT computes</p>
+<p><span class="math display">\[\widehat{SR}_p=\frac{\bar{x}}{s_x}, \qquad \widehat{SR}_{ann}=\sqrt{q}\,\widehat{SR}_p,\]</span></p>
+<p>where <span class="math inline">\(s_x\)</span> is the <strong>sample</strong> standard deviation (<code>ddof=1</code>). Sharpe is useful when upside and downside variability both represent risk, or when strategies have approximately symmetric return distributions. It is easy to compare, but can be distorted by outliers, negative skew, fat tails, stale prices, serial correlation, a mismatched risk-free rate, or an inappropriate annualization frequency. Set <code>smart=True</code> to apply QRT’s autocorrelation penalty to the denominator.</p>
+<div id="49a392f3" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>annual_rf <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>periodic_rf <span class="op">=</span> (<span class="fl">1.0</span> <span class="op">+</span> annual_rf) <span class="op">**</span> (<span class="fl">1.0</span> <span class="op">/</span> periods_per_year) <span class="op">-</span> <span class="fl">1.0</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>excess_returns <span class="op">=</span> returns <span class="op">-</span> periodic_rf</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>sharpe_periodic_manual <span class="op">=</span> excess_returns.mean() <span class="op">/</span> excess_returns.std(ddof<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>sharpe_annual_manual <span class="op">=</span> sharpe_periodic_manual <span class="op">*</span> np.sqrt(periods_per_year)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>sharpe_annual_qrt <span class="op">=</span> q.stats.sharpe(</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    returns, periods_per_year<span class="op">=</span>periods_per_year, rf<span class="op">=</span>annual_rf</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>pd.Series(</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Periodic Sharpe (manual)"</span>: sharpe_periodic_manual,</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Annualized Sharpe (manual)"</span>: sharpe_annual_manual,</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Annualized Sharpe (q.stats)"</span>: sharpe_annual_qrt,</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">"AAPL"</span>,</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<pre><code>Periodic Sharpe (manual)      0.0631
+Annualized Sharpe (manual)    1.0018
+Annualized Sharpe (q.stats)   1.0018
+Name: AAPL, dtype: float64</code></pre>
+</div>
+</div>
+</section>
+<section id="sortino-ratio-reward-relative-to-harmful-variation" class="level2">
+<h2 class="anchored" data-anchor-id="sortino-ratio-reward-relative-to-harmful-variation">3. Sortino ratio: reward relative to harmful variation</h2>
+<p>Sortino replaces total volatility with downside deviation. For a minimum acceptable return <span class="math inline">\(T_p\)</span>, define</p>
+<p><span class="math display">\[d_t=\min(r_t-T_p,0), \qquad DD=\sqrt{\frac{1}{n}\sum_{t=1}^{n}d_t^2},\]</span></p>
+<p>and</p>
+<p><span class="math display">\[\widehat{SoR}_p=\frac{\overline{r-T_p}}{DD}, \qquad \widehat{SoR}_{ann}=\sqrt{q}\,\widehat{SoR}_p.\]</span></p>
+<p>This is useful when positive volatility should not be penalized. QRT uses the deannualized <code>rf</code> as <span class="math inline">\(T_p\)</span>, squares the clipped downside for <strong>all</strong> <span class="math inline">\(n\)</span> observations (zeros included), and uses no Bessel correction. This differs from implementations that take the standard deviation of only negative returns. The <code>rf</code>/minimum-acceptable-return changes which observations count as downside; it is separate from the PSoR ratio threshold introduced later. Sortino can still be unstable when downside observations are scarce or dominated by a few losses.</p>
+<div id="3059941d" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>downside <span class="op">=</span> np.minimum(excess_returns.to_numpy(), <span class="fl">0.0</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>downside_deviation <span class="op">=</span> np.sqrt(np.mean(downside<span class="op">**</span><span class="dv">2</span>))</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>sortino_periodic_manual <span class="op">=</span> excess_returns.mean() <span class="op">/</span> downside_deviation</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>sortino_annual_manual <span class="op">=</span> sortino_periodic_manual <span class="op">*</span> np.sqrt(periods_per_year)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>sortino_annual_qrt <span class="op">=</span> q.stats.sortino(</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    returns, periods_per_year<span class="op">=</span>periods_per_year, rf<span class="op">=</span>annual_rf</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>target_comparison <span class="op">=</span> pd.Series(</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"Sortino @ annual MAR = </span><span class="sc">{</span>target<span class="sc">:.0%}</span><span class="ss">"</span>: q.stats.sortino(</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>            returns, periods_per_year<span class="op">=</span>periods_per_year, rf<span class="op">=</span>target</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> target <span class="kw">in</span> [<span class="fl">0.0</span>, <span class="fl">0.02</span>, <span class="fl">0.05</span>]</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>pd.concat(</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    [</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>        pd.Series(</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>            {</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Periodic Sortino (manual)"</span>: sortino_periodic_manual,</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Annualized Sortino (manual)"</span>: sortino_annual_manual,</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Annualized Sortino (q.stats)"</span>: sortino_annual_qrt,</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>            }</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>        ),</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>        target_comparison,</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>Periodic Sortino (manual)      0.0933
+Annualized Sortino (manual)    1.4810
+Annualized Sortino (q.stats)   1.4810
+Sortino @ annual MAR = 0%      1.4810
+Sortino @ annual MAR = 2%      1.3757
+Sortino @ annual MAR = 5%      1.2225
+dtype: float64</code></pre>
+</div>
+</div>
+</section>
+<section id="sampling-uncertainty-and-higher-moments" class="level2">
+<h2 class="anchored" data-anchor-id="sampling-uncertainty-and-higher-moments">4. Sampling uncertainty and higher moments</h2>
+<p>Sharpe and Sortino are point estimates: they describe this sample as if the estimated ratio were known exactly. Their uncertainty depends on sample size and return shape. More observations usually tighten inference; negative skew and excess kurtosis indicate asymmetric or unusually frequent extreme outcomes that make normal-theory confidence less persuasive.</p>
+<p>PSR and PSoR turn a point estimate into a probability relative to an explicit benchmark. They do <strong>not</strong> mean “probability the strategy will be profitable next year.” They estimate confidence that the population risk-adjusted ratio exceeds the selected ratio threshold, conditional on the model and sample.</p>
+<div id="ba6034a9" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>distribution_diagnostics <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        name: {</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Observations"</span>: <span class="bu">len</span>(series),</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Mean"</span>: series.mean(),</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Volatility"</span>: series.std(ddof<span class="op">=</span><span class="dv">1</span>),</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Skewness"</span>: series.skew(),</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Excess kurtosis"</span>: series.kurtosis(),</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> name, series <span class="kw">in</span> {<span class="op">**</span>synthetic_returns, <span class="st">"AAPL"</span>: returns}.items()</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>).T</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>distribution_diagnostics</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Observations</th>
+<th data-quarto-table-cell-role="th">Mean</th>
+<th data-quarto-table-cell-role="th">Volatility</th>
+<th data-quarto-table-cell-role="th">Skewness</th>
+<th data-quarto-table-cell-role="th">Excess kurtosis</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">Normal</th>
+<td>756.0000</td>
+<td>0.0000</td>
+<td>0.0119</td>
+<td>0.0321</td>
+<td>-0.0791</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">Negative skew</th>
+<td>756.0000</td>
+<td>-0.0067</td>
+<td>0.0088</td>
+<td>-3.5495</td>
+<td>21.1854</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">Fat tailed</th>
+<td>756.0000</td>
+<td>-0.0002</td>
+<td>0.0116</td>
+<td>-0.1735</td>
+<td>2.9131</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">Frequent gains / rare losses</th>
+<td>756.0000</td>
+<td>0.0006</td>
+<td>0.0121</td>
+<td>-6.0796</td>
+<td>35.0546</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">AAPL</th>
+<td>2653.0000</td>
+<td>0.0011</td>
+<td>0.0182</td>
+<td>0.1331</td>
+<td>6.7656</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="probabilistic-sharpe-ratio-psr" class="level2">
+<h2 class="anchored" data-anchor-id="probabilistic-sharpe-ratio-psr">5. Probabilistic Sharpe Ratio (PSR)</h2>
+<p>For an annualized benchmark <span class="math inline">\(SR^*_{ann}\)</span>, QRT first converts both the observed ratio and threshold to periodic units:</p>
+<p><span class="math display">\[\widehat{SR}_p=\frac{\widehat{SR}_{ann}}{\sqrt q}, \qquad SR^*_p=\frac{SR^*_{ann}}{\sqrt q}.\]</span></p>
+<p>Let <span class="math inline">\(n\)</span> be the full sample size, <span class="math inline">\(\gamma_3\)</span> sample skewness, and <span class="math inline">\(\gamma_4\)</span> raw kurtosis (Pandas excess kurtosis plus 3). QRT implements the Bailey and Lopez de Prado adjustment</p>
+<p><span class="math display">\[PSR=\Phi\left(\frac{(\widehat{SR}_p-SR^*_p)\sqrt{n-1}}{\sqrt{1-\gamma_3\widehat{SR}_p+\frac{\gamma_4-1}{4}\widehat{SR}_p^2}}\right).\]</span></p>
+<p>A PSR near 1 is stronger in-sample evidence that Sharpe exceeds the threshold; it is not a guarantee of future performance. At a threshold equal to the observed Sharpe, the numerator is zero, so <span class="math inline">\(PSR=\Phi(0)=50\%\)</span>.</p>
+<div id="8c20fb86" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>sharpe_threshold <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>sharpe_periodic <span class="op">=</span> sharpe_annual_qrt <span class="op">/</span> np.sqrt(periods_per_year)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>sharpe_threshold_periodic <span class="op">=</span> sharpe_threshold <span class="op">/</span> np.sqrt(periods_per_year)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>sample_skew <span class="op">=</span> returns.skew()</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>raw_kurtosis <span class="op">=</span> returns.kurtosis() <span class="op">+</span> <span class="fl">3.0</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>psr_variance <span class="op">=</span> (</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="fl">1.0</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">-</span> sample_skew <span class="op">*</span> sharpe_periodic</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> (raw_kurtosis <span class="op">-</span> <span class="fl">1.0</span>) <span class="op">/</span> <span class="fl">4.0</span> <span class="op">*</span> sharpe_periodic<span class="op">**</span><span class="dv">2</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>psr_z <span class="op">=</span> (</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    (sharpe_periodic <span class="op">-</span> sharpe_threshold_periodic)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span> np.sqrt(<span class="bu">len</span>(returns) <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">/</span> np.sqrt(psr_variance)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>psr_manual <span class="op">=</span> norm.cdf(psr_z)</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>psr_qrt <span class="op">=</span> q.stats.probabilistic_ratio(</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    threshold<span class="op">=</span>sharpe_threshold,</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span>periods_per_year,</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    rf<span class="op">=</span>annual_rf,</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>pd.Series(</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Annualized Sharpe"</span>: sharpe_annual_qrt,</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Annualized threshold"</span>: sharpe_threshold,</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>        <span class="st">"PSR probability"</span>: psr_qrt,</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>        <span class="st">"PSR percentage"</span>: <span class="ss">f"</span><span class="sc">{</span>psr_qrt<span class="sc">:.2%}</span><span class="ss">"</span>,</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<pre><code>Annualized Sharpe       1.0018
+Annualized threshold    0.0000
+PSR probability         0.9994
+PSR percentage          99.94%
+dtype: object</code></pre>
+</div>
+</div>
+</section>
+<section id="probabilistic-sortino-ratio-psor" class="level2">
+<h2 class="anchored" data-anchor-id="probabilistic-sortino-ratio-psor">6. Probabilistic Sortino Ratio (PSoR)</h2>
+<p>PSoR estimates <span class="math inline">\(P(SoR&gt;SoR^*)\)</span> and is the confidence-aware counterpart to Sortino. Two thresholds must not be confused:</p>
+<ul>
+<li><code>rf</code> is the annualized minimum acceptable return used to construct excess returns and downside observations.</li>
+<li><code>threshold</code> is the annualized <strong>Sortino-ratio benchmark</strong> that the unknown population Sortino should exceed.</li>
+</ul>
+<p>QRT converts observed Sortino and <span class="math inline">\(SoR^*\)</span> to periodic units. It then keeps only negative excess returns, giving downside count <span class="math inline">\(n_d\)</span> and downside skewness <span class="math inline">\(\gamma_3^-\)</span>. Its downside-specific approximation is</p>
+<p><span class="math display">\[V_{SoR}=1+\frac{\widehat{SoR}_p^2}{2}-\gamma_3^-\widehat{SoR}_p,\]</span></p>
+<p><span class="math display">\[PSoR=\Phi\left(\frac{(\widehat{SoR}_p-SoR^*_p)\sqrt{n_d-1}}{\sqrt{V_{SoR}}}\right).\]</span></p>
+<p>Unlike PSR, QRT’s PSoR does not use full-sample kurtosis. It returns <code>NaN</code> when fewer than three downside observations are available or the estimated variance is not positive. Because <span class="math inline">\(n_d\)</span> may be much smaller than <span class="math inline">\(n\)</span>, PSoR can express substantially more uncertainty than a large Sortino point estimate suggests.</p>
+<div id="71a39f52" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>sortino_threshold <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>sortino_periodic <span class="op">=</span> sortino_annual_qrt <span class="op">/</span> np.sqrt(periods_per_year)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>sortino_threshold_periodic <span class="op">=</span> sortino_threshold <span class="op">/</span> np.sqrt(periods_per_year)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>negative_excess <span class="op">=</span> excess_returns[excess_returns <span class="op">&lt;</span> <span class="fl">0.0</span>]</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>downside_count <span class="op">=</span> <span class="bu">len</span>(negative_excess)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>downside_skew <span class="op">=</span> negative_excess.skew()</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>psor_variance <span class="op">=</span> <span class="fl">1.0</span> <span class="op">+</span> sortino_periodic<span class="op">**</span><span class="dv">2</span> <span class="op">/</span> <span class="fl">2.0</span> <span class="op">-</span> downside_skew <span class="op">*</span> sortino_periodic</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>psor_z <span class="op">=</span> (</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    (sortino_periodic <span class="op">-</span> sortino_threshold_periodic)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span> np.sqrt(downside_count <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">/</span> np.sqrt(psor_variance)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>psor_manual <span class="op">=</span> norm.cdf(psor_z)</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>psor_qrt <span class="op">=</span> q.stats.probabilistic_sortino_ratio(</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    threshold<span class="op">=</span>sortino_threshold,</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span>periods_per_year,</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    rf<span class="op">=</span>annual_rf,</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>pd.Series(</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Annualized Sortino"</span>: sortino_annual_qrt,</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Annualized ratio threshold"</span>: sortino_threshold,</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Annualized minimum acceptable return"</span>: annual_rf,</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Downside observations"</span>: downside_count,</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Downside skewness"</span>: downside_skew,</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>        <span class="st">"PSoR probability"</span>: psor_qrt,</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>        <span class="st">"PSoR percentage"</span>: <span class="ss">f"</span><span class="sc">{</span>psor_qrt<span class="sc">:.2%}</span><span class="ss">"</span>,</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<pre><code>Annualized Sortino                      1.4810
+Annualized ratio threshold              0.0000
+Annualized minimum acceptable return    0.0000
+Downside observations                     1225
+Downside skewness                      -2.5726
+PSoR probability                        0.9983
+PSoR percentage                         99.83%
+dtype: object</code></pre>
+</div>
+</div>
+</section>
+<section id="validate-the-manual-calculations" class="level2">
+<h2 class="anchored" data-anchor-id="validate-the-manual-calculations">7. Validate the manual calculations</h2>
+<p>The public APIs accept a Pandas return Series and return a Python <code>float</code> probability in <span class="math inline">\([0,1]\)</span> when defined. Both <code>threshold</code> arguments are annualized ratio thresholds and default to 0; <code>rf</code> is an annualized rate and also defaults to 0. <code>periods_per_year=None</code> infers frequency from the index, while this notebook passes 252 explicitly.</p>
+<p>The assertions below protect against a hidden unit mismatch: manual and library results must agree, and a threshold equal to the observed annualized ratio must produce 50%.</p>
+<div id="34e96b7f" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>validation <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Manual"</span>: [sharpe_annual_manual, sortino_annual_manual, psr_manual, psor_manual],</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"QRT"</span>: [sharpe_annual_qrt, sortino_annual_qrt, psr_qrt, psor_qrt],</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span>[<span class="st">"Sharpe"</span>, <span class="st">"Sortino"</span>, <span class="st">"PSR @ Th = 0"</span>, <span class="st">"PSoR @ Th = 0"</span>],</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>validation[<span class="st">"Absolute difference"</span>] <span class="op">=</span> (validation[<span class="st">"Manual"</span>] <span class="op">-</span> validation[<span class="st">"QRT"</span>]).<span class="bu">abs</span>()</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> np.allclose(validation[<span class="st">"Manual"</span>], validation[<span class="st">"QRT"</span>], rtol<span class="op">=</span><span class="fl">1e-12</span>, atol<span class="op">=</span><span class="fl">1e-12</span>)</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> np.isclose(</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    q.stats.probabilistic_ratio(</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>        returns, threshold<span class="op">=</span>sharpe_annual_qrt, periods_per_year<span class="op">=</span>periods_per_year</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    <span class="fl">0.5</span>,</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> np.isclose(</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    q.stats.probabilistic_sortino_ratio(</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>        returns, threshold<span class="op">=</span>sortino_annual_qrt, periods_per_year<span class="op">=</span>periods_per_year</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>    <span class="fl">0.5</span>,</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>validation</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Manual</th>
+<th data-quarto-table-cell-role="th">QRT</th>
+<th data-quarto-table-cell-role="th">Absolute difference</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">Sharpe</th>
+<td>1.0018</td>
+<td>1.0018</td>
+<td>0.0000</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">Sortino</th>
+<td>1.4810</td>
+<td>1.4810</td>
+<td>0.0000</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">PSR @ Th = 0</th>
+<td>0.9994</td>
+<td>0.9994</td>
+<td>0.0000</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">PSoR @ Th = 0</th>
+<td>0.9983</td>
+<td>0.9983</td>
+<td>0.0000</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="compare-return-distributions" class="level2">
+<h2 class="anchored" data-anchor-id="compare-return-distributions">8. Compare return distributions</h2>
+<p>The same mean and volatility do not imply the same evidence. PSR responds to full-sample size, skewness, and kurtosis; PSoR responds to the number and skewness of downside observations. Sortino can greatly exceed Sharpe for a stream with many small positive moves, but PSoR should temper that point estimate when only a small or highly skewed downside sample supports it.</p>
+<div id="784fa671" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>all_returns <span class="op">=</span> {<span class="op">**</span>synthetic_returns, <span class="st">"AAPL"</span>: returns}</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>ratio_comparison <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>        name: {</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Sharpe"</span>: q.stats.sharpe(series, periods_per_year<span class="op">=</span>periods_per_year),</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Sortino"</span>: q.stats.sortino(series, periods_per_year<span class="op">=</span>periods_per_year),</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>            <span class="st">"PSR @ Th = 0"</span>: q.stats.probabilistic_ratio(</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>                series, threshold<span class="op">=</span><span class="fl">0.0</span>, periods_per_year<span class="op">=</span>periods_per_year</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>            ),</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>            <span class="st">"PSoR @ Th = 0"</span>: q.stats.probabilistic_sortino_ratio(</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>                series, threshold<span class="op">=</span><span class="fl">0.0</span>, periods_per_year<span class="op">=</span>periods_per_year</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>            ),</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Downside observations"</span>: <span class="bu">int</span>((series <span class="op">&lt;</span> <span class="fl">0.0</span>).<span class="bu">sum</span>()),</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> name, series <span class="kw">in</span> all_returns.items()</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>).T</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>ratio_comparison</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Sharpe</th>
+<th data-quarto-table-cell-role="th">Sortino</th>
+<th data-quarto-table-cell-role="th">PSR @ Th = 0</th>
+<th data-quarto-table-cell-role="th">PSoR @ Th = 0</th>
+<th data-quarto-table-cell-role="th">Downside observations</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">Normal</th>
+<td>0.0250</td>
+<td>0.0354</td>
+<td>0.5172</td>
+<td>0.5173</td>
+<td>379.0000</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">Negative skew</th>
+<td>-12.2178</td>
+<td>-9.6873</td>
+<td>0.0000</td>
+<td>NaN</td>
+<td>699.0000</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">Fat tailed</th>
+<td>-0.2336</td>
+<td>-0.3232</td>
+<td>0.3428</td>
+<td>0.3452</td>
+<td>366.0000</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">Frequent gains / rare losses</th>
+<td>0.7222</td>
+<td>0.7373</td>
+<td>0.8639</td>
+<td>0.5781</td>
+<td>19.0000</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">AAPL</th>
+<td>1.0018</td>
+<td>1.4810</td>
+<td>0.9994</td>
+<td>0.9983</td>
+<td>1225.0000</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="probability-across-annualized-thresholds" class="level2">
+<h2 class="anchored" data-anchor-id="probability-across-annualized-thresholds">9. Probability across annualized thresholds</h2>
+<p>A threshold is the hurdle ratio, not a return target. <code>threshold=0</code> asks whether the population ratio is positive; <code>threshold=1</code> asks whether it exceeds an annualized ratio of 1. Raising the hurdle must lower the probability. The curves also mark 95% confidence and the observed ratio; where the threshold equals that observed ratio, probability is 50%.</p>
+<p>Use <code>q.plot.psr</code> and <code>q.plot.psor</code> for standalone charts. Both X-axes are annualized, matching the public statistics APIs and the report cards.</p>
+<div id="bb1bef51" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>thresholds <span class="op">=</span> pd.Index([<span class="fl">0.0</span>, <span class="fl">0.5</span>, <span class="fl">1.0</span>, <span class="fl">1.5</span>, <span class="fl">2.0</span>], name<span class="op">=</span><span class="st">"Annualized ratio threshold"</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>threshold_probabilities <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"PSR"</span>: [</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>            q.stats.probabilistic_ratio(</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>                returns, threshold<span class="op">=</span>value, periods_per_year<span class="op">=</span>periods_per_year</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> value <span class="kw">in</span> thresholds</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>        ],</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"PSoR"</span>: [</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>            q.stats.probabilistic_sortino_ratio(</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>                returns, threshold<span class="op">=</span>value, periods_per_year<span class="op">=</span>periods_per_year</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> value <span class="kw">in</span> thresholds</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>        ],</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span>thresholds,</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> threshold_probabilities.diff().iloc[<span class="dv">1</span>:].le(<span class="fl">0.0</span>).<span class="bu">all</span>().<span class="bu">all</span>()</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>threshold_probabilities.style.<span class="bu">format</span>(<span class="st">"</span><span class="sc">{:.2%}</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<style type="text/css">
+</style>
+
+<table id="T_b15f0" class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th class="blank level0" data-quarto-table-cell-role="th">&nbsp;</th>
+<th id="T_b15f0_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">PSR</th>
+<th id="T_b15f0_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">PSoR</th>
+</tr>
+<tr class="even">
+<th class="index_name level0" data-quarto-table-cell-role="th">Annualized ratio threshold</th>
+<th class="blank col0" data-quarto-table-cell-role="th">&nbsp;</th>
+<th class="blank col1" data-quarto-table-cell-role="th">&nbsp;</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th id="T_b15f0_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">0.000000</th>
+<td id="T_b15f0_row0_col0" class="data row0 col0">99.94%</td>
+<td id="T_b15f0_row0_col1" class="data row0 col1">99.83%</td>
+</tr>
+<tr class="even">
+<th id="T_b15f0_level0_row1" class="row_heading level0 row1" data-quarto-table-cell-role="th">0.500000</th>
+<td id="T_b15f0_row1_col0" class="data row1 col0">94.82%</td>
+<td id="T_b15f0_row1_col1" class="data row1 col1">97.37%</td>
+</tr>
+<tr class="odd">
+<th id="T_b15f0_level0_row2" class="row_heading level0 row2" data-quarto-table-cell-role="th">1.000000</th>
+<td id="T_b15f0_row2_col0" class="data row2 col0">50.24%</td>
+<td id="T_b15f0_row2_col1" class="data row2 col1">82.90%</td>
+</tr>
+<tr class="even">
+<th id="T_b15f0_level0_row3" class="row_heading level0 row3" data-quarto-table-cell-role="th">1.500000</th>
+<td id="T_b15f0_row3_col0" class="data row3 col0">5.31%</td>
+<td id="T_b15f0_row3_col1" class="data row3 col1">48.50%</td>
+</tr>
+<tr class="odd">
+<th id="T_b15f0_level0_row4" class="row_heading level0 row4" data-quarto-table-cell-role="th">2.000000</th>
+<td id="T_b15f0_row4_col0" class="data row4 col0">0.06%</td>
+<td id="T_b15f0_row4_col1" class="data row4 col1">15.26%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="ce7904c4" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>psr_figure <span class="op">=</span> q.plot.psr(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span>periods_per_year,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    threshold_max<span class="op">=</span><span class="fl">3.0</span>,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"AAPL: probability that Sharpe exceeds threshold"</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>psr_figure.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div style="height:360px; width:100%;">            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script>if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script>window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.7.0.min.js" integrity="sha256-jvTGqxNp8AGWEcvNLVuKr+8j5dGe9Yw51LQkmDH+IYA=" crossorigin="anonymous"></script>                <div id="7ff61fcd-a05f-4740-b58f-8fb2a8f5662c" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("7ff61fcd-a05f-4740-b58f-8fb2a8f5662c")) {                    Plotly.newPlot(                        "7ff61fcd-a05f-4740-b58f-8fb2a8f5662c",                        [{"fill":"tozeroy","fillcolor":"rgba(88, 180, 233, 0.12)","hovertemplate":"Threshold %{x:.2f}\u003cbr\u003ePSR %{y:.2%}\u003cextra\u003e\u003c\u002fextra\u003e","line":{"color":"#58B4E9","width":2.2},"mode":"lines","name":"PSR","x":{"dtype":"f8","bdata":"AAAAAAAAAACamZmZmZmZP5qZmZmZmak\u002fNDMzMzMzsz+amZmZmZm5PwAAAAAAAMA\u002fNDMzMzMzwz9nZmZmZmbGP5qZmZmZmck\u002fzczMzMzMzD8AAAAAAADQP5qZmZmZmdE\u002fNDMzMzMz0z\u002fNzMzMzMzUP2dmZmZmZtY\u002fAAAAAAAA2D+amZmZmZnZPzQzMzMzM9s\u002fzczMzMzM3D9nZmZmZmbePwAAAAAAAOA\u002fzczMzMzM4D+amZmZmZnhP2dmZmZmZuI\u002fNDMzMzMz4z8AAAAAAADkP83MzMzMzOQ\u002fmpmZmZmZ5T9nZmZmZmbmPzQzMzMzM+c\u002fAAAAAAAA6D\u002fNzMzMzMzoP5qZmZmZmek\u002fZ2ZmZmZm6j80MzMzMzPrPwAAAAAAAOw\u002fzczMzMzM7D+amZmZmZntP2dmZmZmZu4\u002fNDMzMzMz7z8AAAAAAADwP2dmZmZmZvA\u002fzczMzMzM8D8zMzMzMzPxP5qZmZmZmfE\u002fAAAAAAAA8j9nZmZmZmbyP83MzMzMzPI\u002fNDMzMzMz8z+amZmZmZnzPwAAAAAAAPQ\u002fZ2ZmZmZm9D\u002fNzMzMzMz0PzQzMzMzM\u002fU\u002fmpmZmZmZ9T8AAAAAAAD2P2dmZmZmZvY\u002fzczMzMzM9j80MzMzMzP3P5qZmZmZmfc\u002fAAAAAAAA+D9nZmZmZmb4P83MzMzMzPg\u002fNDMzMzMz+T+amZmZmZn5PwAAAAAAAPo\u002fZ2ZmZmZm+j\u002fNzMzMzMz6PzQzMzMzM\u002fs\u002fmpmZmZmZ+z8AAAAAAAD8P2dmZmZmZvw\u002fzczMzMzM\u002fD80MzMzMzP9P5qZmZmZmf0\u002fAAAAAAAA\u002fj9nZmZmZmb+P83MzMzMzP4\u002fNDMzMzMz\u002fz+amZmZmZn\u002fPwAAAAAAAABAMzMzMzMzAEBnZmZmZmYAQJqZmZmZmQBAzczMzMzMAEAAAAAAAAABQDMzMzMzMwFAZ2ZmZmZmAUCamZmZmZkBQM3MzMzMzAFAAAAAAAAAAkAzMzMzMzMCQGdmZmZmZgJAmpmZmZmZAkDNzMzMzMwCQAAAAAAAAANANDMzMzMzA0BnZmZmZmYDQJqZmZmZmQNAzczMzMzMA0AAAAAAAAAEQDQzMzMzMwRAZ2ZmZmZmBECamZmZmZkEQM3MzMzMzARAAAAAAAAABUA0MzMzMzMFQGdmZmZmZgVAmpmZmZmZBUDNzMzMzMwFQAAAAAAAAAZANDMzMzMzBkBnZmZmZmYGQJqZmZmZmQZAzczMzMzMBkAAAAAAAAAHQDQzMzMzMwdAZ2ZmZmZmB0CamZmZmZkHQM3MzMzMzAdAAAAAAAAACEA="},"y":{"dtype":"f8","bdata":"n6HYXEP77z+U0phJuPnvPw8s14259+8\u002fM7nQoCn17z8QxoHA5PHvP7fZIQDA7e8\u002fQ5J9Sojo7z+Jr0FeAeLvPxSeLczk2e8\u002fsckcAeHP7z9Y\u002fMxnmMPvP3A9H7CgtO8\u002ffO8kS4Ki7z8NQ3UsuIzvPyxf3uGvcu8\u002f9ShhEspT7z+WH2F0Wy\u002fvP+jk7EiuBO8\u002fTLrrZgTT7j86OcrcmZnuP\u002f5x\u002fymoV+4\u002f4QORC2oM7j\u002fGi8rPH7ftPxjQ8B0UV+0\u002f4XcrF6Hr7D9Sx5euNXTsP\u002f5v5A9b8Os\u002fn9pt5rlf6z\u002fe6QJTH8LqP2QGp1yBF+o\u002fQYwdqQJg6T+Afv5M9ZvoP+t0lIjcy+c\u002fRFW5Tm3w5j8\u002fzxN9jQrmPxYkFblRG+U\u002fDjld8vkj5D\u002fMXxaZ7CXjP7N3tKSwIuI\u002fEPCOlOYb4T9B6lKfQBPgP3gNSJ\u002f0FN4\u002fASDMpZ8G3D\u002fsPGqF6v7ZP4bxn2McAdg\u002f+mpLhEsQ1j8k+wMHTy\u002fUP38yrqKyYNI\u002fZKLMtaym0D+4ZKPQLQbOP\u002fDmTQDT7so\u002feJ9q23IJyD9MRs71cVfFP6pWYN112cI\u002for9xxG+PwD\u002fMkMTQVfG8P6D9Sey7J7k\u002f0EXUQX2+tT8iuN43LbGyP1nr\u002f7lk9a8\u002f2+hwneIqqz9tZjgm7PamP175rpk1TaM\u002fuONt1VUhoD9MP7PACM6aPyV7DMCcJJY\u002fbE\u002fAKoQvkj8\u002fPZCiQ7KNP0zpY4yhGog\u002fgnKc6gpzgz8c5s07fjN\u002fP\u002f+GyvS64Hg\u002fYCXJ97C3cz+fdDQqXBFvP+puW9wfVGg\u002fi6iuPq7vYj9lbzFmtkxdPyWCZAuZh1Y\u002fsf156Os3UT\u002fhugnsaChKP6Yj0\u002fldv0M\u002fGi4SOB2iPT\u002fOZjKn3Rg2P85qX949YDA\u002fxRutyEEfKD+MFu9S+6chP\u002fEkWSDDrxk\u002fEDAWt42REj\u002f2e+1J0K0KP3LJjD3hCwM\u002fU1U71WkG+z6liTYHlw3zPlALS3d6suo+6s7LDTSW4j6bD9qexLfZPk+BNYI6rtE+gy5iezooyD5RPy6oJ2bAPi23AyHbH7Y+pt40xQGprT4BJA2lb8GjPkWy9IKEJpo+ci2g6a8ykT6Zf3k0LnqGPjNlotHOMH0+qvoGTIzVcj7ruULNSSZoPoSqlsqexF4+ZuNV37N5Uz4p2HAtbn9IPtktXSFsnj4+5lxoaTcDMz5ttY\u002fd73UnPuJXDTO4wxw+Xy6z+V6FET69f1+QSDUFPoEHh+vFgfk9dljPAAl77j2Jfpg4ahjiPY9a2AX6WNU9AjeBAdIFyT0="},"type":"scatter"}],                        {"template":{"data":{"barpolar":[{"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scattermap":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermap"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"white","showlakes":true,"showland":true,"subunitcolor":"#C8D4E3"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"margin":{"b":0,"l":0,"r":0,"t":30},"paper_bgcolor":"white","plot_bgcolor":"white","polar":{"angularaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""},"bgcolor":"white","radialaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"yaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"zaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"ternary":{"aaxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"baxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"bgcolor":"white","caxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2}}},"shapes":[{"line":{"color":"#F5A623","dash":"dash","width":1.2},"type":"line","x0":0,"x1":1,"xref":"x domain","y0":0.95,"y1":0.95,"yref":"y"},{"line":{"color":"#6B7280","dash":"dot","width":1.2},"type":"line","x0":1.0018162352760076,"x1":1.0018162352760076,"xref":"x","y0":0,"y1":1,"yref":"y domain"}],"annotations":[{"showarrow":false,"text":"95% confidence","x":1,"xanchor":"right","xref":"x domain","y":0.95,"yanchor":"bottom","yref":"y"},{"showarrow":false,"text":"Observed Sharpe 1.00","x":1.0018162352760076,"xanchor":"right","xref":"x","y":1,"yanchor":"top","yref":"y domain"}],"margin":{"l":60,"r":30,"t":90,"b":50},"legend":{"orientation":"h","y":1.02,"x":0,"xanchor":"left"},"title":{"text":"AAPL: probability that Sharpe exceeds threshold"},"hovermode":"x unified","height":360,"xaxis":{"showgrid":false,"title":{"text":"Annualized Sharpe threshold"},"range":[0.0,3.0]},"yaxis":{"showgrid":true,"gridcolor":"#E5E7EB","zeroline":false,"title":{"text":"Probability"},"tickformat":".0%","range":[0.0,1.02]}},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('7ff61fcd-a05f-4740-b58f-8fb2a8f5662c');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div>
+</div>
+</div>
+<div id="4ac00171" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>psor_figure <span class="op">=</span> q.plot.psor(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    returns,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    periods_per_year<span class="op">=</span>periods_per_year,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    threshold_max<span class="op">=</span><span class="fl">3.0</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"AAPL: probability that Sortino exceeds threshold"</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>psor_figure.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div style="height:360px; width:100%;">            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script>if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script>window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.7.0.min.js" integrity="sha256-jvTGqxNp8AGWEcvNLVuKr+8j5dGe9Yw51LQkmDH+IYA=" crossorigin="anonymous"></script>                <div id="c1072959-35e2-4966-9fe8-437fe2ea3c83" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("c1072959-35e2-4966-9fe8-437fe2ea3c83")) {                    Plotly.newPlot(                        "c1072959-35e2-4966-9fe8-437fe2ea3c83",                        [{"fill":"tozeroy","fillcolor":"rgba(245, 166, 35, 0.12)","hovertemplate":"Threshold %{x:.2f}\u003cbr\u003ePSoR %{y:.2%}\u003cextra\u003e\u003c\u002fextra\u003e","line":{"color":"#F5A623","width":2.2},"mode":"lines","name":"PSoR","x":{"dtype":"f8","bdata":"AAAAAAAAAACamZmZmZmZP5qZmZmZmak\u002fNDMzMzMzsz+amZmZmZm5PwAAAAAAAMA\u002fNDMzMzMzwz9nZmZmZmbGP5qZmZmZmck\u002fzczMzMzMzD8AAAAAAADQP5qZmZmZmdE\u002fNDMzMzMz0z\u002fNzMzMzMzUP2dmZmZmZtY\u002fAAAAAAAA2D+amZmZmZnZPzQzMzMzM9s\u002fzczMzMzM3D9nZmZmZmbePwAAAAAAAOA\u002fzczMzMzM4D+amZmZmZnhP2dmZmZmZuI\u002fNDMzMzMz4z8AAAAAAADkP83MzMzMzOQ\u002fmpmZmZmZ5T9nZmZmZmbmPzQzMzMzM+c\u002fAAAAAAAA6D\u002fNzMzMzMzoP5qZmZmZmek\u002fZ2ZmZmZm6j80MzMzMzPrPwAAAAAAAOw\u002fzczMzMzM7D+amZmZmZntP2dmZmZmZu4\u002fNDMzMzMz7z8AAAAAAADwP2dmZmZmZvA\u002fzczMzMzM8D8zMzMzMzPxP5qZmZmZmfE\u002fAAAAAAAA8j9nZmZmZmbyP83MzMzMzPI\u002fNDMzMzMz8z+amZmZmZnzPwAAAAAAAPQ\u002fZ2ZmZmZm9D\u002fNzMzMzMz0PzQzMzMzM\u002fU\u002fmpmZmZmZ9T8AAAAAAAD2P2dmZmZmZvY\u002fzczMzMzM9j80MzMzMzP3P5qZmZmZmfc\u002fAAAAAAAA+D9nZmZmZmb4P83MzMzMzPg\u002fNDMzMzMz+T+amZmZmZn5PwAAAAAAAPo\u002fZ2ZmZmZm+j\u002fNzMzMzMz6PzQzMzMzM\u002fs\u002fmpmZmZmZ+z8AAAAAAAD8P2dmZmZmZvw\u002fzczMzMzM\u002fD80MzMzMzP9P5qZmZmZmf0\u002fAAAAAAAA\u002fj9nZmZmZmb+P83MzMzMzP4\u002fNDMzMzMz\u002fz+amZmZmZn\u002fPwAAAAAAAABAMzMzMzMzAEBnZmZmZmYAQJqZmZmZmQBAzczMzMzMAEAAAAAAAAABQDMzMzMzMwFAZ2ZmZmZmAUCamZmZmZkBQM3MzMzMzAFAAAAAAAAAAkAzMzMzMzMCQGdmZmZmZgJAmpmZmZmZAkDNzMzMzMwCQAAAAAAAAANANDMzMzMzA0BnZmZmZmYDQJqZmZmZmQNAzczMzMzMA0AAAAAAAAAEQDQzMzMzMwRAZ2ZmZmZmBECamZmZmZkEQM3MzMzMzARAAAAAAAAABUA0MzMzMzMFQGdmZmZmZgVAmpmZmZmZBUDNzMzMzMwFQAAAAAAAAAZANDMzMzMzBkBnZmZmZmYGQJqZmZmZmQZAzczMzMzMBkAAAAAAAAAHQDQzMzMzMwdAZ2ZmZmZmB0CamZmZmZkHQM3MzMzMzAdAAAAAAAAACEA="},"y":{"dtype":"f8","bdata":"TSInbe\u002fx7z+gv+CqiO\u002fvPy4o8xLE7O8\u002fWE4nUJXp7z9pWJPC7uXvPxhB4mnB4e8\u002f5lAY0Pzc7z9scS31jtfvP4DW3ztk0e8\u002fy4IqWGfK7z9ShtM\u002fgcLvPzM4jR2Zue8\u002fZ9ErR5Sv7z9maXU3VqTvP7wbFYzAl+8\u002fkMQ6CLOJ7z9rAm+cC3rvP8vDHnSmaO8\u002fWV1aCV5V7z\u002f3yTk\u002fC0DvPxQmSoOFKO8\u002fF59X9qIO7z8v7NKcOPLuP1AH+pYa0+4\u002fBWnRYByx7j\u002fjut0ZEYzuP4gcbtTLY+4\u002fKh4l7B847j\u002ff+Epj4QjuPwnjTkbl1e0\u002f3U24FAKf7T\u002fcFqQuEGTtP+0KxkXqJO0\u002fuU3F0G3h7D+8I6t\u002fe5nsPxkTALD3TOw\u002fphwc38r76z\u002fXuBwZ4qXrP9z85mIvS+s\u002f8HGWHarr6j\u002fmPLphT4fqP4SYylAiHuo\u002fSJdQWyyw6T8KtlF6fT3pPyLrr1osxug\u002fEEtVeVZK6D+HpS8vIMrnPywJNKy0Rec\u002fLyTb4EW95j8ZEMVVDDHmP6MwdPFGoeU\u002f2DxSrDoO5T+lC3czMnjkP+\u002f\u002f7Hp93+M\u002fX5pxQHFE4z\u002ftbvB\u002fZqfiPzszMtu5COI\u002fspFv9spo4T+1wKbL+8fgPy6KuvavJuA\u002fNDUB+ZcK3z8Q1\u002fUdacjdP97hCKKbh9w\u002f6it3N\u002fVI2z\u002fc\u002f9qPNw3aP7RNZ\u002fse1dg\u002fxPe0GGGh1z9zSQiZq3LWP3QYnRyjSdU\u002fpTsiKuIm1D+aDRtE+ArTP+MDYh5p9tE\u002fzIyE9avp0D+cIlISVsrPP5y3TXSG0s0\u002fMtbemIfsyz\u002f49seY3BjKP2R2Zi3tV8g\u002f4ODIAgaqxj8ekJFIWQ\u002fFP4SIVX3\u002fh8M\u002fuGaAb\u002fgTwj\u002f+eztuLLPAPxSp0kjbyr4\u002fMOzwLvNUvD9wXECH9QO6P8QuEJ4U17c\u002fTK3KmmPNtT\u002fBSnsb2uWzP4mKe9hXH7I\u002fR6\u002fIRKh4sD9oLqFADOGtPz4e4OQ9C6s\u002fxFPDxyxtqD8tU+bgEgSmPwOA9NMizaM\u002f\u002fQRTjo3FoT8p6jfoDtWfP2\u002f2fCyacpw\u002fcC2K205emT\u002fRL6M035KWP75Xj0ckC5Q\u002fI+64gSPCkT+uuj6XJmaPPxxQt3+9sos\u002fNTOIDlFhiD+unkDPmWmFP0\u002fMtSfGw4I\u002fj3Rrm3togD9nHPimraF8PwS8dRrV7Hg\u002fVVrPI3umdT8jiLKyj8NyP2mrJfHdOXA\u002frNdw7wcAbD8XS\u002f8o0xpoP+\u002ftWblstGQ\u002f2bRmeI6+YT85dRDJjlheP6n0gZLL41k\u002f1El\u002fu8IJVj8="},"type":"scatter"}],                        {"template":{"data":{"barpolar":[{"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scattermap":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermap"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"white","showlakes":true,"showland":true,"subunitcolor":"#C8D4E3"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"margin":{"b":0,"l":0,"r":0,"t":30},"paper_bgcolor":"white","plot_bgcolor":"white","polar":{"angularaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""},"bgcolor":"white","radialaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"yaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"zaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"ternary":{"aaxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"baxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"bgcolor":"white","caxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2}}},"shapes":[{"line":{"color":"#58B4E9","dash":"dash","width":1.2},"type":"line","x0":0,"x1":1,"xref":"x domain","y0":0.95,"y1":0.95,"yref":"y"},{"line":{"color":"#6B7280","dash":"dot","width":1.2},"type":"line","x0":1.4809918526735317,"x1":1.4809918526735317,"xref":"x","y0":0,"y1":1,"yref":"y domain"}],"annotations":[{"showarrow":false,"text":"95% confidence","x":1,"xanchor":"right","xref":"x domain","y":0.95,"yanchor":"bottom","yref":"y"},{"showarrow":false,"text":"Observed Sortino 1.48","x":1.4809918526735317,"xanchor":"right","xref":"x","y":1,"yanchor":"top","yref":"y domain"}],"margin":{"l":60,"r":30,"t":90,"b":50},"legend":{"orientation":"h","y":1.02,"x":0,"xanchor":"left"},"title":{"text":"AAPL: probability that Sortino exceeds threshold"},"hovermode":"x unified","height":360,"xaxis":{"showgrid":false,"title":{"text":"Annualized Sortino threshold"},"range":[0.0,3.0]},"yaxis":{"showgrid":true,"gridcolor":"#E5E7EB","zeroline":false,"title":{"text":"Probability"},"tickformat":".0%","range":[0.0,1.02]}},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('c1072959-35e2-4966-9fe8-437fe2ea3c83');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div>
+</div>
+</div>
+</section>
+<section id="cards-must-name-their-threshold" class="level2">
+<h2 class="anchored" data-anchor-id="cards-must-name-their-threshold">10. Cards must name their threshold</h2>
+<p>A probability without its benchmark is ambiguous. QRT’s backtest report computes both headline probabilities at the annualized ratio threshold 0, so the cards are labeled exactly <strong>PSR @ Th = 0</strong> and <strong>PSoR @ Th = 0</strong>. That means “probability the population ratio is positive.”</p>
+<p>When building custom cards, keep each threshold and label in the same configuration object. Changing the threshold then updates both the calculation and visible title.</p>
+<div id="725a041c" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>card_thresholds <span class="op">=</span> {<span class="st">"PSR"</span>: <span class="fl">0.0</span>, <span class="st">"PSoR"</span>: <span class="fl">0.0</span>}</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>card_values <span class="op">=</span> pd.Series(</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"PSR @ Th = </span><span class="sc">{</span>card_thresholds[<span class="st">'PSR'</span>]<span class="sc">:g}</span><span class="ss">"</span>: q.stats.probabilistic_ratio(</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>            returns,</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>            threshold<span class="op">=</span>card_thresholds[<span class="st">"PSR"</span>],</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>            periods_per_year<span class="op">=</span>periods_per_year,</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>        ),</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"PSoR @ Th = </span><span class="sc">{</span>card_thresholds[<span class="st">'PSoR'</span>]<span class="sc">:g}</span><span class="ss">"</span>: q.stats.probabilistic_sortino_ratio(</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>            returns,</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>            threshold<span class="op">=</span>card_thresholds[<span class="st">"PSoR"</span>],</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>            periods_per_year<span class="op">=</span>periods_per_year,</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>        ),</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">"Probability"</span>,</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">list</span>(card_values.index) <span class="op">==</span> [<span class="st">"PSR @ Th = 0"</span>, <span class="st">"PSoR @ Th = 0"</span>]</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>card_values.to_frame().T.style.<span class="bu">format</span>(<span class="st">"</span><span class="sc">{:.2%}</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<style type="text/css">
+</style>
+
+<table id="T_10434" class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th class="blank level0" data-quarto-table-cell-role="th">&nbsp;</th>
+<th id="T_10434_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">PSR @ Th = 0</th>
+<th id="T_10434_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">PSoR @ Th = 0</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th id="T_10434_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">Probability</th>
+<td id="T_10434_row0_col0" class="data row0 col0">99.94%</td>
+<td id="T_10434_row0_col1" class="data row0 col1">99.83%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="dce7eacb" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>alternative_thresholds <span class="op">=</span> {<span class="st">"PSR"</span>: <span class="fl">1.0</span>, <span class="st">"PSoR"</span>: <span class="fl">1.0</span>}</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>alternative_cards <span class="op">=</span> pd.Series(</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"PSR @ Th = </span><span class="sc">{</span>alternative_thresholds[<span class="st">'PSR'</span>]<span class="sc">:g}</span><span class="ss">"</span>: q.stats.probabilistic_ratio(</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>            returns,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>            threshold<span class="op">=</span>alternative_thresholds[<span class="st">"PSR"</span>],</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>            periods_per_year<span class="op">=</span>periods_per_year,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>        ),</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"PSoR @ Th = </span><span class="sc">{</span>alternative_thresholds[<span class="st">'PSoR'</span>]<span class="sc">:g}</span><span class="ss">"</span>: q.stats.probabilistic_sortino_ratio(</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>            returns,</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>            threshold<span class="op">=</span>alternative_thresholds[<span class="st">"PSoR"</span>],</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>            periods_per_year<span class="op">=</span>periods_per_year,</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>        ),</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">"Probability"</span>,</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> (alternative_cards.to_numpy() <span class="op">&lt;=</span> card_values.to_numpy()).<span class="bu">all</span>()</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>alternative_cards.to_frame().T.style.<span class="bu">format</span>(<span class="st">"</span><span class="sc">{:.2%}</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<style type="text/css">
+</style>
+
+<table id="T_1cc60" class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th class="blank level0" data-quarto-table-cell-role="th">&nbsp;</th>
+<th id="T_1cc60_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">PSR @ Th = 1</th>
+<th id="T_1cc60_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">PSoR @ Th = 1</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th id="T_1cc60_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">Probability</th>
+<td id="T_1cc60_row0_col0" class="data row0 col0">50.24%</td>
+<td id="T_1cc60_row0_col1" class="data row0 col1">82.90%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="edge-cases-and-numerical-stability" class="level2">
+<h2 class="anchored" data-anchor-id="edge-cases-and-numerical-stability">11. Edge cases and numerical stability</h2>
+<p>QRT drops missing values, rejects empty/non-numeric/infinite inputs, and rejects simple returns below -100%. Sharpe and Sortino are undefined (<code>NaN</code>) when their denominator is zero. PSR also needs at least two valid observations and a positive finite variance estimate. PSoR is deliberately stricter: it needs at least three negative excess-return observations.</p>
+<p>The table below records outcomes without hiding exceptions. A finite probability must remain in <span class="math inline">\([0,1]\)</span>; <code>NaN</code> means the estimate is undefined rather than zero confidence.</p>
+<div id="d346b148" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> evaluate_probability(function, series):</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>        value <span class="op">=</span> function(series, periods_per_year<span class="op">=</span>periods_per_year)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> np.isfinite(value):</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>            <span class="cf">assert</span> <span class="fl">0.0</span> <span class="op">&lt;=</span> value <span class="op">&lt;=</span> <span class="fl">1.0</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> value</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> (<span class="pp">TypeError</span>, <span class="pp">ValueError</span>) <span class="im">as</span> error:</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span><span class="bu">type</span>(error)<span class="sc">.</span><span class="va">__name__</span><span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>error<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>edge_cases <span class="op">=</span> {</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Empty"</span>: pd.Series([], dtype<span class="op">=</span><span class="bu">float</span>),</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"One observation"</span>: pd.Series([<span class="fl">0.01</span>]),</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Constant"</span>: pd.Series([<span class="fl">0.01</span>] <span class="op">*</span> <span class="dv">10</span>),</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"No downside"</span>: pd.Series([<span class="fl">0.01</span>, <span class="fl">0.02</span>, <span class="fl">0.005</span>, <span class="fl">0.015</span>]),</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Two downside observations"</span>: pd.Series([<span class="op">-</span><span class="fl">0.01</span>, <span class="op">-</span><span class="fl">0.02</span>, <span class="fl">0.03</span>, <span class="fl">0.04</span>]),</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Missing values"</span>: pd.Series([<span class="fl">0.01</span>, np.nan, <span class="op">-</span><span class="fl">0.02</span>, <span class="fl">0.015</span>, <span class="op">-</span><span class="fl">0.005</span>]),</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Infinite value"</span>: pd.Series([<span class="fl">0.01</span>, np.inf, <span class="op">-</span><span class="fl">0.02</span>]),</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Extreme negative skew"</span>: pd.Series([<span class="fl">0.002</span>] <span class="op">*</span> <span class="dv">99</span> <span class="op">+</span> [<span class="op">-</span><span class="fl">0.25</span>]),</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>edge_case_results <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>        name: {</span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>            <span class="st">"PSR"</span>: evaluate_probability(q.stats.probabilistic_ratio, series),</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>            <span class="st">"PSoR"</span>: evaluate_probability(q.stats.probabilistic_sortino_ratio, series),</span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> name, series <span class="kw">in</span> edge_cases.items()</span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>).T</span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>edge_case_results</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="14">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">PSR</th>
+<th data-quarto-table-cell-role="th">PSoR</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">Empty</th>
+<td>ValueError: returns must contain at least one ...</td>
+<td>ValueError: returns must contain at least one ...</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">One observation</th>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">Constant</th>
+<td>1.0000</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">No downside</th>
+<td>0.9944</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">Two downside observations</th>
+<td>0.7306</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">Missing values</th>
+<td>0.5000</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">Infinite value</th>
+<td>ValueError: returns must not contain infinite ...</td>
+<td>ValueError: returns must not contain infinite ...</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">Extreme negative skew</th>
+<td>0.4095</td>
+<td>NaN</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+
+
+</section>
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/quantbert\.github\.io\/qrt\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../plot/report.html" class="pagination-link" aria-label="Tearsheet report">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Tearsheet report</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../plot/simulation.html" class="pagination-link" aria-label="Simulation tests">
+        <span class="nav-page-text">Simulation tests</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.dev/quantbert/qrt/blob/main/plot/psr_and_psor.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/plot/psr_and_psor.ipynb" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
