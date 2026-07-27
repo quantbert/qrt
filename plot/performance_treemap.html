@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Financial Labels – qrt</title>
+<title>Portfolio performance treemap – qrt</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -61,15 +61,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../label/cusum_filter.html" rel="next">
-<link href="../cross_section/roadmap.html" rel="prev">
+<link href="../plot/report.html" rel="next">
+<link href="../plot/returns.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -107,6 +107,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+<script>
+window.PlotlyConfig = {MathJaxConfig: 'local'};
+if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}
+</script>
+<script type="module">import "https://cdn.plot.ly/plotly-3.7.0.min"</script>
+
 
 
 <link rel="stylesheet" href="../reference/_styles-quartodoc.css">
@@ -153,7 +162,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../label/index.html">q.label — Financial labels</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../plot/index.html">q.plot — Plotting</a></li><li class="breadcrumb-item"><a href="../plot/performance_treemap.html">Performance treemap</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -460,13 +469,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../label/index.html" class="sidebar-item-text sidebar-link active">
+            <a href="../label/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">q.label — Financial labels</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../label/cusum_filter.html" class="sidebar-item-text sidebar-link">
@@ -859,11 +868,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="sidebar-item-container"> 
             <a href="../plot/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">q.plot — Plotting</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-19" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-19" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-19" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-19" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../plot/correlation.html" class="sidebar-item-text sidebar-link">
@@ -896,7 +905,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../plot/performance_treemap.html" class="sidebar-item-text sidebar-link">
+  <a href="../plot/performance_treemap.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Performance treemap</span></a>
   </div>
 </li>
@@ -1041,26 +1050,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#function-map" id="toc-function-map" class="nav-link active" data-scroll-target="#function-map">Function map</a>
-  <ul class="collapse">
-  <li><a href="#event-selection-and-time-limits" id="toc-event-selection-and-time-limits" class="nav-link" data-scroll-target="#event-selection-and-time-limits">Event selection and time limits</a></li>
-  <li><a href="#target-construction" id="toc-target-construction" class="nav-link" data-scroll-target="#target-construction">Target construction</a></li>
-  <li><a href="#dependence-and-event-lifetimes" id="toc-dependence-and-event-lifetimes" class="nav-link" data-scroll-target="#dependence-and-event-lifetimes">Dependence and event lifetimes</a></li>
-  <li><a href="#sampling-and-training-weights" id="toc-sampling-and-training-weights" class="nav-link" data-scroll-target="#sampling-and-training-weights">Sampling and training weights</a></li>
-  </ul></li>
-  <li><a href="#choosing-a-target" id="toc-choosing-a-target" class="nav-link" data-scroll-target="#choosing-a-target">Choosing a target</a></li>
-  <li><a href="#triple-barrier-workflow" id="toc-triple-barrier-workflow" class="nav-link" data-scroll-target="#triple-barrier-workflow">Triple-barrier workflow</a></li>
-  <li><a href="#other-target-methods" id="toc-other-target-methods" class="nav-link" data-scroll-target="#other-target-methods">Other target methods</a></li>
-  <li><a href="#overlapping-outcomes" id="toc-overlapping-outcomes" class="nav-link" data-scroll-target="#overlapping-outcomes">Overlapping outcomes</a></li>
+  <li><a href="#build-a-changing-portfolio" id="toc-build-a-changing-portfolio" class="nav-link active" data-scroll-target="#build-a-changing-portfolio">Build a changing portfolio</a></li>
+  <li><a href="#equal-area-performance-view" id="toc-equal-area-performance-view" class="nav-link" data-scroll-target="#equal-area-performance-view">Equal-area performance view</a></li>
+  <li><a href="#size-tiles-by-portfolio-weight" id="toc-size-tiles-by-portfolio-weight" class="nav-link" data-scroll-target="#size-tiles-by-portfolio-weight">Size tiles by portfolio weight</a></li>
+  <li><a href="#add-the-treemap-to-a-backtest-report" id="toc-add-the-treemap-to-a-backtest-report" class="nav-link" data-scroll-target="#add-the-treemap-to-a-backtest-report">Add the treemap to a backtest report</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/label/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/label/index.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.dev/quantbert/qrt/blob/main/plot/performance_treemap.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/plot/performance_treemap.ipynb" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../plot/index.html">q.plot — Plotting</a></li><li class="breadcrumb-item"><a href="../plot/performance_treemap.html">Performance treemap</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Financial Labels</h1>
+<h1 class="title">Portfolio performance treemap</h1>
 </div>
 
 
@@ -1077,327 +1079,201 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><code>q.label</code> owns the event-to-target part of a financial machine-learning workflow. It answers four related but distinct questions:</p>
-<ol type="1">
-<li><strong>When is an observation worth labeling?</strong> Detect events instead of creating a highly redundant target at every bar.</li>
-<li><strong>What future outcome should the model learn?</strong> Define directional, path-dependent, fixed-horizon, or conditional targets.</li>
-<li><strong>How independent are those outcomes?</strong> Measure overlap between labels whose future paths share observations.</li>
-<li><strong>How should dependent observations influence training?</strong> Resample or weight events without pretending that every row carries equal information.</li>
-</ol>
-<p>Only the target-construction functions deliberately inspect future market paths. Event filters and event-time inputs must remain point-in-time safe, while overlap and weighting functions are training metadata rather than predictors. None of these outputs should be materialized as contemporaneous features.</p>
-<p>All functions operate on one ordered instrument at a time, preserve event timestamps, and reject duplicate or unsorted indexes. For panel data, group by <code>symbol</code> explicitly and label each history independently.</p>
-<p>Event-level tables use the event <strong>start</strong> time as their pandas index, named <code>event_time</code>. That index is the row key: labels, sample weights, metadata, and features selected at the same event times align automatically in pandas joins and are validated as the same rows by <code>q.dataset.Dataset</code>. Outcome times such as <code>touch_time</code> and <code>end_time</code> remain columns because they describe when an event resolves, not which row it is.</p>
-<section id="function-map" class="level2">
-<h2 class="anchored" data-anchor-id="function-map">Function map</h2>
-<section id="event-selection-and-time-limits" class="level3">
-<h3 class="anchored" data-anchor-id="event-selection-and-time-limits">Event selection and time limits</h3>
-<p>These functions define <em>when</em> a label begins and the latest time at which its outcome may be observed. They do not assign a target class by themselves.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Function</th>
-<th>What it provides</th>
-<th>Where it is useful</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>q.label.cusum_filter</code></td>
-<td>Symmetric cumulative-change event detection with scalar or time-varying thresholds</td>
-<td>Reduces routine sampling and focuses labeling on structural price moves. A volatility-scaled threshold adapts event density across regimes, but the threshold must be known at event time.</td>
-</tr>
-<tr class="even">
-<td><code>q.label.vertical_barriers</code></td>
-<td>Event-to-endpoint mapping by bar count or elapsed time</td>
-<td>Gives labels a maximum lifetime, supports explicit censoring, and makes bar-time versus wall-clock assumptions visible.</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="target-construction" class="level3">
-<h3 class="anchored" data-anchor-id="target-construction">Target construction</h3>
-<p>Target choice encodes the economic question presented to the model. There is no universally best label: simpler targets are easier to interpret, while path-dependent targets can better reflect trading decisions at the cost of more parameters and stronger overlap.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Function</th>
-<th>What it provides</th>
-<th>Where it is useful</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>q.label.fixed_horizon</code></td>
-<td>Return class at one future bar or time horizon, with an optional neutral band</td>
-<td>A transparent baseline for directional forecasting and cross-sectional studies. It is easy to compare across experiments, but ignores the path taken before the endpoint.</td>
-</tr>
-<tr class="even">
-<td><code>q.label.triple_barrier</code></td>
-<td>First-touch outcome across profit-taking, stop-loss, and vertical barriers</td>
-<td>Useful when the learning target should resemble an exit policy and adapt to event-time volatility. Results depend on barrier widths and horizon, so parameter stability matters.</td>
-</tr>
-<tr class="odd">
-<td><code>q.label.meta_label</code></td>
-<td>Binary target stating whether a proposed side produced sufficient adjusted return</td>
-<td>Separates <em>direction</em> from <em>whether to trade</em>. It is suited to secondary models for filtering or sizing primary-model decisions, not for inventing direction after the fact.</td>
-</tr>
-<tr class="even">
-<td><code>q.label.trend_scanning</code></td>
-<td>Direction from the strongest forward regression across candidate horizons</td>
-<td>Useful when trend duration is unknown and a single fixed endpoint is too rigid. The selected horizon is data-dependent, so retain <code>end_time</code> for purging and inspect t-value stability.</td>
-</tr>
-<tr class="odd">
-<td><code>q.label.prune_labels</code></td>
-<td>Iterative rare-class removal plus a class-level audit report</td>
-<td>Prevents vanishing classes from destabilizing classification. Use it transparently and fit the pruning policy on training data; pruning can discard economically important tail events.</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="dependence-and-event-lifetimes" class="level3">
-<h3 class="anchored" data-anchor-id="dependence-and-event-lifetimes">Dependence and event lifetimes</h3>
-<p>Financial labels frequently overlap: one event may still be waiting for an outcome when several newer events begin. These functions expose that dependence rather than treating event rows as independent and identically distributed.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Function</th>
-<th>What it provides</th>
-<th>Where it is useful</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>q.label.concurrency</code></td>
-<td>Number of inclusive event lifetimes active at each observation</td>
-<td>The quickest diagnostic for label crowding and the basis for overlap-aware return attribution.</td>
-</tr>
-<tr class="even">
-<td><code>q.label.indicator_matrix</code></td>
-<td>Sparse observation-by-event lifetime membership</td>
-<td>Makes the overlap structure explicit for diagnostics and resampling without allocating a dense matrix for mostly inactive events.</td>
-</tr>
-<tr class="odd">
-<td><code>q.label.average_uniqueness</code></td>
-<td>Mean inverse concurrency over each event lifetime</td>
-<td>Quantifies how much independent information each label contributes. Values near 1 are isolated; smaller values indicate heavily shared paths.</td>
-</tr>
-<tr class="even">
-<td><code>q.label.purging_metadata</code></td>
-<td>Running maximum endpoints and embargo-adjusted next-safe observations</td>
-<td>Bridges labels to <code>q.dataset</code> splitters. It supplies event-lifetime metadata but does not construct folds itself.</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="sampling-and-training-weights" class="level3">
-<h3 class="anchored" data-anchor-id="sampling-and-training-weights">Sampling and training weights</h3>
-<p>These functions modify how labeled events enter model fitting. They should be derived inside the training workflow, aligned by event time, and kept separate from input features so their policy remains auditable.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Function</th>
-<th>What it provides</th>
-<th>Where it is useful</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>q.label.sequential_bootstrap</code></td>
-<td>Seeded bootstrap draws weighted by marginal uniqueness after each selection</td>
-<td>Builds bags with less redundant event paths than ordinary uniform bootstrap. Repeated events are intentional, and the result remains a sample rather than a deterministic ranking.</td>
-</tr>
-<tr class="even">
-<td><code>q.label.sample_weights</code></td>
-<td>Absolute event return after concurrency attribution</td>
-<td>Gives greater influence to economically consequential outcomes without double-counting shared returns. Because it uses realized outcomes, it is training weight metadata, never a feature.</td>
-</tr>
-<tr class="odd">
-<td><code>q.label.time_decay</code></td>
-<td>Linear recency factors based on cumulative sample importance</td>
-<td>Lets newer regimes matter more while retaining older observations. <code>minimum_weight</code> controls how aggressively history is discounted.</td>
-</tr>
-<tr class="even">
-<td><code>q.label.class_balance_weights</code></td>
-<td>Inverse-frequency factors with equal total mass per observed class</td>
-<td>Useful when majority classes dominate the loss. It changes the training objective and should not be confused with improving the underlying information content.</td>
-</tr>
-<tr class="odd">
-<td><code>q.label.combine_weights</code></td>
-<td>Aligned multiplication and optional normalization of weight components</td>
-<td>Makes a composite weighting policy explicit. Inspect components first: a zero in any component removes that event multiplicatively.</td>
-</tr>
-</tbody>
-</table>
-</section>
-</section>
-<section id="choosing-a-target" class="level2">
-<h2 class="anchored" data-anchor-id="choosing-a-target">Choosing a target</h2>
-<ul>
-<li>Start with <code>fixed_horizon</code> when you need an interpretable baseline or want to isolate model quality from exit-policy assumptions.</li>
-<li>Use <code>triple_barrier</code> when the path to the outcome matters and barrier levels have a defensible economic or risk interpretation.</li>
-<li>Use <code>trend_scanning</code> when the relevant forward duration is genuinely unknown, then inspect which horizons are selected and whether labels are stable across nearby candidates.</li>
-<li>Add <code>meta_label</code> only when a separate primary process already supplies a side; the binary target answers whether to act, not which direction to choose.</li>
-<li>Keep <code>touch_time</code> or <code>end_time</code> regardless of method. Target accuracy is not trustworthy if overlapping future paths leak across validation folds.</li>
-</ul>
-</section>
-<section id="triple-barrier-workflow" class="level2">
-<h2 class="anchored" data-anchor-id="triple-barrier-workflow">Triple-barrier workflow</h2>
-<p>A typical workflow detects economically meaningful events, estimates a barrier width using information available at each event, and then follows each future path until a horizontal or vertical barrier is touched.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> qrt <span class="im">as</span> q</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>spy <span class="op">=</span> q.data.datasets.load(<span class="st">"spy"</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>close <span class="op">=</span> spy[<span class="st">"close"</span>]</span>
+<p><code>q.plot.tree_plot</code> shows a cross-section of portfolio asset returns at one point in time. Use the slider to move through portfolio observations. Tile color is the asset’s simple return: blue is positive, red is negative, and the scale is centered at zero.</p>
+<p>The input is a wide DataFrame with timestamps on the index and assets in the columns. A finite return means that the asset is in the portfolio at that timestamp. <code>NaN</code> means that it is not in the portfolio, so no tile is drawn. This keeps membership explicit without needing a separate holdings input.</p>
+<section id="build-a-changing-portfolio" class="level2">
+<h2 class="anchored" data-anchor-id="build-a-changing-portfolio">Build a changing portfolio</h2>
+<p>This deterministic example has five assets. <code>AAPL</code> and <code>MSFT</code> are present from the start, <code>NVDA</code> enters later, and <code>JPM</code> leaves before the final observation.</p>
+<div id="4dd96a56" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> qrt <span class="im">as</span> q</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># This volatility estimate is known at each event time. Initial warmup values</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># stay missing and are excluded by the event and labeling functions.</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>target <span class="op">=</span> close.pct_change(fill_method<span class="op">=</span><span class="va">None</span>).ewm(</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    span<span class="op">=</span><span class="dv">20</span>, min_periods<span class="op">=</span><span class="dv">20</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>).std()</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>event_threshold <span class="op">=</span> target.mul(<span class="fl">0.5</span>).where(target.gt(<span class="dv">0</span>))</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>events <span class="op">=</span> q.label.cusum_filter(close, event_threshold)</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> q.label.triple_barrier(</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    close,</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    target,</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    events<span class="op">=</span>events,</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    horizon<span class="op">=</span><span class="dv">20</span>,</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    upper<span class="op">=</span><span class="fl">2.0</span>,</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    lower<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    min_target<span class="op">=</span><span class="fl">0.002</span>,</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>horizon=20</code> means 20 observations after each event. A timedelta-like value such as <code>"5D"</code> instead chooses the first observed timestamp at least five days later. Events whose vertical horizon extends beyond available data are dropped by default; set <code>drop_censored=False</code> to retain them with a missing label and a <code>"censored"</code> barrier.</p>
-<p>The result is indexed by event start time, named <code>event_time</code>, and contains:</p>
-<table class="caption-top table">
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>dates <span class="op">=</span> pd.date_range(<span class="st">"2025-01-31"</span>, periods<span class="op">=</span><span class="dv">6</span>, freq<span class="op">=</span><span class="st">"ME"</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>asset_returns <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"AAPL"</span>: [<span class="fl">0.042</span>, <span class="op">-</span><span class="fl">0.018</span>, <span class="fl">0.031</span>, <span class="fl">0.012</span>, <span class="op">-</span><span class="fl">0.026</span>, <span class="fl">0.038</span>],</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"MSFT"</span>: [<span class="fl">0.025</span>, <span class="fl">0.011</span>, <span class="op">-</span><span class="fl">0.022</span>, <span class="fl">0.044</span>, <span class="fl">0.019</span>, <span class="op">-</span><span class="fl">0.008</span>],</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">"NVDA"</span>: [np.nan, np.nan, <span class="fl">0.083</span>, <span class="op">-</span><span class="fl">0.051</span>, <span class="fl">0.067</span>, <span class="fl">0.029</span>],</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">"JPM"</span>: [<span class="op">-</span><span class="fl">0.012</span>, <span class="fl">0.027</span>, <span class="fl">0.016</span>, <span class="op">-</span><span class="fl">0.009</span>, np.nan, np.nan],</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">"XOM"</span>: [np.nan, <span class="fl">0.034</span>, <span class="op">-</span><span class="fl">0.015</span>, <span class="fl">0.021</span>, <span class="op">-</span><span class="fl">0.011</span>, <span class="fl">0.006</span>],</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span>dates,</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>asset_returns</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
 <thead>
 <tr class="header">
-<th>Column</th>
-<th>Meaning</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">AAPL</th>
+<th data-quarto-table-cell-role="th">MSFT</th>
+<th data-quarto-table-cell-role="th">NVDA</th>
+<th data-quarto-table-cell-role="th">JPM</th>
+<th data-quarto-table-cell-role="th">XOM</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>vertical_barrier</code></td>
-<td>Scheduled maximum outcome time</td>
+<th data-quarto-table-cell-role="th">2025-01-31</th>
+<td>0.042</td>
+<td>0.025</td>
+<td>NaN</td>
+<td>-0.012</td>
+<td>NaN</td>
 </tr>
 <tr class="even">
-<td><code>touch_time</code></td>
-<td>First horizontal touch or the vertical barrier</td>
+<th data-quarto-table-cell-role="th">2025-02-28</th>
+<td>-0.018</td>
+<td>0.011</td>
+<td>NaN</td>
+<td>0.027</td>
+<td>0.034</td>
 </tr>
 <tr class="odd">
-<td><code>barrier</code></td>
-<td><code>upper</code>, <code>lower</code>, <code>vertical</code>, or <code>censored</code></td>
+<th data-quarto-table-cell-role="th">2025-03-31</th>
+<td>0.031</td>
+<td>-0.022</td>
+<td>0.083</td>
+<td>0.016</td>
+<td>-0.015</td>
 </tr>
 <tr class="even">
-<td><code>target</code></td>
-<td>Return width known at event time</td>
+<th data-quarto-table-cell-role="th">2025-04-30</th>
+<td>0.012</td>
+<td>0.044</td>
+<td>-0.051</td>
+<td>-0.009</td>
+<td>0.021</td>
 </tr>
 <tr class="odd">
-<td><code>return</code></td>
-<td>Underlying close-to-close return at the touch</td>
+<th data-quarto-table-cell-role="th">2025-05-31</th>
+<td>-0.026</td>
+<td>0.019</td>
+<td>0.067</td>
+<td>NaN</td>
+<td>-0.011</td>
 </tr>
 <tr class="even">
-<td><code>label</code></td>
-<td>Directional <code>-1</code>, <code>0</code>, or <code>1</code> outcome</td>
+<th data-quarto-table-cell-role="th">2025-06-30</th>
+<td>0.038</td>
+<td>-0.008</td>
+<td>0.029</td>
+<td>NaN</td>
+<td>0.006</td>
 </tr>
 </tbody>
 </table>
-<p>Pass <code>side=</code> when a primary model or rule has already proposed long (<code>1</code>) or short (<code>-1</code>) intent. Barriers are then evaluated on side-adjusted returns, the result includes <code>side</code> and <code>adjusted_return</code>, and <code>label</code> becomes a binary meta-label indicating whether that side was profitable.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>side_aware <span class="op">=</span> q.label.triple_barrier(</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    close,</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    target,</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    events<span class="op">=</span>events,</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    horizon<span class="op">=</span><span class="st">"5D"</span>,</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    side<span class="op">=</span>predicted_side,</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># The same transformation can be applied to outcomes produced elsewhere.</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>binary_target <span class="op">=</span> q.label.meta_label(realized_returns, predicted_side)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+</div>
+</div>
+</div>
 </section>
-<section id="other-target-methods" class="level2">
-<h2 class="anchored" data-anchor-id="other-target-methods">Other target methods</h2>
-<p>Fixed-horizon labels apply a symmetric neutral band to returns at one future horizon:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fixed <span class="op">=</span> q.label.fixed_horizon(</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    close,</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="dv">5</span>,</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    events<span class="op">=</span>events,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    threshold<span class="op">=</span><span class="fl">0.005</span>,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Trend scanning fits forward regressions over several candidate bar counts and keeps the slope with the largest absolute t-value. Horizons count bars after the event, so a horizon of 5 fits 6 prices including the event itself.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>trends <span class="op">=</span> q.label.trend_scanning(</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    close,</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    events<span class="op">=</span>events,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    horizons<span class="op">=</span><span class="bu">range</span>(<span class="dv">5</span>, <span class="dv">21</span>),</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    min_t_value<span class="op">=</span><span class="fl">2.0</span>,</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Rare classes can be pruned iteratively while preserving at least two classes. The second return value records every class’s initial and final frequency and the step at which it was removed:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>target, pruning_report <span class="op">=</span> q.label.prune_labels(</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    labels[<span class="st">"label"</span>],</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    min_fraction<span class="op">=</span><span class="fl">0.05</span>,</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> labels.loc[target.index].assign(label<span class="op">=</span>target)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="equal-area-performance-view" class="level2">
+<h2 class="anchored" data-anchor-id="equal-area-performance-view">Equal-area performance view</h2>
+<p>Without weights, every active asset gets equal area. This is the right default when only returns are known: return magnitude controls color, not size, so the chart does not imply portfolio weights that were never supplied. The initial view is the latest timestamp.</p>
+<div id="e71529c4" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> q.plot.tree_plot(asset_returns)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div style="height:600px; width:100%;">            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script>if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script>window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.7.0.min.js" integrity="sha256-jvTGqxNp8AGWEcvNLVuKr+8j5dGe9Yw51LQkmDH+IYA=" crossorigin="anonymous"></script>                <div id="61f73e69-9efb-4f9f-ac78-d441064961ab" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("61f73e69-9efb-4f9f-ac78-d441064961ab")) {                    Plotly.newPlot(                        "61f73e69-9efb-4f9f-ac78-d441064961ab",                        [{"branchvalues":"total","customdata":[0.038,-0.008,0.029,0.006],"hovertemplate":"%{label}\u003cbr\u003eReturn: %{customdata:.2%}\u003cextra\u003e\u003c\u002fextra\u003e","labels":["AAPL","MSFT","NVDA","XOM"],"marker":{"cmax":0.083,"cmid":0,"cmin":-0.083,"colorbar":{"tickformat":".1%","title":{"text":"Return"}},"colors":[0.038,-0.008,0.029,0.006],"colorscale":[[0.0,"rgb(103,0,31)"],[0.1,"rgb(178,24,43)"],[0.2,"rgb(214,96,77)"],[0.3,"rgb(244,165,130)"],[0.4,"rgb(253,219,199)"],[0.5,"rgb(247,247,247)"],[0.6,"rgb(209,229,240)"],[0.7,"rgb(146,197,222)"],[0.8,"rgb(67,147,195)"],[0.9,"rgb(33,102,172)"],[1.0,"rgb(5,48,97)"]],"line":{"color":"white","width":2}},"parents":["","","",""],"texttemplate":"\u003cb\u003e%{label}\u003c\u002fb\u003e\u003cbr\u003e%{customdata:.2%}","values":[1.0,1.0,1.0,1.0],"type":"treemap"}],                        {"template":{"data":{"barpolar":[{"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scattermap":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermap"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"white","showlakes":true,"showland":true,"subunitcolor":"#C8D4E3"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"margin":{"b":0,"l":0,"r":0,"t":30},"paper_bgcolor":"white","plot_bgcolor":"white","polar":{"angularaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""},"bgcolor":"white","radialaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"yaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"zaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"ternary":{"aaxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"baxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"bgcolor":"white","caxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2}}},"margin":{"l":20,"r":20,"t":90,"b":90},"legend":{"orientation":"h","y":1.02,"x":0,"xanchor":"left"},"title":{"text":"Portfolio Performance Treemap"},"hovermode":"closest","height":600,"xaxis":{"showgrid":false},"yaxis":{"showgrid":true,"gridcolor":"#E5E7EB","zeroline":false},"sliders":[{"active":5,"currentvalue":{"font":{"size":14},"prefix":"As of "},"pad":{"t":30},"steps":[{"args":[["2025-01-31T00:00:00"],{"mode":"immediate","frame":{"duration":0,"redraw":true},"transition":{"duration":0}}],"label":"2025-01-31","method":"animate"},{"args":[["2025-02-28T00:00:00"],{"mode":"immediate","frame":{"duration":0,"redraw":true},"transition":{"duration":0}}],"label":"2025-02-28","method":"animate"},{"args":[["2025-03-31T00:00:00"],{"mode":"immediate","frame":{"duration":0,"redraw":true},"transition":{"duration":0}}],"label":"2025-03-31","method":"animate"},{"args":[["2025-04-30T00:00:00"],{"mode":"immediate","frame":{"duration":0,"redraw":true},"transition":{"duration":0}}],"label":"2025-04-30","method":"animate"},{"args":[["2025-05-31T00:00:00"],{"mode":"immediate","frame":{"duration":0,"redraw":true},"transition":{"duration":0}}],"label":"2025-05-31","method":"animate"},{"args":[["2025-06-30T00:00:00"],{"mode":"immediate","frame":{"duration":0,"redraw":true},"transition":{"duration":0}}],"label":"2025-06-30","method":"animate"}]}]},                        {"responsive": true}                    ).then(function(){
+                            Plotly.addFrames('61f73e69-9efb-4f9f-ac78-d441064961ab', [{"data":[{"branchvalues":"total","customdata":[0.042,0.025,-0.012],"hovertemplate":"%{label}\u003cbr\u003eReturn: %{customdata:.2%}\u003cextra\u003e\u003c\u002fextra\u003e","labels":["AAPL","MSFT","JPM"],"marker":{"cmax":0.083,"cmid":0,"cmin":-0.083,"colorbar":{"tickformat":".1%","title":{"text":"Return"}},"colors":[0.042,0.025,-0.012],"colorscale":[[0.0,"rgb(103,0,31)"],[0.1,"rgb(178,24,43)"],[0.2,"rgb(214,96,77)"],[0.3,"rgb(244,165,130)"],[0.4,"rgb(253,219,199)"],[0.5,"rgb(247,247,247)"],[0.6,"rgb(209,229,240)"],[0.7,"rgb(146,197,222)"],[0.8,"rgb(67,147,195)"],[0.9,"rgb(33,102,172)"],[1.0,"rgb(5,48,97)"]],"line":{"color":"white","width":2}},"parents":["","",""],"texttemplate":"\u003cb\u003e%{label}\u003c\u002fb\u003e\u003cbr\u003e%{customdata:.2%}","values":[1.0,1.0,1.0],"type":"treemap"}],"name":"2025-01-31T00:00:00"},{"data":[{"branchvalues":"total","customdata":[-0.018,0.011,0.027,0.034],"hovertemplate":"%{label}\u003cbr\u003eReturn: %{customdata:.2%}\u003cextra\u003e\u003c\u002fextra\u003e","labels":["AAPL","MSFT","JPM","XOM"],"marker":{"cmax":0.083,"cmid":0,"cmin":-0.083,"colorbar":{"tickformat":".1%","title":{"text":"Return"}},"colors":[-0.018,0.011,0.027,0.034],"colorscale":[[0.0,"rgb(103,0,31)"],[0.1,"rgb(178,24,43)"],[0.2,"rgb(214,96,77)"],[0.3,"rgb(244,165,130)"],[0.4,"rgb(253,219,199)"],[0.5,"rgb(247,247,247)"],[0.6,"rgb(209,229,240)"],[0.7,"rgb(146,197,222)"],[0.8,"rgb(67,147,195)"],[0.9,"rgb(33,102,172)"],[1.0,"rgb(5,48,97)"]],"line":{"color":"white","width":2}},"parents":["","","",""],"texttemplate":"\u003cb\u003e%{label}\u003c\u002fb\u003e\u003cbr\u003e%{customdata:.2%}","values":[1.0,1.0,1.0,1.0],"type":"treemap"}],"name":"2025-02-28T00:00:00"},{"data":[{"branchvalues":"total","customdata":[0.031,-0.022,0.083,0.016,-0.015],"hovertemplate":"%{label}\u003cbr\u003eReturn: %{customdata:.2%}\u003cextra\u003e\u003c\u002fextra\u003e","labels":["AAPL","MSFT","NVDA","JPM","XOM"],"marker":{"cmax":0.083,"cmid":0,"cmin":-0.083,"colorbar":{"tickformat":".1%","title":{"text":"Return"}},"colors":[0.031,-0.022,0.083,0.016,-0.015],"colorscale":[[0.0,"rgb(103,0,31)"],[0.1,"rgb(178,24,43)"],[0.2,"rgb(214,96,77)"],[0.3,"rgb(244,165,130)"],[0.4,"rgb(253,219,199)"],[0.5,"rgb(247,247,247)"],[0.6,"rgb(209,229,240)"],[0.7,"rgb(146,197,222)"],[0.8,"rgb(67,147,195)"],[0.9,"rgb(33,102,172)"],[1.0,"rgb(5,48,97)"]],"line":{"color":"white","width":2}},"parents":["","","","",""],"texttemplate":"\u003cb\u003e%{label}\u003c\u002fb\u003e\u003cbr\u003e%{customdata:.2%}","values":[1.0,1.0,1.0,1.0,1.0],"type":"treemap"}],"name":"2025-03-31T00:00:00"},{"data":[{"branchvalues":"total","customdata":[0.012,0.044,-0.051,-0.009,0.021],"hovertemplate":"%{label}\u003cbr\u003eReturn: %{customdata:.2%}\u003cextra\u003e\u003c\u002fextra\u003e","labels":["AAPL","MSFT","NVDA","JPM","XOM"],"marker":{"cmax":0.083,"cmid":0,"cmin":-0.083,"colorbar":{"tickformat":".1%","title":{"text":"Return"}},"colors":[0.012,0.044,-0.051,-0.009,0.021],"colorscale":[[0.0,"rgb(103,0,31)"],[0.1,"rgb(178,24,43)"],[0.2,"rgb(214,96,77)"],[0.3,"rgb(244,165,130)"],[0.4,"rgb(253,219,199)"],[0.5,"rgb(247,247,247)"],[0.6,"rgb(209,229,240)"],[0.7,"rgb(146,197,222)"],[0.8,"rgb(67,147,195)"],[0.9,"rgb(33,102,172)"],[1.0,"rgb(5,48,97)"]],"line":{"color":"white","width":2}},"parents":["","","","",""],"texttemplate":"\u003cb\u003e%{label}\u003c\u002fb\u003e\u003cbr\u003e%{customdata:.2%}","values":[1.0,1.0,1.0,1.0,1.0],"type":"treemap"}],"name":"2025-04-30T00:00:00"},{"data":[{"branchvalues":"total","customdata":[-0.026,0.019,0.067,-0.011],"hovertemplate":"%{label}\u003cbr\u003eReturn: %{customdata:.2%}\u003cextra\u003e\u003c\u002fextra\u003e","labels":["AAPL","MSFT","NVDA","XOM"],"marker":{"cmax":0.083,"cmid":0,"cmin":-0.083,"colorbar":{"tickformat":".1%","title":{"text":"Return"}},"colors":[-0.026,0.019,0.067,-0.011],"colorscale":[[0.0,"rgb(103,0,31)"],[0.1,"rgb(178,24,43)"],[0.2,"rgb(214,96,77)"],[0.3,"rgb(244,165,130)"],[0.4,"rgb(253,219,199)"],[0.5,"rgb(247,247,247)"],[0.6,"rgb(209,229,240)"],[0.7,"rgb(146,197,222)"],[0.8,"rgb(67,147,195)"],[0.9,"rgb(33,102,172)"],[1.0,"rgb(5,48,97)"]],"line":{"color":"white","width":2}},"parents":["","","",""],"texttemplate":"\u003cb\u003e%{label}\u003c\u002fb\u003e\u003cbr\u003e%{customdata:.2%}","values":[1.0,1.0,1.0,1.0],"type":"treemap"}],"name":"2025-05-31T00:00:00"},{"data":[{"branchvalues":"total","customdata":[0.038,-0.008,0.029,0.006],"hovertemplate":"%{label}\u003cbr\u003eReturn: %{customdata:.2%}\u003cextra\u003e\u003c\u002fextra\u003e","labels":["AAPL","MSFT","NVDA","XOM"],"marker":{"cmax":0.083,"cmid":0,"cmin":-0.083,"colorbar":{"tickformat":".1%","title":{"text":"Return"}},"colors":[0.038,-0.008,0.029,0.006],"colorscale":[[0.0,"rgb(103,0,31)"],[0.1,"rgb(178,24,43)"],[0.2,"rgb(214,96,77)"],[0.3,"rgb(244,165,130)"],[0.4,"rgb(253,219,199)"],[0.5,"rgb(247,247,247)"],[0.6,"rgb(209,229,240)"],[0.7,"rgb(146,197,222)"],[0.8,"rgb(67,147,195)"],[0.9,"rgb(33,102,172)"],[1.0,"rgb(5,48,97)"]],"line":{"color":"white","width":2}},"parents":["","","",""],"texttemplate":"\u003cb\u003e%{label}\u003c\u002fb\u003e\u003cbr\u003e%{customdata:.2%}","values":[1.0,1.0,1.0,1.0],"type":"treemap"}],"name":"2025-06-30T00:00:00"}]);
+                        }).then(function(){
+                            
+var gd = document.getElementById('61f73e69-9efb-4f9f-ac78-d441064961ab');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div>
+</div>
+</div>
 </section>
-<section id="overlapping-outcomes" class="level2">
-<h2 class="anchored" data-anchor-id="overlapping-outcomes">Overlapping outcomes</h2>
-<p>Labels with overlapping lifetimes are not independent. Use their touch times to measure overlap and derive training weights:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>end_times <span class="op">=</span> labels[<span class="st">"touch_time"</span>]</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>active <span class="op">=</span> q.label.concurrency(close.index, end_times)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>uniqueness <span class="op">=</span> q.label.average_uniqueness(close.index, end_times)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>membership <span class="op">=</span> q.label.indicator_matrix(close.index, end_times)</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Reproducible bag sample favoring events with greater marginal uniqueness.</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>bag_events <span class="op">=</span> q.label.sequential_bootstrap(</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    close.index,</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    end_times,</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span><span class="dv">42</span>,</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>concurrency</code> counts inclusive event intervals. <code>average_uniqueness</code> averages inverse concurrency over each interval. The sparse indicator matrix has one row per observation and one column per event; its row sums equal <code>concurrency</code>. Sequential bootstrap recomputes marginal uniqueness after every draw and may select an event more than once.</p>
-<p>Weight components remain separate so the training policy is explicit:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>return_weight <span class="op">=</span> q.label.sample_weights(close, end_times, normalize<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>decay <span class="op">=</span> q.label.time_decay(uniqueness, minimum_weight<span class="op">=</span><span class="fl">0.25</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>class_weight <span class="op">=</span> q.label.class_balance_weights(labels[<span class="st">"label"</span>])</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>weights <span class="op">=</span> q.label.combine_weights(return_weight, decay, class_weight)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>sample_weights</code> attributes each log return equally among active labels and takes the absolute event-level result. <code>time_decay</code> reaches 1 at the newest event, <code>class_balance_weights</code> gives every observed class equal total mass, and <code>combine_weights</code> multiplies aligned components before normalizing to unit mean. A zero component removes that event from the weighted sample; an all-zero combination is rejected when normalization is enabled.</p>
-<p>Export running event endpoints for a chronological splitter, optionally with a bar-based embargo:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>split_metadata <span class="op">=</span> q.label.purging_metadata(</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    close.index,</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    end_times,</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    embargo<span class="op">=</span><span class="dv">5</span>,</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>For each event, <code>max_end_time</code> is the latest label endpoint seen so far and <code>next_safe_time</code> is the first observation after that endpoint and the embargo. For example, an endpoint at position 10 with <code>embargo=2</code> skips positions 11 and 12, making position 13 the next safe observation. Actual fold construction remains the responsibility of <code>q.dataset</code>.</p>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
+<section id="size-tiles-by-portfolio-weight" class="level2">
+<h2 class="anchored" data-anchor-id="size-tiles-by-portfolio-weight">Size tiles by portfolio weight</h2>
+<p>Pass a matching weight DataFrame when holdings are available. Absolute nonzero weights determine both membership and tile area, while the return matrix still determines color. This also supports short positions: a negative weight is sized by its absolute exposure. A static Series indexed by asset can be used instead when weights do not vary through time.</p>
+<div id="e00e1b09" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>asset_weights <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"AAPL"</span>: [<span class="fl">0.40</span>, <span class="fl">0.35</span>, <span class="fl">0.30</span>, <span class="fl">0.25</span>, <span class="fl">0.30</span>, <span class="fl">0.30</span>],</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"MSFT"</span>: [<span class="fl">0.35</span>, <span class="fl">0.30</span>, <span class="fl">0.25</span>, <span class="fl">0.25</span>, <span class="fl">0.25</span>, <span class="fl">0.25</span>],</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"NVDA"</span>: [<span class="fl">0.00</span>, <span class="fl">0.00</span>, <span class="fl">0.20</span>, <span class="fl">0.25</span>, <span class="fl">0.30</span>, <span class="fl">0.30</span>],</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"JPM"</span>: [<span class="fl">0.25</span>, <span class="fl">0.20</span>, <span class="fl">0.15</span>, <span class="fl">0.10</span>, <span class="fl">0.00</span>, <span class="fl">0.00</span>],</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"XOM"</span>: [<span class="fl">0.00</span>, <span class="fl">0.15</span>, <span class="fl">0.10</span>, <span class="fl">0.15</span>, <span class="fl">0.15</span>, <span class="fl">0.15</span>],</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span>dates,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> q.plot.tree_plot(</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    asset_returns,</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    weights<span class="op">=</span>asset_weights,</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"Monthly Portfolio Performance"</span>,</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div style="height:600px; width:100%;">            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script>if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script>window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.7.0.min.js" integrity="sha256-jvTGqxNp8AGWEcvNLVuKr+8j5dGe9Yw51LQkmDH+IYA=" crossorigin="anonymous"></script>                <div id="e242f918-ff15-4c6b-9104-60c192310c9c" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("e242f918-ff15-4c6b-9104-60c192310c9c")) {                    Plotly.newPlot(                        "e242f918-ff15-4c6b-9104-60c192310c9c",                        [{"branchvalues":"total","customdata":[0.038,-0.008,0.029,0.006],"hovertemplate":"%{label}\u003cbr\u003eReturn: %{customdata:.2%}\u003cbr\u003eWeight: %{value:.2%}\u003cextra\u003e\u003c\u002fextra\u003e","labels":["AAPL","MSFT","NVDA","XOM"],"marker":{"cmax":0.083,"cmid":0,"cmin":-0.083,"colorbar":{"tickformat":".1%","title":{"text":"Return"}},"colors":[0.038,-0.008,0.029,0.006],"colorscale":[[0.0,"rgb(103,0,31)"],[0.1,"rgb(178,24,43)"],[0.2,"rgb(214,96,77)"],[0.3,"rgb(244,165,130)"],[0.4,"rgb(253,219,199)"],[0.5,"rgb(247,247,247)"],[0.6,"rgb(209,229,240)"],[0.7,"rgb(146,197,222)"],[0.8,"rgb(67,147,195)"],[0.9,"rgb(33,102,172)"],[1.0,"rgb(5,48,97)"]],"line":{"color":"white","width":2}},"parents":["","","",""],"texttemplate":"\u003cb\u003e%{label}\u003c\u002fb\u003e\u003cbr\u003e%{customdata:.2%}","values":[0.3,0.25,0.3,0.15],"type":"treemap"}],                        {"template":{"data":{"barpolar":[{"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scattermap":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermap"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"white","showlakes":true,"showland":true,"subunitcolor":"#C8D4E3"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"margin":{"b":0,"l":0,"r":0,"t":30},"paper_bgcolor":"white","plot_bgcolor":"white","polar":{"angularaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""},"bgcolor":"white","radialaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"yaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"zaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"ternary":{"aaxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"baxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"bgcolor":"white","caxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2}}},"margin":{"l":20,"r":20,"t":90,"b":90},"legend":{"orientation":"h","y":1.02,"x":0,"xanchor":"left"},"title":{"text":"Monthly Portfolio Performance"},"hovermode":"closest","height":600,"xaxis":{"showgrid":false},"yaxis":{"showgrid":true,"gridcolor":"#E5E7EB","zeroline":false},"sliders":[{"active":5,"currentvalue":{"font":{"size":14},"prefix":"As of "},"pad":{"t":30},"steps":[{"args":[["2025-01-31T00:00:00"],{"mode":"immediate","frame":{"duration":0,"redraw":true},"transition":{"duration":0}}],"label":"2025-01-31","method":"animate"},{"args":[["2025-02-28T00:00:00"],{"mode":"immediate","frame":{"duration":0,"redraw":true},"transition":{"duration":0}}],"label":"2025-02-28","method":"animate"},{"args":[["2025-03-31T00:00:00"],{"mode":"immediate","frame":{"duration":0,"redraw":true},"transition":{"duration":0}}],"label":"2025-03-31","method":"animate"},{"args":[["2025-04-30T00:00:00"],{"mode":"immediate","frame":{"duration":0,"redraw":true},"transition":{"duration":0}}],"label":"2025-04-30","method":"animate"},{"args":[["2025-05-31T00:00:00"],{"mode":"immediate","frame":{"duration":0,"redraw":true},"transition":{"duration":0}}],"label":"2025-05-31","method":"animate"},{"args":[["2025-06-30T00:00:00"],{"mode":"immediate","frame":{"duration":0,"redraw":true},"transition":{"duration":0}}],"label":"2025-06-30","method":"animate"}]}]},                        {"responsive": true}                    ).then(function(){
+                            Plotly.addFrames('e242f918-ff15-4c6b-9104-60c192310c9c', [{"data":[{"branchvalues":"total","customdata":[0.042,0.025,-0.012],"hovertemplate":"%{label}\u003cbr\u003eReturn: %{customdata:.2%}\u003cbr\u003eWeight: %{value:.2%}\u003cextra\u003e\u003c\u002fextra\u003e","labels":["AAPL","MSFT","JPM"],"marker":{"cmax":0.083,"cmid":0,"cmin":-0.083,"colorbar":{"tickformat":".1%","title":{"text":"Return"}},"colors":[0.042,0.025,-0.012],"colorscale":[[0.0,"rgb(103,0,31)"],[0.1,"rgb(178,24,43)"],[0.2,"rgb(214,96,77)"],[0.3,"rgb(244,165,130)"],[0.4,"rgb(253,219,199)"],[0.5,"rgb(247,247,247)"],[0.6,"rgb(209,229,240)"],[0.7,"rgb(146,197,222)"],[0.8,"rgb(67,147,195)"],[0.9,"rgb(33,102,172)"],[1.0,"rgb(5,48,97)"]],"line":{"color":"white","width":2}},"parents":["","",""],"texttemplate":"\u003cb\u003e%{label}\u003c\u002fb\u003e\u003cbr\u003e%{customdata:.2%}","values":[0.4,0.35,0.25],"type":"treemap"}],"name":"2025-01-31T00:00:00"},{"data":[{"branchvalues":"total","customdata":[-0.018,0.011,0.027,0.034],"hovertemplate":"%{label}\u003cbr\u003eReturn: %{customdata:.2%}\u003cbr\u003eWeight: %{value:.2%}\u003cextra\u003e\u003c\u002fextra\u003e","labels":["AAPL","MSFT","JPM","XOM"],"marker":{"cmax":0.083,"cmid":0,"cmin":-0.083,"colorbar":{"tickformat":".1%","title":{"text":"Return"}},"colors":[-0.018,0.011,0.027,0.034],"colorscale":[[0.0,"rgb(103,0,31)"],[0.1,"rgb(178,24,43)"],[0.2,"rgb(214,96,77)"],[0.3,"rgb(244,165,130)"],[0.4,"rgb(253,219,199)"],[0.5,"rgb(247,247,247)"],[0.6,"rgb(209,229,240)"],[0.7,"rgb(146,197,222)"],[0.8,"rgb(67,147,195)"],[0.9,"rgb(33,102,172)"],[1.0,"rgb(5,48,97)"]],"line":{"color":"white","width":2}},"parents":["","","",""],"texttemplate":"\u003cb\u003e%{label}\u003c\u002fb\u003e\u003cbr\u003e%{customdata:.2%}","values":[0.35,0.3,0.2,0.15],"type":"treemap"}],"name":"2025-02-28T00:00:00"},{"data":[{"branchvalues":"total","customdata":[0.031,-0.022,0.083,0.016,-0.015],"hovertemplate":"%{label}\u003cbr\u003eReturn: %{customdata:.2%}\u003cbr\u003eWeight: %{value:.2%}\u003cextra\u003e\u003c\u002fextra\u003e","labels":["AAPL","MSFT","NVDA","JPM","XOM"],"marker":{"cmax":0.083,"cmid":0,"cmin":-0.083,"colorbar":{"tickformat":".1%","title":{"text":"Return"}},"colors":[0.031,-0.022,0.083,0.016,-0.015],"colorscale":[[0.0,"rgb(103,0,31)"],[0.1,"rgb(178,24,43)"],[0.2,"rgb(214,96,77)"],[0.3,"rgb(244,165,130)"],[0.4,"rgb(253,219,199)"],[0.5,"rgb(247,247,247)"],[0.6,"rgb(209,229,240)"],[0.7,"rgb(146,197,222)"],[0.8,"rgb(67,147,195)"],[0.9,"rgb(33,102,172)"],[1.0,"rgb(5,48,97)"]],"line":{"color":"white","width":2}},"parents":["","","","",""],"texttemplate":"\u003cb\u003e%{label}\u003c\u002fb\u003e\u003cbr\u003e%{customdata:.2%}","values":[0.3,0.25,0.2,0.15,0.1],"type":"treemap"}],"name":"2025-03-31T00:00:00"},{"data":[{"branchvalues":"total","customdata":[0.012,0.044,-0.051,-0.009,0.021],"hovertemplate":"%{label}\u003cbr\u003eReturn: %{customdata:.2%}\u003cbr\u003eWeight: %{value:.2%}\u003cextra\u003e\u003c\u002fextra\u003e","labels":["AAPL","MSFT","NVDA","JPM","XOM"],"marker":{"cmax":0.083,"cmid":0,"cmin":-0.083,"colorbar":{"tickformat":".1%","title":{"text":"Return"}},"colors":[0.012,0.044,-0.051,-0.009,0.021],"colorscale":[[0.0,"rgb(103,0,31)"],[0.1,"rgb(178,24,43)"],[0.2,"rgb(214,96,77)"],[0.3,"rgb(244,165,130)"],[0.4,"rgb(253,219,199)"],[0.5,"rgb(247,247,247)"],[0.6,"rgb(209,229,240)"],[0.7,"rgb(146,197,222)"],[0.8,"rgb(67,147,195)"],[0.9,"rgb(33,102,172)"],[1.0,"rgb(5,48,97)"]],"line":{"color":"white","width":2}},"parents":["","","","",""],"texttemplate":"\u003cb\u003e%{label}\u003c\u002fb\u003e\u003cbr\u003e%{customdata:.2%}","values":[0.25,0.25,0.25,0.1,0.15],"type":"treemap"}],"name":"2025-04-30T00:00:00"},{"data":[{"branchvalues":"total","customdata":[-0.026,0.019,0.067,-0.011],"hovertemplate":"%{label}\u003cbr\u003eReturn: %{customdata:.2%}\u003cbr\u003eWeight: %{value:.2%}\u003cextra\u003e\u003c\u002fextra\u003e","labels":["AAPL","MSFT","NVDA","XOM"],"marker":{"cmax":0.083,"cmid":0,"cmin":-0.083,"colorbar":{"tickformat":".1%","title":{"text":"Return"}},"colors":[-0.026,0.019,0.067,-0.011],"colorscale":[[0.0,"rgb(103,0,31)"],[0.1,"rgb(178,24,43)"],[0.2,"rgb(214,96,77)"],[0.3,"rgb(244,165,130)"],[0.4,"rgb(253,219,199)"],[0.5,"rgb(247,247,247)"],[0.6,"rgb(209,229,240)"],[0.7,"rgb(146,197,222)"],[0.8,"rgb(67,147,195)"],[0.9,"rgb(33,102,172)"],[1.0,"rgb(5,48,97)"]],"line":{"color":"white","width":2}},"parents":["","","",""],"texttemplate":"\u003cb\u003e%{label}\u003c\u002fb\u003e\u003cbr\u003e%{customdata:.2%}","values":[0.3,0.25,0.3,0.15],"type":"treemap"}],"name":"2025-05-31T00:00:00"},{"data":[{"branchvalues":"total","customdata":[0.038,-0.008,0.029,0.006],"hovertemplate":"%{label}\u003cbr\u003eReturn: %{customdata:.2%}\u003cbr\u003eWeight: %{value:.2%}\u003cextra\u003e\u003c\u002fextra\u003e","labels":["AAPL","MSFT","NVDA","XOM"],"marker":{"cmax":0.083,"cmid":0,"cmin":-0.083,"colorbar":{"tickformat":".1%","title":{"text":"Return"}},"colors":[0.038,-0.008,0.029,0.006],"colorscale":[[0.0,"rgb(103,0,31)"],[0.1,"rgb(178,24,43)"],[0.2,"rgb(214,96,77)"],[0.3,"rgb(244,165,130)"],[0.4,"rgb(253,219,199)"],[0.5,"rgb(247,247,247)"],[0.6,"rgb(209,229,240)"],[0.7,"rgb(146,197,222)"],[0.8,"rgb(67,147,195)"],[0.9,"rgb(33,102,172)"],[1.0,"rgb(5,48,97)"]],"line":{"color":"white","width":2}},"parents":["","","",""],"texttemplate":"\u003cb\u003e%{label}\u003c\u002fb\u003e\u003cbr\u003e%{customdata:.2%}","values":[0.3,0.25,0.3,0.15],"type":"treemap"}],"name":"2025-06-30T00:00:00"}]);
+                        }).then(function(){
+                            
+var gd = document.getElementById('e242f918-ff15-4c6b-9104-60c192310c9c');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div>
 </div>
-<div class="callout-title-container flex-fill">
-Warning
 </div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Keep <code>event_time</code>, <code>touch_time</code>, or <code>end_time</code> with every target. Random splits can leak one future path into another when intervals overlap; use purging and an embargo when evaluating models on these labels.</p>
-</div>
-</div>
-<p>See the <a href="../reference/label.html">API reference</a> for complete signatures and validation rules.</p>
+</section>
+<section id="add-the-treemap-to-a-backtest-report" class="level2">
+<h2 class="anchored" data-anchor-id="add-the-treemap-to-a-backtest-report">Add the treemap to a backtest report</h2>
+<p>A LEAN result does not necessarily contain per-asset prices or market-value holdings, so <code>q.bt.report</code> does not infer asset performance from orders or portfolio margin. Supply the same explicit return and weight inputs to include the treemap in the standalone report:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>report <span class="op">=</span> q.bt.report(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"backtests/latest"</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    asset_returns<span class="op">=</span>asset_returns,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    asset_weights<span class="op">=</span>asset_weights,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>report.display()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The resulting <code>BacktestReport</code> also exposes the figure as <code>report.performance_treemap</code>.</p>
 
 
 </section>
@@ -1805,13 +1681,13 @@ Warning
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../cross_section/roadmap.html" class="pagination-link" aria-label="Roadmap">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Roadmap</span>
+      <a href="../plot/returns.html" class="pagination-link" aria-label="Return charts">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Return charts</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../label/cusum_filter.html" class="pagination-link" aria-label="CUSUM event filter">
-        <span class="nav-page-text">CUSUM event filter</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../plot/report.html" class="pagination-link" aria-label="Tearsheet report">
+        <span class="nav-page-text">Tearsheet report</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -1820,4 +1696,4 @@ Warning
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/quantbert/qrt/edit/main/label/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/label/index.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.dev/quantbert/qrt/blob/main/plot/performance_treemap.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/plot/performance_treemap.ipynb" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

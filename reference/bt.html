@@ -735,10 +735,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    figure,</span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    diagnostics<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    margin_allocation<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    trade_excursions<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    trade_returns<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    _raw<span class="op">=</span><span class="bu">dict</span>(),</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    performance_treemap<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    trade_excursions<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    trade_returns<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    _raw<span class="op">=</span><span class="bu">dict</span>(),</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A normalized LEAN backtest plus its qrt-native report renderings.</p>
 <section id="methods" class="level4">
 <h4 class="anchored" data-anchor-id="methods">Methods</h4>
@@ -804,17 +805,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="qrt.bt.report" class="level3">
 <h3 class="anchored" data-anchor-id="qrt.bt.report">report</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>bt.report(source, <span class="op">*</span>, title<span class="op">=</span><span class="va">None</span>, description<span class="op">=</span><span class="st">''</span>, output<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>bt.report(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    source,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    asset_returns<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    asset_weights<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    description<span class="op">=</span><span class="st">''</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    output<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create a native qrt report from an original LEAN backtest result.</p>
 <p>The adapter reads recorded result charts and tables directly. It never decodes LEAN security identifiers or replays orders, so custom markets are supported without preprocessing.</p>
 <section id="parameters" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 6%">
-<col style="width: 14%">
-<col style="width: 72%">
-<col style="width: 6%">
+<col style="width: 7%">
+<col style="width: 16%">
+<col style="width: 70%">
+<col style="width: 5%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -830,6 +839,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>str | Path | JsonObject</td>
 <td>LEAN result JSON path, a backtests directory from which the newest completed result is selected, or an already loaded result mapping.</td>
 <td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>asset_returns</td>
+<td>pd.DataFrame | None</td>
+<td>Optional wide simple-return frame used for the portfolio performance treemap. <code>NaN</code> means the asset is not in the portfolio at that timestamp.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>asset_weights</td>
+<td>pd.DataFrame | pd.Series | None</td>
+<td>Optional time-varying or static portfolio weights. When supplied, nonzero absolute weights determine membership and tile area.</td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>title</td>
