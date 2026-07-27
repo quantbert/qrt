@@ -1,0 +1,1652 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Volume spike ratio – qrt</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../indicator/qrt/price_spikes.html" rel="next">
+<link href="../../indicator/qrt/volume_ratio.html" rel="prev">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-234273dcd3ff8f4bdb782b4fb3f12a13.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+<script>
+window.PlotlyConfig = {MathJaxConfig: 'local'};
+if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}
+</script>
+<script type="module">import "https://cdn.plot.ly/plotly-3.7.0.min"</script>
+
+
+
+<link rel="stylesheet" href="../../reference/_styles-quartodoc.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">qrt — Quant Research Tools</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../../index.html" aria-current="page"> 
+<span class="menu-text">Getting Started</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../reference/index.html"> 
+<span class="menu-text">API Reference</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../roadmap.html"> 
+<span class="menu-text">Roadmap</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+    <a href="https://github.com/quantbert/qrt" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../indicator/index.html">q.indicator — Indicators</a></li><li class="breadcrumb-item"><a href="../../indicator/qrt/sma.html">QRT indicators</a></li><li class="breadcrumb-item"><a href="../../indicator/qrt/volume_spike_ratio.html">Volume spike ratio</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Getting Started</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../bt/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.bt — Backtesting</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../bt/lean.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Run LEAN backtests</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../lean/qbt-integration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">LEAN adapter and reports</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../bt/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../data/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.data — Data</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../data/datasets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sample datasets</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../data/schemas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data schemas</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../data/local.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Local files</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../data/sources.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Market data sources</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../data/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../ai/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.ai — Generative AI</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../ai/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../experiment/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.experiment — Experiment tracking</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../experiment/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../indicator/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.indicator — Indicators</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">QRT indicators</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth2 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/sma.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simple moving average (SMA)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/ema.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Exponential moving average (EMA)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/madev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Mean absolute deviation (MADEV)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/returns.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simple returns</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/momentum.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Price momentum</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/rolling_volatility.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Rolling volatility</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/volume_ratio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Relative volume</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/volume_spike_ratio.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Volume spike ratio</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/price_spikes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Price spikes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/log_returns.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Log returns</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/realized_variance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Realized variance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/realized_quarticity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Realized quarticity</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/bipower_variation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bipower variation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/med_rv.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Median realized volatility</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/min_rv.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Minimum realized volatility</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/realized_volatility.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Realized volatility by session</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/relative_strength.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Relative strength</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/rsma.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Relative-strength moving average</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/rs_days.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Relative-strength days</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/rs_phase.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Relative-strength phase</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/qrt/rsnhbp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">RS new high before price</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/talib.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TA-Lib</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/pandas_ta.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">pandas-ta-classic</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../indicator/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../cross_section/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.cross_section — Cross-sectional analysis</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../cross_section/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../label/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.label — Financial labels</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../label/cusum_filter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CUSUM event filter</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../label/vertical_barriers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Vertical barriers</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../label/fixed_horizon.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Fixed-horizon labels</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../label/triple_barrier.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Triple-barrier labels</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../label/meta_label.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Meta-labels</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../label/trend_scanning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Trend-scanning labels</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../label/prune_labels.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Rare-label pruning</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../label/concurrency.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Label concurrency</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../label/indicator_matrix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Event indicator matrix</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../label/average_uniqueness.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Average label uniqueness</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../label/sequential_bootstrap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sequential bootstrap</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../label/purging_metadata.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Purging and embargo metadata</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../label/sample_weights.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Return-attribution weights</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../label/time_decay.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Linear time decay</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../label/class_balance_weights.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Class-balance weights</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../label/combine_weights.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Combine sample weights</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../label/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../dataset/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.dataset — ML datasets</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../dataset/temporal_split.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Temporal split</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../dataset/time_series_split.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Time-series split</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../dataset/splitting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Splitting datasets</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../dataset/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../transform/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.transform — Transformations</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../transform/impute.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Missing data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../transform/scale.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Scaling</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../transform/outlier.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Outliers</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../transform/encode.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Encoding</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../transform/reduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Reduction</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../transform/selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Selection</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../transform/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../calendar/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.calendar — Market time</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../calendar/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../signal/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.signal — Signals</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../signal/tutorial.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Visual signal tutorial</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../signal/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../model/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.model — Models</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-13" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../model/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../ray/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.ray — Distributed computing</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-14" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-14" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../ray/train.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ray Train tutorial</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../skypilot/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SkyPilot — Compute orchestration</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-15" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-15" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../skypilot/training.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Launch a training run</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../skypilot/vscode.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">VS Code over SSH</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../skypilot/strix-halo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Local Strix Halo cluster</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../lean/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">LEAN — Backtesting engine</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-16" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-16" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../lean/setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Install and initialize</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../lean/workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Projects and backtests</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../lean/fileformat.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Native data formats</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../lean/sweden-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Generate Sweden data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../lean/universes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Universes and composites</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../lean/sma.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">20/100 SMA strategy</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../lean/reports.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Generate reports</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../lean/troubleshooting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Troubleshooting</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../gym/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.gym — Financial RL</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-17" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-17" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../gym/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../env/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.env — Environment</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-18" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-18" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../env/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../plot/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.plot — Plotting</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-19" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-19" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../plot/correlation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Correlation Plots</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../plot/correlation_heatmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Correlation heatmap</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../plot/classification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Classification curves</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../plot/barchart.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ranked bar charts</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../plot/returns.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Return charts</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../plot/report.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tearsheet report</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../plot/simulation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simulation tests</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../plot/trades.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Trade logs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../plot/saving.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Saving figures</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../plot/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../portfolio/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.portfolio — Portfolio</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-20" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-20" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../portfolio/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../stats/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.stats — Statistics</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-21" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-21" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stats/risk.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Risk estimators</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stats/netto-number.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Netto Number</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stats/performance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Performance &amp; benchmark</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stats/rolling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Rolling &amp; calendar returns</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stats/factors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Factor analytics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stats/chained.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chained API</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stats/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../utils/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">q.utils — Utilities</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-22" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-22" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../utils/roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../indicator/index.html">q.indicator — Indicators</a></li><li class="breadcrumb-item"><a href="../../indicator/qrt/sma.html">QRT indicators</a></li><li class="breadcrumb-item"><a href="../../indicator/qrt/volume_spike_ratio.html">Volume spike ratio</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Volume spike ratio</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><code>q.indicator.volume_spike_ratio</code> compares current volume with trailing average volume and combines it with the slope of the close-price SMA.</p>
+<p><code>vsr_spike_type</code> uses 0 for no classified spike, 1 for continuation, and 2 for reversal. <code>vsr_trending</code> uses 0 for no trend, 1 for uptrend, and 2 for downtrend. Prices and volume must describe one instrument and have identical indexes.</p>
+<div id="e21d079c" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-20T13:14:03.558781Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-20T13:14:03.558574Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-20T13:14:04.172173Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-20T13:14:04.171649Z&quot;}}" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> qrt <span class="im">as</span> q</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> q.data.datasets.load(<span class="st">"aapl"</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>end <span class="op">=</span> data.index.<span class="bu">max</span>()</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> data.loc[end <span class="op">-</span> pd.DateOffset(years<span class="op">=</span><span class="dv">5</span>) :].copy()</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> q.indicator.volume_spike_ratio(data[<span class="st">"close"</span>], data[<span class="st">"volume"</span>])</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>events <span class="op">=</span> data[[<span class="st">"close"</span>, <span class="st">"volume"</span>]].join(result)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>events.loc[events[<span class="st">"vsr_spike_type"</span>].ne(<span class="dv">0</span>)].tail(<span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">close</th>
+<th data-quarto-table-cell-role="th">volume</th>
+<th data-quarto-table-cell-role="th">vsr</th>
+<th data-quarto-table-cell-role="th">vsr_spike_type</th>
+<th data-quarto-table-cell-role="th">vsr_trending</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">datetime</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2025-09-22</th>
+<td>255.357559</td>
+<td>105517400</td>
+<td>1.791227</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">2025-10-20</th>
+<td>261.500153</td>
+<td>90483000</td>
+<td>1.961588</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2025-10-30</th>
+<td>270.634338</td>
+<td>69886500</td>
+<td>1.519881</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">2026-01-16</th>
+<td>255.056122</td>
+<td>72142800</td>
+<td>1.617250</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2026-01-20</th>
+<td>246.242508</td>
+<td>80267500</td>
+<td>1.743424</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">2026-03-20</th>
+<td>247.761734</td>
+<td>88331100</td>
+<td>2.128798</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2026-04-30</th>
+<td>271.100250</td>
+<td>91848200</td>
+<td>2.117589</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">2026-05-01</th>
+<td>279.882141</td>
+<td>79915400</td>
+<td>1.744678</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2026-06-25</th>
+<td>275.149994</td>
+<td>107013700</td>
+<td>1.900583</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">2026-06-26</th>
+<td>283.779999</td>
+<td>261775500</td>
+<td>3.908060</td>
+<td>2</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="e1548139" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-20T13:14:04.173982Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-20T13:14:04.173912Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-20T13:14:04.261990Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-20T13:14:04.261360Z&quot;}}" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.graph_objects <span class="im">as</span> go</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>figure <span class="op">=</span> go.Figure()</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>figure.add_trace(go.Scatter(x<span class="op">=</span>events.index, y<span class="op">=</span>events[<span class="st">"vsr"</span>], name<span class="op">=</span><span class="st">"VSR"</span>, line<span class="op">=</span>{<span class="st">"color"</span>: <span class="st">"#2457a7"</span>}))</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> code, name, color <span class="kw">in</span> [(<span class="dv">1</span>, <span class="st">"Continuation"</span>, <span class="st">"#16856b"</span>), (<span class="dv">2</span>, <span class="st">"Reversal"</span>, <span class="st">"#d04a35"</span>)]:</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    selected <span class="op">=</span> events.loc[events[<span class="st">"vsr_spike_type"</span>].eq(code)]</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    figure.add_trace(</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        go.Scatter(</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>            x<span class="op">=</span>selected.index,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>            y<span class="op">=</span>selected[<span class="st">"vsr"</span>],</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>            name<span class="op">=</span>name,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>            mode<span class="op">=</span><span class="st">"markers"</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>            marker<span class="op">=</span>{<span class="st">"color"</span>: color, <span class="st">"size"</span>: <span class="dv">8</span>},</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>figure.update_layout(title<span class="op">=</span><span class="st">"AAPL volume spike ratio classifications"</span>, yaxis_title<span class="op">=</span><span class="st">"Relative volume"</span>, hovermode<span class="op">=</span><span class="st">"x unified"</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>figure.show(renderer<span class="op">=</span><span class="st">"notebook_connected"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div style="height:525px; width:100%;">            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script>if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script>window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.7.0.min.js" integrity="sha256-jvTGqxNp8AGWEcvNLVuKr+8j5dGe9Yw51LQkmDH+IYA=" crossorigin="anonymous"></script>                <div id="e3cafe71-4270-414f-8a62-7be588dc6e1a" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("e3cafe71-4270-414f-8a62-7be588dc6e1a")) {                    Plotly.newPlot(                        "e3cafe71-4270-414f-8a62-7be588dc6e1a",                        [{"line":{"color":"#2457a7"},"name":"VSR","x":["2021-07-26T00:00:00","2021-07-27T00:00:00","2021-07-28T00:00:00","2021-07-29T00:00:00","2021-07-30T00:00:00","2021-08-02T00:00:00","2021-08-03T00:00:00","2021-08-04T00:00:00","2021-08-05T00:00:00","2021-08-06T00:00:00","2021-08-09T00:00:00","2021-08-10T00:00:00","2021-08-11T00:00:00","2021-08-12T00:00:00","2021-08-13T00:00:00","2021-08-16T00:00:00","2021-08-17T00:00:00","2021-08-18T00:00:00","2021-08-19T00:00:00","2021-08-20T00:00:00","2021-08-23T00:00:00","2021-08-24T00:00:00","2021-08-25T00:00:00","2021-08-26T00:00:00","2021-08-27T00:00:00","2021-08-30T00:00:00","2021-08-31T00:00:00","2021-09-01T00:00:00","2021-09-02T00:00:00","2021-09-03T00:00:00","2021-09-07T00:00:00","2021-09-08T00:00:00","2021-09-09T00:00:00","2021-09-10T00:00:00","2021-09-13T00:00:00","2021-09-14T00:00:00","2021-09-15T00:00:00","2021-09-16T00:00:00","2021-09-17T00:00:00","2021-09-20T00:00:00","2021-09-21T00:00:00","2021-09-22T00:00:00","2021-09-23T00:00:00","2021-09-24T00:00:00","2021-09-27T00:00:00","2021-09-28T00:00:00","2021-09-29T00:00:00","2021-09-30T00:00:00","2021-10-01T00:00:00","2021-10-04T00:00:00","2021-10-05T00:00:00","2021-10-06T00:00:00","2021-10-07T00:00:00","2021-10-08T00:00:00","2021-10-11T00:00:00","2021-10-12T00:00:00","2021-10-13T00:00:00","2021-10-14T00:00:00","2021-10-15T00:00:00","2021-10-18T00:00:00","2021-10-19T00:00:00","2021-10-20T00:00:00","2021-10-21T00:00:00","2021-10-22T00:00:00","2021-10-25T00:00:00","2021-10-26T00:00:00","2021-10-27T00:00:00","2021-10-28T00:00:00","2021-10-29T00:00:00","2021-11-01T00:00:00","2021-11-02T00:00:00","2021-11-03T00:00:00","2021-11-04T00:00:00","2021-11-05T00:00:00","2021-11-08T00:00:00","2021-11-09T00:00:00","2021-11-10T00:00:00","2021-11-11T00:00:00","2021-11-12T00:00:00","2021-11-15T00:00:00","2021-11-16T00:00:00","2021-11-17T00:00:00","2021-11-18T00:00:00","2021-11-19T00:00:00","2021-11-22T00:00:00","2021-11-23T00:00:00","2021-11-24T00:00:00","2021-11-26T00:00:00","2021-11-29T00:00:00","2021-11-30T00:00:00","2021-12-01T00:00:00","2021-12-02T00:00:00","2021-12-03T00:00:00","2021-12-06T00:00:00","2021-12-07T00:00:00","2021-12-08T00:00:00","2021-12-09T00:00:00","2021-12-10T00:00:00","2021-12-13T00:00:00","2021-12-14T00:00:00","2021-12-15T00:00:00","2021-12-16T00:00:00","2021-12-17T00:00:00","2021-12-20T00:00:00","2021-12-21T00:00:00","2021-12-22T00:00:00","2021-12-23T00:00:00","2021-12-27T00:00:00","2021-12-28T00:00:00","2021-12-29T00:00:00","2021-12-30T00:00:00","2021-12-31T00:00:00","2022-01-03T00:00:00","2022-01-04T00:00:00","2022-01-05T00:00:00","2022-01-06T00:00:00","2022-01-07T00:00:00","2022-01-10T00:00:00","2022-01-11T00:00:00","2022-01-12T00:00:00","2022-01-13T00:00:00","2022-01-14T00:00:00","2022-01-18T00:00:00","2022-01-19T00:00:00","2022-01-20T00:00:00","2022-01-21T00:00:00","2022-01-24T00:00:00","2022-01-25T00:00:00","2022-01-26T00:00:00","2022-01-27T00:00:00","2022-01-28T00:00:00","2022-01-31T00:00:00","2022-02-01T00:00:00","2022-02-02T00:00:00","2022-02-03T00:00:00","2022-02-04T00:00:00","2022-02-07T00:00:00","2022-02-08T00:00:00","2022-02-09T00:00:00","2022-02-10T00:00:00","2022-02-11T00:00:00","2022-02-14T00:00:00","2022-02-15T00:00:00","2022-02-16T00:00:00","2022-02-17T00:00:00","2022-02-18T00:00:00","2022-02-22T00:00:00","2022-02-23T00:00:00","2022-02-24T00:00:00","2022-02-25T00:00:00","2022-02-28T00:00:00","2022-03-01T00:00:00","2022-03-02T00:00:00","2022-03-03T00:00:00","2022-03-04T00:00:00","2022-03-07T00:00:00","2022-03-08T00:00:00","2022-03-09T00:00:00","2022-03-10T00:00:00","2022-03-11T00:00:00","2022-03-14T00:00:00","2022-03-15T00:00:00","2022-03-16T00:00:00","2022-03-17T00:00:00","2022-03-18T00:00:00","2022-03-21T00:00:00","2022-03-22T00:00:00","2022-03-23T00:00:00","2022-03-24T00:00:00","2022-03-25T00:00:00","2022-03-28T00:00:00","2022-03-29T00:00:00","2022-03-30T00:00:00","2022-03-31T00:00:00","2022-04-01T00:00:00","2022-04-04T00:00:00","2022-04-05T00:00:00","2022-04-06T00:00:00","2022-04-07T00:00:00","2022-04-08T00:00:00","2022-04-11T00:00:00","2022-04-12T00:00:00","2022-04-13T00:00:00","2022-04-14T00:00:00","2022-04-18T00:00:00","2022-04-19T00:00:00","2022-04-20T00:00:00","2022-04-21T00:00:00","2022-04-22T00:00:00","2022-04-25T00:00:00","2022-04-26T00:00:00","2022-04-27T00:00:00","2022-04-28T00:00:00","2022-04-29T00:00:00","2022-05-02T00:00:00","2022-05-03T00:00:00","2022-05-04T00:00:00","2022-05-05T00:00:00","2022-05-06T00:00:00","2022-05-09T00:00:00","2022-05-10T00:00:00","2022-05-11T00:00:00","2022-05-12T00:00:00","2022-05-13T00:00:00","2022-05-16T00:00:00","2022-05-17T00:00:00","2022-05-18T00:00:00","2022-05-19T00:00:00","2022-05-20T00:00:00","2022-05-23T00:00:00","2022-05-24T00:00:00","2022-05-25T00:00:00","2022-05-26T00:00:00","2022-05-27T00:00:00","2022-05-31T00:00:00","2022-06-01T00:00:00","2022-06-02T00:00:00","2022-06-03T00:00:00","2022-06-06T00:00:00","2022-06-07T00:00:00","2022-06-08T00:00:00","2022-06-09T00:00:00","2022-06-10T00:00:00","2022-06-13T00:00:00","2022-06-14T00:00:00","2022-06-15T00:00:00","2022-06-16T00:00:00","2022-06-17T00:00:00","2022-06-21T00:00:00","2022-06-22T00:00:00","2022-06-23T00:00:00","2022-06-24T00:00:00","2022-06-27T00:00:00","2022-06-28T00:00:00","2022-06-29T00:00:00","2022-06-30T00:00:00","2022-07-01T00:00:00","2022-07-05T00:00:00","2022-07-06T00:00:00","2022-07-07T00:00:00","2022-07-08T00:00:00","2022-07-11T00:00:00","2022-07-12T00:00:00","2022-07-13T00:00:00","2022-07-14T00:00:00","2022-07-15T00:00:00","2022-07-18T00:00:00","2022-07-19T00:00:00","2022-07-20T00:00:00","2022-07-21T00:00:00","2022-07-22T00:00:00","2022-07-25T00:00:00","2022-07-26T00:00:00","2022-07-27T00:00:00","2022-07-28T00:00:00","2022-07-29T00:00:00","2022-08-01T00:00:00","2022-08-02T00:00:00","2022-08-03T00:00:00","2022-08-04T00:00:00","2022-08-05T00:00:00","2022-08-08T00:00:00","2022-08-09T00:00:00","2022-08-10T00:00:00","2022-08-11T00:00:00","2022-08-12T00:00:00","2022-08-15T00:00:00","2022-08-16T00:00:00","2022-08-17T00:00:00","2022-08-18T00:00:00","2022-08-19T00:00:00","2022-08-22T00:00:00","2022-08-23T00:00:00","2022-08-24T00:00:00","2022-08-25T00:00:00","2022-08-26T00:00:00","2022-08-29T00:00:00","2022-08-30T00:00:00","2022-08-31T00:00:00","2022-09-01T00:00:00","2022-09-02T00:00:00","2022-09-06T00:00:00","2022-09-07T00:00:00","2022-09-08T00:00:00","2022-09-09T00:00:00","2022-09-12T00:00:00","2022-09-13T00:00:00","2022-09-14T00:00:00","2022-09-15T00:00:00","2022-09-16T00:00:00","2022-09-19T00:00:00","2022-09-20T00:00:00","2022-09-21T00:00:00","2022-09-22T00:00:00","2022-09-23T00:00:00","2022-09-26T00:00:00","2022-09-27T00:00:00","2022-09-28T00:00:00","2022-09-29T00:00:00","2022-09-30T00:00:00","2022-10-03T00:00:00","2022-10-04T00:00:00","2022-10-05T00:00:00","2022-10-06T00:00:00","2022-10-07T00:00:00","2022-10-10T00:00:00","2022-10-11T00:00:00","2022-10-12T00:00:00","2022-10-13T00:00:00","2022-10-14T00:00:00","2022-10-17T00:00:00","2022-10-18T00:00:00","2022-10-19T00:00:00","2022-10-20T00:00:00","2022-10-21T00:00:00","2022-10-24T00:00:00","2022-10-25T00:00:00","2022-10-26T00:00:00","2022-10-27T00:00:00","2022-10-28T00:00:00","2022-10-31T00:00:00","2022-11-01T00:00:00","2022-11-02T00:00:00","2022-11-03T00:00:00","2022-11-04T00:00:00","2022-11-07T00:00:00","2022-11-08T00:00:00","2022-11-09T00:00:00","2022-11-10T00:00:00","2022-11-11T00:00:00","2022-11-14T00:00:00","2022-11-15T00:00:00","2022-11-16T00:00:00","2022-11-17T00:00:00","2022-11-18T00:00:00","2022-11-21T00:00:00","2022-11-22T00:00:00","2022-11-23T00:00:00","2022-11-25T00:00:00","2022-11-28T00:00:00","2022-11-29T00:00:00","2022-11-30T00:00:00","2022-12-01T00:00:00","2022-12-02T00:00:00","2022-12-05T00:00:00","2022-12-06T00:00:00","2022-12-07T00:00:00","2022-12-08T00:00:00","2022-12-09T00:00:00","2022-12-12T00:00:00","2022-12-13T00:00:00","2022-12-14T00:00:00","2022-12-15T00:00:00","2022-12-16T00:00:00","2022-12-19T00:00:00","2022-12-20T00:00:00","2022-12-21T00:00:00","2022-12-22T00:00:00","2022-12-23T00:00:00","2022-12-27T00:00:00","2022-12-28T00:00:00","2022-12-29T00:00:00","2022-12-30T00:00:00","2023-01-03T00:00:00","2023-01-04T00:00:00","2023-01-05T00:00:00","2023-01-06T00:00:00","2023-01-09T00:00:00","2023-01-10T00:00:00","2023-01-11T00:00:00","2023-01-12T00:00:00","2023-01-13T00:00:00","2023-01-17T00:00:00","2023-01-18T00:00:00","2023-01-19T00:00:00","2023-01-20T00:00:00","2023-01-23T00:00:00","2023-01-24T00:00:00","2023-01-25T00:00:00","2023-01-26T00:00:00","2023-01-27T00:00:00","2023-01-30T00:00:00","2023-01-31T00:00:00","2023-02-01T00:00:00","2023-02-02T00:00:00","2023-02-03T00:00:00","2023-02-06T00:00:00","2023-02-07T00:00:00","2023-02-08T00:00:00","2023-02-09T00:00:00","2023-02-10T00:00:00","2023-02-13T00:00:00","2023-02-14T00:00:00","2023-02-15T00:00:00","2023-02-16T00:00:00","2023-02-17T00:00:00","2023-02-21T00:00:00","2023-02-22T00:00:00","2023-02-23T00:00:00","2023-02-24T00:00:00","2023-02-27T00:00:00","2023-02-28T00:00:00","2023-03-01T00:00:00","2023-03-02T00:00:00","2023-03-03T00:00:00","2023-03-06T00:00:00","2023-03-07T00:00:00","2023-03-08T00:00:00","2023-03-09T00:00:00","2023-03-10T00:00:00","2023-03-13T00:00:00","2023-03-14T00:00:00","2023-03-15T00:00:00","2023-03-16T00:00:00","2023-03-17T00:00:00","2023-03-20T00:00:00","2023-03-21T00:00:00","2023-03-22T00:00:00","2023-03-23T00:00:00","2023-03-24T00:00:00","2023-03-27T00:00:00","2023-03-28T00:00:00","2023-03-29T00:00:00","2023-03-30T00:00:00","2023-03-31T00:00:00","2023-04-03T00:00:00","2023-04-04T00:00:00","2023-04-05T00:00:00","2023-04-06T00:00:00","2023-04-10T00:00:00","2023-04-11T00:00:00","2023-04-12T00:00:00","2023-04-13T00:00:00","2023-04-14T00:00:00","2023-04-17T00:00:00","2023-04-18T00:00:00","2023-04-19T00:00:00","2023-04-20T00:00:00","2023-04-21T00:00:00","2023-04-24T00:00:00","2023-04-25T00:00:00","2023-04-26T00:00:00","2023-04-27T00:00:00","2023-04-28T00:00:00","2023-05-01T00:00:00","2023-05-02T00:00:00","2023-05-03T00:00:00","2023-05-04T00:00:00","2023-05-05T00:00:00","2023-05-08T00:00:00","2023-05-09T00:00:00","2023-05-10T00:00:00","2023-05-11T00:00:00","2023-05-12T00:00:00","2023-05-15T00:00:00","2023-05-16T00:00:00","2023-05-17T00:00:00","2023-05-18T00:00:00","2023-05-19T00:00:00","2023-05-22T00:00:00","2023-05-23T00:00:00","2023-05-24T00:00:00","2023-05-25T00:00:00","2023-05-26T00:00:00","2023-05-30T00:00:00","2023-05-31T00:00:00","2023-06-01T00:00:00","2023-06-02T00:00:00","2023-06-05T00:00:00","2023-06-06T00:00:00","2023-06-07T00:00:00","2023-06-08T00:00:00","2023-06-09T00:00:00","2023-06-12T00:00:00","2023-06-13T00:00:00","2023-06-14T00:00:00","2023-06-15T00:00:00","2023-06-16T00:00:00","2023-06-20T00:00:00","2023-06-21T00:00:00","2023-06-22T00:00:00","2023-06-23T00:00:00","2023-06-26T00:00:00","2023-06-27T00:00:00","2023-06-28T00:00:00","2023-06-29T00:00:00","2023-06-30T00:00:00","2023-07-03T00:00:00","2023-07-05T00:00:00","2023-07-06T00:00:00","2023-07-07T00:00:00","2023-07-10T00:00:00","2023-07-11T00:00:00","2023-07-12T00:00:00","2023-07-13T00:00:00","2023-07-14T00:00:00","2023-07-17T00:00:00","2023-07-18T00:00:00","2023-07-19T00:00:00","2023-07-20T00:00:00","2023-07-21T00:00:00","2023-07-24T00:00:00","2023-07-25T00:00:00","2023-07-26T00:00:00","2023-07-27T00:00:00","2023-07-28T00:00:00","2023-07-31T00:00:00","2023-08-01T00:00:00","2023-08-02T00:00:00","2023-08-03T00:00:00","2023-08-04T00:00:00","2023-08-07T00:00:00","2023-08-08T00:00:00","2023-08-09T00:00:00","2023-08-10T00:00:00","2023-08-11T00:00:00","2023-08-14T00:00:00","2023-08-15T00:00:00","2023-08-16T00:00:00","2023-08-17T00:00:00","2023-08-18T00:00:00","2023-08-21T00:00:00","2023-08-22T00:00:00","2023-08-23T00:00:00","2023-08-24T00:00:00","2023-08-25T00:00:00","2023-08-28T00:00:00","2023-08-29T00:00:00","2023-08-30T00:00:00","2023-08-31T00:00:00","2023-09-01T00:00:00","2023-09-05T00:00:00","2023-09-06T00:00:00","2023-09-07T00:00:00","2023-09-08T00:00:00","2023-09-11T00:00:00","2023-09-12T00:00:00","2023-09-13T00:00:00","2023-09-14T00:00:00","2023-09-15T00:00:00","2023-09-18T00:00:00","2023-09-19T00:00:00","2023-09-20T00:00:00","2023-09-21T00:00:00","2023-09-22T00:00:00","2023-09-25T00:00:00","2023-09-26T00:00:00","2023-09-27T00:00:00","2023-09-28T00:00:00","2023-09-29T00:00:00","2023-10-02T00:00:00","2023-10-03T00:00:00","2023-10-04T00:00:00","2023-10-05T00:00:00","2023-10-06T00:00:00","2023-10-09T00:00:00","2023-10-10T00:00:00","2023-10-11T00:00:00","2023-10-12T00:00:00","2023-10-13T00:00:00","2023-10-16T00:00:00","2023-10-17T00:00:00","2023-10-18T00:00:00","2023-10-19T00:00:00","2023-10-20T00:00:00","2023-10-23T00:00:00","2023-10-24T00:00:00","2023-10-25T00:00:00","2023-10-26T00:00:00","2023-10-27T00:00:00","2023-10-30T00:00:00","2023-10-31T00:00:00","2023-11-01T00:00:00","2023-11-02T00:00:00","2023-11-03T00:00:00","2023-11-06T00:00:00","2023-11-07T00:00:00","2023-11-08T00:00:00","2023-11-09T00:00:00","2023-11-10T00:00:00","2023-11-13T00:00:00","2023-11-14T00:00:00","2023-11-15T00:00:00","2023-11-16T00:00:00","2023-11-17T00:00:00","2023-11-20T00:00:00","2023-11-21T00:00:00","2023-11-22T00:00:00","2023-11-24T00:00:00","2023-11-27T00:00:00","2023-11-28T00:00:00","2023-11-29T00:00:00","2023-11-30T00:00:00","2023-12-01T00:00:00","2023-12-04T00:00:00","2023-12-05T00:00:00","2023-12-06T00:00:00","2023-12-07T00:00:00","2023-12-08T00:00:00","2023-12-11T00:00:00","2023-12-12T00:00:00","2023-12-13T00:00:00","2023-12-14T00:00:00","2023-12-15T00:00:00","2023-12-18T00:00:00","2023-12-19T00:00:00","2023-12-20T00:00:00","2023-12-21T00:00:00","2023-12-22T00:00:00","2023-12-26T00:00:00","2023-12-27T00:00:00","2023-12-28T00:00:00","2023-12-29T00:00:00","2024-01-02T00:00:00","2024-01-03T00:00:00","2024-01-04T00:00:00","2024-01-05T00:00:00","2024-01-08T00:00:00","2024-01-09T00:00:00","2024-01-10T00:00:00","2024-01-11T00:00:00","2024-01-12T00:00:00","2024-01-16T00:00:00","2024-01-17T00:00:00","2024-01-18T00:00:00","2024-01-19T00:00:00","2024-01-22T00:00:00","2024-01-23T00:00:00","2024-01-24T00:00:00","2024-01-25T00:00:00","2024-01-26T00:00:00","2024-01-29T00:00:00","2024-01-30T00:00:00","2024-01-31T00:00:00","2024-02-01T00:00:00","2024-02-02T00:00:00","2024-02-05T00:00:00","2024-02-06T00:00:00","2024-02-07T00:00:00","2024-02-08T00:00:00","2024-02-09T00:00:00","2024-02-12T00:00:00","2024-02-13T00:00:00","2024-02-14T00:00:00","2024-02-15T00:00:00","2024-02-16T00:00:00","2024-02-20T00:00:00","2024-02-21T00:00:00","2024-02-22T00:00:00","2024-02-23T00:00:00","2024-02-26T00:00:00","2024-02-27T00:00:00","2024-02-28T00:00:00","2024-02-29T00:00:00","2024-03-01T00:00:00","2024-03-04T00:00:00","2024-03-05T00:00:00","2024-03-06T00:00:00","2024-03-07T00:00:00","2024-03-08T00:00:00","2024-03-11T00:00:00","2024-03-12T00:00:00","2024-03-13T00:00:00","2024-03-14T00:00:00","2024-03-15T00:00:00","2024-03-18T00:00:00","2024-03-19T00:00:00","2024-03-20T00:00:00","2024-03-21T00:00:00","2024-03-22T00:00:00","2024-03-25T00:00:00","2024-03-26T00:00:00","2024-03-27T00:00:00","2024-03-28T00:00:00","2024-04-01T00:00:00","2024-04-02T00:00:00","2024-04-03T00:00:00","2024-04-04T00:00:00","2024-04-05T00:00:00","2024-04-08T00:00:00","2024-04-09T00:00:00","2024-04-10T00:00:00","2024-04-11T00:00:00","2024-04-12T00:00:00","2024-04-15T00:00:00","2024-04-16T00:00:00","2024-04-17T00:00:00","2024-04-18T00:00:00","2024-04-19T00:00:00","2024-04-22T00:00:00","2024-04-23T00:00:00","2024-04-24T00:00:00","2024-04-25T00:00:00","2024-04-26T00:00:00","2024-04-29T00:00:00","2024-04-30T00:00:00","2024-05-01T00:00:00","2024-05-02T00:00:00","2024-05-03T00:00:00","2024-05-06T00:00:00","2024-05-07T00:00:00","2024-05-08T00:00:00","2024-05-09T00:00:00","2024-05-10T00:00:00","2024-05-13T00:00:00","2024-05-14T00:00:00","2024-05-15T00:00:00","2024-05-16T00:00:00","2024-05-17T00:00:00","2024-05-20T00:00:00","2024-05-21T00:00:00","2024-05-22T00:00:00","2024-05-23T00:00:00","2024-05-24T00:00:00","2024-05-28T00:00:00","2024-05-29T00:00:00","2024-05-30T00:00:00","2024-05-31T00:00:00","2024-06-03T00:00:00","2024-06-04T00:00:00","2024-06-05T00:00:00","2024-06-06T00:00:00","2024-06-07T00:00:00","2024-06-10T00:00:00","2024-06-11T00:00:00","2024-06-12T00:00:00","2024-06-13T00:00:00","2024-06-14T00:00:00","2024-06-17T00:00:00","2024-06-18T00:00:00","2024-06-20T00:00:00","2024-06-21T00:00:00","2024-06-24T00:00:00","2024-06-25T00:00:00","2024-06-26T00:00:00","2024-06-27T00:00:00","2024-06-28T00:00:00","2024-07-01T00:00:00","2024-07-02T00:00:00","2024-07-03T00:00:00","2024-07-05T00:00:00","2024-07-08T00:00:00","2024-07-09T00:00:00","2024-07-10T00:00:00","2024-07-11T00:00:00","2024-07-12T00:00:00","2024-07-15T00:00:00","2024-07-16T00:00:00","2024-07-17T00:00:00","2024-07-18T00:00:00","2024-07-19T00:00:00","2024-07-22T00:00:00","2024-07-23T00:00:00","2024-07-24T00:00:00","2024-07-25T00:00:00","2024-07-26T00:00:00","2024-07-29T00:00:00","2024-07-30T00:00:00","2024-07-31T00:00:00","2024-08-01T00:00:00","2024-08-02T00:00:00","2024-08-05T00:00:00","2024-08-06T00:00:00","2024-08-07T00:00:00","2024-08-08T00:00:00","2024-08-09T00:00:00","2024-08-12T00:00:00","2024-08-13T00:00:00","2024-08-14T00:00:00","2024-08-15T00:00:00","2024-08-16T00:00:00","2024-08-19T00:00:00","2024-08-20T00:00:00","2024-08-21T00:00:00","2024-08-22T00:00:00","2024-08-23T00:00:00","2024-08-26T00:00:00","2024-08-27T00:00:00","2024-08-28T00:00:00","2024-08-29T00:00:00","2024-08-30T00:00:00","2024-09-03T00:00:00","2024-09-04T00:00:00","2024-09-05T00:00:00","2024-09-06T00:00:00","2024-09-09T00:00:00","2024-09-10T00:00:00","2024-09-11T00:00:00","2024-09-12T00:00:00","2024-09-13T00:00:00","2024-09-16T00:00:00","2024-09-17T00:00:00","2024-09-18T00:00:00","2024-09-19T00:00:00","2024-09-20T00:00:00","2024-09-23T00:00:00","2024-09-24T00:00:00","2024-09-25T00:00:00","2024-09-26T00:00:00","2024-09-27T00:00:00","2024-09-30T00:00:00","2024-10-01T00:00:00","2024-10-02T00:00:00","2024-10-03T00:00:00","2024-10-04T00:00:00","2024-10-07T00:00:00","2024-10-08T00:00:00","2024-10-09T00:00:00","2024-10-10T00:00:00","2024-10-11T00:00:00","2024-10-14T00:00:00","2024-10-15T00:00:00","2024-10-16T00:00:00","2024-10-17T00:00:00","2024-10-18T00:00:00","2024-10-21T00:00:00","2024-10-22T00:00:00","2024-10-23T00:00:00","2024-10-24T00:00:00","2024-10-25T00:00:00","2024-10-28T00:00:00","2024-10-29T00:00:00","2024-10-30T00:00:00","2024-10-31T00:00:00","2024-11-01T00:00:00","2024-11-04T00:00:00","2024-11-05T00:00:00","2024-11-06T00:00:00","2024-11-07T00:00:00","2024-11-08T00:00:00","2024-11-11T00:00:00","2024-11-12T00:00:00","2024-11-13T00:00:00","2024-11-14T00:00:00","2024-11-15T00:00:00","2024-11-18T00:00:00","2024-11-19T00:00:00","2024-11-20T00:00:00","2024-11-21T00:00:00","2024-11-22T00:00:00","2024-11-25T00:00:00","2024-11-26T00:00:00","2024-11-27T00:00:00","2024-11-29T00:00:00","2024-12-02T00:00:00","2024-12-03T00:00:00","2024-12-04T00:00:00","2024-12-05T00:00:00","2024-12-06T00:00:00","2024-12-09T00:00:00","2024-12-10T00:00:00","2024-12-11T00:00:00","2024-12-12T00:00:00","2024-12-13T00:00:00","2024-12-16T00:00:00","2024-12-17T00:00:00","2024-12-18T00:00:00","2024-12-19T00:00:00","2024-12-20T00:00:00","2024-12-23T00:00:00","2024-12-24T00:00:00","2024-12-26T00:00:00","2024-12-27T00:00:00","2024-12-30T00:00:00","2024-12-31T00:00:00","2025-01-02T00:00:00","2025-01-03T00:00:00","2025-01-06T00:00:00","2025-01-07T00:00:00","2025-01-08T00:00:00","2025-01-10T00:00:00","2025-01-13T00:00:00","2025-01-14T00:00:00","2025-01-15T00:00:00","2025-01-16T00:00:00","2025-01-17T00:00:00","2025-01-21T00:00:00","2025-01-22T00:00:00","2025-01-23T00:00:00","2025-01-24T00:00:00","2025-01-27T00:00:00","2025-01-28T00:00:00","2025-01-29T00:00:00","2025-01-30T00:00:00","2025-01-31T00:00:00","2025-02-03T00:00:00","2025-02-04T00:00:00","2025-02-05T00:00:00","2025-02-06T00:00:00","2025-02-07T00:00:00","2025-02-10T00:00:00","2025-02-11T00:00:00","2025-02-12T00:00:00","2025-02-13T00:00:00","2025-02-14T00:00:00","2025-02-18T00:00:00","2025-02-19T00:00:00","2025-02-20T00:00:00","2025-02-21T00:00:00","2025-02-24T00:00:00","2025-02-25T00:00:00","2025-02-26T00:00:00","2025-02-27T00:00:00","2025-02-28T00:00:00","2025-03-03T00:00:00","2025-03-04T00:00:00","2025-03-05T00:00:00","2025-03-06T00:00:00","2025-03-07T00:00:00","2025-03-10T00:00:00","2025-03-11T00:00:00","2025-03-12T00:00:00","2025-03-13T00:00:00","2025-03-14T00:00:00","2025-03-17T00:00:00","2025-03-18T00:00:00","2025-03-19T00:00:00","2025-03-20T00:00:00","2025-03-21T00:00:00","2025-03-24T00:00:00","2025-03-25T00:00:00","2025-03-26T00:00:00","2025-03-27T00:00:00","2025-03-28T00:00:00","2025-03-31T00:00:00","2025-04-01T00:00:00","2025-04-02T00:00:00","2025-04-03T00:00:00","2025-04-04T00:00:00","2025-04-07T00:00:00","2025-04-08T00:00:00","2025-04-09T00:00:00","2025-04-10T00:00:00","2025-04-11T00:00:00","2025-04-14T00:00:00","2025-04-15T00:00:00","2025-04-16T00:00:00","2025-04-17T00:00:00","2025-04-21T00:00:00","2025-04-22T00:00:00","2025-04-23T00:00:00","2025-04-24T00:00:00","2025-04-25T00:00:00","2025-04-28T00:00:00","2025-04-29T00:00:00","2025-04-30T00:00:00","2025-05-01T00:00:00","2025-05-02T00:00:00","2025-05-05T00:00:00","2025-05-06T00:00:00","2025-05-07T00:00:00","2025-05-08T00:00:00","2025-05-09T00:00:00","2025-05-12T00:00:00","2025-05-13T00:00:00","2025-05-14T00:00:00","2025-05-15T00:00:00","2025-05-16T00:00:00","2025-05-19T00:00:00","2025-05-20T00:00:00","2025-05-21T00:00:00","2025-05-22T00:00:00","2025-05-23T00:00:00","2025-05-27T00:00:00","2025-05-28T00:00:00","2025-05-29T00:00:00","2025-05-30T00:00:00","2025-06-02T00:00:00","2025-06-03T00:00:00","2025-06-04T00:00:00","2025-06-05T00:00:00","2025-06-06T00:00:00","2025-06-09T00:00:00","2025-06-10T00:00:00","2025-06-11T00:00:00","2025-06-12T00:00:00","2025-06-13T00:00:00","2025-06-16T00:00:00","2025-06-17T00:00:00","2025-06-18T00:00:00","2025-06-20T00:00:00","2025-06-23T00:00:00","2025-06-24T00:00:00","2025-06-25T00:00:00","2025-06-26T00:00:00","2025-06-27T00:00:00","2025-06-30T00:00:00","2025-07-01T00:00:00","2025-07-02T00:00:00","2025-07-03T00:00:00","2025-07-07T00:00:00","2025-07-08T00:00:00","2025-07-09T00:00:00","2025-07-10T00:00:00","2025-07-11T00:00:00","2025-07-14T00:00:00","2025-07-15T00:00:00","2025-07-16T00:00:00","2025-07-17T00:00:00","2025-07-18T00:00:00","2025-07-21T00:00:00","2025-07-22T00:00:00","2025-07-23T00:00:00","2025-07-24T00:00:00","2025-07-25T00:00:00","2025-07-28T00:00:00","2025-07-29T00:00:00","2025-07-30T00:00:00","2025-07-31T00:00:00","2025-08-01T00:00:00","2025-08-04T00:00:00","2025-08-05T00:00:00","2025-08-06T00:00:00","2025-08-07T00:00:00","2025-08-08T00:00:00","2025-08-11T00:00:00","2025-08-12T00:00:00","2025-08-13T00:00:00","2025-08-14T00:00:00","2025-08-15T00:00:00","2025-08-18T00:00:00","2025-08-19T00:00:00","2025-08-20T00:00:00","2025-08-21T00:00:00","2025-08-22T00:00:00","2025-08-25T00:00:00","2025-08-26T00:00:00","2025-08-27T00:00:00","2025-08-28T00:00:00","2025-08-29T00:00:00","2025-09-02T00:00:00","2025-09-03T00:00:00","2025-09-04T00:00:00","2025-09-05T00:00:00","2025-09-08T00:00:00","2025-09-09T00:00:00","2025-09-10T00:00:00","2025-09-11T00:00:00","2025-09-12T00:00:00","2025-09-15T00:00:00","2025-09-16T00:00:00","2025-09-17T00:00:00","2025-09-18T00:00:00","2025-09-19T00:00:00","2025-09-22T00:00:00","2025-09-23T00:00:00","2025-09-24T00:00:00","2025-09-25T00:00:00","2025-09-26T00:00:00","2025-09-29T00:00:00","2025-09-30T00:00:00","2025-10-01T00:00:00","2025-10-02T00:00:00","2025-10-03T00:00:00","2025-10-06T00:00:00","2025-10-07T00:00:00","2025-10-08T00:00:00","2025-10-09T00:00:00","2025-10-10T00:00:00","2025-10-13T00:00:00","2025-10-14T00:00:00","2025-10-15T00:00:00","2025-10-16T00:00:00","2025-10-17T00:00:00","2025-10-20T00:00:00","2025-10-21T00:00:00","2025-10-22T00:00:00","2025-10-23T00:00:00","2025-10-24T00:00:00","2025-10-27T00:00:00","2025-10-28T00:00:00","2025-10-29T00:00:00","2025-10-30T00:00:00","2025-10-31T00:00:00","2025-11-03T00:00:00","2025-11-04T00:00:00","2025-11-05T00:00:00","2025-11-06T00:00:00","2025-11-07T00:00:00","2025-11-10T00:00:00","2025-11-11T00:00:00","2025-11-12T00:00:00","2025-11-13T00:00:00","2025-11-14T00:00:00","2025-11-17T00:00:00","2025-11-18T00:00:00","2025-11-19T00:00:00","2025-11-20T00:00:00","2025-11-21T00:00:00","2025-11-24T00:00:00","2025-11-25T00:00:00","2025-11-26T00:00:00","2025-11-28T00:00:00","2025-12-01T00:00:00","2025-12-02T00:00:00","2025-12-03T00:00:00","2025-12-04T00:00:00","2025-12-05T00:00:00","2025-12-08T00:00:00","2025-12-09T00:00:00","2025-12-10T00:00:00","2025-12-11T00:00:00","2025-12-12T00:00:00","2025-12-15T00:00:00","2025-12-16T00:00:00","2025-12-17T00:00:00","2025-12-18T00:00:00","2025-12-19T00:00:00","2025-12-22T00:00:00","2025-12-23T00:00:00","2025-12-24T00:00:00","2025-12-26T00:00:00","2025-12-29T00:00:00","2025-12-30T00:00:00","2025-12-31T00:00:00","2026-01-02T00:00:00","2026-01-05T00:00:00","2026-01-06T00:00:00","2026-01-07T00:00:00","2026-01-08T00:00:00","2026-01-09T00:00:00","2026-01-12T00:00:00","2026-01-13T00:00:00","2026-01-14T00:00:00","2026-01-15T00:00:00","2026-01-16T00:00:00","2026-01-20T00:00:00","2026-01-21T00:00:00","2026-01-22T00:00:00","2026-01-23T00:00:00","2026-01-26T00:00:00","2026-01-27T00:00:00","2026-01-28T00:00:00","2026-01-29T00:00:00","2026-01-30T00:00:00","2026-02-02T00:00:00","2026-02-03T00:00:00","2026-02-04T00:00:00","2026-02-05T00:00:00","2026-02-06T00:00:00","2026-02-09T00:00:00","2026-02-10T00:00:00","2026-02-11T00:00:00","2026-02-12T00:00:00","2026-02-13T00:00:00","2026-02-17T00:00:00","2026-02-18T00:00:00","2026-02-19T00:00:00","2026-02-20T00:00:00","2026-02-23T00:00:00","2026-02-24T00:00:00","2026-02-25T00:00:00","2026-02-26T00:00:00","2026-02-27T00:00:00","2026-03-02T00:00:00","2026-03-03T00:00:00","2026-03-04T00:00:00","2026-03-05T00:00:00","2026-03-06T00:00:00","2026-03-09T00:00:00","2026-03-10T00:00:00","2026-03-11T00:00:00","2026-03-12T00:00:00","2026-03-13T00:00:00","2026-03-16T00:00:00","2026-03-17T00:00:00","2026-03-18T00:00:00","2026-03-19T00:00:00","2026-03-20T00:00:00","2026-03-23T00:00:00","2026-03-24T00:00:00","2026-03-25T00:00:00","2026-03-26T00:00:00","2026-03-27T00:00:00","2026-03-30T00:00:00","2026-03-31T00:00:00","2026-04-01T00:00:00","2026-04-02T00:00:00","2026-04-06T00:00:00","2026-04-07T00:00:00","2026-04-08T00:00:00","2026-04-09T00:00:00","2026-04-10T00:00:00","2026-04-13T00:00:00","2026-04-14T00:00:00","2026-04-15T00:00:00","2026-04-16T00:00:00","2026-04-17T00:00:00","2026-04-20T00:00:00","2026-04-21T00:00:00","2026-04-22T00:00:00","2026-04-23T00:00:00","2026-04-24T00:00:00","2026-04-27T00:00:00","2026-04-28T00:00:00","2026-04-29T00:00:00","2026-04-30T00:00:00","2026-05-01T00:00:00","2026-05-04T00:00:00","2026-05-05T00:00:00","2026-05-06T00:00:00","2026-05-07T00:00:00","2026-05-08T00:00:00","2026-05-11T00:00:00","2026-05-12T00:00:00","2026-05-13T00:00:00","2026-05-14T00:00:00","2026-05-15T00:00:00","2026-05-18T00:00:00","2026-05-19T00:00:00","2026-05-20T00:00:00","2026-05-21T00:00:00","2026-05-22T00:00:00","2026-05-26T00:00:00","2026-05-27T00:00:00","2026-05-28T00:00:00","2026-05-29T00:00:00","2026-06-01T00:00:00","2026-06-02T00:00:00","2026-06-03T00:00:00","2026-06-04T00:00:00","2026-06-05T00:00:00","2026-06-08T00:00:00","2026-06-09T00:00:00","2026-06-10T00:00:00","2026-06-11T00:00:00","2026-06-12T00:00:00","2026-06-15T00:00:00","2026-06-16T00:00:00","2026-06-17T00:00:00","2026-06-18T00:00:00","2026-06-22T00:00:00","2026-06-23T00:00:00","2026-06-24T00:00:00","2026-06-25T00:00:00","2026-06-26T00:00:00","2026-06-29T00:00:00","2026-06-30T00:00:00","2026-07-01T00:00:00","2026-07-02T00:00:00","2026-07-06T00:00:00","2026-07-07T00:00:00","2026-07-08T00:00:00","2026-07-09T00:00:00","2026-07-10T00:00:00","2026-07-13T00:00:00","2026-07-14T00:00:00","2026-07-15T00:00:00","2026-07-16T00:00:00","2026-07-17T00:00:00","2026-07-20T00:00:00","2026-07-21T00:00:00","2026-07-22T00:00:00","2026-07-23T00:00:00","2026-07-24T00:00:00"],"y":{"dtype":"f8","bdata":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABYQ+Gwn\u002f\u002fqP0gykcdFC+s\u002fuKnbsXPC5j\u002fncHOznePsP8hOloqJ8uc\u002fJ3hR4rfP6z9gBQsMVy72P7iBE0aEvfQ\u002ffc2aDHvt8j\u002fqwuWx03XwP3Z2TMODsOo\u002fwJSZvQOM8j8lyrSZSLbwPxcaDPNOlOk\u002fboKn4EwC\u002fj+4HPSUMzT1P3+Gq2gfi\u002fY\u002fNAiksPlG8T9qfaXmJpHsP6+qy3TXhPo\u002f95c8C549+D9vdjnck33tP7TGNn0COO0\u002fvwX9kZW16D+vgtn1KFLkP7Deq1Np3+s\u002f+sXiRjlE9D+u93388PDrPxlwwJK0l\u002fA\u002fJA\u002fUDwBl8T+cf7vvD6nxP53sP2xDEu0\u002fdL3cYMrF7T8ZXByM0gfmPyIIPPEd++U\u002fGaLCSs2m6D9ygIDFq43sP3Iddn2l4O4\u002fJgsxFttf6z9dysd366brP+3NyWIA2fE\u002fTRkCVsPX7z\u002fe7Zw+1aToP4TMODMG+Ok\u002f\u002fmptA6\u002fO6D+6iuzbALTlP005lYvi6+o\u002fMABhxAIf6T8NPI2J0jz2P1hoBOxLMfs\u002f6uflq5N\u002f8D++UgX8IdTuP0TES34Ez+g\u002f29VhiyWD6z\u002fnBBg0I67tPxQ4DmkDHek\u002fRz+V1kU56j+PtsjNbWbuP4LjK00miOM\u002fALRhYD197j8qUlHZTd7sP+3dF04uRO0\u002fwLU5QZtt9T8hmwUa13H\u002fP\u002fLc7DtJsfk\u002fjGCeYqKa+D+5LJeK9anzP9q24DcANOw\u002fsTMgeTa27z98lnuElLjyPz3r5D5QOgFAZKgVU9qh\u002fD8opiiibY\u002f4Pw3oWwvNiPQ\u002fIMmqcPxI8j+ae4HC+srzP384tTTnp\u002fI\u002fnbPJfnD\u002f8D9odyMQ2mDxP9N+6Y\u002fPJPY\u002fq8StaBRw8z+ufJspKbnxP+Vf\u002fV2zy\u002fM\u002fPVf8Fp4p+T8f8\u002f54lcrrPzQY2Xuw0+c\u002fFUtPIQsd6D\u002fCcdtK8+XhP0hPEmwQouM\u002fkmDuwnHS5D9Pv5H2WjHhP8yOJsw6KuE\u002fjS6N2lAE4z8QgmnPjzbvP2qJRF\u002fAx+0\u002fjDiMJGay7D+U1uIXwLLtPzAjFgsK3Oo\u002fqXX9KQib8D+moTuJK5voPzxuGRB9\u002feg\u002fEDLz5xzv7D\u002fi5k18FpzsP1eJF+kBLPE\u002fMDe9YQgJ8j\u002fajHbDHWPxP7ynnC4W8vY\u002f1RG4x9O8\u002fD+R8Y90Cg30P3fo+4kUdfI\u002ftgwbNkAm9D++z0SWDf77P0PCV\u002fQqifE\u002flpigHvRl6j+cmLDAPi7qP1fXgG4to+s\u002fe11pot2q6T\u002fpRQgm1yfoPzzLw4LoxOc\u002fwgBsRbOy5j8WEWiDGLTsP0Y5ydnZ8+4\u002fQDYv0cf16j+6tboZydXjP5RGsBtkvOM\u002fHKKDxAqz5j\u002fWv+VoC5DrP7NEyVbvhe8\u002fT\u002f6uGGiQ7z+JNgB6h0\u002f4P1geUc\u002ffGfA\u002f3XcRD3Vz8T\u002f8k8BdSjnvP2yUPGtN7+0\u002fdWuqM0Pu7D9PkBGpPbPvP9Vye6zhGfI\u002fAeH9\u002fsnd9z+Nl9UZsXzwPw16+oMRovI\u002fMLz8VzUY8T8gTLXw+A\u002fzP8r4u1rdPPA\u002fkw1o7x598T8rFrnJ4qfpP9XhK4P6XvQ\u002f6gzvAstk7z+xlpDE59jqP8bQwzkkFPA\u002fcqUvWY1Z7j8+RsPOSEnrPxRZLQXksO4\u002f7+4daz7t8D\u002f++WreMffuP\u002frWbNlf\u002ffA\u002f9fCEhMoI6j\u002f3L+8r+YrpPzs4RiTMR+k\u002fZ2a9pme27j\u002fCAr3GSirrP0Bm\u002fFBgHOs\u002fOyFX4esa6j\u002fVecwgS93sP+2neS0dMOo\u002fxsyEB3zw6z8ujHxVem\u002fqP3gK5ReGYeo\u002fvUnK\u002f52u6j9XsN2o6T7xP5LhtoYu1vA\u002flXERg6je8j8rwyfk6rnyP3h9Pp0DYfE\u002flq+89Z0d+T89nlRsl\u002fr4P29SXtzsu\u002fY\u002fL2ewj4tR8D8ibvrSw3fzP3H\u002fx6ob8PY\u002f0M\u002fZO\u002f778z9whgsJQ\u002f71P5b+OvrW2\u002fI\u002fo7khGtuX9j8LCzD7FGX7P3jyoYYJzPA\u002fjK8pEEFU6T\u002fzvdlWQcrmP02wnFrfVO8\u002fXPDkZFwD8z+FNipqusTyP7Jhxtp83O8\u002f1TnXrc4U7D\u002fbNs6HruToP4d4cUzVzOg\u002fD2NhgWNY6T9LTvezwiPtP+zAKd+VAeU\u002fHCbOZ7DJ5D8Rg5vvAvDpP8k3O3FIZ+U\u002f9no0AYrk5D+PYeXtHCHhP45jSBuo4+Y\u002fYkSORQqc7z8PXGv8oAf1P1LzV5+JNe0\u002fsesSt8tP7z80nsEhdILyPxu7kcM6DPc\u002fdBYyIuye7D8I6Mb2ypbqP9i4GV8Kt+o\u002f02efZEh38D+FrQs\u002f5kDqP\u002f7haPy4cOk\u002fryDFWCGx6T\u002fxdlx2pOjyPxGYKSERLOs\u002fyAfgUFpP7D\u002fVkn9ir4rsPzFdG35Ejuk\u002fWJingF296D\u002fNepiB+EroPzTzLRsRGu4\u002flhwqo8F\u002f7D9HvtspAGrvPyl8HvV19O4\u002fuMw0tkLP8D\u002fX\u002fQtxorjxP6SFaawf\u002fes\u002fT7softZC7D\u002f8p9VBgxDtP00PNC9N9Oc\u002f6CVurI7k6D8Vh7EujJrxPxIDgUXAB\u002fI\u002fHS57MAiC9j+BpHDFnRDuP+w0a3GPzeo\u002f7UuhfFlZ8j+wYlqEOdzoP++k2tR5jOk\u002fOU2vQoA36z87\u002fIBmHc3sPx4Au2ZOBPA\u002fx7Z1f2B86j\u002fUfDDcxLjvP+7L0\u002foyu+k\u002fuaSjNgRc6z8yJp1saxbzP94W7HpJ9e0\u002fqIMxl63e8D8acUJqUF3wP7cOZCdUsek\u002fvXAOu5sG6j\u002fI5zoOu1XpP\u002fGt2rss4fM\u002f6ex34Olg8j+YWbf0GULzP3kvnrTPqPU\u002f2CFTKh0D8j\u002fJ2KLaO2TyPxLzHfkEcfE\u002f+gT\u002fWWlT9D+Q3LUKjIfzPwnuq1y0C+8\u002fkrC5Ra1V9z+meQdcrwf6P9uyjyLsSPI\u002fJGeXytGs8j+usA0e+Hb\u002fP+pjGC0JYu8\u002fbhDnitBE9D\u002fswDatvZ7yPzSgfhZ6Je8\u002fzQmsgrbV8D9GsQ9FOjzwP8hKuqfuMu0\u002f\u002fnoyEPlz+D\u002fBioIGNez0P2kzfBA84vM\u002fQ5KXYM\u002fc8T8jaaOO1ELrPxik98gow+g\u002fgw95oXp85T\u002frITjrb8HqPwu6mtoSq+c\u002f6vcV3WDn6D+1BYVcPfnmP4b+N5H1QPI\u002f\u002fllcJyOr7T8JcjuRyn3sP6uO7SLuo\u002fA\u002fyqSAdh0t5T+fFwmTq2PmP8XN0yAVMO4\u002feqrLDVvB6j\u002frthFw5XTqP58DKrYcIvA\u002fBNawhOQw9D9H905YxMj9Pzd8HZza3vE\u002ffOpyZvN07T\u002fzuxbDmgPxP+KYrDY1gfE\u002fz2kWCZ1s+D+85UVYUsrsPx4NarYW1e4\u002foQ18ZUmh6T9lBks7\u002fUT0P0RLQkqP9u8\u002fV3TnERAd6T8JbJikg+nuP7iCHA9kD+Y\u002fvw95\u002fchh6z91OhYl76XpPzTDBL\u002fSUOQ\u002fZaGR24kl4j\u002f76aTVJcPkP468YfrrJNo\u002fyB7Yv1k66z+OP+8u6ZzwP2Ln1oF+rPU\u002f1nhMDJMc7D+la9NHelnqP8RRoNk5Bu0\u002fR6SqR56i6z8PkKYyeSzuP+lFGtxOH+s\u002fi\u002fwhL\u002fMb8T8h3Q3HyhvwP6cLY75IJ\u002fU\u002fwcCBofOj8j9WXyMDVd\u002f1PxRhgZSJxwBAPmk0hTOg8D89EJQUf\u002fXvPwAFu5vMWfE\u002fyNN4KpgO7z+5kIIP1gLpP2WTAJTfDOs\u002f\u002fW9rT3G68D8FXyyKYE7uP1NuCshFuu4\u002ftXDmgZW69T8qNu2Zmw\u002fxP9ElyNPjs+4\u002for5vUZh28D\u002fB2G+bYW3qPwTWhF0+Bug\u002fGCwdb54h6j8AdmoIxjbrP+qZOz\u002fVXeY\u002f1dWJUlsp6T9+hOrLriztP8ijscTNv+g\u002fr2GfVZcA8T8LYDqMPmDxP2UzdjModOw\u002fthBkwuAk7D8rInr6\u002fF\u002fnPyOp1uadyu4\u002focwwfVwp7D8hRtBnFzTtPxKZMyHEovE\u002f+TWE34xT+j+wwRpnCFYAQMpdg65u7e0\u002fWsv8hwez8T\u002fQlQRUlTzrP1L0JWI4Aeg\u002fbPXgJPja6D\u002fpn0skfdTqPyYsr0ckp+o\u002fWFcpwL9m7D9yi4rfI1TtP7aK8mnhz+k\u002fAJlR8z4Z6j+um5goJ9zmP\u002fRVmdto9OU\u002fYt1Lc+gj6T9JIu2bOcXkP0iwRKByj+c\u002fO56ZDnQO6j\u002fgKnGiNADpP8unAVwCjfE\u002f3MPmhZ7p9j9d9+rmirztP88bU\u002fUVwek\u002fnv7kI3Kh7T++wXFrdqvyP4sStkZlevY\u002f3rV0UqJt8z+kwQ7VdBb0P2ESNWsGqPM\u002f7Nqo+AHr+D\u002fJb3EZJFbyP421R8ZvMvI\u002fgKN2eKlI8j\u002f+WE0mSBnwP1SjIFiaG+w\u002fPFzqgou96D+7c\u002flu0crlP\u002fnIZiKhYug\u002f983cdWST5z9pCLnkR2XwPyjo9L85z+s\u002fxnIGaoXC5j9p04awBUDpP7AWxizrZOY\u002ft7rpkkft5z9S5Rv2lZnoPzfM0uL5Yuo\u002fv79bWYYk8j8FdRAresbqPwvlkW\u002fLqOc\u002fC42\u002f72YQ7T+ds2KR3XXsPx0Ou2BQ+u8\u002fVkU7oqjw8T9aE5cAXTzqP4IcDk+Ek+4\u002fu7X8smmS7D\u002fXpxvhLhz0P\u002fOYFxQ4CPE\u002f29G1bAVt8D95noEn2ZLuP8kXEO2yL\u002fQ\u002fVwTHEKR4+D8ediSyLQ8AQBCj83DmdO8\u002fvmK4SrmH6T9Xv2JlLCruPzUiz6pERew\u002ftSSlWkIW6j8H07uJtm7lPy9Oo4GpY+g\u002fQYXGTM6g8D\u002ffpnFrbJPyP6NJSfpauu8\u002fmpGvrBC86D8\u002ffoQhuMHsP6LPqKPbluk\u002fS0\u002feVnkD8D8pyKVeMFfvP98Kxxf84u8\u002f7HpE2PIk+z9pAo0ambbyP3NnRQARHvE\u002fWReONly2AECY6IGs5qPxP+et4XaZnfA\u002fOHjNKaQE6z+nqeApAlPqPx4fkQojAe0\u002fdv0Udmvt7D+GOaKRX+LtP7Dt8aNu6fA\u002fUWJ\u002fJ51v+T8y83yzWiPpP55JBGfe4Og\u002fIqKCcsK86T+LzkhD8YLqP0R5ACPjJug\u002fOI5iEKqP6T9kJpQ7I+fpP+gH0k9reOg\u002fVePpU1oy9j\u002fyG3YBeM7gPzuwGinxveo\u002fawEzD1Yp6j\u002fr5Fo3k4nrP6vxBJvBd\u002fE\u002ftVkVnjQ\u002f6z\u002foljNYNqTxP9dpidqQT+g\u002fZd56mFzV6D9OBqfzX5LuP2tfwXgBw+4\u002fIQHE8P7h+D9nzLya3TzyP2XB\u002fGm6mPU\u002fUKjXOppw6z96Ln68EcfmP+Q2QKy+F+0\u002foDL5Tsow7T+y1fN8fKXtP5RjXG7B8eg\u002f9l15JhCE5j8rTImLUBLwP8aQv4m5OPM\u002fuZTmmxgLAUD6XnxOebn7PyGButM26vI\u002fyprVqBzY8D8onYK2bSnuPznfnIvYcew\u002fbnwwwMID6D8Wty8TAxXoP0qEouAgs+o\u002fYBaxx8ar8j8oTweLd3TxP5CiGMZKaOo\u002fXINSWKje5z9IsyuNGsztP4qzOm2H2e4\u002fWQSMyZPO7D\u002fJjzOmvm3oPxL\u002fs6yfGO0\u002fLrcqKDaL8D\u002fV7leCcovwP2\u002f5JabEfeo\u002fSGUR9MmC6z9X8tywF4P4P0adOMAGFABA6M5RQQGP8j8vJj+7y5bwP5Ahi2E4bfg\u002f0CObimwF9j8HCd3lEHjvPyWy6ciIR\u002fs\u002fKVdq\u002fpW28D\u002fg4c29zqXpPzkY6b5ujuw\u002fFUoHLKCd7j\u002fkat3v4XbrP7O4LBfbceY\u002fiXd7m8zo7j8OnD2+KLLvP5ehv4aCwOo\u002f\u002fkeBN07P6D\u002f1+C8zDtboPyLBJdN7iec\u002fpICgz\u002fC16T+qQpn9ErvoP0veHiHGYO0\u002fEa4PbAoK5j8EK5pZOZ3nPxScM5y7hOo\u002f3DqnB3jC7z+bRESTTlHuP\u002f\u002fUijbkYu8\u002fKia2kQMb8T++qm8zXFXwPyV4aS4swPE\u002fnHxgo2kY8z\u002fOmEX8JX3wP6Fhwoq9UOo\u002fcHs9D4pS8T+a9zAOGx71PwpMYWRJYvE\u002fYOLoqv9q7j+NFyXNGszqP86JgsrQ8vA\u002flGXdHJ1r9j\u002fkGrxbD672Pz3vR+Z3zPE\u002fmJRhRt028z+mHGo2qdfqP3kdgTyyUu0\u002f1IrnkcXP8T92V+6caq3nP9BhfiqPRvA\u002fGXfGR2Mn7T\u002fANozLI53tP5QyaAUoCOw\u002fczylLXfP6T++Ilw3\u002f0TlP4Ar39eUcOY\u002fAxYBzdxp3D\u002fS3sMNQlzoP81fITv0Wuc\u002fBx8I\u002fmAy6j935jiL9\u002fLtP\u002fRnMR0q7uw\u002fYQtcWdt97D9G6YgWNtD1P+\u002fSe8l0ves\u002fz2+aadEO8D8kDNRI5RHyP5fNmfLgu\u002fQ\u002fH281IcvB8T9E5mr3I3j3P7CnZjjS+vU\u002fW839+AekA0AIo2WDqvXwP9yej71N6Og\u002fKb5HPfaI7z+66fr1oODrP7MtCMmJAuY\u002fRuzYkPxR4T9CKHguzYrsP\u002f9YXOoqYeQ\u002ffIfPFeyv6T+7UHV2Wv\u002f3P7+B5xrNw\u002fA\u002fj3Yko3aP9D8GUSyUKXzxP7pDaCgVafA\u002fEoQ8iHH+5z+lAIFyDYnqP1TGYOC58us\u002fuyGelwGo5z+BHFAzCzHzP4C28Kyy5+0\u002f\u002fPhIlcIe+D+8cGs3lL30P0od1Uaz9\u002fE\u002f1nq0ALVo6T+xUxMPDa\u002fvP2i0bZyHoe8\u002fe8uhDpjP6T9Trrad5\u002ffqP4MmQB+llO8\u002fzaxFkiMQ8D\u002fL7gYsUK7yPw0fzY4ovPw\u002fcBL46btl8z86AGjgVI3oP+fXvPOH4+0\u002fXSg6FhUH5z\u002f06lxdT3npP+H\u002fa7w1i+c\u002faqXbFSQO8D8A2GYa6NTuP3vSlYLpq\u002fI\u002fUV5K6wDj7D\u002fXD9\u002fFtlfvP33LnC8hL+g\u002fW+gV3fua7j+15M6V16TqP8s9IjdUN+g\u002frgygNnn57z+5u0jeKADtP+hG49ja0wJAanBiKagd9D+bOPbncrL2P73k9BSC6vk\u002frK6ImzpL8j8g6+f0ddryP3ERxiTAePM\u002fIuEGlXdY7j+KOS0IgMPtPwRvKmwlMuo\u002f4WyrL1\u002fw8T+ieEdQMLb8P9V3DHLifvE\u002fG1pDQ7WG6T9F20TvC3zoP4w5iL+Wbfc\u002fjeVMxxTZ7j9uy\u002fDxb1LnP9ULQPllmug\u002f97H8kjyl6T8ipS51zFPtP4wItnQFDeU\u002foIAq4bT75j+\u002fJ\u002f6w1wPnPzgy3XL0Neo\u002fdEHTfmoG5T\u002fymcV8w0XjP3dKrBQaI+Y\u002fHu3wGYMv6j\u002fMTrxunD\u002f3P4uETiNeX\u002fk\u002fAuUtnzoR8z\u002fTABTLpyTzPypMEOsQiOo\u002fuV10bNaq5j+LejtdHH3yP2ZAP9S7oOo\u002fKiQNqA2H6z+B7ZoNAAfrP1zPkG\u002foj+w\u002fTE4oQCvO6T9VHtPurjzzP2O4v++BVvI\u002fE6irxrv16z9EN1c3RUH5P4NHaWeO3ANAzepZzH2K8j+MtdbN2sjxP3UP9+sAzeQ\u002f7v\u002f6+TpS5z\u002ftIhc2TB7pP8\u002fxrlWh2PE\u002ftk+HGnFk6j\u002f2tbEfn3bxP\u002fxLceZ3Beo\u002fTSSP687B5D\u002fBY\u002fMQ8l7mP0rFjXlWdeU\u002f8cRVJrHD4T8dyl21PCTqPxw9t\u002fr\u002fvuI\u002fcOatMyBU6z+ZBdnE\u002fAjsP73fhjHSXeo\u002fhkzpBZ4t9D\u002ffSgrZD7btPzrqsovP\u002f+w\u002fbZLmuFXq8D+6RGnPu9LpPyhnsc4glfA\u002f0xre7Bv8\u002fD+Hv+AomYsHQMgrfdTCEQhAtV2MmoVK9z8jI8z\u002fMHrwP1sCyc0XNfU\u002fAEtojvik8T+HgSQ49XXyP9WXqykVvwZABLRS8aHa7T8bCz90QlHkP1r0pgC8Bug\u002fv2xKAi8Y4j91fUN2FnbtP9E5pqXsvOU\u002fRAynP\u002fTL5D\u002fES1LCC+7aP3XwH5LvsOU\u002f4OGOlP8A5T8SVHkvUyPhPw5U8PPcwuY\u002fE54t8LcM6T\u002fjOgp9hYLmP0BH0H13Nus\u002fSetZ1Fsi4z+BXSgJ2wjqP6QBhicmR+4\u002f5zh7nJkm5z8erpZSznnqP8NP+J6pvuY\u002fNKnYOw188T+IJv2N8nntP9aGTrWGCeg\u002f2Ej\u002fXxDl5T9\u002f0q1two\u002fpP1SeSmtl8+4\u002fKAt2kELf8j9TRrht2JL+P1DBcVS9aQBAnC7f0aHH8j+mTIj9UBzxP0XSpPNVyuk\u002f2evYt0lL5z+vLZb1C3LlP5YmBUFz4eg\u002fkQ57q\u002fr35z8pR+knL\u002fzqP18+rKl+5Ok\u002f1Xza8nrs5z9KXy8bkPnhPyWjThB\u002fJ+U\u002fbdulJ67I6j\u002f1PXyCTMbnP1t9HX0l6uI\u002f5JIZuWhV5j9DomTrnu3nP\u002fWLJQ\u002ffffA\u002fl0lMNHnD8T8j8SmToiTyPxhulErbUvA\u002fNbsxE+4l7D8eupPfn5XyP9qtHKiJCPk\u002f62ypz+3s8j9mepFcHlnwP2a\u002f9aXwm+s\u002fU\u002fblW+Fn6z8m6kJJAL71P8Er0KnplPA\u002fH2JM0XYb9T+Rabl9irv2P2pdmLN0+xRA7+OggWgp7D9nI98s+WrmP8ILk2gvquU\u002f8+0AsBjI4j8iHKZQXLLhP1GhOgnKVOw\u002fwE68snVD8D\u002fcTaSLyAzhP8+I9HWusOE\u002fUsp2SNqH4z8R\u002fjx0UjLlP7SIhAozYeE\u002fiPHDrvh\u002f4j\u002fhnMAKCkvfPyBeQF9mteE\u002f3lM\u002fxyWf5j8Btp1aYQ7yP\u002fZalvf+ceM\u002fK82xea9o4z+MD\u002f6PCTfyP6Y2n15CFe0\u002fP\u002fbQWfJY7z+cjk2IodX0P1TUJze\u002f9ug\u002f4aKCl5vz7j9DuemgpHbtP1hntsJ\u002f++0\u002fDltTZ42O8z8p9ktgKrv5PzcJSCryNfk\u002fTQ\u002fZcrU+8T9sc8hOaqvlPwyXc7LagvQ\u002fcqAHUbAr7z8czYnIsCPsPzEw4oOKw+4\u002f1h35OVJv7j9eCp2hyvzxP9k9yTtvafA\u002fuSy5El168T\u002fgzXSNxh\u002fwP1RLvJzMPeo\u002f4LDNaWn96T8RLh8fLrruPze6ZjtQ3+s\u002fmhrSwxkB\u002fz\u002fqFQaZW0bvP8QJMweJHec\u002fNS0NJsxx5D8jQev5kp3xPwx76RYnpOw\u002fnA2YmRMO8D9Hbp+iTHLtPym2NWPwSOs\u002fkPKswJdm8D+akOM+YkfrPwZ+RclQnPA\u002fqbnHXFaI6D8XSDDUYCnpP40hbGdAh\u002fM\u002fqjQRxWs\u002f8z8r9uZGIMf0PxIUhkATpfU\u002fM8URhHx4B0BWFmolD\u002fDpP7pMXZK\u002fmN8\u002fehwbG2rl4j8tBnbq7RrtP2Sfd\u002fPtP+g\u002fEcr8fgwt6z9FnGfnktfyPw+Y\u002fPe2U+s\u002ftuOY6fNs7j9gOBmz7XrrP9d7mDVrf+k\u002ftggKG4Rf9D8bgqcffk\u002fwP4+qZ3prvuk\u002fEY0ONbDT6T9Ei2H1+Mz2P5lv85W9ZfU\u002f7UBpkr5z\u002fT+gIEMDJDPzPwldN1pNo\u002fM\u002ftmvI7LWV8T+gYlMQRHP8P1qMU8r6t\u002fU\u002fB\u002fxIulAG6j+vN4+1UkjvP5SABQ8t6\u002fo\u002f9XO8Uxk08z+I92uC0ZjnP1ra8yph1uQ\u002f2xOR0SzD3z+qO7xFQQnlPwG6egQq+OE\u002fqSGwqV8M7T9xkUAbj1joP+PggBwWhew\u002fQmkPK85T5j+35MlCChzrP3Mx40879+I\u002fIlnPJyOb4z830p99yT7wPzMJ7OXwcu8\u002fEy3SFOzM7j8Em7MLMm3tP7ScoM6HYOs\u002fpFvomILh8j+IFuHnIprwP7R\u002fWLLHVvM\u002fJEuBZZvv8D+\u002fewaIHhnwP4kltwVHMvA\u002fVSrAeQtd+D+EkGdWf574P2g4JR\u002fFC\u002fQ\u002f9n2Myv9a8z\u002fZJvIZWNbyP9G5ce7f6+0\u002fxTxrXlWT6j\u002fT85KwRavwPyBOdj9KfO0\u002fkLNjDDtY+z9x6K8kXOfpP+pplX0ObOQ\u002fGBxvVIGY5D9H6Iq1OEDmP3IESYeSReg\u002fRjRNDneQ8z+y3VUFJS7mP6Le7kQbHOY\u002f5C7zx8Em\u002fj9ZPFW63hwBQNtHd+I5SQRA6l9o0NeD\u002fT+q5d\u002fKmpkEQJjdnPvFIPo\u002fUktSDDZo8j\u002fGgNLXRJ30P9oYhRipxOQ\u002fFf+PG3UU6D+a7wvQSfzkP+c212yoYeM\u002f++3rZfHX5T8SvUW0YZHlP6drr8JGH+M\u002fGHD3Nxvg3j90KTnlPlHfP6vtB+JlUN4\u002fiLK6o0xN5T9fmD8haQ7nP60rXb9oVPQ\u002f87VCbBHQ7D+1JsJCigXnP0p9U3t4++8\u002fhVpgt8sa6j9qRMEe4j\u002fkP2V\u002fMk2nFfI\u002fH9pjiczJ7j\u002fwGuE0j0\u002ftPwLt4U3NIOs\u002f3FV9odpy8D9Jff4Z+L7rP5LMh78Tz+k\u002frRczN6Tf8T+hh2Q8\u002fjvsP+BaK4J90vY\u002f0ukdWhof8D8QJBtWZMbpP9jaesvPPe0\u002fBkxe5mno8z95Fp11CSLlP2uXS+hXROw\u002fxGlbEarE6j\u002f9O2nwKiTxP5rNwwEvGO0\u002f7LYylUb29T\u002fb+ZIWLJ\u002fwP8\u002fS+gU\u002fYvI\u002fNJrZl4Sa6j+OuypLWfzuPw4VcPkOM+o\u002fEDcGHhXU5z9iJWuS1cLrP6mycb2Kk\u002fw\u002fasu4rIJW8D9vbbAPuC\u002fwP\u002fYaX3toC+g\u002f6qN12jG+7j\u002f\u002frQHIAbP1P1A2cmxzuvo\u002f+iA0iA4L9j8HuvJZIajyP0CJYNhYV+M\u002fTUWD1Pvo6z9o6DhjIuPnP8CNEGl7wus\u002fm+I1oE6K6T\u002fZDZXqyUvnP2n2mJoW3OY\u002fjLsyk+wa6T97Y+lvZBLsP5LL5Z9uLOw\u002fPiMSjW+c7D\u002fgNNLmQlDvPzUvSDfDiew\u002ffEaVPogY7T\u002fffEWouVHsPxVRHV48COk\u002fJDujl61e6D9Ft4qD\u002fz\u002fxPxfEHyo8pe8\u002fwGC\u002fGP2r+z\u002fSd3c5MKoAQD1VL2TnY\u002fc\u002fsbpjBWB36z8EVcDZm+P\u002fP9eE+V6dc\u002fk\u002fJZWWzO8l\u002fj+pnNlskw\u002fwP4ES+iutmew\u002fyZTxCI2l8T+mIsljUCTqP3tKFu3JD+w\u002ftDqwOAf54j9O0SXRIg\u002fkP3FI997QmOU\u002fznjPFkOv3z99UiTM8+\u002flP\u002fD5mHcZF+A\u002f2RGuCwBF7D\u002f1OtwIlWHgP6Z3lhaVrOQ\u002flGZDqEGn5j8sIYNpTg7qP1clYYAxPfM\u002fTYvRToQm7T+rOvQBrWjxP48wwLNTnfA\u002ftnNErelg9j8L7D\u002fLGVv7P7LzBKifzPA\u002fSKJugSua8j\u002f1jP7UttvsP9U97+Mi3PQ\u002f0n3Vc0df7j96AAvkwdbsP4vvceF3fgdABVixbd2o\u002fD9fSB8azPLvPxnHAU4qp+Y\u002f5EpD5rb67D\u002frm8VI5wfoPzFUZuOT6uQ\u002fTgiJRnLB4z+wUsFNXubpPy9LaYwiwuY\u002fZJR+WB5e6j\u002fNwBcHtQvoP2rT78pMt+E\u002fsP9llVoX5T\u002f9e8F33mLmP2Vqf7LZAfI\u002fdnWbIKw\u002f5j8FoyrlLjzlPzGUQfdoh+Q\u002fYcsafuIx6D++EXOwJsbwP0on1z6qYv8\u002fpR+BwWxw8D9T1uedypnvPyv7ACALk+c\u002feaDqJ77G6z8tPIAflTXwP5iQu84e3u0\u002f9SZJW8JR8j+XwZAZb1H4P0biX3K70vw\u002fWIg+XJmx8D\u002fc7fl2GxnwP\u002f65h8qrVew\u002frmC5L3pk8D+hxZFFfU\u002fvP5i5cn4yvOo\u002fEBvh3yCV7T8qvUjTj4ruP7UXi\u002ftNAO8\u002f1uDtaJux7T9706W\u002fr37tP3rEPdo29e0\u002fgLqTCFqj6j\u002fbXX+ngsvtP7OEgkNjy\u002fI\u002fT1Uztcx19D9BuH1uNh7tPzqV8vx1HOU\u002fpHQL6j2+2j\u002f\u002fP9OZoSHwP8aKZlCOg\u002fI\u002fAAXxtKc57j9reGkSG4fuP0Dfw\u002f2gePA\u002fb8kI1QHt6j8EWAs0O+rmP8GM\u002fYGy3ec\u002f4dZpw3Fv6D9c6Izd7mTtP99GWR8MrfI\u002fkjCmSgQj7D8s\u002fGCyd6PyP2VHPv5P8vI\u002fsOLT9xzWB0Cxt3HUG67oP0yxmoWnyuQ\u002fTEMeLWXz2T+sD7EP85vfP8yerZ4VWOE\u002fDySrhDmo4D\u002f2yWApIjHlP8Zikl9vle0\u002f6IonLf7O8T+hnnMUa0z0P7btJNs4gfI\u002f1eWycYTm8j\u002f75JcPmb7tP+If3mRQmfA\u002fzM5UquCm8D9v301+OH7tP62GGw1a+Ow\u002f1Y9RyUHg+T825ASCEOX7P08w3GHLC\u002fU\u002fnLRDPDR57j+CyZcWtYnvP4NCh5dTQvQ\u002fe1UyGsBq8T+eOw4Pt2vsPxfRhklmE\u002fY\u002fJYuqCpNx\u002fD\u002fGsCBv0\u002fr1PzqEqB5A0vI\u002fXdmySJaS+T\u002fDv3AnQs3tP53eKmqPYew\u002f8OiiCvz\u002f6D9haKdd2XHjP4\u002fMhrfHNu0\u002f\u002fRlRE7sC9j+TG7j9nCHuPxrfvgrQqO8\u002fdWT4tW1F4z+fVvOrRsDhPx8FEXrjKOg\u002fX5rvfmqC5T+nNetQcFPrP6jX9gAb4uM\u002fRHz+5vY74z\u002fxjuAJNWr1P6gkSgal+Ok\u002fEaKxhk3M6D+uwX\u002ftZj3qP3mYB\u002fiTFvE\u002fuwwLAliq7D\u002fpeoMqqQDrP4Y7990V9OU\u002fwun70Fv94j+bqZ4XV+ztPwyokDRXiOw\u002fLrKniPaG6T+ie5kIxZ7qP0lH3Bj0Wu0\u002fVrX9boh57D9VDJpCxwcBQCppeGncJe8\u002fEAccDc9h8T\u002fO\u002fDYMaRDmP+tVi4xVAvA\u002fuUSknXvm8j9PlleVkDjvPx6AkHQnXfM\u002fqlHILBZF7z+HvMZ23vvoPwJOxirVxOc\u002f7OewzBJx+D+tqLoHsd3vP2pFzCvzyeU\u002fIsZ8ve+G6D\u002fPzkmECG3sP\u002fTDQOMHmvI\u002fC29gcGjM8j9EDqDIISzwPyNeug6TPvY\u002fYRLX1fUk7D97kkztoxbzP\u002fOpDQi+evA\u002fsQ1BI\u002fRN6T8ucbqXtQjtPw5E3Imry+8\u002fkmL4+RGq7j\u002fK7uoIcJPnP0GSfWHS8ABAoj1LATPq+z9k2JcmVv\u002fvP5WB5R39I\u002fE\u002f4ApfLkHn8z9C4GsTlU7uP\u002fMCVKrcRPE\u002fI08R1JuF6z82LuNW3OHtP3ZiECxvKPE\u002f0QT9jpsy5z8KvY6P6iLyP7W9m90r2eY\u002fuW8RjyY57D\u002fmAB04F63pP1m17czXkew\u002fucjbDIjf7D\u002fXOUm1\u002f4XvPwfSp+98YvA\u002fQfAoFfTD7j8KE928\u002ftX2P\u002fc72btsc\u002fA\u002f3HSKQxcQ7j+qmVjlhCHxP2QQ+bLKrO4\u002fzECDhSDb9T9Gu68pCGr5P0M+YmgdOvY\u002f\u002fyy5XhGf8D\u002fV\u002fSbGhxPrPx+9BhGHjug\u002ftBOFTpBA7T837nEiT17pP+FWI3tjLus\u002f5cLAXAAY+j\u002flJKARdjLrP\u002fQ9jfeBRe8\u002ffb+4u4nD7z\u002fEliV5yWj+PxXwYyG1Qw9A4a7ev9TR7z+UGVGcMs\u002fuPx1HhmdvpOc\u002fJ9jUeSNx8T\u002fqBa\u002fFSqfoP9DY6bp\u002f3+M\u002ft92vl+fb4z8oYScZ\u002fYPnPzzpH5hj6+A\u002fC8o1u4Bu5T9f4nGQSgniP2Ue6mVx5+0\u002f3Oi6yK1a7j8O9ixNpBjuP33+QghfAeo\u002fzWxGpQwp5D+focNk8BfjP3X7MzPjT+Q\u002ftd3C+P6\u002f6D8="},"type":"scatter"},{"marker":{"color":"#16856b","size":8},"mode":"markers","name":"Continuation","x":["2021-11-19T00:00:00","2021-11-22T00:00:00","2021-11-30T00:00:00","2022-01-24T00:00:00","2022-04-29T00:00:00","2022-05-12T00:00:00","2022-09-13T00:00:00","2022-09-16T00:00:00","2022-09-28T00:00:00","2022-12-16T00:00:00","2023-02-02T00:00:00","2023-02-03T00:00:00","2023-07-19T00:00:00","2024-03-05T00:00:00","2024-03-15T00:00:00","2025-01-21T00:00:00","2025-04-03T00:00:00","2025-04-04T00:00:00","2025-04-08T00:00:00","2025-04-10T00:00:00","2025-09-22T00:00:00","2025-10-20T00:00:00","2025-10-30T00:00:00","2026-01-16T00:00:00","2026-01-20T00:00:00","2026-03-20T00:00:00","2026-04-30T00:00:00","2026-05-01T00:00:00","2026-06-25T00:00:00"],"y":{"dtype":"f8","bdata":"8tzsO0mx+T+MYJ5iopr4Pz3r5D5QOgFA1RG4x9O8\u002fD89nlRsl\u002fr4PwsLMPsUZfs\u002fpnkHXK8H+j+usA0e+Hb\u002fP\u002f56MhD5c\u002fg\u002fFGGBlInHAED5NYTfjFP6P7DBGmcIVgBAIQHE8P7h+D+95PQUgur5P6J4R1Awtvw\u002f7UBpkr5z\u002fT\u002fkLvPHwSb+P1k8VbreHAFA6l9o0NeD\u002fT+Y3Zz7xSD6PwVYsW3dqPw\u002fSifXPqpi\u002fz+XwZAZb1H4P9WPUclB4Pk\u002fNuQEghDl+z9VDJpCxwcBQEGSfWHS8ABAoj1LATPq+z\u002fEliV5yWj+Pw=="},"type":"scatter"},{"marker":{"color":"#d04a35","size":8},"mode":"markers","name":"Reversal","x":["2024-06-21T00:00:00","2025-04-09T00:00:00","2026-06-26T00:00:00"],"y":{"dtype":"f8","bdata":"1ZerKRW\u002fBkCq5d\u002fKmpkEQBXwYyG1Qw9A"},"type":"scatter"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"},"margin":{"b":0,"l":0,"r":0,"t":30}}},"title":{"text":"AAPL volume spike ratio classifications"},"yaxis":{"title":{"text":"Relative volume"}},"hovermode":"x unified"},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('e3cafe71-4270-414f-8a62-7be588dc6e1a');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div>
+</div>
+</div>
+
+
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/quantbert\.github\.io\/qrt\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../indicator/qrt/volume_ratio.html" class="pagination-link" aria-label="Relative volume">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Relative volume</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../indicator/qrt/price_spikes.html" class="pagination-link" aria-label="Price spikes">
+        <span class="nav-page-text">Price spikes</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.dev/quantbert/qrt/blob/main/indicator/qrt/volume_spike_ratio.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/quantbert/qrt/blob/main/indicator/qrt/volume_spike_ratio.ipynb" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/quantbert/qrt/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
